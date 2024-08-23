@@ -1,0 +1,337 @@
+{
+    "resourceType": "Bundle",
+    "id": "example-bundle",
+    "type": "transaction",
+    "entry": [
+        {
+            "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aed",
+            "resource": {
+                "resourceType": "MedicationAdministration",
+                "id": "example-medication-administration",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
+                    ]
+                },
+                "text": {
+                    "status": "generated",
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Medication administration for patient Example Patient. The medication administered was 20 mg orally once daily for Hypertensive disorder.</div>"
+                },
+                "identifier": [
+                    {
+                        "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/medication-administration",
+                        "value": "MA123456"
+                    }
+                ],
+                "status": "completed",
+                "category": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/medication-admin-category",
+                            "code": "inpatient",
+                            "display": "Inpatient"
+                        }
+                    ]
+                },
+                "medicationReference": {
+                    "reference": "Medication/example-medication"
+                },
+                "subject": {
+                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|{{patientId}}",
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "{{patientId}}"
+                    }
+                },
+                "context": {
+                    "reference": "Encounter/example-encounter"
+                },
+                "effectiveDateTime": "2024-08-20T14:30:00+00:00",
+                "performer": [
+                    {
+                        "actor": {
+                            "reference": "Practitioner/example-practitioner",
+                            "display": "Dr. John Smith"
+                        }
+                    }
+                ],
+                "reasonCode": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "38341003",
+                                "display": "Hypertensive disorder, systemic arterial"
+                            }
+                        ]
+                    }
+                ],
+                "dosage": {
+                    "text": "20 mg orally once daily",
+                    "route": {
+                        "coding": [
+                            {
+                                "system": "http://standardterms.edqm.eu",
+                                "code": "20053000",
+                                "display": "Oral use"
+                            }
+                        ]
+                    },
+                    "dose": {
+                        "value": 20,
+                        "unit": "mg",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "mg"
+                    }
+                }
+            },
+            "request": {
+                "method": "POST",
+                "url": "MedicationAdministration"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aek",
+            "resource": {
+                "resourceType": "Medication",
+                "id": "example-medication",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://fhir.de/CodeSystem/ifa/pzn",
+                            "code": "12345678",
+                            "display": "Example PZN Code"
+                        },
+                        {
+                            "system": "http://fhir.de/CodeSystem/bfarm/atc",
+                            
+                            "code": "A02BC01",
+                            "display": "Pantoprazole"
+                        },
+                        {
+                            "system": "http://www.whocc.no/atc",
+                            
+                            "code": "A02BC01",
+                            "display": "Pantoprazole"
+                        }
+                    ],
+                    "text": "Pantoprazole 20mg tablet"
+                },
+                "form": {
+                    "coding": [
+                        {
+                            "system": "http://standardterms.edqm.eu",
+                            "code": "CPS",
+                            "display": "Capsule"
+                        }
+                    ]
+                },
+                "ingredient": [
+                    {
+                        "itemCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "http://fdasis.nlm.nih.gov",
+                                    "code": "UNII-1J7SV7MR9B",
+                                    "display": "Chronic kidney disease stage 1 due to type 2 diabetes mellitus"
+                                },
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "751000119104",
+                                    "display": "omeprazole"
+                                }
+                            ],
+                            "text": "Pantoprazole"
+                        },
+                        "strength": {
+                            "numerator": {
+                                "value": 20,
+                                "unit": "mg",
+                                "system": "http://unitsofmeasure.org",
+                                "code": "mg"
+                            },
+                            "denominator": {
+                                "value": 1,
+                                "unit": "tablet",
+                                "system": "http://unitsofmeasure.org",
+                                "code": "{tablet}"
+                            }
+                        }
+                    }
+                ]
+            },
+            "request": {
+                "method": "POST",
+                "url": "Medication"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aea",
+            "resource": {
+                "resourceType": "MedicationStatement",
+                "id": "example-medicationstatement",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
+                    ]
+                },
+                "status": "active",
+                "medicationCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                            "code": "1049630",
+                            "display": "Aspirin 81 MG Oral Tablet"
+                        }
+                    ],
+                    "text": "Aspirin 81 MG Oral Tablet"
+                },
+                "subject": {
+                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|{{patientId}}",
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "{{patientId}}"
+                    }
+                },
+                "effectiveDateTime": "2024-08-21",
+                "dateAsserted": "2024-08-21",
+                "informationSource": {
+                    "reference": "Practitioner/example"
+                },
+                "dosage": [
+                    {
+                        "text": "1 tablet daily",
+                        "timing": {
+                            "repeat": {
+                                "frequency": 1,
+                                "period": 1,
+                                "periodUnit": "d"
+                            }
+                        },
+                        "route": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration",
+                                    "code": "PO",
+                                    "display": "Swallow"
+                                }
+                            ]
+                        },
+                        "doseAndRate": [
+                            {
+                                "doseQuantity": {
+                                    "value": 81,
+                                    "unit": "mg",
+                                    "system": "http://unitsofmeasure.org",
+                                    "code": "mg"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "request": {
+                "method": "POST",
+                "url": "MedicationStatement"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aes",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "example",
+                "status": "finished",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+                    ]
+                },
+                "class": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "AMB",
+                    "display": "ambulatory"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "11429006",
+                                "display": "Consultation"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|{{patientId}}",
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "{{patientId}}"
+                    }
+                },
+                "participant": [
+                    {
+                        "individual": {
+                            "reference": "Practitioner/example"
+                        }
+                    }
+                ],
+                "period": {
+                    "start": "2024-08-21T09:00:00+01:00",
+                    "end": "2024-08-21T09:30:00+01:00"
+                },
+                "reasonCode": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "65363002",
+                                "display": "Acute pain in stomach"
+                            }
+                        ]
+                    }
+                ],
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-Encounter.plannedStartDate",
+                        "valueDateTime": "2024-08-21T09:00:00+01:00"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-Encounter.plannedEndDate",
+                        "valueDateTime": "2024-08-21T09:30:00+01:00"
+                    }
+                ],
+                "hospitalization": {
+                    "admitSource": {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/admit-source",
+                                "code": "emd",
+                                "display": "From accident/emergency department"
+                            }
+                        ]
+                    }
+                },
+                "location": [
+                    {
+                        "location": {
+                            "reference": "Location/example"
+                        }
+                    }
+                ],
+                "serviceProvider": {
+                    "reference": "Organization/example"
+                }
+            },
+            "request": {
+                "method": "POST",
+                "url": "Encounter"
+            }
+        }
+    ]
+}

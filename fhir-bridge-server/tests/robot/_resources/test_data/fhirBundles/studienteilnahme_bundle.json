@@ -1,0 +1,255 @@
+{
+    "resourceType": "Bundle",
+    "id": "example-bundle",
+    "type": "transaction",
+    "entry": [
+        {
+            "fullUrl": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589e",
+            "resource": {
+                "resourceType": "ResearchSubject",
+                "id": "example-research-subject",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "code": "ANON",
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                                }
+                            ]
+                        },
+                        "system": "http://localhost:8888/fhir-bridge/fhir/identifier",
+                        "value": "KHID123"
+                    }
+                ],
+                "status": "active",
+                "period": {
+                    "start": "2024-01-01",
+                    "end": "2024-12-31"
+                },
+                "study": {
+                    "reference": "Study/example-study"
+                },
+                "individual": {
+                    "reference": "Patient/example-patient"
+                },
+                "subject": {
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "KHID123"
+                    }
+                },
+                "consent": {
+                    "reference": "Consent/example-consent"
+                }
+            },
+            "request": {
+                "method": "POST",
+                "url": "ResearchSubject"
+            }
+        },
+        {
+            "fullUrl": "http://localhost:8888/fhir-bridge/fhir/Consent/example-consent-id",
+            "resource": {
+                "resourceType": "Consent",
+                "id": "example-consent-id",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+                    ],
+                    "source": "LaboratorySystem"
+                },
+                "status": "active",
+                "scope": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+                            "code": "research",
+                            "display": "Research"
+                        }
+                    ]
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "57016-0"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                                "code": "2.16.840.1.113883.3.1937.777.24.2.184",
+                                "display": "Consent for specific research"
+                            }
+                        ]
+                    }
+                ],
+                "patient": {
+                    "reference": "Patient/KHID123",
+                    "identifier": [
+                        {
+                            "system": "http://localhost:8888/fhir-bridge/fhir/patient-id",
+                            "value": "KHID123"
+                        }
+                    ]
+                },
+                "dateTime": "2024-08-22T08:30:00Z",
+                "organization": [
+                    {
+                        "reference": "Organization/1",
+                        "display": "Example Consent Organization"
+                    }
+                ],
+                "source": {
+                    "reference": "QuestionnaireResponse/456"
+                },
+                "policy": [
+                    {
+                        "uri": "http://localhost:8888/fhir-bridge/fhir/consent-policy"
+                    }
+                ],
+                "policyRule": {
+                    "coding": [
+                        {
+                            "system": "http://hl7.org/fhir/consent-policy",
+                            "code": "policyCode"
+                        }
+                    ]
+                },
+                "provision": {
+                    "type": "deny",
+                    "period": {
+                        "start": "2024-08-22T08:30:00Z",
+                        "end": "2025-08-22T08:30:00Z"
+                    },
+                    
+
+                    "provision": {
+                        "type": "permit",
+                        "period": {
+                            "start": "2024-08-22T08:30:00Z",
+                            "end": "2025-08-22T08:30:00Z"
+                        },
+                        
+                        "code": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-policy",
+                                        "code": "policyCode",
+                                        "display": "Consent Policy Code"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            },
+            "request": {
+                "method": "POST",
+                "url": "Consent"
+            }
+        },
+        {
+            "fullUrl": "http://localhost:8888/fhir-bridge/fhir/Encounter/example",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "example",
+                "status": "finished",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+                    ]
+                },
+                "class": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "AMB",
+                    "display": "ambulatory"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "11429006",
+                                "display": "Consultation"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "KHID123"
+                    }
+                },
+                "participant": [
+                    {
+                        "individual": {
+                            "reference": "Practitioner/example"
+                        }
+                    }
+                ],
+                "period": {
+                    "start": "2024-08-21T09:00:00+01:00",
+                    "end": "2024-08-21T09:30:00+01:00"
+                },
+                "reasonCode": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "65363002",
+                                "display": "Acute pain in stomach"
+                            }
+                        ]
+                    }
+                ],
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-Encounter.plannedStartDate",
+                        "valueDateTime": "2024-08-21T09:00:00+01:00"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-Encounter.plannedEndDate",
+                        "valueDateTime": "2024-08-21T09:30:00+01:00"
+                    }
+                ],
+                "hospitalization": {
+                    "admitSource": {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/admit-source",
+                                "code": "emd",
+                                "display": "From accident/emergency department"
+                            }
+                        ]
+                    }
+                },
+                "location": [
+                    {
+                        "location": {
+                            "reference": "Location/example"
+                        }
+                    }
+                ],
+                "serviceProvider": {
+                    "reference": "Organization/example"
+                }
+            },
+            "request": {
+                "method": "POST",
+                "url": "Encounter"
+            }
+        }
+    ]
+}

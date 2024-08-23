@@ -1,0 +1,318 @@
+{
+    "resourceType": "Bundle",
+    "id": "kds_medikationseintrag-bundle",
+    "type": "transaction",
+    "entry": [
+        {
+            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fc76e5c7ad",
+            "resource": {
+                "resourceType": "List",
+                "id": "gen1",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/medikationsliste"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "MR",
+                                    "display": "Medical record number"
+                                }
+                            ],
+                            "text": "Medical record number"
+                        },
+                        "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                        "value": "123456",
+                        "period": {
+                            "start": "2014-03-08",
+                            "end": "2014-03-09"
+                        }
+                    }
+                ],
+                "status": "current",
+                "mode": "snapshot",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "182836005",
+                            "display": "Medication review"
+                        }
+                    ],
+                    "text": "Medication list"
+                },
+                "subject": {
+                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|{{patientId}}",
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "{{patientId}}"
+                    }
+                },
+                "encounter": {
+                    "reference": "Encounter/789",
+                    "display": "Routine Checkup"
+                },
+                "date": "2024-08-22",
+                "entry": [
+                    {
+                        "item": {
+                            "reference": "MedicationRequest/medrx0301",
+                            "display": "Acetaminophen 500mg tablet"
+                        }
+                    }
+                ]
+            },
+            "request": {
+                "method": "POST",
+                "url": "List"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fc76e5c72d",
+            "resource": {
+                "resourceType": "MedicationStatement",
+                "id": "example-medicationstatement",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
+                    ]
+                },
+                "status": "active",
+                "medicationCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                            "code": "1049630",
+                            "display": "Aspirin 81 MG Oral Tablet"
+                        }
+                    ],
+                    "text": "Aspirin 81 MG Oral Tablet"
+                },
+                "subject": {
+                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|{{patientId}}",
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "{{patientId}}"
+                    }
+                },
+                "effectiveDateTime": "2024-08-21",
+                "dateAsserted": "2024-08-21",
+                "informationSource": {
+                    "reference": "Practitioner/example"
+                },
+                "dosage": [
+                    {
+                        "text": "1 tablet daily",
+                        "timing": {
+                            "repeat": {
+                                "frequency": 1,
+                                "period": 1,
+                                "periodUnit": "d"
+                            }
+                        },
+                        "route": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration",
+                                    "code": "PO",
+                                    "display": "Swallow"
+                                }
+                            ]
+                        },
+                        "doseAndRate": [
+                            {
+                                "doseQuantity": {
+                                    "value": 81,
+                                    "unit": "mg",
+                                    "system": "http://unitsofmeasure.org",
+                                    "code": "mg"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "request": {
+                "method": "POST",
+                "url": "MedicationStatement"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fd76e5c72d",
+            "resource": {
+                "resourceType": "Medication",
+                "id": "example-medication",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://fhir.de/CodeSystem/ifa/pzn",
+                            "code": "12345678",
+                            "display": "Example PZN Code"
+                        },
+                        {
+                            "system": "http://fhir.de/CodeSystem/bfarm/atc",
+                            "version": "2024",
+                            "code": "A02BC01",
+                            "display": "Pantoprazole"
+                        },
+                        {
+                            "system": "http://www.whocc.no/atc",
+                            "version": "2024",
+                            "code": "A02BC01",
+                            "display": "Pantoprazole"
+                        }
+                    ],
+                    "text": "Pantoprazole 20mg tablet"
+                },
+                "form": {
+                    "coding": [
+                        {
+                            "system": "http://standardterms.edqm.eu",
+                            "code": "CPS",
+                            "display": "Capsule"
+                        }
+                    ]
+                },
+                "ingredient": [
+                    {
+                        "itemCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "http://fdasis.nlm.nih.gov",
+                                    "code": "UNII-1J7SV7MR9B",
+                                    "display": "Chronic kidney disease stage 1 due to type 2 diabetes mellitus"
+                                },
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "751000119104",
+                                    "display": "omeprazole"
+                                }
+                            ],
+                            "text": "Pantoprazole"
+                        },
+                        "strength": {
+                            "numerator": {
+                                "value": 20,
+                                "unit": "mg",
+                                "system": "http://unitsofmeasure.org",
+                                "code": "mg"
+                            },
+                            "denominator": {
+                                "value": 1,
+                                "unit": "tablet",
+                                "system": "http://unitsofmeasure.org",
+                                "code": "{tablet}"
+                            }
+                        }
+                    }
+                ]
+            },
+            "request": {
+                "method": "POST",
+                "url": "Medication"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fd76e5c72d",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "example",
+                "status": "finished",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+                    ]
+                },
+                "class": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "AMB",
+                    "display": "ambulatory"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "11429006",
+                                "display": "Consultation"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|{{patientId}}",
+                    "identifier": {
+                        "system": "urn:ietf:rfc:4122",
+                        "value": "{{patientId}}"
+                    }
+                },
+                "participant": [
+                    {
+                        "individual": {
+                            "reference": "Practitioner/example"
+                        }
+                    }
+                ],
+                "period": {
+                    "start": "2024-08-21T09:00:00+01:00",
+                    "end": "2024-08-21T09:30:00+01:00"
+                },
+                "reasonCode": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "65363002",
+                                "display": "Acute pain in stomach"
+                            }
+                        ]
+                    }
+                ],
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-Encounter.plannedStartDate",
+                        "valueDateTime": "2024-08-21T09:00:00+01:00"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-Encounter.plannedEndDate",
+                        "valueDateTime": "2024-08-21T09:30:00+01:00"
+                    }
+                ],
+                "hospitalization": {
+                    "admitSource": {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/admit-source",
+                                "code": "emd",
+                                "display": "From accident/emergency department"
+                            }
+                        ]
+                    }
+                },
+                "location": [
+                    {
+                        "location": {
+                            "reference": "Location/example"
+                        }
+                    }
+                ],
+                "serviceProvider": {
+                    "reference": "Organization/example"
+                }
+            },
+            "request": {
+                "method": "POST",
+                "url": "Encounter"
+            }
+        }
+    ]
+}
