@@ -1,0 +1,1162 @@
+{
+  "_type" : "COMPOSITION",
+  "name" : {
+    "_type" : "DV_TEXT",
+    "value" : "Person"
+  },
+  "archetype_details" : {
+    "archetype_id" : {
+      "value" : "openEHR-EHR-COMPOSITION.person.v0"
+    },
+    "template_id" : {
+      "value" : "KDS_Person"
+    },
+    "rm_version" : "1.0.4"
+  },
+  "language" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_639-1"
+    },
+    "code_string" : "de"
+  },
+  "territory" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_3166-1"
+    },
+    "code_string" : "DE"
+  },
+  "category" : {
+    "_type" : "DV_CODED_TEXT",
+    "value" : "event",
+    "defining_code" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "openehr"
+      },
+      "code_string" : "433"
+    }
+  },
+  "composer" : {
+    "_type" : "PARTY_IDENTIFIED",
+    "name" : "Max Mustermann"
+  },
+  "context" : {
+    "_type" : "EVENT_CONTEXT",
+    "start_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "end_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "setting" : {
+      "_type" : "DV_CODED_TEXT",
+      "value" : "home",
+      "defining_code" : {
+        "_type" : "CODE_PHRASE",
+        "terminology_id" : {
+          "_type" : "TERMINOLOGY_ID",
+          "value" : "openehr"
+        },
+        "code_string" : "225"
+      }
+    },
+    "other_context" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Item tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Patient ID"
+        },
+        "value" : {
+          "_type" : "DV_IDENTIFIER",
+          "id" : "dev/null"
+        },
+        "archetype_node_id" : "at0004"
+      } ],
+      "archetype_node_id" : "at0003"
+    },
+    "health_care_facility" : {
+      "_type" : "PARTY_IDENTIFIED",
+      "name" : "DOE, John"
+    }
+  },
+  "content" : [ {
+    "_type" : "EVALUATION",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Geschlecht"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-EVALUATION.gender.v1"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "de"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "ISO-10646-UTF-1"
+    },
+    "workflow_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "09b7435f-aebb-3963-850f-6520eb10266e",
+        "scheme" : "scheme"
+      }
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "provider" : {
+      "_type" : "PARTY_SELF"
+    },
+    "guideline_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "11d61617-29b1-372c-8a21-9ea5fdf8c79f",
+        "scheme" : "scheme"
+      }
+    },
+    "data" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "*Tree(en)"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Administratives Geschlecht"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender' available",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender"
+            },
+            "code_string" : "42"
+          }
+        },
+        "archetype_node_id" : "at0022"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Anderes Geschlecht amtlich"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "divers",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "http://fhir.de/ValueSet/gender-other-de"
+            },
+            "code_string" : "D"
+          }
+        },
+        "archetype_node_id" : "at0014"
+      } ],
+      "archetype_node_id" : "at0002"
+    },
+    "archetype_node_id" : "openEHR-EHR-EVALUATION.gender.v1"
+  }, {
+    "_type" : "ADMIN_ENTRY",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Personendaten"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-ADMIN_ENTRY.person_data.v0"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "de"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "ISO-10646-UTF-1"
+    },
+    "workflow_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "29262c23-c57a-3be9-b79e-1ec823840453",
+        "scheme" : "scheme"
+      }
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "provider" : {
+      "_type" : "PARTY_SELF"
+    },
+    "data" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Baum"
+      },
+      "items" : [ {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Person"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.person.v1"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Geburtsname"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.structured_name.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Namensart"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/name-use' available",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/name-use"
+                },
+                "code_string" : "42"
+              }
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Vollständiger Name"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0002"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Familienname"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0005"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Familienname-Namenszusatz"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0005"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Familienname-Nachname"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0005"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Familienname-Vorsatzwort"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0005"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Suffix"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0006"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.structured_name.v1"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Versicherten ID_GKV"
+          },
+          "value" : {
+            "_type" : "DV_IDENTIFIER",
+            "id" : "dev/null"
+          },
+          "archetype_node_id" : "at0003"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "PID"
+          },
+          "value" : {
+            "_type" : "DV_IDENTIFIER",
+            "id" : "dev/null"
+          },
+          "archetype_node_id" : "at0003"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Versicherungsnummer PKV"
+          },
+          "value" : {
+            "_type" : "DV_IDENTIFIER",
+            "id" : "dev/null"
+          },
+          "archetype_node_id" : "at0003"
+        }, {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Straßenanschrift"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.address.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Straße"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Hausnummer"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Adresszusatz"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Stadtteil"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0002"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Stadt"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0002"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Gemeindeschlüssel"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0002"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Bundesland"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender' available",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender"
+                },
+                "code_string" : "42"
+              }
+            },
+            "archetype_node_id" : "at0004"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Postleitzahl"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0005"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Land"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2' available",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2"
+                },
+                "code_string" : "42"
+              }
+            },
+            "archetype_node_id" : "at0006"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Art"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "Postal",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "address-type"
+                },
+                "code_string" : "postal"
+              }
+            },
+            "archetype_node_id" : "at0010"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Art"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0010"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Verwendung"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/address-use' available",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/address-use"
+                },
+                "code_string" : "42"
+              }
+            },
+            "archetype_node_id" : "at0014"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Kommentar"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0018"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.address.v1"
+        }, {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Postfach"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.address.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Postfach"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Stadtteil"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0002"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Stadt"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0002"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Gemeindeschlüssel"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0002"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Bundesland"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender' available",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender"
+                },
+                "code_string" : "42"
+              }
+            },
+            "archetype_node_id" : "at0004"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Postleitzahl"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0005"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Land"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2' available",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2"
+                },
+                "code_string" : "42"
+              }
+            },
+            "archetype_node_id" : "at0006"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Art"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "Postal",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "address-type"
+                },
+                "code_string" : "postal"
+              }
+            },
+            "archetype_node_id" : "at0010"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Art"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0010"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Verwendung"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/address-use' available",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/address-use"
+                },
+                "code_string" : "42"
+              }
+            },
+            "archetype_node_id" : "at0014"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Kommentar"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0018"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.address.v1"
+        }, {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Verwaltungsorganisation"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.organisation.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Namenszeile"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Identifier"
+            },
+            "value" : {
+              "_type" : "DV_IDENTIFIER",
+              "id" : "dev/null"
+            },
+            "archetype_node_id" : "at0003"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.organisation.v1"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.person.v1"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Daten zur Geburt"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.person_birth_data_iso.v0"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Geburtsdatum"
+          },
+          "value" : {
+            "_type" : "DV_DATE",
+            "value" : "2022-02-03"
+          },
+          "archetype_node_id" : "at0001"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.person_birth_data_iso.v0"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Angaben zum Tod"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Verstorben?"
+          },
+          "value" : {
+            "_type" : "DV_BOOLEAN",
+            "value" : true
+          },
+          "archetype_node_id" : "at0025"
+        }, {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Angaben zum Tod"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.death_details.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Sterbedatum"
+            },
+            "value" : {
+              "_type" : "DV_DATE_TIME",
+              "value" : "2022-02-03T04:05:06"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Todesdiagnose"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm' available",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm"
+                },
+                "code_string" : "42"
+              }
+            },
+            "archetype_node_id" : "at0003"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.death_details.v1"
+        } ],
+        "archetype_node_id" : "at0024"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Kontaktperson"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.person.v1"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Rolle (Relationship)"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship' available",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship"
+              },
+              "code_string" : "42"
+            }
+          },
+          "archetype_node_id" : "at0004"
+        }, {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Adresse"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.address.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Adresszeile"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0001"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.address.v1"
+        }, {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Elektronische Kommunikation"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.electronic_communication.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Art"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Daten"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0002"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.electronic_communication.v1"
+        }, {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Organisation"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.organisation.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Namenszeile"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Identifier"
+            },
+            "value" : {
+              "_type" : "DV_IDENTIFIER",
+              "id" : "dev/null"
+            },
+            "archetype_node_id" : "at0003"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Funktion"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0004"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Kommentar"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0019"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.organisation.v1"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Kommentar"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0010"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.person.v1"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "archetype_node_id" : "openEHR-EHR-ADMIN_ENTRY.person_data.v0"
+  }, {
+    "_type" : "EVALUATION",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Vitalstatus"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-EVALUATION.vital_status.v1"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "de"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "ISO-10646-UTF-1"
+    },
+    "workflow_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "7bb4971f-ec69-3d2e-afb4-4b562d7473d0",
+        "scheme" : "scheme"
+      }
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "provider" : {
+      "_type" : "PARTY_SELF"
+    },
+    "protocol" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Item tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Zeitpunkt der Feststellung"
+        },
+        "value" : {
+          "_type" : "DV_DATE_TIME",
+          "value" : "2022-02-03T04:05:06"
+        },
+        "archetype_node_id" : "at0018"
+      } ],
+      "archetype_node_id" : "at0002"
+    },
+    "guideline_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "2ac8b97a-11bd-3cf4-9a34-aa292c001788",
+        "scheme" : "scheme"
+      }
+    },
+    "data" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Item tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Vitalstatus"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0006"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "FHIR_Status der Beobachtung"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.observation_status_fhir.v1"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Status"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0015"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.observation_status_fhir.v1"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "archetype_node_id" : "openEHR-EHR-EVALUATION.vital_status.v1"
+  } ],
+  "archetype_node_id" : "openEHR-EHR-COMPOSITION.person.v0"
+}
