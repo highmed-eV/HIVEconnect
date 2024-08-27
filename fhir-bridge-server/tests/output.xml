@@ -1,141 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.0.1 (Python 3.11.5 on win32)" generated="2024-08-26T19:48:49.011438" rpa="false" schemaversion="5">
-<suite id="s1" name="03 KDS Person" source="C:\Users\premsai.sameer_karki\Desktop\Projects\git_lab_repos\fhir-bridge\fhir-bridge-server\tests\robot\BUNDLE\03_KDS_Person.robot">
-<test id="s1-t1" name="001 Create KDS Person FHIR Bundle" line="34">
+<robot generator="Robot 7.0.1 (Python 3.12.4 on win32)" generated="2024-08-27T19:23:21.998469" rpa="false" schemaversion="5">
+<suite id="s1" name="03 KDS Laborauftrag" source="C:\FHIR-OpenEHR\fhir-bridge\fhir-bridge-server\tests\robot\BUNDLE\03_KDS_Laborauftrag.robot">
+<test id="s1-t1" name="001 Create KDS Laborauftrag FHIR Bundle" line="37">
 <kw name="create new ehr" owner="ehr">
 <kw name="Load Json From File" owner="JSONLibrary">
-<msg time="2024-08-26T19:48:50.047974" level="INFO">${ehr_status_json} = {'_type': 'EHR_STATUS', 'archetype_node_id': 'openEHR-EHR-EHR_STATUS.generic.v1', 'name': {'value': 'EHR Status'}, 'subject': {'external_ref': {'id': {'_type': 'GENERIC_ID', 'value': '__AUTO-GENRATED-...</msg>
+<msg time="2024-08-27T19:23:23.431382" level="INFO">${ehr_status_json} = {'_type': 'EHR_STATUS', 'archetype_node_id': 'openEHR-EHR-EHR_STATUS.generic.v1', 'name': {'value': 'EHR Status'}, 'subject': {'external_ref': {'id': {'_type': 'GENERIC_ID', 'value': '__AUTO-GENRATED-...</msg>
 <var>${ehr_status_json}</var>
 <arg>${VALID EHR DATA SETS}/${ehr_status_object}</arg>
 <doc>Load JSON from file.</doc>
-<status status="PASS" start="2024-08-26T19:48:50.046974" elapsed="0.001000"/>
+<status status="PASS" start="2024-08-27T19:23:23.430379" elapsed="0.002012"/>
 </kw>
 <kw name="Update Value To Json" owner="JSONLibrary">
 <arg>${ehr_status_json}</arg>
 <arg>$.subject.external_ref.id.value</arg>
 <arg>${{str(uuid.uuid4())}}</arg>
 <doc>Update value to JSON using JSONPath</doc>
-<status status="PASS" start="2024-08-26T19:48:50.047974" elapsed="0.032621"/>
+<status status="PASS" start="2024-08-27T19:23:23.432391" elapsed="0.030043"/>
 </kw>
 <kw name="Update Value To Json" owner="JSONLibrary">
 <arg>${ehr_status_json}</arg>
 <arg>$.subject.external_ref.namespace</arg>
 <arg>namespace_${{''.join(random.choices(string.digits, k=7))}}</arg>
 <doc>Update value to JSON using JSONPath</doc>
-<status status="PASS" start="2024-08-26T19:48:50.081594" elapsed="0.024112"/>
+<status status="PASS" start="2024-08-27T19:23:23.462434" elapsed="0.023024"/>
 </kw>
 <kw name="Set Suite Variable" owner="BuiltIn">
-<msg time="2024-08-26T19:48:50.106720" level="INFO">${subject_id} = KH123</msg>
+<msg time="2024-08-27T19:23:23.488429" level="INFO">${subject_id} = KH123</msg>
 <arg>${subject_id}</arg>
 <arg>KH123</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<status status="PASS" start="2024-08-26T19:48:50.105706" elapsed="0.001014"/>
+<status status="PASS" start="2024-08-27T19:23:23.486455" elapsed="0.001974"/>
 </kw>
 <kw name="Set Suite Variable" owner="BuiltIn">
-<msg time="2024-08-26T19:48:50.107703" level="INFO">${ehr_id} = 1234567</msg>
+<msg time="2024-08-27T19:23:23.490445" level="INFO">${ehr_id} = 1234567</msg>
 <arg>${ehr_id}</arg>
 <arg>1234567</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<status status="PASS" start="2024-08-26T19:48:50.106720" elapsed="0.000983"/>
+<status status="PASS" start="2024-08-27T19:23:23.488429" elapsed="0.002016"/>
 </kw>
 <arg>000_ehr_status.json</arg>
 <doc>Creates new EHR record with a server-generated ehr_id.
 DEPENDENCY: `prepare new request session`
 :ehr_status_object: ehr_status_as_json_file</doc>
-<status status="PASS" start="2024-08-26T19:48:50.045973" elapsed="0.061730"/>
+<status status="PASS" start="2024-08-27T19:23:23.428384" elapsed="0.062061"/>
 </kw>
-<kw name="create fhir bundle" owner="kdsperson">
-<kw name="POST /KDSPersonBundle with ehr reference" owner="kdsperson">
+<kw name="create fhir bundle" owner="kdslaborauftrag">
+<kw name="POST /KDSLaborauftragBundle with ehr reference" owner="kdslaborauftrag">
 <kw name="Load Json From File" owner="JSONLibrary">
-<msg time="2024-08-26T19:48:50.110703" level="INFO">${payload} = {'resourceType': 'Bundle', 'id': 'example-bundle', 'type': 'transaction', 'entry': [{'fullUrl': 'urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589d', 'resource': {'resourceType': 'Patient', 'id': 'example-...</msg>
+<msg time="2024-08-27T19:23:23.492428" level="INFO">${payload} = {'resourceType': 'Bundle', 'id': 'example-bundle', 'type': 'transaction', 'entry': [{'fullUrl': 'urn:uuid:00000000-0000-0000-0000-000000000001', 'request': {'method': 'POST', 'url': 'ServiceRequest'},...</msg>
 <var>${payload}</var>
 <arg>${DATA_SET_PATH_KDSFHIRBUNDLE}/${fhir_bundle_file_name}</arg>
 <doc>Load JSON from file.</doc>
-<status status="PASS" start="2024-08-26T19:48:50.109705" elapsed="0.000998"/>
+<status status="PASS" start="2024-08-27T19:23:23.491428" elapsed="0.001000"/>
 </kw>
-<kw name="POST /KDSPersonBundleAQL" owner="kdsperson">
-<kw name="Load Json From File" owner="JSONLibrary">
-<msg time="2024-08-26T19:48:50.116003" level="INFO">&amp;{resp_ehr} = { _type=COMPOSITION | name={'_type': 'DV_TEXT', 'value': 'Person'} | archetype_details={'archetype_id': {'value': 'openEHR-EHR-COMPOSITION.person.v0'}, 'template_id': {'value': 'KDS_Person'}, 'rm_vers...</msg>
-<var>&amp;{resp_ehr}</var>
-<arg>${KDS_PRESON_EHR_COMPOSITION}/kds-person-canonical.json</arg>
-<doc>Load JSON from file.</doc>
-<status status="PASS" start="2024-08-26T19:48:50.110703" elapsed="0.005300"/>
-</kw>
-<kw name="Set Suite Variable" owner="BuiltIn">
-<msg time="2024-08-26T19:48:50.118985" level="INFO">${response_aql} = {'_type': 'COMPOSITION', 'name': {'_type': 'DV_TEXT', 'value': 'Person'}, 'archetype_details': {'archetype_id': {'value': 'openEHR-EHR-COMPOSITION.person.v0'}, 'template_id': {'value': 'KDS_Person'}, ...</msg>
-<arg>${response_aql}</arg>
-<arg>${resp_ehr}</arg>
-<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<status status="PASS" start="2024-08-26T19:48:50.116994" elapsed="0.001991"/>
-</kw>
-<arg>${payload}</arg>
-<status status="PASS" start="2024-08-26T19:48:50.110703" elapsed="0.008282"/>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Fhir bundle API call</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2024-08-27T19:23:23.493430" elapsed="0.000000"/>
 </kw>
 <arg>${text}</arg>
 <arg>${example_json}</arg>
-<status status="PASS" start="2024-08-26T19:48:50.108703" elapsed="0.011282"/>
+<status status="PASS" start="2024-08-27T19:23:23.491428" elapsed="0.002002"/>
 </kw>
-<arg>KDS Person</arg>
-<arg>kds_person_bundle.json</arg>
-<status status="PASS" start="2024-08-26T19:48:50.108703" elapsed="0.011282"/>
+<arg>KDS Laborauftrag</arg>
+<arg>kds_laborauftrag_bundle.json</arg>
+<status status="PASS" start="2024-08-27T19:23:23.490445" elapsed="0.002985"/>
 </kw>
-<kw name="validate content response_aql - 201" owner="kdsperson">
+<kw name="validate response - 201" owner="kdslaborauftrag">
+<kw name="Log To Console" owner="BuiltIn">
+<arg>In Fhir bundle validate response</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2024-08-27T19:23:23.494433" elapsed="0.000998"/>
+</kw>
+<status status="PASS" start="2024-08-27T19:23:23.494433" elapsed="0.000998"/>
+</kw>
+<kw name="create openehr aql" owner="kdslaborauftrag">
+<kw name="POST /KDSLaborauftragBundleAQL with ehr reference" owner="kdslaborauftrag">
+<kw name="Load Json From File" owner="JSONLibrary">
+<msg time="2024-08-27T19:23:23.498451" level="INFO">&amp;{resp_ehr} = { _type=COMPOSITION | name={'_type': 'DV_TEXT', 'value': 'Request for service'} | archetype_details={'archetype_id': {'value': 'openEHR-EHR-COMPOSITION.request.v1'}, 'template_id': {'value': 'KDS_Labo...</msg>
+<var>&amp;{resp_ehr}</var>
+<arg>${KDS_LABORAUFTRAG_EHR_COMPOSITION}/kds_laborauftrag_canonical.json</arg>
+<doc>Load JSON from file.</doc>
+<status status="PASS" start="2024-08-27T19:23:23.496454" elapsed="0.001997"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>In openEHR AQL API call</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2024-08-27T19:23:23.499427" elapsed="0.000000"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2024-08-27T19:23:23.502429" level="INFO">${response_aql} = {'_type': 'COMPOSITION', 'name': {'_type': 'DV_TEXT', 'value': 'Request for service'}, 'archetype_details': {'archetype_id': {'value': 'openEHR-EHR-COMPOSITION.request.v1'}, 'template_id': {'value': '...</msg>
+<arg>${response_aql}</arg>
+<arg>${resp_ehr}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2024-08-27T19:23:23.499427" elapsed="0.003002"/>
+</kw>
+<arg>${openehr_template}</arg>
+<status status="PASS" start="2024-08-27T19:23:23.495431" elapsed="0.006998"/>
+</kw>
+<arg>kds_person</arg>
+<status status="PASS" start="2024-08-27T19:23:23.495431" elapsed="0.006998"/>
+</kw>
+<kw name="validate content response_aql - 201" owner="kdslaborauftrag">
 <kw name="Get Value From Json" owner="JSONLibrary">
-<msg time="2024-08-26T19:48:50.147711" level="INFO">${template_id} = ['KDS_Person']</msg>
+<msg time="2024-08-27T19:23:23.539447" level="INFO">${template_id} = ['KDS_Laborauftrag']</msg>
 <var>${template_id}</var>
 <arg>${response_aql}</arg>
 <arg>$.archetype_details.template_id.value</arg>
 <doc>Get Value From JSON using JSONPath</doc>
-<status status="PASS" start="2024-08-26T19:48:50.120983" elapsed="0.026728"/>
+<status status="PASS" start="2024-08-27T19:23:23.503431" elapsed="0.037015"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>In openEHR AQL validate response</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2024-08-27T19:23:23.540446" elapsed="0.000000"/>
 </kw>
 <kw name="Log To Console" owner="BuiltIn">
 <arg>The template_id is ${template_id}[0]</arg>
 <doc>Logs the given message to the console.</doc>
-<status status="PASS" start="2024-08-26T19:48:50.147711" elapsed="0.000000"/>
+<status status="PASS" start="2024-08-27T19:23:23.540446" elapsed="0.000990"/>
 </kw>
 <kw name="Should Be Equal As Strings" owner="BuiltIn">
 <arg>${template_id}[0]</arg>
-<arg>KDS_Person</arg>
+<arg>KDS_Laborauftrag</arg>
 <doc>Fails if objects are unequal after converting them to strings.</doc>
-<status status="PASS" start="2024-08-26T19:48:50.148703" elapsed="0.000000"/>
+<status status="PASS" start="2024-08-27T19:23:23.541436" elapsed="0.000000"/>
 </kw>
-<status status="PASS" start="2024-08-26T19:48:50.119985" elapsed="0.028718"/>
+<status status="PASS" start="2024-08-27T19:23:23.503431" elapsed="0.038005"/>
 </kw>
 <doc>1. *CREATE* new EHR record
 
-2. *LOAD* KDS_PERSON_FHIR_BUNDLE.json_
+2. *LOAD* KDS_LABORAUFTRAG_FHIR_BUNDLE.json_
 
 3. *UPDATE* ``Subject - Identifier - value`` with the _UUID:_ ${subject_id} which was created in EHR record
 
    4. *POST* example JSON to observation endpoint
 
 5. *VALIDATE* the response status</doc>
-<tag>blood-gas-panel</tag>
 <tag>bundle_create</tag>
 <tag>create</tag>
+<tag>kds-laborauftrag-fhir-bundle</tag>
 <tag>not-implemented</tag>
 <tag>not-ready</tag>
 <tag>valid</tag>
-<status status="PASS" start="2024-08-26T19:48:50.044976" elapsed="0.104726"/>
+<status status="PASS" start="2024-08-27T19:23:23.427385" elapsed="0.115050"/>
 </test>
-<status status="PASS" start="2024-08-26T19:48:49.014987" elapsed="1.134715"/>
+<status status="PASS" start="2024-08-27T19:23:22.002470" elapsed="1.540969"/>
 </suite>
 <statistics>
 <total>
 <stat pass="1" fail="0" skip="0">All Tests</stat>
 </total>
 <tag>
-<stat pass="1" fail="0" skip="0">blood-gas-panel</stat>
 <stat pass="1" fail="0" skip="0">bundle_create</stat>
 <stat pass="1" fail="0" skip="0">create</stat>
+<stat pass="1" fail="0" skip="0">kds-laborauftrag-fhir-bundle</stat>
 <stat pass="1" fail="0" skip="0">not-implemented</stat>
 <stat pass="1" fail="0" skip="0">not-ready</stat>
 <stat pass="1" fail="0" skip="0">valid</stat>
 </tag>
 <suite>
-<stat pass="1" fail="0" skip="0" id="s1" name="03 KDS Person">03 KDS Person</stat>
+<stat pass="1" fail="0" skip="0" id="s1" name="03 KDS Laborauftrag">03 KDS Laborauftrag</stat>
 </suite>
 </statistics>
 <errors>
+<msg time="2024-08-27T19:23:23.147812" level="ERROR">Error in file 'C:\FHIR-OpenEHR\fhir-bridge\fhir-bridge-server\tests\robot\_resources\suite_settings.robot' on line 21: Importing library 'REST' failed: ModuleNotFoundError: No module named 'pkg_resources'
+Traceback (most recent call last):
+  File "C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Lib\site-packages\REST\__init__.py", line 18, in &lt;module&gt;
+    from .keywords import Keywords
+  File "C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Lib\site-packages\REST\keywords.py", line 15, in &lt;module&gt;
+    from flex.core import validate_api_call
+  File "C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Lib\site-packages\flex\__init__.py", line 6, in &lt;module&gt;
+    import pkg_resources
+PYTHONPATH:
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Scripts\robot.exe
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\python312.zip
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\DLLs
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Lib
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Lib\site-packages
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Lib\site-packages\win32
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Lib\site-packages\win32\lib
+  C:\Users\ankita.mahato_karkin\AppData\Local\Programs\Python\Python312\Lib\site-packages\Pythonwin</msg>
 </errors>
 </robot>

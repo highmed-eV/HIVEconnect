@@ -34,17 +34,17 @@ Force Tags              bundle_create    create
 
 *** Test Cases ***
 
-001 Create KDS Biobank FHIR Bundle
+001 Create KDS Diagnose FHIR Bundle
     [Documentation]         1. *CREATE* new EHR record\n\n
-        ...                 2. *LOAD* KDS_BIOBANK_FHIR_BUNDLE.json_\n\n
+        ...                 2. *LOAD* KDS_DIAGNOSE_FHIR_BUNDLE.json_\n\n
     	...                 3. *UPDATE* ``Subject - Identifier - value`` with the _UUID:_ ${subject_id} which was created in EHR record\n\n
         ...                 4. *POST* example JSON to observation endpoint\n\n
     	...                 5. *VALIDATE* the response status
-    [Tags]             	kds-biobank-fhir-bundle    valid   not-ready    not-implemented
+    [Tags]             	kds-diagnose-fhir-bundle    valid   not-ready    not-implemented
 
 	ehr.create new ehr    000_ehr_status.json
-    kdsbiobank.create fhir bundle    KDS Biobank    kds_biobank_bundle.json
-    kdsbiobank.validate response - 201
+    kdsdiagnose.create fhir bundle    KDS Diagnose    kds_diagnose_bundle.json
+    kdsdiagnose.validate response - 201
 
-    kdsbiobank.create openehr aql    kds_person
-    kdsbiobank.validate content response_aql - 201
+    kdsdiagnose.create openehr aql    kds_person
+    kdsdiagnose.validate content response_aql - 201

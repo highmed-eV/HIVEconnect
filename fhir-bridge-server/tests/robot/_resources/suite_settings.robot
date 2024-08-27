@@ -26,7 +26,7 @@ Library     Process
 Library     JSONLibrary
 
 #Resource    ${EXECDIR}/robot/_resources/keywords/generic.robot
-Resource    ${EXECDIR}/robot/_resources/keywords/ehr.robot
+Resource     ${EXECDIR}/robot/_resources/keywords/ehr.robot
 #Resource    ${EXECDIR}/robot/_resources/keywords/condition.robot
 #Resource    ${EXECDIR}/robot/_resources/keywords/diagnostic.robot
 #Resource    ${EXECDIR}/robot/_resources/keywords/immunization.robot
@@ -39,8 +39,17 @@ Resource    ${EXECDIR}/robot/_resources/keywords/ehr.robot
 #Resource    ${EXECDIR}/robot/_resources/keywords/patient.robot
 #Resource    ${EXECDIR}/robot/_resources/keywords/consent.robot
 #Resource    ${EXECDIR}/robot/_resources/keywords/documentreference.robot
-Resource    ${EXECDIR}/robot/_resources/keywords/openehrmedicationstatement.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/kdsbiobank.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/kdsdiagnose.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/kdslaborauftrag.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/kdslaborbericht.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/kdsmedikamentenverabreichungen.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/kdsmedikationseintrag.robot
 Resource    ${EXECDIR}/robot/_resources/keywords/kdsperson.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/kdsprozedur.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/stationärerversorgungsfall.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/studienteilnahme.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/versorgungsstellenkontakt.robot
 
 Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
             ...    ${SUT}
@@ -49,9 +58,19 @@ Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
 
 *** Variables ***
 
-# ${BASE_URL}                             http://localhost:8888/fhir-bridge/fhir
-# ${EHRBASE_URL}                          http://localhost:8080/ehrbase/rest/openehr/v1
-${KDS_PRESON_EHR_COMPOSITION}                      ${EXECDIR}/robot/_resources/test_data/output/KDS_Person
+# ${BASE_URL}                                           http://localhost:8888/fhir-bridge/fhir
+# ${EHRBASE_URL}                                        http://localhost:8080/ehrbase/rest/openehr/v1
+${KDS_BIOBANK_EHR_COMPOSITION}                          ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Biobank
+${KDS_DIAGNOSE_EHR_COMPOSITION}                         ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Diagnose
+${KDS_LABORAUFTRAG_EHR_COMPOSITION}                     ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Laborauftrag
+${KDS_LABORBERICHT_EHR_COMPOSITION}                     ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Laborbericht
+${KDS_MEDIKAMENTENVERABREICHUNGEN_EHR_COMPOSITION}      ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Medikamentenverabreichungen
+${KDS_MEDIKATIONSEINTRAG_EHR_COMPOSITION}               ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Medikationseintrag
+${KDS_PERSON_EHR_COMPOSITION}                           ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Person
+${KDS_PROZEDUR_EHR_COMPOSITION}                         ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Prozedur
+${STATIONÄRER_VERSORGUNGSFALL_EHR_COMPOSITION}          ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/Stationärer Versorgungsfall
+${STUDIENTEILNAHME_EHR_COMPOSITION}                     ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/Studienteilnahme
+${VERSORGUNGSSTELLENKONTAKT_EHR_COMPOSITION}            ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/Versorgungsstellenkontakt
 #${DATA_SET_PATH_CONDITION}              ${EXECDIR}/../src/test/resources/Condition
 #${DATA_SET_PATH_DIAGNOSTIC}             ${EXECDIR}/../src/test/resources/DiagnosticReport
 #${DATA_SET_PATH_MEDICATIONSTATEMENT}    ${EXECDIR}/../src/test/resources/MedicationStatement
@@ -63,7 +82,7 @@ ${KDS_PRESON_EHR_COMPOSITION}                      ${EXECDIR}/robot/_resources/t
 #${DATA_SET_PATH_PATIENT}          	    ${EXECDIR}/../src/test/resources/Patient
 #${DATA_SET_PATH_CONSENT}          	    ${EXECDIR}/../src/test/resources/Consent
 #${DATA_SET_PATH_DOCUMENTREFERENCE}	    ${EXECDIR}/../src/test/resources/DocumentReference
-${DATA_SET_PATH_KDSFHIRBUNDLE}          ${EXECDIR}/robot/_resources/test_data/fhirBundles
+${DATA_SET_PATH_KDSFHIRBUNDLE}          ${EXECDIR}/robot/_resources/test_data/inputFhirBundles
 ${VALID EHR DATA SETS}                  ${EXECDIR}/robot/_resources/test_data/ehr/valid
 ${OUTPUT_LEVEL}                         verbose
 

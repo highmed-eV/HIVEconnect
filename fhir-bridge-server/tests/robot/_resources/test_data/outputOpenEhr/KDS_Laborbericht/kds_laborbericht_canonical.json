@@ -1,0 +1,621 @@
+{
+  "_type" : "COMPOSITION",
+  "name" : {
+    "_type" : "DV_TEXT",
+    "value" : "Laborbericht"
+  },
+  "archetype_details" : {
+    "archetype_id" : {
+      "value" : "openEHR-EHR-COMPOSITION.report-result.v1"
+    },
+    "template_id" : {
+      "value" : "KDS_Laborbericht"
+    },
+    "rm_version" : "1.0.4"
+  },
+  "language" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_639-1"
+    },
+    "code_string" : "en"
+  },
+  "territory" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_3166-1"
+    },
+    "code_string" : "DE"
+  },
+  "category" : {
+    "_type" : "DV_CODED_TEXT",
+    "value" : "event",
+    "defining_code" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "openehr"
+      },
+      "code_string" : "433"
+    }
+  },
+  "composer" : {
+    "_type" : "PARTY_IDENTIFIED",
+    "name" : "Max Mustermann"
+  },
+  "context" : {
+    "_type" : "EVENT_CONTEXT",
+    "start_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "end_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "setting" : {
+      "_type" : "DV_CODED_TEXT",
+      "value" : "home",
+      "defining_code" : {
+        "_type" : "CODE_PHRASE",
+        "terminology_id" : {
+          "_type" : "TERMINOLOGY_ID",
+          "value" : "openehr"
+        },
+        "code_string" : "225"
+      }
+    },
+    "other_context" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Bericht ID"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0002"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Status"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "registered"
+        },
+        "archetype_node_id" : "at0005"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Case identification"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.case_identification.v0"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Case identifier"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0001"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.case_identification.v0"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "health_care_facility" : {
+      "_type" : "PARTY_IDENTIFIED",
+      "name" : "DOE, John"
+    }
+  },
+  "content" : [ {
+    "_type" : "OBSERVATION",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Laborbefund"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "en"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "ISO-10646-UTF-1"
+    },
+    "workflow_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "a31cd070-b217-3d53-bed7-ff3126975351",
+        "scheme" : "scheme"
+      }
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "provider" : {
+      "_type" : "PARTY_SELF"
+    },
+    "protocol" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Test request details"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Identifikation der Laboranforderung"
+          },
+          "value" : {
+            "_type" : "DV_IDENTIFIER",
+            "id" : "dev/null"
+          },
+          "archetype_node_id" : "at0063"
+        } ],
+        "archetype_node_id" : "at0094"
+      } ],
+      "archetype_node_id" : "at0004"
+    },
+    "guideline_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "2378b4d4-79b1-3bc3-ab7e-b56971e78d4f",
+        "scheme" : "scheme"
+      }
+    },
+    "data" : {
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Event Series"
+      },
+      "origin" : {
+        "_type" : "DV_DATE_TIME",
+        "value" : "2022-02-03T04:05:06"
+      },
+      "period" : {
+        "_type" : "DV_DURATION",
+        "value" : "PT0S"
+      },
+      "duration" : {
+        "_type" : "DV_DURATION",
+        "value" : "PT0S"
+      },
+      "events" : [ {
+        "_type" : "INTERVAL_EVENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Any event"
+        },
+        "time" : {
+          "_type" : "DV_DATE_TIME",
+          "value" : "2022-02-03T04:05:06"
+        },
+        "data" : {
+          "_type" : "ITEM_TREE",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Tree"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Labortest-Kategorie"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "laboratory",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "LOINC"
+                },
+                "code_string" : "26436-6"
+              }
+            },
+            "archetype_node_id" : "at0005"
+          }, {
+            "_type" : "CLUSTER",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Probenmaterial"
+            },
+            "archetype_details" : {
+              "archetype_id" : {
+                "value" : "openEHR-EHR-CLUSTER.specimen.v1"
+              },
+              "rm_version" : "1.0.4"
+            },
+            "items" : [ {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Specimen type"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v2-0487' available",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v2-0487"
+                  },
+                  "code_string" : "42"
+                }
+              },
+              "archetype_node_id" : "at0029"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Specimen description"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v2-0493' available",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v2-0493"
+                  },
+                  "code_string" : "42"
+                }
+              },
+              "archetype_node_id" : "at0097"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Laboratory specimen identifier"
+              },
+              "value" : {
+                "_type" : "DV_IDENTIFIER",
+                "id" : "dev/null"
+              },
+              "archetype_node_id" : "at0001"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "External identifier"
+              },
+              "value" : {
+                "_type" : "DV_IDENTIFIER",
+                "id" : "dev/null"
+              },
+              "archetype_node_id" : "at0088"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Date/time received"
+              },
+              "value" : {
+                "_type" : "DV_DATE_TIME",
+                "value" : "2022-02-03T04:05:06"
+              },
+              "archetype_node_id" : "at0034"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Sampling context"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0008"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Collection method"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0007"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Körperstelle"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0087"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Collection date/time"
+              },
+              "value" : {
+                "_type" : "DV_DATE_TIME",
+                "value" : "2022-02-03T04:05:06"
+              },
+              "archetype_node_id" : "at0015"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Specimen collector identifier"
+              },
+              "value" : {
+                "_type" : "DV_IDENTIFIER",
+                "id" : "dev/null"
+              },
+              "archetype_node_id" : "at0070"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Parent specimen identifier"
+              },
+              "value" : {
+                "_type" : "DV_IDENTIFIER",
+                "id" : "dev/null"
+              },
+              "archetype_node_id" : "at0003"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Adequacy for testing"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/specimen-status' available",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/specimen-status"
+                  },
+                  "code_string" : "42"
+                }
+              },
+              "archetype_node_id" : "at0041"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Comment"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0045"
+            } ],
+            "archetype_node_id" : "openEHR-EHR-CLUSTER.specimen.v1"
+          }, {
+            "_type" : "CLUSTER",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Pro Laboranalyt"
+            },
+            "archetype_details" : {
+              "archetype_id" : {
+                "value" : "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
+              },
+              "rm_version" : "1.0.4"
+            },
+            "items" : [ {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Analyte name"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/results-laboratory-observations-uv-ips' available",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/results-laboratory-observations-uv-ips"
+                  },
+                  "code_string" : "42"
+                }
+              },
+              "archetype_node_id" : "at0024"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Messwert"
+              },
+              "value" : {
+                "_type" : "DV_QUANTITY",
+                "units" : "mm",
+                "magnitude" : 22.0
+              },
+              "archetype_node_id" : "at0001"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Interpretation"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/observation-interpretation' available",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/observation-interpretation"
+                  },
+                  "code_string" : "42"
+                }
+              },
+              "archetype_node_id" : "at0004"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Test method"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0028"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Validation time"
+              },
+              "value" : {
+                "_type" : "DV_DATE_TIME",
+                "value" : "2022-02-03T04:05:06"
+              },
+              "archetype_node_id" : "at0025"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Result status"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/observation-status' available",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/observation-status"
+                  },
+                  "code_string" : "42"
+                }
+              },
+              "archetype_node_id" : "at0005"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Result status time"
+              },
+              "value" : {
+                "_type" : "DV_DATE_TIME",
+                "value" : "2022-02-03T04:05:06"
+              },
+              "archetype_node_id" : "at0006"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Probe ID"
+              },
+              "value" : {
+                "_type" : "DV_IDENTIFIER",
+                "id" : "dev/null"
+              },
+              "archetype_node_id" : "at0026"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Comment"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0003"
+            } ],
+            "archetype_node_id" : "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Conclusion"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0057"
+          } ],
+          "archetype_node_id" : "at0003"
+        },
+        "width" : {
+          "_type" : "DV_DURATION",
+          "value" : "PT42H"
+        },
+        "math_function" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "minimum",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "openehr"
+            },
+            "code_string" : "145"
+          }
+        },
+        "archetype_node_id" : "at0002"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "archetype_node_id" : "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+  } ],
+  "archetype_node_id" : "openEHR-EHR-COMPOSITION.report-result.v1"
+}
