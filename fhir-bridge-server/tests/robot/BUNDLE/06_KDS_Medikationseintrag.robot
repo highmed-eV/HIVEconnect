@@ -44,5 +44,5 @@ Force Tags              bundle_create    create
     kdsmedikationseintrag.create fhir bundle    KDS Medikationseintrag    kds_medikationseintrag_bundle.json
     kdsmedikationseintrag.validate response - 201
 
-    kdsmedikationseintrag.create openehr aql    kds_person
+    kdsmedikationseintrag.create openehr aql    KDS_Medikationseintrag
     kdsmedikationseintrag.validate content response_aql - 201

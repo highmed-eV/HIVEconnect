@@ -46,5 +46,5 @@ Force Tags              bundle_create    create
     kdsbiobank.create fhir bundle    KDS Biobank    kds_biobank_bundle.json
     kdsbiobank.validate response - 201
 
-    kdsbiobank.create openehr aql    kds_person
+    kdsbiobank.create openehr aql    KDS_Biobank
     kdsbiobank.validate content response_aql - 201

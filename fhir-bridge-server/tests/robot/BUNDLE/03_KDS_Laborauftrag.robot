@@ -46,5 +46,5 @@ Force Tags              bundle_create    create
     kdslaborauftrag.create fhir bundle    KDS Laborauftrag    kds_laborauftrag_bundle.json
     kdslaborauftrag.validate response - 201
 
-    kdslaborauftrag.create openehr aql    kds_person
+    kdslaborauftrag.create openehr aql    KDS_Laborauftrag
     kdslaborauftrag.validate content response_aql - 201

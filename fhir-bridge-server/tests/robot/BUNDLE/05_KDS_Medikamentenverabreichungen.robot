@@ -44,5 +44,5 @@ Force Tags              bundle_create    create
     kdsmedikamentenverabreichungen.create fhir bundle    KDS Medikamentenverabreichungen    kds_medikamentenverabreichungen_bundle.json
     kdsmedikamentenverabreichungen.validate response - 201
 
-    kdsmedikamentenverabreichungen.create openehr aql    kds_person
+    kdsmedikamentenverabreichungen.create openehr aql    KDS_Medikamentenverabreichungen
     kdsmedikamentenverabreichungen.validate content response_aql - 201

@@ -43,5 +43,5 @@ Force Tags              bundle_create    create
     versorgungsstellenkontakt.create fhir bundle    Versorgungsstellenkontakt    versorgungsstellenkontakt_bundle.json
     versorgungsstellenkontakt.validate response - 201
 
-    versorgungsstellenkontakt.create openehr aql    kds_person
+    versorgungsstellenkontakt.create openehr aql    Versorgungsstellenkontakt
     versorgungsstellenkontakt.validate content response_aql - 201

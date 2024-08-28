@@ -43,5 +43,5 @@ Force Tags              bundle_create    create
     kdsprozedur.create fhir bundle    KDS Prozedur    kds_prozedur_bundle.json
     kdsprozedur.validate response - 201
 
-    kdsprozedur.create openehr aql    kds_person
+    kdsprozedur.create openehr aql    KDS_Prozedur
     kdsprozedur.validate content response_aql - 201

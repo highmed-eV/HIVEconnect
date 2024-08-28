@@ -43,5 +43,5 @@ Force Tags              bundle_create    create
     kdsperson.create fhir bundle    KDS Person    kds_person_bundle.json
     kdsperson.validate response - 201
 
-    kdsperson.create openehr aql    kds_person
+    kdsperson.create openehr aql    KDS_Person
     kdsperson.validate content response_aql - 201

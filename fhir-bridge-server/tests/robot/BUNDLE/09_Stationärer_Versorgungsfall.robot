@@ -43,5 +43,5 @@ Force Tags              bundle_create    create
     stationärerversorgungsfall.create fhir bundle    Stationärer Versorgungsfall    stationärer_versorgungsfall_bundle.json
     stationärerversorgungsfall.validate response - 201
 
-    stationärerversorgungsfall.create openehr aql    kds_person
+    stationärerversorgungsfall.create openehr aql    Stationärer Versorgungsfall
     stationärerversorgungsfall.validate content response_aql - 201

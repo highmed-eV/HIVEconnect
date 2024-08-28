@@ -43,5 +43,5 @@ Force Tags              bundle_create    create
     studienteilnahme.create fhir bundle    Studienteilnahme    studienteilnahme_bundle.json
     studienteilnahme.validate response - 201
 
-    studienteilnahme.create openehr aql    kds_person
+    studienteilnahme.create openehr aql    Studienteilnahme
     studienteilnahme.validate content response_aql - 201
