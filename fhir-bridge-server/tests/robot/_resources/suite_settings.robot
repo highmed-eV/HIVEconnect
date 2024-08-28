@@ -18,11 +18,11 @@
 
 *** Settings ***
 
-Library     REST    ssl_verify=false
-Library     String
-Library     Collections
-Library     OperatingSystem
-Library     Process
+#Library     REST    ssl_verify=false
+#Library     String
+#Library     Collections
+#Library     OperatingSystem
+#Library     Process
 Library     JSONLibrary
 
 #Resource    ${EXECDIR}/robot/_resources/keywords/generic.robot

@@ -36,10 +36,10 @@ Force Tags              bundle_create    create
 
 001 Create KDS Biobank FHIR Bundle
     [Documentation]         1. *CREATE* new EHR record\n\n
-        ...                 2. *LOAD* KDS_BIOBANK_FHIR_BUNDLE.json_\n\n
-    	...                 3. *UPDATE* ``Subject - Identifier - value`` with the _UUID:_ ${subject_id} which was created in EHR record\n\n
-        ...                 4. *POST* example JSON to observation endpoint\n\n
-    	...                 5. *VALIDATE* the response status
+        ...                 2. *CREATE* FHIR bundle kds_biobank_bundle.json and post it to FHIR server\n\n
+    	...                 3. *VALIDATE* the FHIR response status\n\n
+        ...                 4. *CREATE* openEHR AQL and post it to openEHR server\n\n
+    	...                 5. *VALIDATE* the content of the AQL response.
     [Tags]             	kds-biobank-fhir-bundle    valid   not-ready    not-implemented
 
 	ehr.create new ehr    000_ehr_status.json
