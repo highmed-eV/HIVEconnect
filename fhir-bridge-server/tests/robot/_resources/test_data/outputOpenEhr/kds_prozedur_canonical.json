@@ -189,14 +189,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/ops' available",
+          "value" : "Appendectomy",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/ops"
             },
-            "code_string" : "42"
+            "code_string" : "80146002"
           }
         },
         "archetype_node_id" : "at0002"
@@ -219,14 +219,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site' available",
+          "value" : "Abdomen",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site"
             },
-            "code_string" : "42"
+            "code_string" : "818981001"
           }
         },
         "archetype_node_id" : "at0063"
@@ -257,14 +257,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-category-sct' available",
+          "value" : "Diagnostic procedure",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-category-sct"
             },
-            "code_string" : "42"
+            "code_string" : "103693007"
           }
         },
         "archetype_node_id" : "at0067"
@@ -276,14 +276,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-intend' available",
+          "value" : "Appendectomy",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-intend"
             },
-            "code_string" : "42"
+            "code_string" : "80146002"
           }
         },
         "archetype_node_id" : "at0014"
@@ -295,7 +295,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
+          "value" : "Procedure completed successfully with no complications."
         },
         "archetype_node_id" : "at0005"
       } ],
@@ -305,38 +305,14 @@
       "_type" : "ISM_TRANSITION",
       "current_state" : {
         "_type" : "DV_CODED_TEXT",
-        "value" : "postponed",
+        "value" : "completed",
         "defining_code" : {
           "_type" : "CODE_PHRASE",
           "terminology_id" : {
             "_type" : "TERMINOLOGY_ID",
             "value" : "openehr"
           },
-          "code_string" : "527"
-        }
-      },
-      "transition" : {
-        "_type" : "DV_CODED_TEXT",
-        "value" : "postponed step",
-        "defining_code" : {
-          "_type" : "CODE_PHRASE",
-          "terminology_id" : {
-            "_type" : "TERMINOLOGY_ID",
-            "value" : "openehr"
-          },
-          "code_string" : "542"
-        }
-      },
-      "careflow_step" : {
-        "_type" : "DV_CODED_TEXT",
-        "value" : "Procedure postponed",
-        "defining_code" : {
-          "_type" : "CODE_PHRASE",
-          "terminology_id" : {
-            "_type" : "TERMINOLOGY_ID",
-            "value" : "local"
-          },
-          "code_string" : "at0038"
+          "code_string" : "532"
         }
       }
     },

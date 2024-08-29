@@ -1,6 +1,6 @@
 {
     "resourceType": "Bundle",
-    "id": "kds_medikationseintrag-bundle",
+    "id": "kds-medikationseintrag-bundle",
     "type": "transaction",
     "entry": [
         {
@@ -51,8 +51,8 @@
                 "entry": [
                     {
                         "item": {
-                            "reference": "MedicationRequest/medrx0301",
-                            "display": "Acetaminophen 500mg tablet"
+                            "reference": "MedicationRequest/example-medicationstatement",
+                            "display": "Crocin 500mg tablet"
                         }
                     }
                 ]
@@ -63,7 +63,7 @@
             }
         },
         {
-            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fc76e5c72d",
+            "fullUrl": "urn:uuid:example-medicationstatement",
             "resource": {
                 "resourceType": "MedicationStatement",
                 "id": "example-medicationstatement",
@@ -74,8 +74,8 @@
                 },
                 "status": "active",
                 "medicationReference": {
-                    "reference": "urn:uuid:69f8e214-b4e6-11ec-b909-0242ac120002",
-                    "display": "Atorvastatin 20mg"
+                    "reference": "urn:uuid:med-crocin",
+                    "display": "Crocin 500mg tablet"
                 },
                 "statusReason": [
                     {
@@ -101,16 +101,6 @@
                         "text": "High cholesterol"
                     }
                 ],
-                "medicationCodeableConcept": {
-                    "coding": [
-                        {
-                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
-                            "code": "1049630",
-                            "display": "Aspirin 81 MG Oral Tablet"
-                        }
-                    ],
-                    "text": "Aspirin 81 MG Oral Tablet"
-                },
                 "subject": {
                     "identifier": {
                         "system": "urn:ietf:rfc:4122",
@@ -120,16 +110,21 @@
                 "effectiveDateTime": "2024-08-21",
                 "dateAsserted": "2024-08-21",
                 "informationSource": {
-                    "reference": "Practitioner/example"
+                    "reference": "Practitioner/example-practitioner"
                 },
                 "dosage": [
                     {
                         "text": "1 tablet daily",
+                        "sequence": 1,
                         "timing": {
                             "repeat": {
-                                "frequency": 1,
+                                "frequency": 2,
                                 "period": 1,
-                                "periodUnit": "d"
+                                "periodUnit": "d",
+                                "when": ["AC"], 
+                                "offset": 120,
+                                "duration": 30,
+                                "durationUnit": "d"
                             }
                         },
                         "route": {
@@ -137,10 +132,11 @@
                                 {
                                     "system": "http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration",
                                     "code": "PO",
-                                    "display": "Swallow"
+                                    "display": "Swallow, oral"
                                 }
                             ]
                         },
+                        "asNeededBoolean": true,
                         "doseAndRate": [
                             {
                                 "doseQuantity": {
@@ -151,6 +147,12 @@
                                 }
                             }
                         ]
+                        
+                    }
+                ],
+                "note": [
+                    {
+                      "text": "Patient reports high temperature."
                     }
                 ]
             },
@@ -160,10 +162,10 @@
             }
         },
         {
-            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fd76e5c72d",
+            "fullUrl": "urn:uuid:med-crocin",
             "resource": {
                 "resourceType": "Medication",
-                "id": "example-medication",
+                "id": "med-crocin",
                 "meta": {
                     "profile": [
                         "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
@@ -172,33 +174,36 @@
                 "code": {
                     "coding": [
                         {
-                            "system": "http://www.whocc.no/atc",
-                            "code": "N02BE01",
-                            "display": "Paracetamol"
+                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                            "code": "2262278",
+                            "display": "crocin"
                         }
                     ],
-                    "text": "Paracetamol 500mg tablet"
+                    "text": "Crocin 500mg tablet"
                 },
                 "form": {
                     "coding": [
                         {
                             "system": "http://standardterms.edqm.eu",
-                            "code": "385055001",
+                            "code": "10219000",
                             "display": "Tablet"
                         }
                     ]
                 },
+                "amount": {
+                    "numerator": {
+                        "value": 100,
+                        "unit": "mg"
+                    },
+                    "denominator": {
+                        "value": 1,
+                        "unit": "tablet"
+                    }
+                },
                 "ingredient": [
                     {
-                        "itemCodeableConcept": {
-                            "coding": [
-                                {
-                                    "system": "http://www.whocc.no/atc",
-                                    "code": "N02BE01",
-                                    "display": "Paracetamol"
-                                }
-                            ],
-                            "text": "Paracetamol"
+                        "itemReference": {
+                           "reference": "Medication/active-ingredient-relationship"
                         },
                         "strength": {
                             "numerator": {
@@ -213,7 +218,8 @@
                                 "system": "http://unitsofmeasure.org",
                                 "code": "tablet"
                             }
-                        }
+                        },
+                        "isActive": true
                     }
                 ]
             },
@@ -222,6 +228,77 @@
                 "url": "Medication"
             }
         },
+        {
+            "fullUrl": "urn:uuid:active-ingredient-relationship",
+            "resource": {
+                "resourceType": "Medication",
+                "id": "active-ingredient-relationship",
+                "meta": {
+                    "profile": [
+                        "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication"
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://www.whocc.no/atc",
+                            "code": "N02BE01",
+                            "display": "Paracetamol"
+                        }
+                    ],
+                    "text": "Paracetamol oral ingredient" 
+                },
+                "amount": {
+                    "numerator": {
+                        "value": 100,
+                        "unit": "mg"
+                    },
+                    "denominator": {
+                        "value": 1,
+                        "unit": "tablet"
+                    }
+                },
+                "ingredient": [
+                    {
+                        "itemCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "http://www.whocc.no/atc",
+                                    "code": "N02BE01",
+                                    "display": "Paracetamol"
+                                }
+                            ],
+                            "text": "Paracetamol oral"
+                        },
+                        "strength": {
+                            "numerator": {
+                                "value": 13,
+                                "unit": "mg",
+                                "system": "http://unitsofmeasure.org",
+                                "code": "mg"
+                            },
+                            "denominator": {
+                                "value": 1,
+                                "unit": "tablet",
+                                "system": "http://unitsofmeasure.org",
+                                "code": "tablet"
+                            }
+                        }
+                    }
+                ],
+                "manufacturer": {
+                    "reference": "Organization/manufacturer-organization"
+                },
+                "batch": {
+                    "lotNumber": "Batch 1",
+                    "expirationDate": "2022-02-03T04:05:06Z"
+                }
+            },
+            "request": {
+                "method": "POST",
+                "url": "Medication"
+            }
+        },        
         {
             "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5293aee",
             "resource": {
@@ -320,7 +397,7 @@
                     "coding": [
                         {
                             "system": "http://snomed.info/sct",
-                            "code": "394814009",
+                            "code": "general-practice",
                             "display": "General practice (specialty) (qualifier value)"
                         }
                     ],
@@ -346,6 +423,24 @@
                     {
                         "system": "http://hl7.org/fhir/identifier",
                         "value": "ORG-12345"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000007",
+            "request": {
+                "method": "POST",
+                "url": "Organization"
+            },
+            "resource": {
+                "resourceType": "Organization",
+                "id": "manufacturer-organization",
+                "name": "GSK (GlaxoSmithKline)",
+                "identifier": [
+                    {
+                        "system": "http://hl7.org/fhir/identifier",
+                        "value": "ORG-6789"
                     }
                 ]
             }

@@ -95,7 +95,7 @@
                             },
                             "value": {
                                 "_type": "DV_TEXT",
-                                "value": "Lorem ipsum"
+                                "value": "medlist-001"
                             },
                             "archetype_node_id": "at0001"
                         }
@@ -201,9 +201,17 @@
                                     "_type": "DV_TEXT",
                                     "value": "Status Grund"
                                 },
-                                "value": {
-                                    "_type": "DV_TEXT",
-                                    "value": "Lorem ipsum"
+                                "value" : {
+                                    "_type" : "DV_CODED_TEXT",
+                                    "value" : "High cholesterol",
+                                    "defining_code" : {
+                                    "_type" : "CODE_PHRASE",
+                                    "terminology_id" : {
+                                        "_type" : "TERMINOLOGY_ID",
+                                        "value" : "http://snomed.info/sct"
+                                    },
+                                    "code_string" : "13644009"
+                                    }
                                 },
                                 "archetype_node_id": "at0014"
                             }
@@ -279,7 +287,7 @@
                                 },
                                 "value": {
                                     "_type": "DV_IDENTIFIER",
-                                    "id": "dev/null"
+                                    "id": "medlist-001"
                                 },
                                 "archetype_node_id": "at0001"
                             }
@@ -353,9 +361,17 @@
                                                 "_type": "DV_TEXT",
                                                 "value": "Arzneimittel-Name"
                                             },
-                                            "value": {
-                                                "_type": "DV_TEXT",
-                                                "value": "Lorem ipsum"
+                                            "value" : {
+                                                "_type" : "DV_CODED_TEXT",
+                                                "value" : "Crocin",
+                                                "defining_code" : {
+                                                "_type" : "CODE_PHRASE",
+                                                "terminology_id" : {
+                                                    "_type" : "TERMINOLOGY_ID",
+                                                    "value" : "http://www.nlm.nih.gov/research/umls/rxnorm"
+                                                },
+                                                "code_string" : "2262278"
+                                                }
                                             },
                                             "archetype_node_id": "at0132"
                                         },
@@ -367,14 +383,14 @@
                                             },
                                             "value": {
                                                 "_type": "DV_CODED_TEXT",
-                                                "value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-doseform' available",
+                                                "value": "Tablet",
                                                 "defining_code": {
                                                     "_type": "CODE_PHRASE",
                                                     "terminology_id": {
                                                         "_type": "TERMINOLOGY_ID",
                                                         "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-doseform"
                                                     },
-                                                    "code_string": "42"
+                                                    "code_string": "10219000"
                                                 }
                                             },
                                             "archetype_node_id": "at0071"
@@ -387,8 +403,8 @@
                                             },
                                             "value": {
                                                 "_type": "DV_QUANTITY",
-                                                "units": "mm",
-                                                "magnitude": 22.0
+                                                "units": "mg",
+                                                "magnitude": 100.0
                                             },
                                             "archetype_node_id": "at0115"
                                         },
@@ -413,7 +429,7 @@
                                                     },
                                                     "value": {
                                                         "_type": "DV_TEXT",
-                                                        "value": "Lorem ipsum"
+                                                        "value": "ingredient"
                                                     },
                                                     "archetype_node_id": "at0132"
                                                 },
@@ -452,8 +468,8 @@
                                                             },
                                                             "value": {
                                                                 "_type": "DV_QUANTITY",
-                                                                "units": "mm",
-                                                                "magnitude": 22.0
+                                                                "units": "mg",
+                                                                "magnitude": 500.0
                                                             },
                                                             "archetype_node_id": "at0153"
                                                         },
@@ -465,8 +481,8 @@
                                                             },
                                                             "value": {
                                                                 "_type": "DV_QUANTITY",
-                                                                "units": "mm",
-                                                                "magnitude": 22.0
+                                                                "units": "TAB",
+                                                                "magnitude": 1.0
                                                             },
                                                             "archetype_node_id": "at0157"
                                                         }
@@ -481,7 +497,7 @@
                                                     },
                                                     "value": {
                                                         "_type": "DV_TEXT",
-                                                        "value": "Ja"
+                                                        "value": "true"
                                                     },
                                                     "archetype_node_id": "at0127"
                                                 },
@@ -504,9 +520,17 @@
                                                                 "_type": "DV_TEXT",
                                                                 "value": "Allgemeiner Wirkstoff"
                                                             },
-                                                            "value": {
-                                                                "_type": "DV_TEXT",
-                                                                "value": "Lorem ipsum"
+                                                            "value" : {
+                                                                "_type" : "DV_CODED_TEXT",
+                                                                "value" : "Paracetamol oral ingredient",
+                                                                "defining_code" : {
+                                                                "_type" : "CODE_PHRASE",
+                                                                "terminology_id" : {
+                                                                    "_type" : "TERMINOLOGY_ID",
+                                                                    "value" : "http://www.whocc.no/atc"
+                                                                },
+                                                                "code_string" : "N02BE01"
+                                                                }
                                                             },
                                                             "archetype_node_id": "at0132"
                                                         },
@@ -525,8 +549,8 @@
                                                                     },
                                                                     "value": {
                                                                         "_type": "DV_QUANTITY",
-                                                                        "units": "mm",
-                                                                        "magnitude": 22.0
+                                                                        "units": "mg",
+                                                                        "magnitude": 13.0
                                                                     },
                                                                     "archetype_node_id": "at0153"
                                                                 },
@@ -538,8 +562,8 @@
                                                                     },
                                                                     "value": {
                                                                         "_type": "DV_QUANTITY",
-                                                                        "units": "mm",
-                                                                        "magnitude": 22.0
+                                                                        "units": "mg",
+                                                                        "magnitude": 1.0
                                                                     },
                                                                     "archetype_node_id": "at0157"
                                                                 }
@@ -550,24 +574,11 @@
                                                             "_type": "ELEMENT",
                                                             "name": {
                                                                 "_type": "DV_TEXT",
-                                                                "value": "Wirkstoffkonzentration"
-                                                            },
-                                                            "value": {
-                                                                "_type": "DV_QUANTITY",
-                                                                "units": "mm",
-                                                                "magnitude": 22.0
-                                                            },
-                                                            "archetype_node_id": "at0115"
-                                                        },
-                                                        {
-                                                            "_type": "ELEMENT",
-                                                            "name": {
-                                                                "_type": "DV_TEXT",
                                                                 "value": "Hersteller"
                                                             },
                                                             "value": {
                                                                 "_type": "DV_TEXT",
-                                                                "value": "Lorem ipsum"
+                                                                "value": "GSK (GlaxoSmithKline)"
                                                             },
                                                             "archetype_node_id": "at0151"
                                                         },
@@ -579,7 +590,7 @@
                                                             },
                                                             "value": {
                                                                 "_type": "DV_TEXT",
-                                                                "value": "Lorem ipsum"
+                                                                "value": "Batch 1"
                                                             },
                                                             "archetype_node_id": "at0150"
                                                         },
@@ -603,23 +614,10 @@
                                                             },
                                                             "value": {
                                                                 "_type": "DV_QUANTITY",
-                                                                "units": "mm",
-                                                                "magnitude": 22.0
+                                                                "units": "mg",
+                                                                "magnitude": 100.0
                                                             },
                                                             "archetype_node_id": "at0139"
-                                                        },
-                                                        {
-                                                            "_type": "ELEMENT",
-                                                            "name": {
-                                                                "_type": "DV_TEXT",
-                                                                "value": "Alternative Menge"
-                                                            },
-                                                            "value": {
-                                                                "_type": "DV_QUANTITY",
-                                                                "units": "mm",
-                                                                "magnitude": 22.0
-                                                            },
-                                                            "archetype_node_id": "at0148"
                                                         },
                                                         {
                                                             "_type": "ELEMENT",
@@ -640,18 +638,6 @@
                                                                 }
                                                             },
                                                             "archetype_node_id": "at0127"
-                                                        },
-                                                        {
-                                                            "_type": "ELEMENT",
-                                                            "name": {
-                                                                "_type": "DV_TEXT",
-                                                                "value": "Beschreibung"
-                                                            },
-                                                            "value": {
-                                                                "_type": "DV_TEXT",
-                                                                "value": "Lorem ipsum"
-                                                            },
-                                                            "archetype_node_id": "at0133"
                                                         }
                                                     ],
                                                     "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2"
@@ -667,7 +653,7 @@
                                             },
                                             "value": {
                                                 "_type": "DV_TEXT",
-                                                "value": "Lorem ipsum"
+                                                "value": "1 tablet daily"
                                             },
                                             "archetype_node_id": "at0133"
                                         }
@@ -706,7 +692,7 @@
                                     },
                                     "value": {
                                         "_type": "DV_DATE_TIME",
-                                        "value": "2022-02-03T04:05:06"
+                                        "value": "2024-08-21T00:00:00"
                                     },
                                     "archetype_node_id": "at0021"
                                 },
@@ -718,7 +704,7 @@
                                     },
                                     "value": {
                                         "_type": "DV_TEXT",
-                                        "value": "Lorem ipsum"
+                                        "value": "Patient reports high temperature."
                                     },
                                     "archetype_node_id": "at0032"
                                 },
@@ -728,9 +714,17 @@
                                         "_type": "DV_TEXT",
                                         "value": "Behandlungsgrund"
                                     },
-                                    "value": {
-                                        "_type": "DV_TEXT",
-                                        "value": "Lorem ipsum"
+                                    "value" : {
+                                        "_type" : "DV_CODED_TEXT",
+                                        "value" : "High cholesterol",
+                                        "defining_code" : {
+                                        "_type" : "CODE_PHRASE",
+                                        "terminology_id" : {
+                                            "_type" : "TERMINOLOGY_ID",
+                                            "value" : "http://snomed.info/sct"
+                                        },
+                                        "code_string" : "13644009"
+                                        }
                                     },
                                     "archetype_node_id": "at0023"
                                 },
@@ -742,7 +736,7 @@
                                     },
                                     "value": {
                                         "_type": "DV_TEXT",
-                                        "value": "Lorem ipsum"
+                                        "value": "1 tablet daily"
                                     },
                                     "archetype_node_id": "at0033"
                                 },
@@ -767,7 +761,7 @@
                                             },
                                             "value": {
                                                 "_type": "DV_COUNT",
-                                                "magnitude": 22
+                                                "magnitude": 1
                                             },
                                             "archetype_node_id": "at0164"
                                         },
@@ -779,8 +773,8 @@
                                             },
                                             "value": {
                                                 "_type": "DV_QUANTITY",
-                                                "units": "mm",
-                                                "magnitude": 22.0
+                                                "units": "mg",
+                                                "magnitude": 81.0
                                             },
                                             "archetype_node_id": "at0144"
                                         },
@@ -792,7 +786,7 @@
                                             },
                                             "value": {
                                                 "_type": "DV_TEXT",
-                                                "value": "Lorem ipsum"
+                                                "value": "1 tablet daily"
                                             },
                                             "archetype_node_id": "at0178"
                                         },
@@ -817,7 +811,7 @@
                                                     },
                                                     "value": {
                                                         "_type": "DV_DURATION",
-                                                        "value": "PT0S"
+                                                        "value": "P1D"
                                                     },
                                                     "archetype_node_id": "at0014"
                                                 },
@@ -828,22 +822,16 @@
                                                         "value": "Zeitpunkt"
                                                     },
                                                     "value": {
-                                                        "_type": "DV_TIME",
-                                                        "value": "04:05:06"
-                                                    },
+                                                        "lower": {
+                                                          "_type": "DV_DURATION",
+                                                          "value": "PT12H"
+                                                        },
+                                                        "upper": {
+                                                          "_type": "DV_DURATION",
+                                                          "value": "PT12H"
+                                                        }
+                                                      },
                                                     "archetype_node_id": "at0004"
-                                                },
-                                                {
-                                                    "_type": "ELEMENT",
-                                                    "name": {
-                                                        "_type": "DV_TEXT",
-                                                        "value": "Beschreibung des Zeitablaufs"
-                                                    },
-                                                    "value": {
-                                                        "_type": "DV_TEXT",
-                                                        "value": "Lorem ipsum"
-                                                    },
-                                                    "archetype_node_id": "at0027"
                                                 },
                                                 {
                                                     "_type": "ELEMENT",
@@ -872,7 +860,7 @@
                                                             },
                                                             "value": {
                                                                 "_type": "DV_TEXT",
-                                                                "value": "Lorem ipsum"
+                                                                "value": "before meal"
                                                             },
                                                             "archetype_node_id": "at0026"
                                                         },
@@ -884,7 +872,7 @@
                                                             },
                                                             "value": {
                                                                 "_type": "DV_DURATION",
-                                                                "value": "PT0S"
+                                                                "value": "PT2H"
                                                             },
                                                             "archetype_node_id": "at0040"
                                                         }
@@ -893,92 +881,6 @@
                                                 }
                                             ],
                                             "archetype_node_id": "openEHR-EHR-CLUSTER.timing_daily.v1"
-                                        },
-                                        {
-                                            "_type": "CLUSTER",
-                                            "name": {
-                                                "_type": "DV_TEXT",
-                                                "value": "Nicht tägliche Dosierung"
-                                            },
-                                            "archetype_details": {
-                                                "archetype_id": {
-                                                    "value": "openEHR-EHR-CLUSTER.timing_nondaily.v1"
-                                                },
-                                                "rm_version": "1.0.4"
-                                            },
-                                            "items": [
-                                                {
-                                                    "_type": "ELEMENT",
-                                                    "name": {
-                                                        "_type": "DV_TEXT",
-                                                        "value": "Periode"
-                                                    },
-                                                    "value": {
-                                                        "_type": "DV_DURATION",
-                                                        "value": "PT24H"
-                                                    },
-                                                    "archetype_node_id": "at0002"
-                                                },
-                                                {
-                                                    "_type": "ELEMENT",
-                                                    "name": {
-                                                        "_type": "DV_TEXT",
-                                                        "value": "Zeitpunkt"
-                                                    },
-                                                    "value": {
-                                                        "_type": "DV_DATE",
-                                                        "value": "2022-02-03"
-                                                    },
-                                                    "archetype_node_id": "at0001"
-                                                },
-                                                {
-                                                    "_type": "ELEMENT",
-                                                    "name": {
-                                                        "_type": "DV_TEXT",
-                                                        "value": "Beschreibung des Zeitablaufs"
-                                                    },
-                                                    "value": {
-                                                        "_type": "DV_TEXT",
-                                                        "value": "Lorem ipsum"
-                                                    },
-                                                    "archetype_node_id": "at0021"
-                                                },
-                                                {
-                                                    "_type": "CLUSTER",
-                                                    "name": {
-                                                        "_type": "DV_TEXT",
-                                                        "value": "Bestimmtes Ereignis"
-                                                    },
-                                                    "items": [
-                                                        {
-                                                            "_type": "ELEMENT",
-                                                            "name": {
-                                                                "_type": "DV_TEXT",
-                                                                "value": "Ereignis"
-                                                            },
-                                                            "value": {
-                                                                "_type": "DV_TEXT",
-                                                                "value": "Lorem ipsum"
-                                                            },
-                                                            "archetype_node_id": "at0005"
-                                                        },
-                                                        {
-                                                            "_type": "ELEMENT",
-                                                            "name": {
-                                                                "_type": "DV_TEXT",
-                                                                "value": "Offset"
-                                                            },
-                                                            "value": {
-                                                                "_type": "DV_DURATION",
-                                                                "value": "PT0S"
-                                                            },
-                                                            "archetype_node_id": "at0009"
-                                                        }
-                                                    ],
-                                                    "archetype_node_id": "at0006"
-                                                }
-                                            ],
-                                            "archetype_node_id": "openEHR-EHR-CLUSTER.timing_nondaily.v1"
                                         }
                                     ],
                                     "archetype_node_id": "openEHR-EHR-CLUSTER.dosage.v2"
@@ -991,14 +893,14 @@
                                     },
                                     "value": {
                                         "_type": "DV_CODED_TEXT",
-                                        "value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-route-of-administration' available",
+                                        "value": "Swallow, oral",
                                         "defining_code": {
                                             "_type": "CODE_PHRASE",
                                             "terminology_id": {
                                                 "_type": "TERMINOLOGY_ID",
                                                 "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-route-of-administration"
                                             },
-                                            "code_string": "42"
+                                            "code_string": "PO"
                                         }
                                     },
                                     "archetype_node_id": "at0030"
@@ -1011,7 +913,7 @@
                                     },
                                     "value": {
                                         "_type": "DV_DURATION",
-                                        "value": "PT0S"
+                                        "value": "P30D"
                                     },
                                     "archetype_node_id": "at0034"
                                 },
@@ -1023,7 +925,7 @@
                                     },
                                     "value": {
                                         "_type": "DV_TEXT",
-                                        "value": "Lorem ipsum"
+                                        "value": "Patient reports high temperature."
                                     },
                                     "archetype_node_id": "at0029"
                                 }

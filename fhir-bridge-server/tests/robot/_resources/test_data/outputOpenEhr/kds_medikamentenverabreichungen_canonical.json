@@ -81,7 +81,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
+          "value" : "MA123456"
         },
         "archetype_node_id" : "at0002"
       }, {
@@ -92,14 +92,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "In Progress",
+          "value" : "Completed",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "http://terminology.hl7.org/CodeSystem/medication-admin-status"
             },
-            "code_string" : "in-progress"
+            "code_string" : "completed"
           }
         },
         "archetype_node_id" : "at0005"
@@ -194,7 +194,7 @@
         },
         "value" : {
           "_type" : "DV_IDENTIFIER",
-          "id" : "dev/null"
+          "id" : "example-medication"
         },
         "archetype_node_id" : "at0103"
       } ],
@@ -240,7 +240,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "Paracetamol 500mg tablet"
           },
           "archetype_node_id" : "at0132"
         }, {
@@ -293,9 +293,17 @@
               "value" : "Wirkstoff-Name"
             },
             "value" : {
-              "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
-            },
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Paracetamol",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://www.whocc.no/atc"
+              },
+              "code_string" : "N02BE01"
+            }
+          },
             "archetype_node_id" : "at0132"
           }, {
             "_type" : "ELEMENT",
@@ -322,8 +330,8 @@
               },
               "value" : {
                 "_type" : "DV_QUANTITY",
-                "units" : "1",
-                "magnitude" : 22.0
+                "units" : "mg",
+                "magnitude" : 500.0
               },
               "archetype_node_id" : "at0153"
             }, {
@@ -334,8 +342,8 @@
               },
               "value" : {
                 "_type" : "DV_QUANTITY",
-                "units" : "1",
-                "magnitude" : 22.0
+                "units" : "tablet",
+                "magnitude" : 1.0
               },
               "archetype_node_id" : "at0157"
             } ],
@@ -359,9 +367,17 @@
                 "value" : "Wirkstoff-Code"
               },
               "value" : {
-                "_type" : "DV_TEXT",
-                "value" : "Lorem ipsum"
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Oral route",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://snomed.info/sct"
               },
+              "code_string" : "26643006"
+            }
+          },
               "archetype_node_id" : "at0001"
             }, {
               "_type" : "CLUSTER",
@@ -404,8 +420,16 @@
             "value" : "Rezeptur Freitextzeile"
           },
           "value" : {
-            "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Aspirin 81 MG Oral Tablet",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://www.nlm.nih.gov/research/umls/rxnorm"
+              },
+              "code_string" : "1049630"
+            }
           },
           "archetype_node_id" : "at0133"
         }, {
@@ -428,7 +452,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "1049630"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -485,8 +509,8 @@
           },
           "value" : {
             "_type" : "DV_QUANTITY",
-            "units" : "1",
-            "magnitude" : 22.0
+            "units" : "mg",
+            "magnitude" : 20.0
           },
           "archetype_node_id" : "at0144"
         }, {
@@ -497,7 +521,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "20 mg orally once daily"
           },
           "archetype_node_id" : "at0178"
         }, {
@@ -547,7 +571,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
+          "value" : "Hypertensive disorder, systemic arterial"
         },
         "archetype_node_id" : "at0156"
       }, {
@@ -564,14 +588,14 @@
           },
           "value" : {
             "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-route-of-administration' available",
+            "value" : "Oral use",
             "defining_code" : {
               "_type" : "CODE_PHRASE",
               "terminology_id" : {
                 "_type" : "TERMINOLOGY_ID",
                 "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-route-of-administration"
               },
-              "code_string" : "42"
+              "code_string" : "20053000"
             }
           },
           "archetype_node_id" : "at0147"

@@ -49,7 +49,7 @@
     "_type" : "EVENT_CONTEXT",
     "start_time" : {
       "_type" : "DV_DATE_TIME",
-      "value" : "2022-02-03T04:05:06"
+      "value" : "2022-02-03T00:00:00"
     },
     "end_time" : {
       "_type" : "DV_DATE_TIME",
@@ -81,7 +81,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
+          "value" : "Medical record number"
         },
         "archetype_node_id" : "at0002"
       }, {
@@ -249,37 +249,18 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm' available",
+          "value" : "Asthma",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm"
             },
-            "code_string" : "42"
+            "code_string" : "J45"
           }
         },
         "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - alpha-id"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/alpha-id' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/alpha-id"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
+      },  {
         "_type" : "ELEMENT",
         "name" : {
           "_type" : "DV_TEXT",
@@ -287,56 +268,18 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct' available",
+          "value" : "Asthma",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct"
             },
-            "code_string" : "42"
+            "code_string" : "195967001"
           }
         },
         "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - orphanet"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://www.orpha.net' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://www.orpha.net"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - icd-o-3"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/CodeSystem/icd-o-3' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/CodeSystem/icd-o-3"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
+      },  {
         "_type" : "ELEMENT",
         "name" : {
           "_type" : "DV_TEXT",
@@ -355,33 +298,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site' available",
+          "value" : "Respiratory tract",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site"
             },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0012"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Körperstelle - icd-o-3"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/icd-o-3' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/icd-o-3"
-            },
-            "code_string" : "42"
+            "code_string" : "321667001"
           }
         },
         "archetype_node_id" : "at0012"
@@ -437,7 +361,7 @@
         },
         "value" : {
           "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
+          "value" : "2024-02-08T00:00:00"
         },
         "archetype_node_id" : "at0077"
       }, {
@@ -593,7 +517,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
+          "value" : "Patient has a history of asthma."
         },
         "archetype_node_id" : "at0069"
       }, {
@@ -616,14 +540,14 @@
           },
           "value" : {
             "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/condition-clinical' available",
+            "value" : "Active",
             "defining_code" : {
               "_type" : "CODE_PHRASE",
               "terminology_id" : {
                 "_type" : "TERMINOLOGY_ID",
                 "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/condition-clinical"
               },
-              "code_string" : "42"
+              "code_string" : "active"
             }
           },
           "archetype_node_id" : "at0003"

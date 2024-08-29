@@ -36,15 +36,15 @@
             }
           }
         ],
-        "status": "active",
+        "status": "completed",
         "intent": "order",
         "category": [
           {
             "coding": [
               {
-                "system": "http://snomed.info/sct",
-                "code": "108252007",
-                "display": "Laboratory procedure"
+                "system": "http://terminology.hl7.org/ValueSet/observation-category",
+                "code": "laboratory",
+                "display": "Laboratory"
               }
             ]
           }
