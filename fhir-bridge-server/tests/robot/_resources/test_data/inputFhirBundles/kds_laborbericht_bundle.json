@@ -4,166 +4,6 @@
   "type": "transaction",
   "entry": [
     {
-      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000001",
-      "request": {
-        "method": "POST",
-        "url": "ServiceRequest"
-      },
-      "resource": {
-        "resourceType": "ServiceRequest",
-        "id": "example-servicerequest-lab",
-        "meta": {
-          "profile": [
-            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
-          ]
-        },
-        "identifier": [
-          {
-            "type": {
-              "coding": [
-                {
-                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                  "code": "MR",
-                  "display": "Medical record number"
-                }
-              ],
-              "text": "Medical record identifier"
-            },
-            "system": "https://fhir.acme.org/identifiers/patient",
-            "value": "123456",
-            "assigner": {
-              "display": "ACME Healthcare"
-            }
-          }
-        ],
-        "status": "active",
-        "intent": "order",
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://snomed.info/sct",
-                "code": "108252007",
-                "display": "Laboratory procedure"
-              }
-            ]
-          }
-        ],
-        "code": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "2345-7",
-              "display": "Glucose [Mass/volume] in Blood"
-            }
-          ],
-          "text": "Blood Glucose Test"
-        },
-        "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
-        },
-        "authoredOn": "2024-08-24",
-        "performer": [
-          {
-            "reference": "Organization/example-lab",
-            "display": "Example Laboratory"
-          }
-        ],
-        "reasonCode": [
-          {
-            "coding": [
-              {
-                "system": "http://snomed.info/sct",
-                "code": "271737000",
-                "display": "High blood glucose level"
-              }
-            ],
-            "text": "Hyperglycemia"
-          }
-        ],
-        "specimen": [
-          {
-            "reference": "Specimen/example-blood",
-            "display": "Blood specimen"
-          }
-        ],
-        "priority": "routine"
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000002",
-      "request": {
-        "method": "POST",
-        "url": "Specimen"
-      },
-      "resource": {
-        "resourceType": "Specimen",
-        "id": "example-blood",
-        "meta": {
-          "profile": [
-            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
-          ]
-        },
-        "status": "available",
-        "type": {
-          "coding": [
-            {
-              "system": "http://snomed.info/sct",
-              "code": "122555007",
-              "display": "Venous blood specimen"
-            }
-          ],
-          "text": "Venous blood specimen"
-        },
-        "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
-        },
-        "identifier": [
-          {
-            "system": "http://hospital.org/specimens",
-            "value": "SP-987654"
-          }
-        ],
-        "receivedTime": "2024-08-24T09:30:00Z",
-        "collection": {
-          "collectedDateTime": "2024-08-24T09:00:00Z",
-          "collector": {
-            "reference": "Practitioner/example-practitioner",
-            "display": "Dr. John Doe"
-          }
-        },
-        "note": [
-          {
-            "text": "Sample collected in the morning."
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:11e05b70-b4e6-11ec-b909-0242ac120002",
-      "request": {
-        "method": "POST",
-        "url": "Organization"
-      },
-      "resource": {
-        "resourceType": "Organization",
-        "id": "example-lab",
-        "identifier": [
-          {
-            "system": "http://hospital.org/organizations",
-            "value": "ORG-001"
-          }
-        ],
-        "name": "Example Hospital"
-      }
-    },
-    {
       "fullUrl": "urn:uuid:0c8265f1-532a-4a5a-943f-e40eb5a7b557",
       "resource": {
         "resourceType": "DiagnosticReport",
@@ -428,6 +268,58 @@
       "request": {
         "method": "POST",
         "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "request": {
+        "method": "POST",
+        "url": "Specimen"
+      },
+      "resource": {
+        "resourceType": "Specimen",
+        "id": "example-blood",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
+          ]
+        },
+        "status": "available",
+        "type": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "122555007",
+              "display": "Venous blood specimen"
+            }
+          ],
+          "text": "Venous blood specimen"
+        },
+        "subject": {
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
+          }
+        },
+        "identifier": [
+          {
+            "system": "http://hospital.org/specimens",
+            "value": "SP-987654"
+          }
+        ],
+        "receivedTime": "2024-08-24T09:30:00Z",
+        "collection": {
+          "collectedDateTime": "2024-08-24T09:00:00Z",
+          "collector": {
+            "reference": "Practitioner/example-practitioner",
+            "display": "Dr. John Doe"
+          }
+        },
+        "note": [
+          {
+            "text": "Sample collected in the morning."
+          }
+        ]
       }
     }
   ]

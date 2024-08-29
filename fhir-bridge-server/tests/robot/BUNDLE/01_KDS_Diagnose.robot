@@ -20,8 +20,8 @@
 *** Settings ***
 Resource                ${EXECDIR}/robot/_resources/suite_settings.robot
 
-Test Setup              generic.prepare new request session    Prefer=return=representation
-...															   Authorization=${AUTHORIZATION['Authorization']}
+#Test Setup              generic.prepare new request session    Prefer=return=representation
+#...															   Authorization=${AUTHORIZATION['Authorization']}
 
 Force Tags              bundle_create    create
 
@@ -34,15 +34,17 @@ Force Tags              bundle_create    create
 
 *** Test Cases ***
 
-
-001 Create Blood Gas Panel
-	[Documentation]     1. *CREATE* new EHR record\n\n
-	...                 2. *LOAD* _create-blood-gas-panel.json_\n\n
-	...                 3. *UPDATE* ``Subject - Identifier - value`` with the _UUID:_ ${subject_id} which was created in EHR record\n\n
-    ...                 4. *POST* example JSON to observation endpoint\n\n
-	...                 5. *VALIDATE* the response status
-	[Tags]             	blood-gas-panel    valid   not-ready    not-implemented
+001 Create KDS Diagnose FHIR Bundle
+    [Documentation]         1. *CREATE* new EHR record\n\n
+        ...                 2. *CREATE* FHIR bundle kds_diagnose_bundle.json and post it to FHIR server\n\n
+        ...                 3. *VALIDATE* the FHIR response status\n\n
+        ...                 4. *CREATE* openEHR AQL and post it to openEHR server\n\n
+        ...                 5. *VALIDATE* the content of the AQL response.
+    [Tags]             	kds-diagnose-fhir-bundle    valid   not-ready    not-implemented
 
 	ehr.create new ehr    000_ehr_status.json
-	bundle.create blood gas panel  Blood Gas Panel  create-blood-gas.json  
-	bundle.validate response Bundle - 200
+    kdsdiagnose.create fhir bundle    KDS Diagnose    kds_diagnose_bundle.json
+    kdsdiagnose.validate response - 201
+
+    kdsdiagnose.create openehr aql    KDS_Diagnose
+    kdsdiagnose.validate content response_aql - 201
