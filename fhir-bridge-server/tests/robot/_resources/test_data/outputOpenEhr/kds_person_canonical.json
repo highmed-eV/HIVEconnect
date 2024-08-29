@@ -160,14 +160,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender' available",
+          "value" : "Male",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender"
             },
-            "code_string" : "42"
+            "code_string" : "male"
           }
         },
         "archetype_node_id" : "at0022"
@@ -276,14 +276,14 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/name-use' available",
+              "value" : "Official",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
                   "_type" : "TERMINOLOGY_ID",
                   "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/name-use"
                 },
-                "code_string" : "42"
+                "code_string" : "official"
               }
             },
             "archetype_node_id" : "at0001"
@@ -295,7 +295,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "John"
             },
             "archetype_node_id" : "at0002"
           }, {
@@ -306,7 +306,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Smith"
             },
             "archetype_node_id" : "at0005"
           }, {
@@ -328,7 +328,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Smith"
             },
             "archetype_node_id" : "at0005"
           }, {
@@ -353,7 +353,8 @@
               "value" : "Lorem ipsum"
             },
             "archetype_node_id" : "at0006"
-          } ],
+          }
+          ],
           "archetype_node_id" : "openEHR-EHR-CLUSTER.structured_name.v1"
         }, {
           "_type" : "ELEMENT",
@@ -408,7 +409,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "123 Main St"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -419,7 +420,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Apt 4B"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -452,7 +453,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Metropolis"
             },
             "archetype_node_id" : "at0002"
           }, {
@@ -474,14 +475,14 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender' available",
+              "value" : "Hamburg",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
                   "_type" : "TERMINOLOGY_ID",
                   "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender"
                 },
-                "code_string" : "42"
+                "code_string" : "DE-HH"
               }
             },
             "archetype_node_id" : "at0004"
@@ -493,7 +494,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "20095"
             },
             "archetype_node_id" : "at0005"
           }, {
@@ -504,14 +505,14 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2' available",
+              "value" : "Germany",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
                   "_type" : "TERMINOLOGY_ID",
                   "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2"
                 },
-                "code_string" : "42"
+                "code_string" : "DE"
               }
             },
             "archetype_node_id" : "at0006"
@@ -597,7 +598,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "PO Box 456"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -619,7 +620,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Berlin"
             },
             "archetype_node_id" : "at0002"
           }, {
@@ -641,14 +642,14 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender' available",
+              "value" : "Berlin",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
                   "_type" : "TERMINOLOGY_ID",
                   "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender"
                 },
-                "code_string" : "42"
+                "code_string" : "DE-BE"
               }
             },
             "archetype_node_id" : "at0004"
@@ -660,7 +661,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "10115"
             },
             "archetype_node_id" : "at0005"
           }, {
@@ -671,14 +672,14 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2' available",
+              "value" : "Germany",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
                   "_type" : "TERMINOLOGY_ID",
                   "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/iso3166-1-2"
                 },
-                "code_string" : "42"
+                "code_string" : " DE"
               }
             },
             "archetype_node_id" : "at0006"
@@ -764,7 +765,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Example Administrative Organization"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -775,7 +776,7 @@
             },
             "value" : {
               "_type" : "DV_IDENTIFIER",
-              "id" : "dev/null"
+              "id" : "ORG-98765"
             },
             "archetype_node_id" : "at0003"
           } ],
@@ -802,7 +803,7 @@
           },
           "value" : {
             "_type" : "DV_DATE",
-            "value" : "2022-02-03"
+            "value" : "1980-01-01"
           },
           "archetype_node_id" : "at0001"
         } ],
@@ -946,7 +947,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "phone"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -957,7 +958,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "+1-555-1234"
             },
             "archetype_node_id" : "at0002"
           } ],
@@ -982,7 +983,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Example Health Clinic"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -993,7 +994,7 @@
             },
             "value" : {
               "_type" : "DV_IDENTIFIER",
-              "id" : "dev/null"
+              "id" : "ORG-12345"
             },
             "archetype_node_id" : "at0003"
           }, {
@@ -1148,7 +1149,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "final"
           },
           "archetype_node_id" : "at0015"
         } ],
