@@ -66,20 +66,20 @@
                             "123 Main St",
                             "Apt 4B"
                         ],
-                        "city": "Metropolis",
-                        "state": "CA",
-                        "postalCode": "12345",
-                        "country": "USA"
+                        "city": "Hamburg",
+                        "state": "Hamburg",
+                        "postalCode": "20095",
+                        "country": "Germany"
                     },
                     {
                         "use": "temp",
                         "line": [
                             "PO Box 456"
                         ],
-                        "city": "Anytown",
-                        "state": "CA",
-                        "postalCode": "90210",
-                        "country": "USA"
+                        "city": "Berlin",
+                        "state": "Berlin",
+                        "postalCode": "10115",
+                        "country": "Germany"
                     }
                 ],
                 "contact": [
@@ -100,7 +100,10 @@
                             "given": [
                                 "John"
                             ],
-                            "family": "Smith"
+                            "family": "Smith",
+                            "prefix": [
+                                "Mr."
+                            ]
                         },
                         "telecom": [
                             {

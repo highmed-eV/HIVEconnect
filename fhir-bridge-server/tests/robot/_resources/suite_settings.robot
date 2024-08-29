@@ -25,7 +25,6 @@ Library     OperatingSystem
 Library     Process
 Library     JSONLibrary
 Library     BuiltIn
-Library     BuiltIn
 
 #Resource    ${EXECDIR}/robot/_resources/keywords/generic.robot
 Resource     ${EXECDIR}/robot/_resources/keywords/ehr.robot
