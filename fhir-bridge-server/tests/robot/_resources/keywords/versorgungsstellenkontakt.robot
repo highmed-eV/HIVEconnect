@@ -32,6 +32,6 @@ POST /VersorgungsstellenkontaktBundleAQL with ehr reference
     #    &{resp_ehr}             POST    ${BASE_URL}/ehrbase/rest/openehr/v1/query/aql    body=${payload}
     #                    Output Debug Info To Console
     #    currently mocking the aql response from the file
-    &{resp_ehr}=    Load JSON From File    ${VERSORGUNGSSTELLENKONTAKT_EHR_COMPOSITION}/versorgungsstellenkontakt_canonical.json
+    &{resp_ehr}=    Load JSON From File    ${EHR_COMPOSITION}/versorgungsstellenkontakt_canonical.json
     Log To Console    In openEHR AQL API call
                     Set Suite Variable    ${response_aql}    ${resp_ehr}

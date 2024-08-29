@@ -19,11 +19,13 @@
 *** Settings ***
 
 #Library     REST    ssl_verify=false
-#Library     String
-#Library     Collections
-#Library     OperatingSystem
-#Library     Process
+Library     String
+Library     Collections
+Library     OperatingSystem
+Library     Process
 Library     JSONLibrary
+Library     BuiltIn
+Library     BuiltIn
 
 #Resource    ${EXECDIR}/robot/_resources/keywords/generic.robot
 Resource     ${EXECDIR}/robot/_resources/keywords/ehr.robot
@@ -60,17 +62,8 @@ Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
 
 # ${BASE_URL}                                           http://localhost:8888/fhir-bridge/fhir
 # ${EHRBASE_URL}                                        http://localhost:8080/ehrbase/rest/openehr/v1
-${KDS_BIOBANK_EHR_COMPOSITION}                          ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Biobank
-${KDS_DIAGNOSE_EHR_COMPOSITION}                         ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Diagnose
-${KDS_LABORAUFTRAG_EHR_COMPOSITION}                     ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Laborauftrag
-${KDS_LABORBERICHT_EHR_COMPOSITION}                     ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Laborbericht
-${KDS_MEDIKAMENTENVERABREICHUNGEN_EHR_COMPOSITION}      ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Medikamentenverabreichungen
-${KDS_MEDIKATIONSEINTRAG_EHR_COMPOSITION}               ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Medikationseintrag
-${KDS_PERSON_EHR_COMPOSITION}                           ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Person
-${KDS_PROZEDUR_EHR_COMPOSITION}                         ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/KDS_Prozedur
-${STATIONÄRER_VERSORGUNGSFALL_EHR_COMPOSITION}          ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/Stationärer Versorgungsfall
-${STUDIENTEILNAHME_EHR_COMPOSITION}                     ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/Studienteilnahme
-${VERSORGUNGSSTELLENKONTAKT_EHR_COMPOSITION}            ${EXECDIR}/robot/_resources/test_data/outputOpenEhr/Versorgungsstellenkontakt
+${EHR_COMPOSITION}                       ${EXECDIR}/robot/_resources/test_data/outputOpenEhr
+
 #${DATA_SET_PATH_CONDITION}              ${EXECDIR}/../src/test/resources/Condition
 #${DATA_SET_PATH_DIAGNOSTIC}             ${EXECDIR}/../src/test/resources/DiagnosticReport
 #${DATA_SET_PATH_MEDICATIONSTATEMENT}    ${EXECDIR}/../src/test/resources/MedicationStatement
