@@ -14,47 +14,100 @@
                     ]
                 },
                 "identifier": [
-                    {
-                        "use": "usual",
-                        "type": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                    "code": "MR"
-                                }
-                            ]
-                        },
-                        "system": "http://hospital.smarthealthit.org",
-                        "value": "12345",
-                        "assigner": {
-                            "display": "Good Health Hospital",
-                            "identifier": {
-                                "type": {
-                                    "coding": [
-                                        {
-                                            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                            "code": "FAC"
-                                        }
-                                    ]
-                                },
-                                "system": "http://goodhealth.org/fhir/NamingSystem/identifier",
-                                "value": "GHH"
-                            }
+                {
+                    "use": "official",
+                    "type": {
+                        "coding": [
+                        {
+                            "system": "http://fhir.de/NamingSystem/gkv/patient",
+                            "code": "GKV",
+                            "display": "Versicherten-ID (GKV)"
                         }
+                        ]
+                    },
+                    "system": "http://fhir.de/NamingSystem/gkv/patient",
+                    "value": "GKV123456789",  
+                    "assigner": {
+                        "display": "German Public Health Insurance"
                     }
-                ],
+                    },
+                    {
+                    "use": "usual",
+                    "type": {
+                        "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                            "code": "MR",
+                            "display": "Patient Identification Number"
+                        }
+                        ]
+                    },
+                    "system": "http://hospital.smarthealthit.org",
+                    "value": "PID987654321", 
+                    "assigner": {
+                        "display": "Example Hospital"
+                    }
+                    },
+                    {
+                    "use": "official",
+                    "type": {
+                        "coding": [
+                        {
+                            "system": "http://fhir.de/NamingSystem/pkv/patient",
+                            "code": "PKV",
+                            "display": "Versichertennummer (PKV)"
+                        }
+                        ]
+                    },
+                    "system": "http://fhir.de/NamingSystem/pkv/patient",
+                    "value": "PKV543210987",
+                    "assigner": {
+                        "display": "German Private Health Insurance"
+                    }
+                }],
                 "name": [
                     {
-                        "use": "official",
-                        "family": "Doe",
-                        "given": [
-                            "John"
-                        ],
-                        "prefix": [
-                            "Mr."
+                    "extension": [
+                        {
+                        "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/name",
+                        "valueCode": "name"
+                        }
+                    ],
+                    "family": "Doe",
+                    "given": ["John"],
+                    "text": "John Doe",
+                    "use": "official",
+                    "prefix": ["Mr."]
+                    },
+                    {
+                    "extension": [
+                        {
+                        "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/name",
+                        "valueCode": "geburtsname"
+                        }
+                    ],
+                    "family": {
+                        "extension": [
+                        {
+                            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/namenszusatz",
+                            "valueString": "von"
+                        },
+                        {
+                            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/nachname",
+                            "valueString": "Smith"
+                        },
+                        {
+                            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/vorsatzwort",
+                            "valueString": "zu"
+                        }
                         ]
+                    },
+                    "given": ["John"],
+                    "text": "John Müller",
+                    "use": "maiden",
+                    "prefix": ["Mr."]
                     }
-                ],
+                ],                
                 "gender": "male",
                 "birthDate": "1980-01-01",
                 "deceasedBoolean": true,
@@ -63,10 +116,37 @@
                         "use": "home",
                         "type": "both",
                         "line": [
-                            "123 Main St",
-                            "Apt 4B"
+                            {
+                            "extension": [
+                                {
+                                "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Strasse",
+                                "valueString": "123 Main St"
+                                },
+                                {
+                                "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Hausnummer",
+                                "valueString": "Apt 4B"
+                                },
+                                {
+                                "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Adresszusatz",
+                                "valueString": "Wohnung 3"
+                                }
+                            ]
+                            }
                         ],
-                        "city": "Hamburg",
+                        "extension": [
+                            {
+                            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Stadtteil",
+                            "valueString": "Mitte"
+                            }
+                        ],
+                        
+                        "city": {
+                        "extension": [
+                            {
+                            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/gemeindeschluessel",
+                            "valueString": "Hamburg"
+                            }
+                        ]},
                         "state": "Hamburg",
                         "postalCode": "20095",
                         "country": "Germany"
