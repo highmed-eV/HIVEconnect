@@ -92,7 +92,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "registered"
+          "value" : "final"
         },
         "archetype_node_id" : "at0005"
       }, {
@@ -320,7 +320,7 @@
               },
               "value" : {
                 "_type" : "DV_IDENTIFIER",
-                "id" : "dev/null"
+                "id" : "SP-987654"
               },
               "archetype_node_id" : "at0001"
             }, {

@@ -68,24 +68,18 @@
           ],
           "name": [
             {
-              "extension": [
-                {
-                  "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/name",
-                  "valueCode": "name"
-                }
-              ],
               "family": {
                 "extension": [
                   {
-                    "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/namenszusatz",
+                    "url": "http://fhir.de/StructureDefinition/humanname-namenszusatz",
                     "valueString": "Doe"
                   },
                   {
-                    "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/nachname",
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
                     "valueString": "John"
                   },
                   {
-                    "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/vorsatzwort",
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
                     "valueString": "zu"
                   }
                 ]
@@ -100,24 +94,18 @@
               ]
             },
             {
-              "extension": [
-                {
-                  "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/name",
-                  "valueCode": "geburtsname"
-                }
-              ],
               "family": {
                 "extension": [
                   {
-                    "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/namenszusatz",
+                    "url": "http://fhir.de/StructureDefinition/humanname-namenszusatz",
                     "valueString": "Von"
                   },
                   {
-                    "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/nachname",
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
                     "valueString": "Smith"
                   },
                   {
-                    "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/vorsatzwort",
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
                     "valueString": "zu"
                   }
                 ]
@@ -137,11 +125,7 @@
             {
               "extension": [
                 {
-                  "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/address-type",
-                  "valueCode": "Strassenanschrift"
-                },
-                {
-                  "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Stadtteil",
+                  "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-precinct",
                   "valueString": "Mitte"
                 }
               ],
@@ -151,15 +135,15 @@
                 {
                   "extension": [
                     {
-                      "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Strasse",
+                      "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
                       "valueString": "123 Main St"
                     },
                     {
-                      "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Hausnummer",
+                      "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
                       "valueString": "Apt 4B"
                     },
                     {
-                      "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Adresszusatz",
+                      "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator",
                       "valueString": "Wohnung 3"
                     }
                   ]
@@ -169,7 +153,7 @@
                 {
                   "extension": [
                     {
-                      "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/gemeindeschluessel",
+                      "url": "http://fhir.de/StructureDefinition/destatis/ags",
                       "valueString": "Hamburg"
                     }
                   ]
@@ -182,11 +166,7 @@
             {
                 "extension": [
                   {
-                    "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/address-type",
-                    "valueCode": "Postfach"
-                  },
-                  {
-                    "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Stadtteil",
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-precinct",
                     "valueString": "Kreuzberg"
                   }
                 ],
@@ -196,7 +176,7 @@
                   {
                     "extension": [
                       {
-                        "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Postfach",
+                        "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-postBox",
                         "valueString": "Musterstrasse"
                       }
                     ]
@@ -206,7 +186,7 @@
                   {
                     "extension": [
                       {
-                        "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/gemeindeschluessel",
+                        "url": "http://fhir.de/StructureDefinition/destatis/ags",
                         "valueString": "Berlin"
                       }
                     ]
