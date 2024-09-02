@@ -27,6 +27,22 @@
         "code": {
           "coding": [
             {
+              "extension": [
+                    {
+                        "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
+                        "value" : {
+                          "code": "B",
+                          "display": "beiderseits",
+                          "system":"https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
+                        }
+                    }
+                ],
+              "system": "http://fhir.de/CodeSystem/bfarm/ops",
+              "version": "20200131",
+              "code": "5-470",
+              "display": "Interventional neurovascular procedures,"
+            },
+            {
               "system": "http://snomed.info/sct",
               "version": "20200131",
               "code": "80146002",
