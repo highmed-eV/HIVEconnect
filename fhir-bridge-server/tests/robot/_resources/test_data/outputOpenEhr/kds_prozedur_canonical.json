@@ -104,7 +104,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "encounter-id-1245"
           },
           "archetype_node_id" : "at0001"
         } ],

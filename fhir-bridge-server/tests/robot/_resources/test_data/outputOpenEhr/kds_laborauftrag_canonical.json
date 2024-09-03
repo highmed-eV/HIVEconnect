@@ -93,7 +93,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "example"
+            "value" : "encounter-id-1245"
           },
           "archetype_node_id" : "at0001"
         } ],

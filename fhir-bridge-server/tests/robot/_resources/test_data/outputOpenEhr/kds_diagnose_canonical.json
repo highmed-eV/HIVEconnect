@@ -1,1034 +1,1103 @@
 {
-  "_type" : "COMPOSITION",
-  "name" : {
-    "_type" : "DV_TEXT",
-    "value" : "Diagnose"
+  "_type": "COMPOSITION",
+  "name": {
+    "_type": "DV_TEXT",
+    "value": "Diagnose"
   },
-  "archetype_details" : {
-    "archetype_id" : {
-      "value" : "openEHR-EHR-COMPOSITION.report.v1"
+  "archetype_details": {
+    "archetype_id": {
+      "value": "openEHR-EHR-COMPOSITION.report.v1"
     },
-    "template_id" : {
-      "value" : "KDS_Diagnose"
+    "template_id": {
+      "value": "KDS_Diagnose"
     },
-    "rm_version" : "1.0.4"
+    "rm_version": "1.0.4"
   },
-  "language" : {
-    "_type" : "CODE_PHRASE",
-    "terminology_id" : {
-      "_type" : "TERMINOLOGY_ID",
-      "value" : "ISO_639-1"
+  "language": {
+    "_type": "CODE_PHRASE",
+    "terminology_id": {
+      "_type": "TERMINOLOGY_ID",
+      "value": "ISO_639-1"
     },
-    "code_string" : "en"
+    "code_string": "en"
   },
-  "territory" : {
-    "_type" : "CODE_PHRASE",
-    "terminology_id" : {
-      "_type" : "TERMINOLOGY_ID",
-      "value" : "ISO_3166-1"
+  "territory": {
+    "_type": "CODE_PHRASE",
+    "terminology_id": {
+      "_type": "TERMINOLOGY_ID",
+      "value": "ISO_3166-1"
     },
-    "code_string" : "DE"
+    "code_string": "DE"
   },
-  "category" : {
-    "_type" : "DV_CODED_TEXT",
-    "value" : "event",
-    "defining_code" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "openehr"
+  "category": {
+    "_type": "DV_CODED_TEXT",
+    "value": "event",
+    "defining_code": {
+      "_type": "CODE_PHRASE",
+      "terminology_id": {
+        "_type": "TERMINOLOGY_ID",
+        "value": "openehr"
       },
-      "code_string" : "433"
+      "code_string": "433"
     }
   },
-  "composer" : {
-    "_type" : "PARTY_IDENTIFIED",
-    "name" : "Max Mustermann"
+  "composer": {
+    "_type": "PARTY_IDENTIFIED",
+    "name": "Max Mustermann"
   },
-  "context" : {
-    "_type" : "EVENT_CONTEXT",
-    "start_time" : {
-      "_type" : "DV_DATE_TIME",
-      "value" : "2022-02-03T00:00:00"
+  "context": {
+    "_type": "EVENT_CONTEXT",
+    "start_time": {
+      "_type": "DV_DATE_TIME",
+      "value": "2022-02-03T00:00:00"
     },
-    "end_time" : {
-      "_type" : "DV_DATE_TIME",
-      "value" : "2022-02-03T04:05:06"
+    "end_time": {
+      "_type": "DV_DATE_TIME",
+      "value": "2022-02-03T04:05:06"
     },
-    "setting" : {
-      "_type" : "DV_CODED_TEXT",
-      "value" : "home",
-      "defining_code" : {
-        "_type" : "CODE_PHRASE",
-        "terminology_id" : {
-          "_type" : "TERMINOLOGY_ID",
-          "value" : "openehr"
+    "setting": {
+      "_type": "DV_CODED_TEXT",
+      "value": "home",
+      "defining_code": {
+        "_type": "CODE_PHRASE",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "openehr"
         },
-        "code_string" : "225"
+        "code_string": "225"
       }
     },
-    "other_context" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "Tree"
+    "other_context": {
+      "_type": "ITEM_TREE",
+      "name": {
+        "_type": "DV_TEXT",
+        "value": "Tree"
       },
-      "items" : [ {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Report ID"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "Medical record number"
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Status"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "registriert"
-        },
-        "archetype_node_id" : "at0005"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Case identification"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.case_identification.v0"
+      "items": [
+        {
+          "_type": "ELEMENT",
+          "name": {
+            "_type": "DV_TEXT",
+            "value": "Report ID"
           },
-          "rm_version" : "1.0.4"
+          "value": {
+            "_type": "DV_TEXT",
+            "value": "Medical record number"
+          },
+          "archetype_node_id": "at0002"
         },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Case identifier"
+        {
+          "_type": "ELEMENT",
+          "name": {
+            "_type": "DV_TEXT",
+            "value": "Status"
           },
-          "value" : {
-            "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+          "value": {
+            "_type": "DV_TEXT",
+            "value": "registriert"
           },
-          "archetype_node_id" : "at0001"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.case_identification.v0"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Problem/Diagnosis qualifier"
+          "archetype_node_id": "at0005"
         },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+        {
+          "_type": "CLUSTER",
+          "name": {
+            "_type": "DV_TEXT",
+            "value": "Case identification"
           },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Diagnoserolle"
+          "archetype_details": {
+            "archetype_id": {
+              "value": "openEHR-EHR-CLUSTER.case_identification.v0"
+            },
+            "rm_version": "1.0.4"
           },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/diagnosis-role' available",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/diagnosis-role"
+          "items": [
+            {
+              "_type": "ELEMENT",
+              "name": {
+                "_type": "DV_TEXT",
+                "value": "Case identifier"
               },
-              "code_string" : "42"
+              "value": {
+                "_type": "DV_TEXT",
+                "value": "encounter-id-1245"
+              },
+              "archetype_node_id": "at0001"
             }
+          ],
+          "archetype_node_id": "openEHR-EHR-CLUSTER.case_identification.v0"
+        },
+        {
+          "_type": "CLUSTER",
+          "name": {
+            "_type": "DV_TEXT",
+            "value": "Problem/Diagnosis qualifier"
           },
-          "archetype_node_id" : "at0063"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.problem_qualifier.v2"
-      } ],
-      "archetype_node_id" : "at0001"
+          "archetype_details": {
+            "archetype_id": {
+              "value": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+            },
+            "rm_version": "1.0.4"
+          },
+          "items": [
+            {
+              "_type": "ELEMENT",
+              "name": {
+                "_type": "DV_TEXT",
+                "value": "Diagnoserolle"
+              },
+                "_type": "DV_CODED_TEXT",
+                "value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/diagnosis-role' available",
+                "defining_code": {
+                  "_type": "CODE_PHRASE",
+                  "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/diagnosis-role"
+                  },
+                  "code_string": "42"
+                }
+              },
+              "archetype_node_id": "at0063"
+            }
+          ],
+          "archetype_node_id": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+        }
+      ],
+      "archetype_node_id": "at0001"
     },
-    "health_care_facility" : {
-      "_type" : "PARTY_IDENTIFIED",
-      "name" : "DOE, John"
+    "health_care_facility": {
+      "_type": "PARTY_IDENTIFIED",
+      "name": "DOE, John"
     }
   },
-  "content" : [ {
-    "_type" : "EVALUATION",
-    "name" : {
-      "_type" : "DV_TEXT",
-      "value" : "Primärcode"
-    },
-    "archetype_details" : {
-      "archetype_id" : {
-        "value" : "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+  "content": [
+    {
+      "_type": "EVALUATION",
+      "name": {
+        "_type": "DV_TEXT",
+        "value": "Primärcode"
       },
-      "rm_version" : "1.0.4"
-    },
-    "language" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "ISO_639-1"
+      "archetype_details": {
+        "archetype_id": {
+          "value": "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+        },
+        "rm_version": "1.0.4"
       },
-      "code_string" : "en"
-    },
-    "encoding" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "IANA_character-sets"
+      "language": {
+        "_type": "CODE_PHRASE",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "ISO_639-1"
+        },
+        "code_string": "en"
       },
-      "code_string" : "ISO-10646-UTF-1"
-    },
-    "workflow_id" : {
-      "_type" : "OBJECT_REF",
-      "namespace" : "unknown",
-      "type" : "ANY",
-      "id" : {
-        "_type" : "GENERIC_ID",
-        "value" : "2eea2ce1-bd4c-3514-8bb8-469f320e1445",
-        "scheme" : "scheme"
-      }
-    },
-    "subject" : {
-      "_type" : "PARTY_SELF"
-    },
-    "provider" : {
-      "_type" : "PARTY_SELF"
-    },
-    "protocol" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "Tree"
+      "encoding": {
+        "_type": "CODE_PHRASE",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "IANA_character-sets"
+        },
+        "code_string": "ISO-10646-UTF-1"
       },
-      "items" : [ {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Letztes Dokumentationsdatum"
-        },
-        "value" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
-        },
-        "archetype_node_id" : "at0070"
-      } ],
-      "archetype_node_id" : "at0032"
-    },
-    "guideline_id" : {
-      "_type" : "OBJECT_REF",
-      "namespace" : "unknown",
-      "type" : "ANY",
-      "id" : {
-        "_type" : "GENERIC_ID",
-        "value" : "5b605917-849d-3ff5-924e-abc49ad2b9f4",
-        "scheme" : "scheme"
-      }
-    },
-    "data" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "structure"
+      "workflow_id": {
+        "_type": "OBJECT_REF",
+        "namespace": "unknown",
+        "type": "ANY",
+        "id": {
+          "_type": "GENERIC_ID",
+          "value": "2eea2ce1-bd4c-3514-8bb8-469f320e1445",
+          "scheme": "scheme"
+        }
       },
-      "items" : [ {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - icd-10-gm"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Asthma",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm"
-            },
-            "code_string" : "J45"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      },  {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - sct"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Asthma",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct"
-            },
-            "code_string" : "195967001"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      },  {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Freitextbeschreibung"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
-        },
-        "archetype_node_id" : "at0009"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Körperstelle - snomed-ct"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Respiratory tract",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site"
-            },
-            "code_string" : "321667001"
-          }
-        },
-        "archetype_node_id" : "at0012"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Anatomical location"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.anatomical_location.v1"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Body site name"
-          },
-          "value" : {
-            "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
-          },
-          "archetype_node_id" : "at0001"
-        }, {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Laterality"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION' available",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
-              },
-              "code_string" : "42"
-            }
-          },
-          "archetype_node_id" : "at0002"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.anatomical_location.v1"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)"
-        },
-        "value" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2024-02-08T00:00:00"
-        },
-        "archetype_node_id" : "at0077"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Feststellungsdatum"
-        },
-        "value" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
-        },
-        "archetype_node_id" : "at0003"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Severity"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Severe (severity modifier) (qualifier value)",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "SNOMED CT"
-            },
-            "code_string" : "24484000"
-          }
-        },
-        "archetype_node_id" : "at0005"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Lebensphase"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.lebensphase.v0"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Beginn"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de' available",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
-              },
-              "code_string" : "42"
-            }
-          },
-          "archetype_node_id" : "at0001"
-        }, {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Ende"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de' available",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
-              },
-              "code_string" : "42"
-            }
-          },
-          "archetype_node_id" : "at0002"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.lebensphase.v0"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Multiple_coding_ICD-10-GM"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Multiple coding identifier"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "†",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "local"
-              },
-              "code_string" : "at0002"
-            }
-          },
-          "archetype_node_id" : "at0001"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Klinisch relevanter Zeitraum (Zeitpunkt der Genesung)"
-        },
-        "value" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
-        },
-        "archetype_node_id" : "at0030"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Diagnosesicherheit"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0073"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Diagnoseerläuterung"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "Patient has a history of asthma."
-        },
-        "archetype_node_id" : "at0069"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Klinischer Status"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.problem_qualifier.v2"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Klinischer Status"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "Active",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/condition-clinical"
-              },
-              "code_string" : "active"
-            }
-          },
-          "archetype_node_id" : "at0003"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.problem_qualifier.v2"
-      } ],
-      "archetype_node_id" : "at0001"
-    },
-    "archetype_node_id" : "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
-  }, {
-    "_type" : "EVALUATION",
-    "name" : {
-      "_type" : "DV_TEXT",
-      "value" : "Sekundärcode"
-    },
-    "archetype_details" : {
-      "archetype_id" : {
-        "value" : "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+      "subject": {
+        "_type": "PARTY_SELF"
       },
-      "rm_version" : "1.0.4"
-    },
-    "language" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "ISO_639-1"
+      "provider": {
+        "_type": "PARTY_SELF"
       },
-      "code_string" : "en"
-    },
-    "encoding" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "IANA_character-sets"
+      "protocol": {
+        "_type": "ITEM_TREE",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Tree"
+        },
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Letztes Dokumentationsdatum"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2022-02-03T04:05:06"
+            },
+            "archetype_node_id": "at0070"
+          }
+        ],
+        "archetype_node_id": "at0032"
       },
-      "code_string" : "ISO-10646-UTF-1"
-    },
-    "workflow_id" : {
-      "_type" : "OBJECT_REF",
-      "namespace" : "unknown",
-      "type" : "ANY",
-      "id" : {
-        "_type" : "GENERIC_ID",
-        "value" : "778f49bf-8741-38f3-bf84-c298e402c1a2",
-        "scheme" : "scheme"
-      }
-    },
-    "subject" : {
-      "_type" : "PARTY_SELF"
-    },
-    "provider" : {
-      "_type" : "PARTY_SELF"
-    },
-    "protocol" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "Tree"
+      "guideline_id": {
+        "_type": "OBJECT_REF",
+        "namespace": "unknown",
+        "type": "ANY",
+        "id": {
+          "_type": "GENERIC_ID",
+          "value": "5b605917-849d-3ff5-924e-abc49ad2b9f4",
+          "scheme": "scheme"
+        }
       },
-      "items" : [ {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Letztes Dokumentationsdatum"
+      "data": {
+        "_type": "ITEM_TREE",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "structure"
         },
-        "value" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
-        },
-        "archetype_node_id" : "at0070"
-      } ],
-      "archetype_node_id" : "at0032"
-    },
-    "guideline_id" : {
-      "_type" : "OBJECT_REF",
-      "namespace" : "unknown",
-      "type" : "ANY",
-      "id" : {
-        "_type" : "GENERIC_ID",
-        "value" : "c40e73b2-8074-3a4c-8dd2-9cf9d34aa996",
-        "scheme" : "scheme"
-      }
-    },
-    "data" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "structure"
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - icd-10-gm"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Malignant neoplasm of upper lobe, bronchus or lung",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+                },
+                "code_string": "C34.1"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - sct"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Hypertension",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct"
+                },
+                "code_string": "38341003"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Freitextbeschreibung"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Lorem ipsum"
+            },
+            "archetype_node_id": "at0009"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Körperstelle - snomed-ct"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Entire cardiovascular system",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site"
+                },
+                "code_string": "368209003"
+              }
+            },
+            "archetype_node_id": "at0012"
+          },
+          {
+            "_type": "CLUSTER",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Anatomical location"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-CLUSTER.anatomical_location.v1"
+              },
+              "rm_version": "1.0.4"
+            },
+            "items": [
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Body site name"
+                },
+                "value": {
+                  "_type": "DV_TEXT",
+                  "value": "Lorem ipsum"
+                },
+                "archetype_node_id": "at0001"
+              },
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Laterality"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION' available",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
+                    },
+                    "code_string": "42"
+                  }
+                },
+                "archetype_node_id": "at0002"
+              }
+            ],
+            "archetype_node_id": "openEHR-EHR-CLUSTER.anatomical_location.v1"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2024-02-08T00:00:00"
+            },
+            "archetype_node_id": "at0077"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Feststellungsdatum"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2022-02-03T04:05:06"
+            },
+            "archetype_node_id": "at0003"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Severity"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Severe",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "SNOMED CT"
+                },
+                "code_string": "24484000"
+              }
+            },
+            "archetype_node_id": "at0005"
+          },
+          {
+            "_type": "CLUSTER",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Lebensphase"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-CLUSTER.lebensphase.v0"
+              },
+              "rm_version": "1.0.4"
+            },
+            "items": [
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Beginn"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "Adulthood",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
+                    },
+                    "code_string": "424144002"
+                  }
+                },
+                "archetype_node_id": "at0001"
+              },
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Ende"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "Middle age",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
+                    },
+                    "code_string": "367640001"
+                  }
+                },
+                "archetype_node_id": "at0002"
+              }
+            ],
+            "archetype_node_id": "openEHR-EHR-CLUSTER.lebensphase.v0"
+          },
+          {
+            "_type": "CLUSTER",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Multiple_coding_ICD-10-GM"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
+              },
+              "rm_version": "1.0.4"
+            },
+            "items": [
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Multiple coding identifier"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "†",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "local"
+                    },
+                    "code_string": "at0002"
+                  }
+                },
+                "archetype_node_id": "at0001"
+              }
+            ],
+            "archetype_node_id": "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Klinisch relevanter Zeitraum (Zeitpunkt der Genesung)"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2022-02-03T04:05:06"
+            },
+            "archetype_node_id": "at0030"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Diagnosesicherheit"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Suspected diagnosis",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"
+                },
+                "code_string": "S"
+              }
+            },
+            "archetype_node_id": "at0073"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Diagnoseerläuterung"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "The patient has a history of high blood pressure, now presenting with severe hypertension."
+            },
+            "archetype_node_id": "at0069"
+          },
+          {
+            "_type": "CLUSTER",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Klinischer Status"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+              },
+              "rm_version": "1.0.4"
+            },
+            "items": [
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Klinischer Status"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "Active",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/condition-clinical"
+                    },
+                    "code_string": "active"
+                  }
+                },
+                "archetype_node_id": "at0003"
+              }
+            ],
+            "archetype_node_id": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+          }
+        ],
+        "archetype_node_id": "at0001"
       },
-      "items" : [ {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - icd-10-gm"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - alpha-id"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/alpha-id' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/alpha-id"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - sct"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - orphanet"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://www.orpha.net' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://www.orpha.net"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kodierte Diagnose - icd-o-3"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/CodeSystem/icd-o-3' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/CodeSystem/icd-o-3"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Freitextbeschreibung"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
-        },
-        "archetype_node_id" : "at0009"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Körperstelle - snomed-ct"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0012"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Körperstelle - icd-o-3"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/icd-o-3' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/icd-o-3"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0012"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Anatomical location"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.anatomical_location.v1"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Body site name"
-          },
-          "value" : {
-            "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
-          },
-          "archetype_node_id" : "at0001"
-        }, {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Laterality"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION' available",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
-              },
-              "code_string" : "42"
-            }
-          },
-          "archetype_node_id" : "at0002"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.anatomical_location.v1"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)"
-        },
-        "value" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
-        },
-        "archetype_node_id" : "at0077"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Feststellungsdatum"
-        },
-        "value" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
-        },
-        "archetype_node_id" : "at0003"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Severity"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Severe (severity modifier) (qualifier value)",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "SNOMED CT"
-            },
-            "code_string" : "24484000"
-          }
-        },
-        "archetype_node_id" : "at0005"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Lebensphase"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.lebensphase.v0"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Beginn"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de' available",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
-              },
-              "code_string" : "42"
-            }
-          },
-          "archetype_node_id" : "at0001"
-        }, {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Ende"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de' available",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
-              },
-              "code_string" : "42"
-            }
-          },
-          "archetype_node_id" : "at0002"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.lebensphase.v0"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Multiple_coding_ICD-10-GM"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Multiple coding identifier"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "†",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "local"
-              },
-              "code_string" : "at0002"
-            }
-          },
-          "archetype_node_id" : "at0001"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Klinisch relevanter Zeitraum (Zeitpunkt der Genesung)"
-        },
-        "value" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
-        },
-        "archetype_node_id" : "at0030"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Diagnosesicherheit"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT' available",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"
-            },
-            "code_string" : "42"
-          }
-        },
-        "archetype_node_id" : "at0073"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Diagnoseerläuterung"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
-        },
-        "archetype_node_id" : "at0069"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Klinischer Status"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.problem_qualifier.v2"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Klinischer Status"
-          },
-          "value" : {
-            "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/condition-clinical' available",
-            "defining_code" : {
-              "_type" : "CODE_PHRASE",
-              "terminology_id" : {
-                "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/condition-clinical"
-              },
-              "code_string" : "42"
-            }
-          },
-          "archetype_node_id" : "at0003"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.problem_qualifier.v2"
-      } ],
-      "archetype_node_id" : "at0001"
+      "archetype_node_id": "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
     },
-    "archetype_node_id" : "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
-  } ],
-  "archetype_node_id" : "openEHR-EHR-COMPOSITION.report.v1"
+    {
+      "_type": "EVALUATION",
+      "name": {
+        "_type": "DV_TEXT",
+        "value": "Sekundärcode"
+      },
+      "archetype_details": {
+        "archetype_id": {
+          "value": "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+        },
+        "rm_version": "1.0.4"
+      },
+      "language": {
+        "_type": "CODE_PHRASE",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "ISO_639-1"
+        },
+        "code_string": "en"
+      },
+      "encoding": {
+        "_type": "CODE_PHRASE",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "IANA_character-sets"
+        },
+        "code_string": "ISO-10646-UTF-1"
+      },
+      "workflow_id": {
+        "_type": "OBJECT_REF",
+        "namespace": "unknown",
+        "type": "ANY",
+        "id": {
+          "_type": "GENERIC_ID",
+          "value": "778f49bf-8741-38f3-bf84-c298e402c1a2",
+          "scheme": "scheme"
+        }
+      },
+      "subject": {
+        "_type": "PARTY_SELF"
+      },
+      "provider": {
+        "_type": "PARTY_SELF"
+      },
+      "protocol": {
+        "_type": "ITEM_TREE",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "Tree"
+        },
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Letztes Dokumentationsdatum"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2022-02-03T04:05:06"
+            },
+            "archetype_node_id": "at0070"
+          }
+        ],
+        "archetype_node_id": "at0032"
+      },
+      "guideline_id": {
+        "_type": "OBJECT_REF",
+        "namespace": "unknown",
+        "type": "ANY",
+        "id": {
+          "_type": "GENERIC_ID",
+          "value": "c40e73b2-8074-3a4c-8dd2-9cf9d34aa996",
+          "scheme": "scheme"
+        }
+      },
+      "data": {
+        "_type": "ITEM_TREE",
+        "name": {
+          "_type": "DV_TEXT",
+          "value": "structure"
+        },
+        "items": [
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - icd-10-gm"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Asthma",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm"
+                },
+                "code_string": "J45"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - alpha-id"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Asthma bronchiale, nicht näher bezeichnet",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/alpha-id"
+                },
+                "code_string": "700L0"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - sct"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Asthma",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct"
+                },
+                "code_string": "195967001"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - orphanet"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Asthma",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://www.orpha.net"
+                },
+                "code_string": "905"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - icd-o-3"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Malignant neoplasm of upper lobe, bronchus or lung",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/CodeSystem/icd-o-3"
+                },
+                "code_string": "C34.1"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Freitextbeschreibung"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Lorem ipsum"
+            },
+            "archetype_node_id": "at0009"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Körperstelle - snomed-ct"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Respiratory tract",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site"
+                },
+                "code_string": "321667001"
+              }
+            },
+            "archetype_node_id": "at0012"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Körperstelle - icd-o-3"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Upper lobe, bronchus or lung",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/icd-o-3"
+                },
+                "code_string": "C34.1"
+              }
+            },
+            "archetype_node_id": "at0012"
+          },
+          {
+            "_type": "CLUSTER",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Anatomical location"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-CLUSTER.anatomical_location.v1"
+              },
+              "rm_version": "1.0.4"
+            },
+            "items": [
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Body site name"
+                },
+                "value": {
+                  "_type": "DV_TEXT",
+                  "value": "Lorem ipsum"
+                },
+                "archetype_node_id": "at0001"
+              },
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Laterality"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "Left side",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
+                    },
+                    "code_string": "L"
+                  }
+                },
+                "archetype_node_id": "at0002"
+              }
+            ],
+            "archetype_node_id": "openEHR-EHR-CLUSTER.anatomical_location.v1"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Klinisch relevanter Zeitraum (Zeitpunkt des Auftretens)"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2024-02-08T00:00:00"
+            },
+            "archetype_node_id": "at0077"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Feststellungsdatum"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2022-02-03T04:05:06"
+            },
+            "archetype_node_id": "at0003"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Severity"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Severe",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "SNOMED CT"
+                },
+                "code_string": "24484000"
+              }
+            },
+            "archetype_node_id": "at0005"
+          },
+          {
+            "_type": "CLUSTER",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Lebensphase"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-CLUSTER.lebensphase.v0"
+              },
+              "rm_version": "1.0.4"
+            },
+            "items": [
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Beginn"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "Adulthood",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
+                    },
+                    "code_string": "424144002"
+                  }
+                },
+                "archetype_node_id": "at0001"
+              },
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Ende"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "Middle age",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
+                    },
+                    "code_string": "367640001"
+                  }
+                },
+                "archetype_node_id": "at0002"
+              }
+            ],
+            "archetype_node_id": "openEHR-EHR-CLUSTER.lebensphase.v0"
+          },
+          {
+            "_type": "CLUSTER",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Multiple_coding_ICD-10-GM"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
+              },
+              "rm_version": "1.0.4"
+            },
+            "items": [
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Multiple coding identifier"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "†",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "local"
+                    },
+                    "code_string": "at0002"
+                  }
+                },
+                "archetype_node_id": "at0001"
+              }
+            ],
+            "archetype_node_id": "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Klinisch relevanter Zeitraum (Zeitpunkt der Genesung)"
+            },
+            "value": {
+              "_type": "DV_DATE_TIME",
+              "value": "2022-02-03T04:05:06"
+            },
+            "archetype_node_id": "at0030"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Diagnosesicherheit"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Confirmed diagnosis",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"
+                },
+                "code_string": "G"
+              }
+            },
+            "archetype_node_id": "at0073"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Diagnoseerläuterung"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Patient has a history of asthma."
+            },
+            "archetype_node_id": "at0069"
+          },
+          {
+            "_type": "CLUSTER",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Klinischer Status"
+            },
+            "archetype_details": {
+              "archetype_id": {
+                "value": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+              },
+              "rm_version": "1.0.4"
+            },
+            "items": [
+              {
+                "_type": "ELEMENT",
+                "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Klinischer Status"
+                },
+                "value": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "Active",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {
+                      "_type": "TERMINOLOGY_ID",
+                      "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/condition-clinical"
+                    },
+                    "code_string": "active"
+                  }
+                },
+                "archetype_node_id": "at0003"
+              }
+            ],
+            "archetype_node_id": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+          }
+        ],
+        "archetype_node_id": "at0001"
+      },
+      "archetype_node_id": "openEHR-EHR-EVALUATION.problem_diagnosis.v1"
+    }
+  ],
+  "archetype_node_id": "openEHR-EHR-COMPOSITION.report.v1"
 }

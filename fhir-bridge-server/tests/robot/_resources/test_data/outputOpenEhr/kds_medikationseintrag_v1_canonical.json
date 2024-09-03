@@ -3,7 +3,6 @@
     "name": {
         "_type": "DV_TEXT",
         "value": "Medikamentenliste_v1"
-    },
     "archetype_details": {
         "archetype_id": {
             "value": "openEHR-EHR-COMPOSITION.medication_list.v1"
@@ -95,7 +94,7 @@
                             },
                             "value": {
                                 "_type": "DV_TEXT",
-                                "value": "medlist-001"
+                                "value": "encounter-id-1245"
                             },
                             "archetype_node_id": "at0001"
                         }
