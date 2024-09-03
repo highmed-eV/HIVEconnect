@@ -19,29 +19,24 @@
 
 *** Settings ***
 Resource                ${EXECDIR}/robot/_resources/suite_settings.robot
-
-
 Force Tags              bundle_create    create
 
-
-
-*** Variables ***
-
-
-
-
 *** Test Cases ***
-001 Create Versorgungsstellenkontakt FHIR Bundle
+
+001 Create FHIR Bundles
     [Documentation]         1. *CREATE* new EHR record\n\n
-        ...                 2. *CREATE* FHIR bundle versorgungsstellenkontakt_bundle.json and post it to FHIR server\n\n
+        ...                 2. *CREATE* FHIR bundle kds_diagnose_bundle.json and post it to FHIR server\n\n
         ...                 3. *VALIDATE* the FHIR response status\n\n
         ...                 4. *CREATE* openEHR AQL and post it to openEHR server\n\n
         ...                 5. *VALIDATE* the content of the AQL response.
-    [Tags]             	versorgungsstellenkontakt-fhir-bundle    valid   not-ready    not-implemented
-
-	ehr.create new ehr    000_ehr_status.json
-    versorgungsstellenkontakt.create fhir bundle    Versorgungsstellenkontakt    versorgungsstellenkontakt_bundle.json
-    versorgungsstellenkontakt.validate response - 201
-
-    versorgungsstellenkontakt.create openehr aql    Versorgungsstellenkontakt
-    versorgungsstellenkontakt.validate content response_aql - 201
+    [Tags]             	    fhir-bundle    valid   not-ready    not-implemented
+    ehr.create new ehr    000_ehr_status.json
+    [Setup]    fhirbridge.load test cases from json
+     FOR   ${testcase}    IN    @{TEST_CASES}
+           ${testCaseName}=    Get From Dictionary    ${testcase}    testCaseName
+           ${inputBundleFileName}=    Get From Dictionary    ${testcase}    inputBundleFileName
+           ${expectedOpenEhrFileName}=    Get From Dictionary    ${testcase}    expectedOpenEhrFileName
+           ${openEhrTemplateId}=    Get From Dictionary    ${testcase}    openEhrTemplateId
+           fhirbridge.create and validate fhir bundle    ${testCaseName}    ${inputBundleFileName}    ${expectedOpenEhrFileName}    ${openEhrTemplateId}
+     END
+     [Teardown]    Log    All FHIR Bundles and AQLs validated.
