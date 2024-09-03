@@ -37,6 +37,15 @@
                     ],
                     "text": "Medication list for admission"
                 },
+                "category": {
+                    "coding": [
+                    {
+                        "system": "http://hl7.org/fhir/ValueSet/medication-statement-category",
+                        "code": "outpatient",
+                        "display": "Outpatient"
+                    }
+                    ]
+                },                
                 "subject": {
                     "identifier": {
                         "system": "urn:ietf:rfc:4122",

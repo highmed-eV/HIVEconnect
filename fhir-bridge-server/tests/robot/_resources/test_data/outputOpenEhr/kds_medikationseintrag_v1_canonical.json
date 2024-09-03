@@ -238,14 +238,14 @@
                                 },
                                 "value": {
                                     "_type": "DV_CODED_TEXT",
-                                    "value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/medication-statement-category' available",
+                                    "value": "Outpatient",
                                     "defining_code": {
                                         "_type": "CODE_PHRASE",
                                         "terminology_id": {
                                             "_type": "TERMINOLOGY_ID",
-                                            "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/medication-statement-category"
+                                            "value": "http://hl7.org/fhir/ValueSet/medication-statement-category"
                                         },
-                                        "code_string": "42"
+                                        "code_string": "outpatient"
                                     }
                                 },
                                 "archetype_node_id": "at0002"
