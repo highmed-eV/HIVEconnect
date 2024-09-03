@@ -24,19 +24,25 @@ Force Tags              bundle_create    create
 *** Test Cases ***
 
 001 Create FHIR Bundles
-    [Documentation]         1. *CREATE* new EHR record\n\n
-        ...                 2. *CREATE* FHIR bundle kds_diagnose_bundle.json and post it to FHIR server\n\n
-        ...                 3. *VALIDATE* the FHIR response status\n\n
-        ...                 4. *CREATE* openEHR AQL and post it to openEHR server\n\n
-        ...                 5. *VALIDATE* the content of the AQL response.
+    [Documentation]         1. *LOAD* all the test cases from test_case_list.json file\n\n
+        ...                 2. *RUN* all the test cases for each bundle in a loop.\n\n
+        ...                 3. *CREATE* new EHR record\n\n
+        ...                 4. *CREATE* FHIR bundle json and post it to FHIR server\n\n
+        ...                 5. *VALIDATE* the FHIR response status\n\n
+        ...                 6. *CREATE* openEHR AQL and post it to openEHR server\n\n
+        ...                 7. *VALIDATE* the content of the AQL response.
     [Tags]             	    fhir-bundle    valid   not-ready    not-implemented
     ehr.create new ehr    000_ehr_status.json
+    # load all the testcases from the test_case_list.json file
     [Setup]    fhirbridge.load test cases from json
+    # loop to run the robot test case for each test cases
      FOR   ${testcase}    IN    @{TEST_CASES}
+           # set values for each key variable in the each test case
            ${testCaseName}=    Get From Dictionary    ${testcase}    testCaseName
            ${inputBundleFileName}=    Get From Dictionary    ${testcase}    inputBundleFileName
            ${expectedOpenEhrFileName}=    Get From Dictionary    ${testcase}    expectedOpenEhrFileName
            ${openEhrTemplateId}=    Get From Dictionary    ${testcase}    openEhrTemplateId
+           # create and validate for each of the test cases
            fhirbridge.create and validate fhir bundle    ${testCaseName}    ${inputBundleFileName}    ${expectedOpenEhrFileName}    ${openEhrTemplateId}
      END
-     [Teardown]    Log    All FHIR Bundles and AQLs validated.
+     [Teardown]    Log    All FHIR Bundles and OpenEHR AQLs validated.
