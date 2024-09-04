@@ -145,6 +145,7 @@
                 "_type": "DV_TEXT",
                 "value": "Diagnoserolle"
               },
+              "value" : {
                 "_type": "DV_CODED_TEXT",
                 "value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/diagnosis-role' available",
                 "defining_code": {
@@ -346,7 +347,7 @@
                 },
                 "value": {
                   "_type": "DV_TEXT",
-                  "value": "Lorem ipsum"
+                  "value": "Not mapped"
                 },
                 "archetype_node_id": "at0001"
               },
@@ -358,14 +359,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION' available",
+                  "value": "Upper lobe",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
-                      "value": "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
+                      "value": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation"
                     },
-                    "code_string": "42"
+                    "code_string": "U"
                   }
                 },
                 "archetype_node_id": "at0002"
@@ -384,18 +385,6 @@
               "value": "2024-02-08T00:00:00"
             },
             "archetype_node_id": "at0077"
-          },
-          {
-            "_type": "ELEMENT",
-            "name": {
-              "_type": "DV_TEXT",
-              "value": "Feststellungsdatum"
-            },
-            "value": {
-              "_type": "DV_DATE_TIME",
-              "value": "2022-02-03T04:05:06"
-            },
-            "archetype_node_id": "at0003"
           },
           {
             "_type": "ELEMENT",
@@ -494,14 +483,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "†",
+                  "value": "Primary code in multiple coding: †",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
-                      "value": "local"
+                      "value": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc"
                     },
-                    "code_string": "at0002"
+                    "code_string": "P: at0002 This is internal coded in the template"
                   }
                 },
                 "archetype_node_id": "at0001"
@@ -850,7 +839,7 @@
                 },
                 "value": {
                   "_type": "DV_TEXT",
-                  "value": "Lorem ipsum"
+                  "value": "Not mapped"
                 },
                 "archetype_node_id": "at0001"
               },
@@ -998,14 +987,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "†",
+                  "value": "Primary code in multiple coding: †",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
-                      "value": "local"
+                      "value": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc"
                     },
-                    "code_string": "at0002"
+                    "code_string": "M: at0002 this will fail as it is internal coded int he template"
                   }
                 },
                 "archetype_node_id": "at0001"
