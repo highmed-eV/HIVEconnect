@@ -18,7 +18,7 @@
           {
             "use": "official",
             "system": "http://example-laboratory-system.com/identifiers/reports",
-            "value": "12345",
+            "value": "FILL-12345",
             "type": {
               "coding": [
                 {
@@ -290,7 +290,7 @@
                 "display": "Aspiration - action"
               }
             ],
-            "text": "Lorem ipsum"
+            "text": "Aspiration"
           },
           "duration": {
             "value": 5,
