@@ -147,14 +147,14 @@
               },
               "value" : {
                 "_type": "DV_CODED_TEXT",
-                "value": "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/diagnosis-role' available",
+                "value": "Problem List Item",
                 "defining_code": {
                   "_type": "CODE_PHRASE",
                   "terminology_id": {
                     "_type": "TERMINOLOGY_ID",
                     "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/diagnosis-role"
                   },
-                  "code_string": "42"
+                  "code_string": "problem-list-item"
                 }
               },
               "archetype_node_id": "at0063"
@@ -282,14 +282,54 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Hypertension",
+              "value": "Malignant neoplasm of upper lobe of lung",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct"
                 },
-                "code_string": "38341003"
+                "code_string": "254626006"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - orphanet"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "lung cancer associated with hereditary syndromes",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://www.orpha.net"
+                },
+                "code_string": "830"
+              }
+            },
+            "archetype_node_id": "at0002"
+          },
+          {
+            "_type": "ELEMENT",
+            "name": {
+              "_type": "DV_TEXT",
+              "value": "Kodierte Diagnose - icd-o-3"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Malignant neoplasm of upper lobe, bronchus or lung",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/CodeSystem/icd-o-3"
+                },
+                "code_string": "C34.1"
               }
             },
             "archetype_node_id": "at0002"
@@ -674,14 +714,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Asthma",
+              "value": "Malignant neoplasm of lymph nodes",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm"
                 },
-                "code_string": "J45"
+                "code_string": "C77.0"
               }
             },
             "archetype_node_id": "at0002"
@@ -694,14 +734,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Asthma bronchiale, nicht näher bezeichnet",
+              "value": "secondary malignant neoplasm of lymph nodes",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/alpha-id"
                 },
-                "code_string": "700L0"
+                "code_string": "057E3"
               }
             },
             "archetype_node_id": "at0002"
@@ -714,14 +754,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Asthma",
+              "value": "Secondary malignant neoplasm of lymph node",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "//fhir.hl7.org//ValueSet/$expand?url=http://snomed.info/sct"
                 },
-                "code_string": "195967001"
+                "code_string": "128462008"
               }
             },
             "archetype_node_id": "at0002"
@@ -734,14 +774,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Asthma",
+              "value": "lung cancers associated with hereditary syndromes",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "//fhir.hl7.org//ValueSet/$expand?url=http://www.orpha.net"
                 },
-                "code_string": "905"
+                "code_string": "1777"
               }
             },
             "archetype_node_id": "at0002"
@@ -754,14 +794,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Malignant neoplasm of upper lobe, bronchus or lung",
+              "value": "Malignant neoplasm of lymph nodes in the thorax",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/CodeSystem/icd-o-3"
                 },
-                "code_string": "C34.1"
+                "code_string": "C77.0"
               }
             },
             "archetype_node_id": "at0002"
@@ -1042,7 +1082,7 @@
             },
             "value": {
               "_type": "DV_TEXT",
-              "value": "Patient has a history of asthma."
+              "value": "Patient confirmed for secondary malignant neoplasm of lymph node."
             },
             "archetype_node_id": "at0069"
           },

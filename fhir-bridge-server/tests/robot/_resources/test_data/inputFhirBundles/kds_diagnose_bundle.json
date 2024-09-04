@@ -115,8 +115,8 @@
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-              "code": "J45",
-              "display": "Asthma",
+              "code": "C34.1",
+              "display": "Malignant neoplasm of the upper lobe of the lung",
               "extension": [
                 {
                   "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
@@ -160,26 +160,26 @@
             },
             {
               "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
-              "code": "C34.1",
-              "display": "Malignant neoplasm of upper lobe, bronchus or lung"
+              "code": "C77.0",
+              "display": "Malignant neoplasm of lymph nodes"
             },
             {
               "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
-              "code": "700L0",
-              "display": "Asthma bronchiale, nicht näher bezeichnet"
+              "code": "057E3",
+              "display": "secondary malignant neoplasm of lymph nodes"
             },
             {
               "system": "http://www.orpha.net",
-              "code": "905",
-              "display": "Asthma"
+              "code": "1777",
+              "display": "lung cancer associated with hereditary syndromes"
             },
             {
               "system": "http://snomed.info/sct",
-              "code": "195967001",
-              "display": "Asthma"
+              "code": "128462008",
+              "display": "Secondary malignant neoplasm of lymph node"
             }
           ],
-          "text": "Asthma"
+          "text": "Secondary malignant neoplasm of lymph node"
         },
         "bodySite": [
           {
@@ -277,7 +277,7 @@
         "note": [
           {
 
-            "text": "Patient has a history of asthma.",
+            "text": "Patient confirmed for secondary malignant neoplasm of lymph node.",
             "time": "2024-02-09T12:00:00Z"
           }
         ]
@@ -406,13 +406,13 @@
           },
           {
             "system": "http://fhir.de/CodeSystem/bfarm/alpha-id",
-            "code": "800B0",
+            "code": "098H5",
             "display": "Malignant neoplasm of upper lobe, bronchus or lung, unspecified"
           },
           {
             "system": "http://snomed.info/sct",
-            "code": "38341003",
-            "display": "Hypertension"
+            "code": "254626006",
+            "display": "Malignant neoplasm of the upper lobe of lung"
           },
           {
             "system": "http://www.orpha.net",
@@ -420,7 +420,7 @@
             "display": "Malignant neoplasm of upper lobe, bronchus or lung"
           }
         ],
-        "text": "Hypertension"
+        "text": "Malignant neoplasm of upper lobe, bronchus or lung"
       },
       "bodySite": [
         {
