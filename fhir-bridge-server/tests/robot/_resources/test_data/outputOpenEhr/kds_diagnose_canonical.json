@@ -294,6 +294,46 @@
             "archetype_node_id": "at0002"
           },
           {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Kodierte Diagnose - orphanet"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "Malignant neoplasm of upper lobe, bronchus or lung",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://www.orpha.net"
+                },
+                "code_string" : "830"
+              }
+            },
+            "archetype_node_id" : "at0002"
+          },
+          {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Kodierte Diagnose - icd-o-3"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "Malignant neoplasm of upper lobe, bronchus or lung",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/CodeSystem/icd-o-3"
+                },
+                "code_string" : "C34.1"
+              }
+            },
+            "archetype_node_id" : "at0002"
+          },
+          {
             "_type": "ELEMENT",
             "name": {
               "_type": "DV_TEXT",
