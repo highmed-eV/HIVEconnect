@@ -1,3 +1,5 @@
+*** Settings ***
+Library    JSONLibrary
 *** Keywords ***
 load test cases from json
     # load json from test_case_list.json file
@@ -45,7 +47,23 @@ create openehr aql
 
 POST /BundleAQL with ehr reference
     [Arguments]         ${openehr_template}     ${openehr_canonical_file_name}
+
+    #    Replace get_composition.json file name with the variable.
+    ${aql_body}=    Load JSON From File    ${EHR_COMPOSITION}/../aql/get_composition.json
+
+    # Extract the query string
+    ${query_string}=   Get Value From Json    ${aql_body}    $.q
+
+    # Replace placeholders with new values
+    ${updated_query_string}=    Replace String    ${query_string}[0]    {{ehrUid}}    ${ehr_id}
+
+    ${updated_query_string}=    Replace String    ${updated_query_string}    {{templateId}}    ${openehr_template}
+
+    # Update the JSON content with the new query string
+    ${aql_body}=      Update Value To Json     ${aql_body}    $.q    ${updated_query_string}
+
     # replace the template id - ${openehr_template} in the aql and pass to openehr cdr
+
     # POST CALL TO GET AQL RESPONSE
     # &{resp_ehr}             POST    ${BASE_URL}/ehrbase/rest/openehr/v1/query/aql    body=${payload}
     # Output Debug Info To Console

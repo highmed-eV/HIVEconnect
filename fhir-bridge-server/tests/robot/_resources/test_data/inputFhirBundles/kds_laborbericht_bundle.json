@@ -159,6 +159,12 @@
             ]
           }
         ],
+        "basedOn": [
+          {
+            "reference": "ServiceRequest/servicerequest-lab-id-1234",
+            "display": "Blood Glucose Test"
+          }
+        ],
         "code": {
           "coding": [
             {

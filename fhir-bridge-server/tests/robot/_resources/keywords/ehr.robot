@@ -39,3 +39,4 @@ create new ehr
 #                        Set Suite Variable    ${response}    ${resp}
 #                        extract subject_id from response
 #						extract ehr_id from response
+

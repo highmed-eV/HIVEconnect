@@ -11,7 +11,7 @@
       },
       "resource": {
         "resourceType": "ServiceRequest",
-        "id": "example-servicerequest-lab",
+        "id": "servicerequest-lab-id-1234",
         "meta": {
           "source" : "Hospital-abc",
           "profile": [
@@ -31,7 +31,7 @@
               "text": "Medical record identifier"
             },
             "system": "https://fhir.acme.org/identifiers/patient",
-            "value": "123456",
+            "value": "123456-0_KH",
             "assigner": {
               "reference": "Organization/example-lab",
               "display": "Example Laboratory"
