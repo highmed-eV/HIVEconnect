@@ -49,7 +49,7 @@
     "laborbericht/laborbefund/pro_laboranalyt:0/probe_id/identifier_value|id"  : "dev/null",
     "laborbericht/laborbefund/pro_laboranalyt:0/kommentar:0"  : "Lorem ipsum",
     "laborbericht/laborbefund/schlussfolgerung"  : "The observation result is within normal range, but further review may be needed.",
-    "laborbericht/laborbefund/details_der_testanforderung/identifikation_der_laboranforderung/identifier_value|id"  : "dev/null",
+    "laborbericht/laborbefund/details_der_testanforderung/identifikation_der_laboranforderung/identifier_value|id"  : "123456-0_KH",
     "laborbericht/laborbefund/language|code"  : "de",
     "laborbericht/laborbefund/language|terminology"  : "ISO_639-1",
     "laborbericht/laborbefund/encoding|code"  : "UTF-8",
