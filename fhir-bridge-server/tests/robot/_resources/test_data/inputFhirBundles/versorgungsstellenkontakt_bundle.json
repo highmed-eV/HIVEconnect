@@ -94,7 +94,7 @@
               ]
             },
             "system": "http://hospital.smarthealthit.org",
-            "value": "12345"
+            "value": "encounter-id-1245"
           }
         ],
         "serviceType": {

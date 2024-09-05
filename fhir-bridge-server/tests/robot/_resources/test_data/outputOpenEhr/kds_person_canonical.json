@@ -81,7 +81,7 @@
         },
         "value" : {
           "_type" : "DV_IDENTIFIER",
-          "id" : "dev/null"
+          "id" : "patient-id-1234"
         },
         "archetype_node_id" : "at0004"
       } ],
@@ -179,7 +179,7 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "divers",
+          "value" : "Patient.gender.extension:other-amtlich",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
@@ -256,7 +256,109 @@
           },
           "rm_version" : "1.0.4"
         },
-        "items" : [ {
+        "items" : [ 
+          {
+            "_type" : "CLUSTER",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Name"
+            },
+            "archetype_details" : {
+              "archetype_id" : {
+                "value" : "openEHR-EHR-CLUSTER.structured_name.v1"
+              },
+              "rm_version" : "1.0.4"
+            },
+            "items" : [ {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Namensart"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "official",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/name-use"
+                  },
+                  "code_string" : "official"
+                }
+              },
+              "archetype_node_id" : "at0001"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Namensart"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "John"
+              },
+              "archetype_node_id" : "at0001"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Vollständiger Name"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Doe"
+              },
+              "archetype_node_id" : "at0002"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Vorname"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Mr"
+              },
+              "archetype_node_id" : "at0003"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Familienname-Namenszusatz"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Doe"
+              },
+              "archetype_node_id" : "at0005"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Familienname-Nachname"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "John"
+              },
+              "archetype_node_id" : "at0005"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Familienname-Vorsatzwort"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "zu"
+              },
+              "archetype_node_id" : "at0005"
+            }
+            ],
+            "archetype_node_id" : "openEHR-EHR-CLUSTER.structured_name.v1"
+          },  
+        {
           "_type" : "CLUSTER",
           "name" : {
             "_type" : "DV_TEXT",
@@ -276,40 +378,18 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "Official",
+              "value" : "maiden",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
                   "_type" : "TERMINOLOGY_ID",
                   "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/name-use"
                 },
-                "code_string" : "official"
+                "code_string" : "maiden"
               }
             },
             "archetype_node_id" : "at0001"
-          }, {
-            "_type" : "ELEMENT",
-            "name" : {
-              "_type" : "DV_TEXT",
-              "value" : "Vollständiger Name"
-            },
-            "value" : {
-              "_type" : "DV_TEXT",
-              "value" : "John"
-            },
-            "archetype_node_id" : "at0002"
-          }, {
-            "_type" : "ELEMENT",
-            "name" : {
-              "_type" : "DV_TEXT",
-              "value" : "Familienname"
-            },
-            "value" : {
-              "_type" : "DV_TEXT",
-              "value" : "Smith"
-            },
-            "archetype_node_id" : "at0005"
-          }, {
+          },   {
             "_type" : "ELEMENT",
             "name" : {
               "_type" : "DV_TEXT",
@@ -317,7 +397,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Von"
             },
             "archetype_node_id" : "at0005"
           }, {
@@ -339,20 +419,9 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "zu"
             },
             "archetype_node_id" : "at0005"
-          }, {
-            "_type" : "ELEMENT",
-            "name" : {
-              "_type" : "DV_TEXT",
-              "value" : "Suffix"
-            },
-            "value" : {
-              "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
-            },
-            "archetype_node_id" : "at0006"
           }
           ],
           "archetype_node_id" : "openEHR-EHR-CLUSTER.structured_name.v1"
@@ -364,7 +433,7 @@
           },
           "value" : {
             "_type" : "DV_IDENTIFIER",
-            "id" : "dev/null"
+            "id" : "GKV123456789"
           },
           "archetype_node_id" : "at0003"
         }, {
@@ -375,7 +444,7 @@
           },
           "value" : {
             "_type" : "DV_IDENTIFIER",
-            "id" : "dev/null"
+            "id" : "PID987654321"
           },
           "archetype_node_id" : "at0003"
         }, {
@@ -386,7 +455,7 @@
           },
           "value" : {
             "_type" : "DV_IDENTIFIER",
-            "id" : "dev/null"
+            "id" : "PKV543210987"
           },
           "archetype_node_id" : "at0003"
         }, {
@@ -431,7 +500,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Wohnung 3"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -442,21 +511,10 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Mitte"
             },
             "archetype_node_id" : "at0002"
-          }, {
-            "_type" : "ELEMENT",
-            "name" : {
-              "_type" : "DV_TEXT",
-              "value" : "Stadt"
-            },
-            "value" : {
-              "_type" : "DV_TEXT",
-              "value" : "Metropolis"
-            },
-            "archetype_node_id" : "at0002"
-          }, {
+          },  {
             "_type" : "ELEMENT",
             "name" : {
               "_type" : "DV_TEXT",
@@ -464,7 +522,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Hamburg"
             },
             "archetype_node_id" : "at0002"
           }, {
@@ -474,16 +532,7 @@
               "value" : "Bundesland"
             },
             "value" : {
-              "_type" : "DV_CODED_TEXT",
-              "value" : "Hamburg",
-              "defining_code" : {
-                "_type" : "CODE_PHRASE",
-                "terminology_id" : {
-                  "_type" : "TERMINOLOGY_ID",
-                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/iso/bundeslaender"
-                },
-                "code_string" : "DE-HH"
-              }
+              "value" : "Hamburg"
             },
             "archetype_node_id" : "at0004"
           }, {
@@ -524,14 +573,14 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "Postal",
+              "value" : "both",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
                   "_type" : "TERMINOLOGY_ID",
                   "value" : "address-type"
                 },
-                "code_string" : "postal"
+                "code_string" : "both"
               }
             },
             "archetype_node_id" : "at0010"
@@ -543,7 +592,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Check"
             },
             "archetype_node_id" : "at0010"
           }, {
@@ -554,7 +603,7 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/address-use' available",
+              "value" : "Not mapped",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
@@ -573,7 +622,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Not mapped"
             },
             "archetype_node_id" : "at0018"
           } ],
@@ -598,7 +647,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "PO Box 456"
+              "value" : "Kreuzberg"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -609,7 +658,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Kreuzberg"
             },
             "archetype_node_id" : "at0002"
           }, {
@@ -631,7 +680,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Berlin"
             },
             "archetype_node_id" : "at0002"
           }, {
@@ -661,7 +710,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "10115"
+              "value" : "10997"
             },
             "archetype_node_id" : "at0005"
           }, {
@@ -710,7 +759,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "official"
             },
             "archetype_node_id" : "at0010"
           }, {
@@ -721,7 +770,7 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/address-use' available",
+              "value" : "Not mapped",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
@@ -740,7 +789,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "Lorem ipsum"
+              "value" : "Not mapped"
             },
             "archetype_node_id" : "at0018"
           } ],
@@ -891,14 +940,14 @@
           },
           "value" : {
             "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship' available",
+            "value" : "Emergency Contact",
             "defining_code" : {
               "_type" : "CODE_PHRASE",
               "terminology_id" : {
                 "_type" : "TERMINOLOGY_ID",
                 "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship"
               },
-              "code_string" : "42"
+              "code_string" : "emergency"
             }
           },
           "archetype_node_id" : "at0004"
@@ -1029,7 +1078,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "Not mapped"
           },
           "archetype_node_id" : "at0010"
         } ],

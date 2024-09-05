@@ -93,7 +93,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "encounter-id-1245"
           },
           "archetype_node_id" : "at0001"
         } ],
@@ -164,7 +164,7 @@
         },
         "value" : {
           "_type" : "DV_IDENTIFIER",
-          "id" : "dev/null"
+          "id" : "123456"
         },
         "archetype_node_id" : "at0010"
       }, {
@@ -187,7 +187,7 @@
           },
           "value" : {
             "_type" : "DV_IDENTIFIER",
-            "id" : "dev/null"
+            "id" : "Example Hospital"
           },
           "archetype_node_id" : "at0003"
         } ],
@@ -200,7 +200,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
+          "value" : "Medical record identifier"
         },
         "archetype_node_id" : "at0011"
       }, {
@@ -264,14 +264,14 @@
           },
           "value" : {
             "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/ValueSet/ValueSetOrderCodes' available",
+            "value" : "Blood Glucose Test",
             "defining_code" : {
               "_type" : "CODE_PHRASE",
               "terminology_id" : {
                 "_type" : "TERMINOLOGY_ID",
-                "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/ValueSet/ValueSetOrderCodes"
+                "value" : "http://loinc.org"
               },
-              "code_string" : "42"
+              "code_string" : "2345-7"
             }
           },
           "archetype_node_id" : "at0121"
@@ -333,7 +333,7 @@
             },
             "value" : {
               "_type" : "DV_IDENTIFIER",
-              "id" : "dev/null"
+              "id" : "SP-987654"
             },
             "archetype_node_id" : "at0001"
           }, {
@@ -344,7 +344,7 @@
             },
             "value" : {
               "_type" : "DV_DATE_TIME",
-              "value" : "2022-02-03T04:05:06"
+              "value" : "2024-08-24T09:00:00"
             },
             "archetype_node_id" : "at0015"
           }, {
@@ -355,7 +355,7 @@
             },
             "value" : {
               "_type" : "DV_IDENTIFIER",
-              "id" : "dev/null"
+              "id" : "Dr. John Doe"
             },
             "archetype_node_id" : "at0070"
           } ],
@@ -368,7 +368,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "Sample collected in the morning."
           },
           "archetype_node_id" : "at0150"
         } ],
