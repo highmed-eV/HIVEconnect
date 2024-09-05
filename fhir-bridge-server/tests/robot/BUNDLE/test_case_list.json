@@ -1,0 +1,64 @@
+{
+  "testcases": [
+    {
+      "testCaseName": "kdsdiagnose",
+      "inputBundleFileName": "kds_diagnose_bundle.json",
+      "expectedOpenEhrFileName": "kds_diagnose_canonical.json",
+      "openEhrTemplateId": "KDS_Diagnose"
+    },
+    {
+      "testCaseName": "kdslaborauftrag",
+      "inputBundleFileName": "kds_laborauftrag_bundle.json",
+      "expectedOpenEhrFileName": "kds_laborauftrag_canonical.json",
+      "openEhrTemplateId": "KDS_Laborauftrag"
+    },
+    {
+      "testCaseName": "kdslaborbericht",
+      "inputBundleFileName": "kds_laborbericht_bundle.json",
+      "expectedOpenEhrFileName": "kds_laborbericht_canonical.json",
+      "openEhrTemplateId": "KDS_Laborbericht"
+    },
+    {
+      "testCaseName": "kdsmedikamentenverabreichungen",
+      "inputBundleFileName": "kds_medikamentenverabreichungen_bundle.json",
+      "expectedOpenEhrFileName": "kds_medikamentenverabreichungen_canonical.json",
+      "openEhrTemplateId": "KDS_Medikamentenverabreichungen"
+    },
+    {
+      "testCaseName": "kdsmedikationseintrag",
+      "inputBundleFileName": "kds_medikationseintrag_bundle.json",
+      "expectedOpenEhrFileName": "kds_medikationseintrag_v1_canonical.json",
+      "openEhrTemplateId": "KDS_Medikationseintrag_v1"
+    },
+    {
+      "testCaseName": "kdsperson",
+      "inputBundleFileName": "kds_person_bundle.json",
+      "expectedOpenEhrFileName": "kds_person_canonical.json",
+      "openEhrTemplateId": "KDS_Person"
+    },
+    {
+      "testCaseName": "kdsprozedur",
+      "inputBundleFileName": "kds_prozedur_bundle.json",
+      "expectedOpenEhrFileName": "kds_prozedur_canonical.json",
+      "openEhrTemplateId": "KDS_Prozedur"
+    },
+    {
+      "testCaseName": "stationärerversorgungsfall",
+      "inputBundleFileName": "stationarer_versorgungsfall_bundle.json",
+      "expectedOpenEhrFileName": "stationarer_versorgungsfall_canonical.json",
+      "openEhrTemplateId": "StationÃ¤rer Versorgungsfall"
+    },
+    {
+      "testCaseName": "studienteilnahme",
+      "inputBundleFileName": "studienteilnahme_bundle.json",
+      "expectedOpenEhrFileName": "studienteilnahme_canonical.json",
+      "openEhrTemplateId": "Studienteilnahme"
+    },
+    {
+      "testCaseName": "versorgungsstellenkontakt",
+      "inputBundleFileName": "kds_diagnose_bundle.json",
+      "expectedOpenEhrFileName": "versorgungsstellenkontakt_canonical.json",
+      "openEhrTemplateId": "Versorgungsstellenkontakt"
+    }
+  ]
+}

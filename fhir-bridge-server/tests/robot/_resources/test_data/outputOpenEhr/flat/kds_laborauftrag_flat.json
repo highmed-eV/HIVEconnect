@@ -2,7 +2,7 @@
     "request_for_service/category|value": "event",
     "request_for_service/category|code": "433",
     "request_for_service/category|terminology": "openehr",
-    "request_for_service/context/case_identification/case_identifier": "Lorem ipsum",
+    "request_for_service/context/case_identification/case_identifier": "encounter-id-1245",
     "request_for_service/context/start_time": "2022-02-03T04:05:06",
     "request_for_service/context/setting|value": "home",
     "request_for_service/context/setting|code": "225",

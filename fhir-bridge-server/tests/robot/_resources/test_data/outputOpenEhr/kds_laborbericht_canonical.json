@@ -81,7 +81,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "12345"
+          "value" : "FILL-12345"
         },
         "archetype_node_id" : "at0002"
       }, {
@@ -192,7 +192,7 @@
           },
           "value" : {
             "_type" : "DV_IDENTIFIER",
-            "id" : "dev/null"
+            "id" : "encounter-12345"
           },
           "archetype_node_id" : "at0063"
         } ],
@@ -419,7 +419,7 @@
               },
               "value" : {
                 "_type" : "DV_CODED_TEXT",
-                "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/specimen-status' available",
+                "value" : "Not mapped",
                 "defining_code" : {
                   "_type" : "CODE_PHRASE",
                   "terminology_id" : {
@@ -589,7 +589,7 @@
             },
             "value" : {
               "_type" : "DV_TEXT",
-              "value" : "The observation result is within normal range, but further review may be needed."
+              "value" : "Normal blood count"
             },
             "archetype_node_id" : "at0057"
           } ],
