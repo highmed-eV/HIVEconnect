@@ -36,7 +36,8 @@
         ],
         "basedOn": [
           {
-            "reference": "http://external.fhir.server/ServiceRequest/111"
+            "reference": "ServiceRequest/servicerequest-lab-id-1234",
+            "display": "Blood Glucose Test"
           }
         ],
         "status": "final",

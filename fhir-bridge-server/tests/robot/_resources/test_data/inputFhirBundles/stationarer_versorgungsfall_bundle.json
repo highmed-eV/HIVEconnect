@@ -132,12 +132,12 @@
               "use": {
                 "coding": [
                   {
-                    "system": "http://fhir.de/CodeSystem/dki-diagnosetyp",
+                    "system": "http://fhir.de/CodeSystem/KontaktDiagnoseProzedur",
                     "code": "referral-diagnosis",
-                    "display": "Einweisungs-/Überweisungsdiagnos"
+                    "display": "Überweisungsdiagnose"
                   },
                   {
-                    "system": "http://fhir.de/CodeSystem/dki-diagnosesubtyp",
+                    "system": "http://fhir.de/CodeSystem/KontaktDiagnoseProzedur",
                     "code": "surgery-diagnosis",
                     "display": "Operationsdiagnose"
                   }
@@ -158,13 +158,22 @@
               ]
             },
             "dischargeDisposition": {
+              "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
               "extension": [
                 {
-                  "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+
                   "valueCoding": {
-                    "system": "http://fhir.de/CodeSystem/entlassungsgrund",
+                    "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                    "code": "1",
+                    "display": "arbeitsfähig entlassen"
+                  }
+                },
+                {
+
+                  "valueCoding": {
+                    "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
                     "code": "01",
-                    "display": "Reguläre Entlassung"
+                    "display": "Behandlung regulär beendet"
                   }
                 }
               ],
@@ -190,7 +199,8 @@
                 "coding": [
                   {
                     "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
-                    "code": "ro"
+                    "code": "ro",
+                    "display" : "Room"
                   }
                 ]
               },
@@ -210,7 +220,8 @@
                 "coding": [
                   {
                     "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
-                    "code": "bd"
+                    "code": "bd",
+                    "display" : "Bed"
                   }
                 ]
               },
@@ -230,7 +241,8 @@
                 "coding": [
                   {
                     "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
-                    "code": "wa"
+                    "code": "wa",
+                    "display" : "Ward"
                   }
                 ]
               },

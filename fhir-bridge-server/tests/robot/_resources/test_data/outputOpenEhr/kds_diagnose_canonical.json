@@ -474,14 +474,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Severe",
+              "value": "Severity",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "SNOMED CT"
                 },
-                "code_string": "24484000"
+                "code_string": "246112005"
               }
             },
             "archetype_node_id": "at0005"
@@ -978,14 +978,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Severe",
+              "value": "Severity",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "SNOMED CT"
                 },
-                "code_string": "24484000"
+                "code_string": "246112005"
               }
             },
             "archetype_node_id": "at0005"
