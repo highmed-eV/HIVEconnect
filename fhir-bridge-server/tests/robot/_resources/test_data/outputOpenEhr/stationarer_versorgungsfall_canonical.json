@@ -138,7 +138,7 @@
         },
         "value" : {
           "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
+          "value" : "encounter-id-12345"
         },
         "archetype_node_id" : "at0003"
       }, {
@@ -152,7 +152,8 @@
           "value" : "Lorem ipsum"
         },
         "archetype_node_id" : "at0011"
-      }, {
+      },
+        {
         "_type" : "CLUSTER",
         "name" : {
           "_type" : "DV_TEXT",
@@ -191,14 +192,14 @@
           },
           "value" : {
             "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert' available",
+            "value" : "Innere Medizin",
             "defining_code" : {
               "_type" : "CODE_PHRASE",
               "terminology_id" : {
                 "_type" : "TERMINOLOGY_ID",
                 "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert"
               },
-              "code_string" : "42"
+              "code_string" : "0100"
             }
           },
           "archetype_node_id" : "at0024"
@@ -292,14 +293,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundErsteUndZweiteStelle' available",
+          "value" : "Krankenhausbehandlung, vollstationär",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundErsteUndZweiteStelle"
             },
-            "code_string" : "42"
+            "code_string" : "01"
           }
         },
         "archetype_node_id" : "at0013"
@@ -311,14 +312,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundDritteStelle' available",
+          "value" : "Anderes",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundDritteStelle"
             },
-            "code_string" : "42"
+            "code_string" : "0"
           }
         },
         "archetype_node_id" : "at0013"
@@ -330,14 +331,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundVierteStelle' available",
+          "value" : "Normalfall",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundVierteStelle"
             },
-            "code_string" : "42"
+            "code_string" : "1"
           }
         },
         "archetype_node_id" : "at0013"
@@ -379,7 +380,7 @@
         },
         "value" : {
           "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
+          "value" : "2022-04-03T04:05:06"
         },
         "archetype_node_id" : "at0071"
       }, {
@@ -435,7 +436,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "station-1"
           },
           "archetype_node_id" : "at0027"
         }, {
@@ -446,7 +447,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "zimmer-1"
           },
           "archetype_node_id" : "at0029"
         }, {
@@ -457,7 +458,7 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "bett-1"
           },
           "archetype_node_id" : "at0034"
         }, {
@@ -493,14 +494,14 @@
           },
           "value" : {
             "_type" : "DV_CODED_TEXT",
-            "value" : "Hospital Department",
+            "value" : "Einweisung durch einen Arzt",
             "defining_code" : {
               "_type" : "CODE_PHRASE",
               "terminology_id" : {
                 "_type" : "TERMINOLOGY_ID",
                 "value" : "local_terms"
               },
-              "code_string" : "dept"
+              "code_string" : "E"
             }
           },
           "archetype_node_id" : "at0051"
@@ -695,14 +696,14 @@
           },
           "value" : {
             "_type" : "DV_TEXT",
-            "value" : "Lorem ipsum"
+            "value" : "station-1"
           },
           "archetype_node_id" : "at0027"
         }, {
           "_type" : "ELEMENT",
           "name" : {
             "_type" : "DV_TEXT",
-            "value" : "Zimmer"
+            "value" : "Main Hospital Room 101"
           },
           "value" : {
             "_type" : "DV_TEXT",
