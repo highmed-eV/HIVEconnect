@@ -23,7 +23,8 @@
                                 }
                             ]
                         },
-                        "system": "http://localhost:8888/fhir-bridge/fhir/identifier",
+                        "use" : "official",
+                        "system": "http://localhost:8888/fhir-bridge/fhir/identifier/patient",
                         "value": "KHID123"
                     }
                 ],
@@ -61,7 +62,8 @@
                 "status": "active",
                 "extension": [
                     {
-                        "url": "http://fhir.de/ConsentManagement/StructureDefinition/DomainReference"
+                        "url": "http://fhir.de/ConsentManagement/StructureDefinition/DomainReference",
+                        "id": "domain-reference-id"
                     }
                 ],
                 "scope": {
@@ -78,7 +80,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "57016-0"
+                                "code": "57016-8",
+                                "display" : "Privacy policy acknowledgement Document"
                             }
                         ]
                     },
@@ -102,8 +105,8 @@
                 "dateTime": "2024-08-22T08:30:00Z",
                 "organization": [
                     {
-                        "reference": "Organization/1",
-                        "display": "Example Consent Organization"
+                        "reference": "Organization/example-lab",
+                        "display": "Consent Organization"
                     }
                 ],
                 "source": {
@@ -117,16 +120,21 @@
                 "policyRule": {
                     "coding": [
                         {
-                            "system": "http://hl7.org/fhir/consent-policy",
-                            "code": "policyCode"
+                            "system": "http://terminology.hl7.org/CodeSystem/consentpolicycodes",
+                            "code": "cric",
+                            "display" : "Common Rule Informed Consent"
                         }
-                    ]
+                    ],
+                    "extension" : {
+                         "url" : "http://fhir.de/ConsentManagement/StructureDefinition/Xacml"
+                    }
+
                 },
                 "provision": {
                     "type": "deny",
                     "period": {
-                        "start": "2024-08-22T08:30:00Z",
-                        "end": "2025-08-22T08:30:00Z"
+                        "start": "2023-07-22T08:30:00Z",
+                        "end": "2024-08-22T08:30:00Z"
                     },
                     "provision": {
                         "type": "permit",
@@ -138,9 +146,9 @@
                             {
                                 "coding": [
                                     {
-                                        "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-policy",
-                                        "code": "policyCode",
-                                        "display": "Consent Policy Code"
+                                        "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                                        "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                                        "display": "Patientendaten erheben, speichern, nutzen"
                                     }
                                 ]
                             }
@@ -186,6 +194,24 @@
             "request": {
                 "method": "POST",
                 "url": "Encounter"
+            }
+        },
+        {
+            "fullUrl": "urn:uuid:11e05b70-b4e6-12ec-b909-0242ac120002",
+            "request": {
+                "method": "POST",
+                "url": "Organization"
+            },
+            "resource": {
+                "resourceType": "Organization",
+                "id": "example-lab",
+                "identifier": [
+                    {
+                        "system": "http://hospital.org/organizations",
+                        "value": "ORG-001"
+                    }
+                ],
+                "name": "Example Hospital"
             }
         }
     ]
