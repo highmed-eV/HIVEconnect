@@ -1,0 +1,388 @@
+{
+  "_type" : "COMPOSITION",
+  "name" : {
+    "_type" : "DV_TEXT",
+    "value" : "Request for service"
+  },
+  "archetype_details" : {
+    "archetype_id" : {
+      "value" : "openEHR-EHR-COMPOSITION.request.v1"
+    },
+    "template_id" : {
+      "value" : "KDS_Laborauftrag"
+    },
+    "rm_version" : "1.0.4"
+  },
+  "language" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_639-1"
+    },
+    "code_string" : "en"
+  },
+  "territory" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_3166-1"
+    },
+    "code_string" : "DE"
+  },
+  "category" : {
+    "_type" : "DV_CODED_TEXT",
+    "value" : "event",
+    "defining_code" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "openehr"
+      },
+      "code_string" : "433"
+    }
+  },
+  "composer" : {
+    "_type" : "PARTY_IDENTIFIED",
+    "name" : "Max Mustermann"
+  },
+  "context" : {
+    "_type" : "EVENT_CONTEXT",
+    "start_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "end_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "setting" : {
+      "_type" : "DV_CODED_TEXT",
+      "value" : "home",
+      "defining_code" : {
+        "_type" : "CODE_PHRASE",
+        "terminology_id" : {
+          "_type" : "TERMINOLOGY_ID",
+          "value" : "openehr"
+        },
+        "code_string" : "225"
+      }
+    },
+    "other_context" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Case identification"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.case_identification.v0"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Case identifier"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "encounter-id-1245"
+          },
+          "archetype_node_id" : "at0001"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.case_identification.v0"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "health_care_facility" : {
+      "_type" : "PARTY_IDENTIFIED",
+      "name" : "DOE, John"
+    }
+  },
+  "content" : [ {
+    "_type" : "INSTRUCTION",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Laborleistung"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-INSTRUCTION.service_request.v1"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "en"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "ISO-10646-UTF-1"
+    },
+    "workflow_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "165bec18-b233-379f-9b9c-5520aaad1df5",
+        "scheme" : "scheme"
+      }
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "provider" : {
+      "_type" : "PARTY_SELF"
+    },
+    "protocol" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Auftrags-ID des anfordernden/einsendenden Systems (PLAC)"
+        },
+        "value" : {
+          "_type" : "DV_IDENTIFIER",
+          "id" : "123456"
+        },
+        "archetype_node_id" : "at0010"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Einsender"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.organisation.v1"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Identifier"
+          },
+          "value" : {
+            "_type" : "DV_IDENTIFIER",
+            "id" : "Example Hospital"
+          },
+          "archetype_node_id" : "at0003"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.organisation.v1"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Receiver order identifier"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Medical record identifier"
+        },
+        "archetype_node_id" : "at0011"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Request status"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "Completed",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "http://hl7.org/fhir/ValueSet/request-status"
+            },
+            "code_string" : "completed"
+          }
+        },
+        "archetype_node_id" : "at0127"
+      } ],
+      "archetype_node_id" : "at0008"
+    },
+    "guideline_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "a3c62047-a2a1-37a9-b728-44d9227a6746",
+        "scheme" : "scheme"
+      }
+    },
+    "narrative" : {
+      "_type" : "DV_TEXT",
+      "value" : "Lorem ipsum"
+    },
+    "wf_definition" : {
+      "_type" : "DV_PARSABLE",
+      "value" : "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Hello World</title></head><body>Hello World!</body></html>",
+      "formalism" : "text/html"
+    },
+    "activities" : [ {
+      "_type" : "ACTIVITY",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Current Activity"
+      },
+      "description" : {
+        "_type" : "ITEM_TREE",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Tree"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Name der Laborleistung"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Blood Glucose Test",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://loinc.org"
+              },
+              "code_string" : "2345-7"
+            }
+          },
+          "archetype_node_id" : "at0121"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Art der Laborleistung (Kategorie)"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Laboratory",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://terminology.hl7.org/ValueSet/observation-category"
+              },
+              "code_string" : "laboratory"
+            }
+          },
+          "archetype_node_id" : "at0148"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Intent"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Order",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "http://hl7.org/fhir/request-intent"
+              },
+              "code_string" : "order"
+            }
+          },
+          "archetype_node_id" : "at0065"
+        }, {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Specimen"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.specimen.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Laboratory specimen identifier"
+            },
+            "value" : {
+              "_type" : "DV_IDENTIFIER",
+              "id" : "SP-987654"
+            },
+            "archetype_node_id" : "at0001"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Collection date/time"
+            },
+            "value" : {
+              "_type" : "DV_DATE_TIME",
+              "value" : "2024-08-24T09:00:00"
+            },
+            "archetype_node_id" : "at0015"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Specimen collector identifier"
+            },
+            "value" : {
+              "_type" : "DV_IDENTIFIER",
+              "id" : "Dr. John Doe"
+            },
+            "archetype_node_id" : "at0070"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.specimen.v1"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Comment"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Sample collected in the morning."
+          },
+          "archetype_node_id" : "at0150"
+        } ],
+        "archetype_node_id" : "at0009"
+      },
+      "timing" : {
+        "_type" : "DV_PARSABLE",
+        "value" : "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Hello World</title></head><body>Hello World!</body></html>",
+        "formalism" : "text/html"
+      },
+      "action_archetype_id" : "/.*/",
+      "archetype_node_id" : "at0001"
+    } ],
+    "archetype_node_id" : "openEHR-EHR-INSTRUCTION.service_request.v1"
+  } ],
+  "archetype_node_id" : "openEHR-EHR-COMPOSITION.request.v1"
+}

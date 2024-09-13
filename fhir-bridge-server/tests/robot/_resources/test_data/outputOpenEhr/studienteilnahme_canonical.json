@@ -1,0 +1,533 @@
+{
+  "_type" : "COMPOSITION",
+  "name" : {
+    "_type" : "DV_TEXT",
+    "value" : "Studienteilnahme"
+  },
+  "archetype_details" : {
+    "archetype_id" : {
+      "value" : "openEHR-EHR-COMPOSITION.report.v1"
+    },
+    "template_id" : {
+      "value" : "Studienteilnahme"
+    },
+    "rm_version" : "1.0.4"
+  },
+  "language" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_639-1"
+    },
+    "code_string" : "de"
+  },
+  "territory" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_3166-1"
+    },
+    "code_string" : "DE"
+  },
+  "category" : {
+    "_type" : "DV_CODED_TEXT",
+    "value" : "event",
+    "defining_code" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "openehr"
+      },
+      "code_string" : "433"
+    }
+  },
+  "composer" : {
+    "_type" : "PARTY_IDENTIFIED",
+    "name" : "Max Mustermann"
+  },
+  "context" : {
+    "_type" : "EVENT_CONTEXT",
+    "start_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "end_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "setting" : {
+      "_type" : "DV_CODED_TEXT",
+      "value" : "home",
+      "defining_code" : {
+        "_type" : "CODE_PHRASE",
+        "terminology_id" : {
+          "_type" : "TERMINOLOGY_ID",
+          "value" : "openehr"
+        },
+        "code_string" : "225"
+      }
+    },
+    "other_context" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Bericht ID"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0002"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Fallidentifikation"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.case_identification.v0"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Fall-Kennung"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "encounter-id-1245"
+          },
+          "archetype_node_id" : "at0001"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.case_identification.v0"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "health_care_facility" : {
+      "_type" : "PARTY_IDENTIFIED",
+      "name" : "DOE, John"
+    }
+  },
+  "content" : [ {
+    "_type" : "ACTION",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Einwilligungserklärung"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-ACTION.informed_consent.v0"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "de"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "ISO-10646-UTF-1"
+    },
+    "workflow_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "da4e3c27-8394-34ee-98e5-e164a4a23b47",
+        "scheme" : "scheme"
+      }
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "provider" : {
+      "_type" : "PARTY_SELF"
+    },
+    "protocol" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Bezeichnung des Einwilligungsdokuments"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0025"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Patienteninformation"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Name / Texttitel"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0032"
+        } ],
+        "archetype_node_id" : "at0033"
+      } ],
+      "archetype_node_id" : "at0024"
+    },
+    "guideline_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "0cd0fc84-1d3a-3f3a-8d89-975ecda85878",
+        "scheme" : "scheme"
+      }
+    },
+    "time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "description" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Studie"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0002"
+      },
+        {
+          "_type" : "CLUSTER",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Studienteilnahme"
+          },
+          "archetype_details" : {
+            "archetype_id" : {
+              "value" : "openEHR-EHR-CLUSTER.study_participation.v1"
+            },
+            "rm_version" : "1.0.4"
+          },
+          "items" : [ {
+            "_type" : "CLUSTER",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Studie/Prüfung"
+            },
+            "archetype_details" : {
+              "archetype_id" : {
+                "value" : "openEHR-EHR-CLUSTER.study_details.v1"
+              },
+              "rm_version" : "1.0.4"
+            },
+            "items" : [ {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Name der Studie"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0001"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Beschreibung"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0004"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Studien Code"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0002"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Studientyp (optional)"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "Privacy policy acknowledgement Document",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "local_terms"
+                  },
+                  "code_string" : "57016-8"
+                }
+              },
+              "archetype_node_id" : "at0003"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Sponsor"
+              },
+              "value" : {
+                "_type" : "DV_TEXT",
+                "value" : "Lorem ipsum"
+              },
+              "archetype_node_id" : "at0012"
+            }, {
+              "_type" : "ELEMENT",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Status"
+              },
+              "value" : {
+                "_type" : "DV_CODED_TEXT",
+                "value" : "Active",
+                "defining_code" : {
+                  "_type" : "CODE_PHRASE",
+                  "terminology_id" : {
+                    "_type" : "TERMINOLOGY_ID",
+                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/research-study-status"
+                  },
+                  "code_string" : "active"
+                }
+              },
+              "archetype_node_id" : "at0005"
+            }, {
+              "_type" : "CLUSTER",
+              "name" : {
+                "_type" : "DV_TEXT",
+                "value" : "Teil einer größeren Studie"
+              },
+              "archetype_details" : {
+                "archetype_id" : {
+                  "value" : "openEHR-EHR-CLUSTER.study_details.v1"
+                },
+                "rm_version" : "1.0.4"
+              },
+              "items" : [ {
+                "_type" : "ELEMENT",
+                "name" : {
+                  "_type" : "DV_TEXT",
+                  "value" : "Name der übergeordneten Studie"
+                },
+                "value" : {
+                  "_type" : "DV_TEXT",
+                  "value" : "Lorem ipsum"
+                },
+                "archetype_node_id" : "at0001"
+              }, {
+                "_type" : "ELEMENT",
+                "name" : {
+                  "_type" : "DV_TEXT",
+                  "value" : "Status"
+                },
+                "value" : {
+                  "_type" : "DV_CODED_TEXT",
+                  "value" : "Active",
+                  "defining_code" : {
+                    "_type" : "CODE_PHRASE",
+                    "terminology_id" : {
+                      "_type" : "TERMINOLOGY_ID",
+                      "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/research-study-status"
+                    },
+                    "code_string" : "active"
+                  }
+                },
+                "archetype_node_id" : "at0005"
+              } ],
+              "archetype_node_id" : "openEHR-EHR-CLUSTER.study_details.v1"
+            } ],
+            "archetype_node_id" : "openEHR-EHR-CLUSTER.study_details.v1"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Status der Teilnahme"
+            },
+            "value" : {
+              "_type" : "DV_CODED_TEXT",
+              "value" : "Active",
+              "defining_code" : {
+                "_type" : "CODE_PHRASE",
+                "terminology_id" : {
+                  "_type" : "TERMINOLOGY_ID",
+                  "value" : "local"
+                },
+                "code_string" : "active"
+              }
+            },
+            "archetype_node_id" : "at0005"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Subjekt Identifizierungscode"
+            },
+            "value" : {
+              "_type" : "DV_IDENTIFIER",
+              "id" : "KHID123"
+            },
+            "archetype_node_id" : "at0016"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Subject Identifier"
+            },
+            "value" : {
+              "_type" : "DV_IDENTIFIER",
+              "id" : "dev/null"
+            },
+            "archetype_node_id" : "at0016"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Beginn der Teilnahme"
+            },
+            "value" : {
+              "_type" : "DV_DATE_TIME",
+              "value" : "2023-07-22T08:30:00"
+            },
+            "archetype_node_id" : "at0003"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Ende der Teilnahme"
+            },
+            "value" : {
+              "_type" : "DV_DATE_TIME",
+              "value" : "2024-08-22T08:30:00"
+            },
+            "archetype_node_id" : "at0004"
+          }, {
+            "_type" : "ELEMENT",
+            "name" : {
+              "_type" : "DV_TEXT",
+              "value" : "Kommentar zur Studienteilnahme"
+            },
+            "value" : {
+              "_type" : "DV_TEXT",
+              "value" : "Lorem ipsum"
+            },
+            "archetype_node_id" : "at0014"
+          } ],
+          "archetype_node_id" : "openEHR-EHR-CLUSTER.study_participation.v1"
+        }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Kommentar zur Einwilligung"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0036"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "ism_transition" : {
+      "_type" : "ISM_TRANSITION",
+      "current_state" : {
+        "_type" : "DV_CODED_TEXT",
+        "value" : "postponed",
+        "defining_code" : {
+          "_type" : "CODE_PHRASE",
+          "terminology_id" : {
+            "_type" : "TERMINOLOGY_ID",
+            "value" : "openehr"
+          },
+          "code_string" : "527"
+        }
+      },
+      "transition" : {
+        "_type" : "DV_CODED_TEXT",
+        "value" : "postponed step",
+        "defining_code" : {
+          "_type" : "CODE_PHRASE",
+          "terminology_id" : {
+            "_type" : "TERMINOLOGY_ID",
+            "value" : "openehr"
+          },
+          "code_string" : "542"
+        }
+      },
+      "careflow_step" : {
+        "_type" : "DV_CODED_TEXT",
+        "value" : "Verschoben",
+        "defining_code" : {
+          "_type" : "CODE_PHRASE",
+          "terminology_id" : {
+            "_type" : "TERMINOLOGY_ID",
+            "value" : "local"
+          },
+          "code_string" : "at0019"
+        }
+      }
+    },
+    "instruction_details" : {
+      "_type" : "INSTRUCTION_DETAILS",
+      "instruction_id" : {
+        "_type" : "LOCATABLE_REF",
+        "namespace" : "unknown",
+        "type" : "INSTRUCTION",
+        "id" : {
+          "_type" : "HIER_OBJECT_ID",
+          "value" : "5e55cebf-6dd8-3b84-b0ea-6d9b9cb1543c"
+        },
+        "path" : ""
+      },
+      "activity_id" : "activities[at0001]"
+    },
+    "archetype_node_id" : "openEHR-EHR-ACTION.informed_consent.v0"
+  } ],
+  "archetype_node_id" : "openEHR-EHR-COMPOSITION.report.v1"
+}

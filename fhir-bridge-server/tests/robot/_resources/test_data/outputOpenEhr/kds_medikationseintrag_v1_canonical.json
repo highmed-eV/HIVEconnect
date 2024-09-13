@@ -1,0 +1,960 @@
+{
+    "_type": "COMPOSITION",
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Medikamentenliste_v1"
+    },
+    "archetype_details": {
+        "archetype_id": {
+            "value": "openEHR-EHR-COMPOSITION.medication_list.v1"
+        },
+        "template_id": {
+            "value": "KDS_Medikationseintrag_v1"
+        },
+        "rm_version": "1.0.4"
+    },
+    "language": {
+        "_type": "CODE_PHRASE",
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_639-1"
+        },
+        "code_string": "de"
+    },
+    "territory": {
+        "_type": "CODE_PHRASE",
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_3166-1"
+        },
+        "code_string": "DE"
+    },
+    "category": {
+        "_type": "DV_CODED_TEXT",
+        "value": "event",
+        "defining_code": {
+            "_type": "CODE_PHRASE",
+            "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "openehr"
+            },
+            "code_string": "433"
+        }
+    },
+    "composer": {
+        "_type": "PARTY_IDENTIFIED",
+        "name": "Max Mustermann"
+    },
+    "context": {
+        "_type": "EVENT_CONTEXT",
+        "start_time": {
+            "_type": "DV_DATE_TIME",
+            "value": "2022-02-03T04:05:06"
+        },
+        "end_time": {
+            "_type": "DV_DATE_TIME",
+            "value": "2022-02-03T04:05:06"
+        },
+        "setting": {
+            "_type": "DV_CODED_TEXT",
+            "value": "home",
+            "defining_code": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "openehr"
+                },
+                "code_string": "225"
+            }
+        },
+        "other_context": {
+            "_type": "ITEM_TREE",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Tree"
+            },
+            "items": [
+                {
+                    "_type": "CLUSTER",
+                    "name": {
+                        "_type": "DV_TEXT",
+                        "value": "Fallidentifikation"
+                    },
+                    "archetype_details": {
+                        "archetype_id": {
+                            "value": "openEHR-EHR-CLUSTER.case_identification.v0"
+                        },
+                        "rm_version": "1.0.4"
+                    },
+                    "items": [
+                        {
+                            "_type": "ELEMENT",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Fall-Kennung"
+                            },
+                            "value": {
+                                "_type": "DV_TEXT",
+                                "value": "encounter-id-1245"
+                            },
+                            "archetype_node_id": "at0001"
+                        }
+                    ],
+                    "archetype_node_id": "openEHR-EHR-CLUSTER.case_identification.v0"
+                }
+            ],
+            "archetype_node_id": "at0005"
+        },
+        "health_care_facility": {
+            "_type": "PARTY_IDENTIFIED",
+            "name": "DOE, John"
+        }
+    },
+    "content": [
+        {
+            "_type": "OBSERVATION",
+            "name": {
+                "_type": "DV_TEXT",
+                "value": "Medikationseintrag"
+            },
+            "archetype_details": {
+                "archetype_id": {
+                    "value": "openEHR-EHR-OBSERVATION.medication_statement.v0"
+                },
+                "rm_version": "1.0.4"
+            },
+            "language": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "ISO_639-1"
+                },
+                "code_string": "de"
+            },
+            "encoding": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "IANA_character-sets"
+                },
+                "code_string": "ISO-10646-UTF-1"
+            },
+            "workflow_id": {
+                "_type": "OBJECT_REF",
+                "namespace": "unknown",
+                "type": "ANY",
+                "id": {
+                    "_type": "GENERIC_ID",
+                    "value": "22e0882f-baa6-3bdd-87ae-bc4d23e89e61",
+                    "scheme": "scheme"
+                }
+            },
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "provider": {
+                "_type": "PARTY_SELF"
+            },
+            "protocol": {
+                "_type": "ITEM_TREE",
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "Item tree"
+                },
+                "items": [
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Status"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.medication_status_fhir.v0"
+                            },
+                            "rm_version": "1.0.4"
+                        },
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Status"
+                                },
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Aktiv",
+                                    "defining_code": {
+                                        "_type": "CODE_PHRASE",
+                                        "terminology_id": {
+                                            "_type": "TERMINOLOGY_ID",
+                                            "value": "local"
+                                        },
+                                        "code_string": "at0002"
+                                    }
+                                },
+                                "archetype_node_id": "at0001"
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Status Grund"
+                                },
+                                "value" : {
+                                    "_type" : "DV_CODED_TEXT",
+                                    "value" : "High cholesterol",
+                                    "defining_code" : {
+                                    "_type" : "CODE_PHRASE",
+                                    "terminology_id" : {
+                                        "_type" : "TERMINOLOGY_ID",
+                                        "value" : "http://snomed.info/sct"
+                                    },
+                                    "code_string" : "13644009"
+                                    }
+                                },
+                                "archetype_node_id": "at0014"
+                            }
+                        ],
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.medication_status_fhir.v0"
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Kategorie des Eintrags"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.entry_category.v0"
+                            },
+                            "rm_version": "1.0.4"
+                        },
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Kategorie der Medikation"
+                                },
+                                "value": {
+                                    "_type": "DV_CODED_TEXT",
+                                    "value": "Outpatient",
+                                    "defining_code": {
+                                        "_type": "CODE_PHRASE",
+                                        "terminology_id": {
+                                            "_type": "TERMINOLOGY_ID",
+                                            "value": "http://hl7.org/fhir/ValueSet/medication-statement-category"
+                                        },
+                                        "code_string": "outpatient"
+                                    }
+                                },
+                                "archetype_node_id": "at0002"
+                            },
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Kommentar"
+                                },
+                                "value": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Lorem ipsum"
+                                },
+                                "archetype_node_id": "at0003"
+                            }
+                        ],
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.entry_category.v0"
+                    },
+                    {
+                        "_type": "CLUSTER",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Identifier"
+                        },
+                        "archetype_details": {
+                            "archetype_id": {
+                                "value": "openEHR-EHR-CLUSTER.identifier_fhir.v0"
+                            },
+                            "rm_version": "1.0.4"
+                        },
+                        "items": [
+                            {
+                                "_type": "ELEMENT",
+                                "name": {
+                                    "_type": "DV_TEXT",
+                                    "value": "Externer identifier"
+                                },
+                                "value": {
+                                    "_type": "DV_IDENTIFIER",
+                                    "id": "medlist-001"
+                                },
+                                "archetype_node_id": "at0001"
+                            }
+                        ],
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.identifier_fhir.v0"
+                    }
+                ],
+                "archetype_node_id": "at0004"
+            },
+            "guideline_id": {
+                "_type": "OBJECT_REF",
+                "namespace": "unknown",
+                "type": "ANY",
+                "id": {
+                    "_type": "GENERIC_ID",
+                    "value": "92a34bd7-14eb-3440-9210-b345b9264693",
+                    "scheme": "scheme"
+                }
+            },
+            "data": {
+                "name": {
+                    "_type": "DV_TEXT",
+                    "value": "History"
+                },
+                "origin": {
+                    "_type": "DV_DATE_TIME",
+                    "value": "2022-02-03T04:05:06"
+                },
+                "period": {
+                    "_type": "DV_DURATION",
+                    "value": "PT0S"
+                },
+                "duration": {
+                    "_type": "DV_DURATION",
+                    "value": "PT0S"
+                },
+                "events": [
+                    {
+                        "_type": "INTERVAL_EVENT",
+                        "name": {
+                            "_type": "DV_TEXT",
+                            "value": "Beliebiges Ereignis"
+                        },
+                        "time": {
+                            "_type": "DV_DATE_TIME",
+                            "value": "2022-02-03T04:05:06"
+                        },
+                        "data": {
+                            "_type": "ITEM_TREE",
+                            "name": {
+                                "_type": "DV_TEXT",
+                                "value": "Tree"
+                            },
+                            "items": [
+                                {
+                                    "_type": "CLUSTER",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Arzneimittel"
+                                    },
+                                    "archetype_details": {
+                                        "archetype_id": {
+                                            "value": "openEHR-EHR-CLUSTER.medication.v2"
+                                        },
+                                        "rm_version": "1.0.4"
+                                    },
+                                    "items": [
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Arzneimittel-Name"
+                                            },
+                                            "value" : {
+                                                "_type" : "DV_CODED_TEXT",
+                                                "value" : "Crocin",
+                                                "defining_code" : {
+                                                "_type" : "CODE_PHRASE",
+                                                "terminology_id" : {
+                                                    "_type" : "TERMINOLOGY_ID",
+                                                    "value" : "http://www.nlm.nih.gov/research/umls/rxnorm"
+                                                },
+                                                "code_string" : "2262278"
+                                                }
+                                            },
+                                            "archetype_node_id": "at0132"
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Darreichungsform"
+                                            },
+                                            "value": {
+                                                "_type": "DV_CODED_TEXT",
+                                                "value": "Tablet",
+                                                "defining_code": {
+                                                    "_type": "CODE_PHRASE",
+                                                    "terminology_id": {
+                                                        "_type": "TERMINOLOGY_ID",
+                                                        "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-doseform"
+                                                    },
+                                                    "code_string": "10219000"
+                                                }
+                                            },
+                                            "archetype_node_id": "at0071"
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Wirkstärke (Konzentration)"
+                                            },
+                                            "value": {
+                                                "_type": "DV_QUANTITY",
+                                                "units": "mg",
+                                                "magnitude": 100.0
+                                            },
+                                            "archetype_node_id": "at0115"
+                                        },
+                                        {
+                                            "_type": "CLUSTER",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Bestandteil"
+                                            },
+                                            "archetype_details": {
+                                                "archetype_id": {
+                                                    "value": "openEHR-EHR-CLUSTER.medication.v2"
+                                                },
+                                                "rm_version": "1.0.4"
+                                            },
+                                            "items": [
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Bestandteil"
+                                                    },
+                                                    "value": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "ingredient"
+                                                    },
+                                                    "archetype_node_id": "at0132"
+                                                },
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Wirkstofftyp"
+                                                    },
+                                                    "value": {
+                                                        "_type": "DV_CODED_TEXT",
+                                                        "value": "Ad-hoc Mixtur",
+                                                        "defining_code": {
+                                                            "_type": "CODE_PHRASE",
+                                                            "terminology_id": {
+                                                                "_type": "TERMINOLOGY_ID",
+                                                                "value": "local"
+                                                            },
+                                                            "code_string": "at0143"
+                                                        }
+                                                    },
+                                                    "archetype_node_id": "at0142"
+                                                },
+                                                {
+                                                    "_type": "CLUSTER",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Bestandteil-Menge"
+                                                    },
+                                                    "items": [
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Zähler"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_QUANTITY",
+                                                                "units": "mg",
+                                                                "magnitude": 500.0
+                                                            },
+                                                            "archetype_node_id": "at0153"
+                                                        },
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Nenner"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_QUANTITY",
+                                                                "units": "TAB",
+                                                                "magnitude": 1.0
+                                                            },
+                                                            "archetype_node_id": "at0157"
+                                                        }
+                                                    ],
+                                                    "archetype_node_id": "at0152"
+                                                },
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Ist aktiver Bestandteil?"
+                                                    },
+                                                    "value": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "true"
+                                                    },
+                                                    "archetype_node_id": "at0127"
+                                                },
+                                                {
+                                                    "_type": "CLUSTER",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Wirkstoffrelation"
+                                                    },
+                                                    "archetype_details": {
+                                                        "archetype_id": {
+                                                            "value": "openEHR-EHR-CLUSTER.medication.v2"
+                                                        },
+                                                        "rm_version": "1.0.4"
+                                                    },
+                                                    "items": [
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Allgemeiner Wirkstoff"
+                                                            },
+                                                            "value" : {
+                                                                "_type" : "DV_CODED_TEXT",
+                                                                "value" : "Paracetamol oral ingredient",
+                                                                "defining_code" : {
+                                                                "_type" : "CODE_PHRASE",
+                                                                "terminology_id" : {
+                                                                    "_type" : "TERMINOLOGY_ID",
+                                                                    "value" : "http://www.whocc.no/atc"
+                                                                },
+                                                                "code_string" : "N02BE01"
+                                                                }
+                                                            },
+                                                            "archetype_node_id": "at0132"
+                                                        },
+                                                        {
+                                                            "_type": "CLUSTER",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Wirkstoffmenge"
+                                                            },
+                                                            "items": [
+                                                                {
+                                                                    "_type": "ELEMENT",
+                                                                    "name": {
+                                                                        "_type": "DV_TEXT",
+                                                                        "value": "Zähler"
+                                                                    },
+                                                                    "value": {
+                                                                        "_type": "DV_QUANTITY",
+                                                                        "units": "mg",
+                                                                        "magnitude": 13.0
+                                                                    },
+                                                                    "archetype_node_id": "at0153"
+                                                                },
+                                                                {
+                                                                    "_type": "ELEMENT",
+                                                                    "name": {
+                                                                        "_type": "DV_TEXT",
+                                                                        "value": "Nenner"
+                                                                    },
+                                                                    "value": {
+                                                                        "_type": "DV_QUANTITY",
+                                                                        "units": "mg",
+                                                                        "magnitude": 1.0
+                                                                    },
+                                                                    "archetype_node_id": "at0157"
+                                                                }
+                                                            ],
+                                                            "archetype_node_id": "at0152"
+                                                        },
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Hersteller"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "GSK (GlaxoSmithKline)"
+                                                            },
+                                                            "archetype_node_id": "at0151"
+                                                        },
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Batch ID"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Batch 1"
+                                                            },
+                                                            "archetype_node_id": "at0150"
+                                                        },
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Verfallsdatum"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_DATE_TIME",
+                                                                "value": "2022-02-03T04:05:06"
+                                                            },
+                                                            "archetype_node_id": "at0003"
+                                                        },
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Menge"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_QUANTITY",
+                                                                "units": "mg",
+                                                                "magnitude": 100.0
+                                                            },
+                                                            "archetype_node_id": "at0139"
+                                                        },
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Funktion"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_CODED_TEXT",
+                                                                "value": "Wirkstoff",
+                                                                "defining_code": {
+                                                                    "_type": "CODE_PHRASE",
+                                                                    "terminology_id": {
+                                                                        "_type": "TERMINOLOGY_ID",
+                                                                        "value": "local"
+                                                                    },
+                                                                    "code_string": "at0080"
+                                                                }
+                                                            },
+                                                            "archetype_node_id": "at0127"
+                                                        }
+                                                    ],
+                                                    "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2"
+                                                }
+                                            ],
+                                            "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2"
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Rezeptur Freitextzeile"
+                                            },
+                                            "value": {
+                                                "_type": "DV_TEXT",
+                                                "value": "1 tablet daily"
+                                            },
+                                            "archetype_node_id": "at0133"
+                                        }
+                                    ],
+                                    "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Startzeitpunkt Einnahme"
+                                    },
+                                    "value": {
+                                        "_type": "DV_DATE_TIME",
+                                        "value": "2022-02-03T04:05:06"
+                                    },
+                                    "archetype_node_id": "at0019"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Dauer der Einnahme"
+                                    },
+                                    "value": {
+                                        "_type": "DV_DURATION",
+                                        "value": "PT0S"
+                                    },
+                                    "archetype_node_id": "at0020"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Endzeitpunkt Einnahme"
+                                    },
+                                    "value": {
+                                        "_type": "DV_DATE_TIME",
+                                        "value": "2024-08-21T00:00:00"
+                                    },
+                                    "archetype_node_id": "at0021"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Beschreibung"
+                                    },
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Patient reports high temperature."
+                                    },
+                                    "archetype_node_id": "at0032"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Behandlungsgrund"
+                                    },
+                                    "value" : {
+                                        "_type" : "DV_CODED_TEXT",
+                                        "value" : "High cholesterol",
+                                        "defining_code" : {
+                                        "_type" : "CODE_PHRASE",
+                                        "terminology_id" : {
+                                            "_type" : "TERMINOLOGY_ID",
+                                            "value" : "http://snomed.info/sct"
+                                        },
+                                        "code_string" : "13644009"
+                                        }
+                                    },
+                                    "archetype_node_id": "at0023"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Dosierung"
+                                    },
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "1 tablet daily"
+                                    },
+                                    "archetype_node_id": "at0033"
+                                },
+                                {
+                                    "_type": "CLUSTER",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Dosierung"
+                                    },
+                                    "archetype_details": {
+                                        "archetype_id": {
+                                            "value": "openEHR-EHR-CLUSTER.dosage.v2"
+                                        },
+                                        "rm_version": "1.0.4"
+                                    },
+                                    "items": [
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Dosierungsreihenfolge"
+                                            },
+                                            "value": {
+                                                "_type": "DV_COUNT",
+                                                "magnitude": 1
+                                            },
+                                            "archetype_node_id": "at0164"
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Dosis"
+                                            },
+                                            "value": {
+                                                "_type": "DV_QUANTITY",
+                                                "units": "mg",
+                                                "magnitude": 81.0
+                                            },
+                                            "archetype_node_id": "at0144"
+                                        },
+                                        {
+                                            "_type": "ELEMENT",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Dosierung Freitext"
+                                            },
+                                            "value": {
+                                                "_type": "DV_TEXT",
+                                                "value": "1 tablet daily"
+                                            },
+                                            "archetype_node_id": "at0178"
+                                        },
+                                        {
+                                            "_type": "CLUSTER",
+                                            "name": {
+                                                "_type": "DV_TEXT",
+                                                "value": "Tägliche Dosierung"
+                                            },
+                                            "archetype_details": {
+                                                "archetype_id": {
+                                                    "value": "openEHR-EHR-CLUSTER.timing_daily.v1"
+                                                },
+                                                "rm_version": "1.0.4"
+                                            },
+                                            "items": [
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Periode"
+                                                    },
+                                                    "value": {
+                                                        "_type": "DV_DURATION",
+                                                        "value": "P1D"
+                                                    },
+                                                    "archetype_node_id": "at0014"
+                                                },
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Zeitpunkt"
+                                                    },
+                                                    "value": {
+                                                        "lower": {
+                                                          "_type": "DV_DURATION",
+                                                          "value": "PT12H"
+                                                        },
+                                                        "upper": {
+                                                          "_type": "DV_DURATION",
+                                                          "value": "PT12H"
+                                                        }
+                                                      },
+                                                    "archetype_node_id": "at0004"
+                                                },
+                                                {
+                                                    "_type": "ELEMENT",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Bei Bedarf"
+                                                    },
+                                                    "value": {
+                                                        "_type": "DV_BOOLEAN",
+                                                        "value": true
+                                                    },
+                                                    "archetype_node_id": "at0024"
+                                                },
+                                                {
+                                                    "_type": "CLUSTER",
+                                                    "name": {
+                                                        "_type": "DV_TEXT",
+                                                        "value": "Bestimmtes Ereignis"
+                                                    },
+                                                    "items": [
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Ereignis"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "before meal"
+                                                            },
+                                                            "archetype_node_id": "at0026"
+                                                        },
+                                                        {
+                                                            "_type": "ELEMENT",
+                                                            "name": {
+                                                                "_type": "DV_TEXT",
+                                                                "value": "Offset"
+                                                            },
+                                                            "value": {
+                                                                "_type": "DV_DURATION",
+                                                                "value": "PT2H"
+                                                            },
+                                                            "archetype_node_id": "at0040"
+                                                        }
+                                                    ],
+                                                    "archetype_node_id": "at0039"
+                                                }
+                                            ],
+                                            "archetype_node_id": "openEHR-EHR-CLUSTER.timing_daily.v1"
+                                        }
+                                    ],
+                                    "archetype_node_id": "openEHR-EHR-CLUSTER.dosage.v2"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Verabreichungsweg"
+                                    },
+                                    "value": {
+                                        "_type": "DV_CODED_TEXT",
+                                        "value": "Swallow, oral",
+                                        "defining_code": {
+                                            "_type": "CODE_PHRASE",
+                                            "terminology_id": {
+                                                "_type": "TERMINOLOGY_ID",
+                                                "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/medicine-route-of-administration"
+                                            },
+                                            "code_string": "PO"
+                                        }
+                                    },
+                                    "archetype_node_id": "at0030"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Anwendungsdauer"
+                                    },
+                                    "value": {
+                                        "_type": "DV_DURATION",
+                                        "value": "P30D"
+                                    },
+                                    "archetype_node_id": "at0034"
+                                },
+                                {
+                                    "_type": "ELEMENT",
+                                    "name": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Hinweis"
+                                    },
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Patient reports high temperature."
+                                    },
+                                    "archetype_node_id": "at0029"
+                                }
+                            ],
+                            "archetype_node_id": "at0003"
+                        },
+                        "width": {
+                            "_type": "DV_DURATION",
+                            "value": "PT42H"
+                        },
+                        "math_function": {
+                            "_type": "DV_CODED_TEXT",
+                            "value": "minimum",
+                            "defining_code": {
+                                "_type": "CODE_PHRASE",
+                                "terminology_id": {
+                                    "_type": "TERMINOLOGY_ID",
+                                    "value": "openehr"
+                                },
+                                "code_string": "145"
+                            }
+                        },
+                        "archetype_node_id": "at0002"
+                    }
+                ],
+                "archetype_node_id": "at0001"
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.medication_statement.v0"
+        }
+    ],
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.medication_list.v1"
+}

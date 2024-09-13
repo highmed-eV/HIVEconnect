@@ -1,0 +1,817 @@
+{
+  "_type" : "COMPOSITION",
+  "name" : {
+    "_type" : "DV_TEXT",
+    "value" : "Stationärer Versorgungsfall"
+  },
+  "archetype_details" : {
+    "archetype_id" : {
+      "value" : "openEHR-EHR-COMPOSITION.fall.v1"
+    },
+    "template_id" : {
+      "value" : "Stationärer Versorgungsfall"
+    },
+    "rm_version" : "1.0.4"
+  },
+  "language" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_639-1"
+    },
+    "code_string" : "de"
+  },
+  "territory" : {
+    "_type" : "CODE_PHRASE",
+    "terminology_id" : {
+      "_type" : "TERMINOLOGY_ID",
+      "value" : "ISO_3166-1"
+    },
+    "code_string" : "DE"
+  },
+  "category" : {
+    "_type" : "DV_CODED_TEXT",
+    "value" : "event",
+    "defining_code" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "openehr"
+      },
+      "code_string" : "433"
+    }
+  },
+  "composer" : {
+    "_type" : "PARTY_IDENTIFIED",
+    "name" : "Max Mustermann"
+  },
+  "context" : {
+    "_type" : "EVENT_CONTEXT",
+    "start_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "end_time" : {
+      "_type" : "DV_DATE_TIME",
+      "value" : "2022-02-03T04:05:06"
+    },
+    "setting" : {
+      "_type" : "DV_CODED_TEXT",
+      "value" : "home",
+      "defining_code" : {
+        "_type" : "CODE_PHRASE",
+        "terminology_id" : {
+          "_type" : "TERMINOLOGY_ID",
+          "value" : "openehr"
+        },
+        "code_string" : "225"
+      }
+    },
+    "other_context" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Baum"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Falltyp"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "Einrichtungskontakt",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "local_terms"
+            },
+            "code_string" : "einrichtungskontakt"
+          }
+        },
+        "archetype_node_id" : "at0005"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Fallklasse"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "Stationär (inpatient encounter)",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "local_terms"
+            },
+            "code_string" : "IMP"
+          }
+        },
+        "archetype_node_id" : "at0004"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Fallstatus"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/EncounterStatusDe' available",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/EncounterStatusDe"
+            },
+            "code_string" : "42"
+          }
+        },
+        "archetype_node_id" : "at0010"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Fall-Kennung"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "encounter-id-12345"
+        },
+        "archetype_node_id" : "at0003"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Übergeordneter Fall"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0011"
+      },
+        {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Fachliche Organisationseinheit"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.organization.v0"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Typ"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Hospital Department",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "local_terms"
+              },
+              "code_string" : "dept"
+            }
+          },
+          "archetype_node_id" : "at0051"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Organisationsschlüssel"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Innere Medizin",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert"
+              },
+              "code_string" : "0100"
+            }
+          },
+          "archetype_node_id" : "at0024"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Aktiv/Inaktiv"
+          },
+          "value" : {
+            "_type" : "DV_BOOLEAN",
+            "value" : true
+          },
+          "archetype_node_id" : "at0050"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Zusätzliche Beschreibung"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0046"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.organization.v0"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "health_care_facility" : {
+      "_type" : "PARTY_IDENTIFIED",
+      "name" : "DOE, John"
+    }
+  },
+  "content" : [ {
+    "_type" : "ADMIN_ENTRY",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Aufnahmedaten"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-ADMIN_ENTRY.admission.v0"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "de"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "ISO-10646-UTF-1"
+    },
+    "workflow_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "dacb01c1-7375-3c9d-af81-be89097b511a",
+        "scheme" : "scheme"
+      }
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "provider" : {
+      "_type" : "PARTY_SELF"
+    },
+    "data" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Aufnahmegrund - 1. und 2. Stelle"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "Krankenhausbehandlung, vollstationär",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundErsteUndZweiteStelle"
+            },
+            "code_string" : "01"
+          }
+        },
+        "archetype_node_id" : "at0013"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Aufnahmegrund - 3. Stelle"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "Anderes",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundDritteStelle"
+            },
+            "code_string" : "0"
+          }
+        },
+        "archetype_node_id" : "at0013"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Aufnahmegrund - 4. Stelle"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "Normalfall",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/AufnahmegrundVierteStelle"
+            },
+            "code_string" : "1"
+          }
+        },
+        "archetype_node_id" : "at0013"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Aufnahmeanlass"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dgkev/Aufnahmeanlass' available",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dgkev/Aufnahmeanlass"
+            },
+            "code_string" : "42"
+          }
+        },
+        "archetype_node_id" : "at0049"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Kennung vor der Aufnahme"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0023"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Datum/Uhrzeit der Aufnahme"
+        },
+        "value" : {
+          "_type" : "DV_DATE_TIME",
+          "value" : "2022-04-03T04:05:06"
+        },
+        "archetype_node_id" : "at0071"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Vorheriger Patientenstandort (vor Aufnahme)"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.location.v1"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Campus"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0024"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Gebäudegruppe"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0025"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Ebene"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0028"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Station"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "station-1"
+          },
+          "archetype_node_id" : "at0027"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Zimmer"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "zimmer-1"
+          },
+          "archetype_node_id" : "at0029"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Bettstellplatz"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "bett-1"
+          },
+          "archetype_node_id" : "at0034"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Zusätzliche Beschreibung"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0046"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.location.v1"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Vorherige verantwortliche Organisationseinheit (vor Aufnahme)"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.organization.v0"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Typ"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Einweisung durch einen Arzt",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "local_terms"
+              },
+              "code_string" : "E"
+            }
+          },
+          "archetype_node_id" : "at0051"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Organisationsschlüssel"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert' available",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert"
+              },
+              "code_string" : "42"
+            }
+          },
+          "archetype_node_id" : "at0024"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Aktiv/Inaktiv"
+          },
+          "value" : {
+            "_type" : "DV_BOOLEAN",
+            "value" : true
+          },
+          "archetype_node_id" : "at0050"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Zusätzliche Beschreibung"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0046"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.organization.v0"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "archetype_node_id" : "openEHR-EHR-ADMIN_ENTRY.admission.v0"
+  }, {
+    "_type" : "ADMIN_ENTRY",
+    "name" : {
+      "_type" : "DV_TEXT",
+      "value" : "Entlassungsdaten"
+    },
+    "archetype_details" : {
+      "archetype_id" : {
+        "value" : "openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0"
+      },
+      "rm_version" : "1.0.4"
+    },
+    "language" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "ISO_639-1"
+      },
+      "code_string" : "de"
+    },
+    "encoding" : {
+      "_type" : "CODE_PHRASE",
+      "terminology_id" : {
+        "_type" : "TERMINOLOGY_ID",
+        "value" : "IANA_character-sets"
+      },
+      "code_string" : "ISO-10646-UTF-1"
+    },
+    "workflow_id" : {
+      "_type" : "OBJECT_REF",
+      "namespace" : "unknown",
+      "type" : "ANY",
+      "id" : {
+        "_type" : "GENERIC_ID",
+        "value" : "c094ba64-f3b5-3207-871f-64bd832e68ab",
+        "scheme" : "scheme"
+      }
+    },
+    "subject" : {
+      "_type" : "PARTY_SELF"
+    },
+    "provider" : {
+      "_type" : "PARTY_SELF"
+    },
+    "data" : {
+      "_type" : "ITEM_TREE",
+      "name" : {
+        "_type" : "DV_TEXT",
+        "value" : "Tree"
+      },
+      "items" : [ {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Entlassungsgrund"
+        },
+        "value" : {
+          "_type" : "DV_CODED_TEXT",
+          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/EntlassungsgrundErsteUndZweiteStelle' available",
+          "defining_code" : {
+            "_type" : "CODE_PHRASE",
+            "terminology_id" : {
+              "_type" : "TERMINOLOGY_ID",
+              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/EntlassungsgrundErsteUndZweiteStelle"
+            },
+            "code_string" : "42"
+          }
+        },
+        "archetype_node_id" : "at0040"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Datum/Uhrzeit der Entlassung"
+        },
+        "value" : {
+          "_type" : "DV_DATE_TIME",
+          "value" : "2022-02-03T04:05:06"
+        },
+        "archetype_node_id" : "at0011"
+      }, {
+        "_type" : "ELEMENT",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Zusätzliche Informationen"
+        },
+        "value" : {
+          "_type" : "DV_TEXT",
+          "value" : "Lorem ipsum"
+        },
+        "archetype_node_id" : "at0050"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Zugewiesener Standort (bei Entlassung)"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.location.v1"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Campus"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0024"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Gebäudegruppe"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0025"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Ebene"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0028"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Station"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "station-1"
+          },
+          "archetype_node_id" : "at0027"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Main Hospital Room 101"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0029"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Bettstellplatz"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0034"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Zusätzliche Beschreibung"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0046"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.location.v1"
+      }, {
+        "_type" : "CLUSTER",
+        "name" : {
+          "_type" : "DV_TEXT",
+          "value" : "Zugewiesene verantwortliche Organisationseinheit (bei Entlassung)"
+        },
+        "archetype_details" : {
+          "archetype_id" : {
+            "value" : "openEHR-EHR-CLUSTER.organization.v0"
+          },
+          "rm_version" : "1.0.4"
+        },
+        "items" : [ {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Typ"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "Hospital Department",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "local_terms"
+              },
+              "code_string" : "dept"
+            }
+          },
+          "archetype_node_id" : "at0051"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Organisationsschlüssel"
+          },
+          "value" : {
+            "_type" : "DV_CODED_TEXT",
+            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert' available",
+            "defining_code" : {
+              "_type" : "CODE_PHRASE",
+              "terminology_id" : {
+                "_type" : "TERMINOLOGY_ID",
+                "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert"
+              },
+              "code_string" : "42"
+            }
+          },
+          "archetype_node_id" : "at0024"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Aktiv/Inaktiv"
+          },
+          "value" : {
+            "_type" : "DV_BOOLEAN",
+            "value" : true
+          },
+          "archetype_node_id" : "at0050"
+        }, {
+          "_type" : "ELEMENT",
+          "name" : {
+            "_type" : "DV_TEXT",
+            "value" : "Zusätzliche Beschreibung"
+          },
+          "value" : {
+            "_type" : "DV_TEXT",
+            "value" : "Lorem ipsum"
+          },
+          "archetype_node_id" : "at0046"
+        } ],
+        "archetype_node_id" : "openEHR-EHR-CLUSTER.organization.v0"
+      } ],
+      "archetype_node_id" : "at0001"
+    },
+    "archetype_node_id" : "openEHR-EHR-ADMIN_ENTRY.discharge_summary.v0"
+  } ],
+  "archetype_node_id" : "openEHR-EHR-COMPOSITION.fall.v1"
+}
