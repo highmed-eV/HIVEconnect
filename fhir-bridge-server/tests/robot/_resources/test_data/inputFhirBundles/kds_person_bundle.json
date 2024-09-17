@@ -293,7 +293,7 @@
                 {
                   "system": "http://snomed.info/sct",
                   "code": "16100001",
-                  "display": "Cause of death"
+                  "display": "Death diagnosis"
                 },
                 {
                   "system": "http://loinc.org",

@@ -13,6 +13,25 @@
             "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure"
           ]
         },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum",
+            "valueDateTime": "2024-08-21T00:00:00Z"
+          },
+          {
+            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "262202000",
+                  "display": "Therapeutic"
+                }
+              ],
+              "text": "Therapeutic"
+            }
+          }
+        ],
         "status": "completed",
         "category": {
           "coding": [
