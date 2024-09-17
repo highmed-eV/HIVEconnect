@@ -100,14 +100,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "Stationär (inpatient encounter)",
+          "value" : "ambulatory",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "local_terms"
             },
-            "code_string" : "IMP"
+            "code_string" : "AMB"
           }
         },
         "archetype_node_id" : "at0004"
@@ -119,14 +119,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/EncounterStatusDe' available",
+          "value" : "finished",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/EncounterStatusDe"
             },
-            "code_string" : "42"
+            "code_string" : "Finished"
           }
         },
         "archetype_node_id" : "at0010"
@@ -350,14 +350,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dgkev/Aufnahmeanlass' available",
+          "value" : "Einweisung durch einen Arzt",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dgkev/Aufnahmeanlass"
             },
-            "code_string" : "42"
+            "code_string" : "E"
           }
         },
         "archetype_node_id" : "at0049"
@@ -513,14 +513,14 @@
           },
           "value" : {
             "_type" : "DV_CODED_TEXT",
-            "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert' available",
+            "value" : "Geriatrie",
             "defining_code" : {
               "_type" : "CODE_PHRASE",
               "terminology_id" : {
                 "_type" : "TERMINOLOGY_ID",
                 "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/Fachabteilungsschluessel-erweitert"
               },
-              "code_string" : "42"
+              "code_string" : "0200"
             }
           },
           "archetype_node_id" : "at0024"
@@ -610,14 +610,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/EntlassungsgrundErsteUndZweiteStelle' available",
+          "value" : "Behandlung regulär beendet",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/dkgev/EntlassungsgrundErsteUndZweiteStelle"
             },
-            "code_string" : "42"
+            "code_string" : "01"
           }
         },
         "archetype_node_id" : "at0040"

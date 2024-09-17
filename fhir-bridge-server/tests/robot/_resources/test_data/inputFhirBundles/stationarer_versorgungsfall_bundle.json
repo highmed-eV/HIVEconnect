@@ -258,6 +258,7 @@
           },
 
           "serviceType": {
+
             "coding": [
               {
                 "system":"http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert",
