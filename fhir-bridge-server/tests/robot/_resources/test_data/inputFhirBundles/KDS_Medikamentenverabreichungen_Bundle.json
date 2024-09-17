@@ -42,7 +42,7 @@
                 "context": {
                     "reference": "Encounter/encounter-12345"
                 },
-                "effectiveDateTime": "2024-08-20T14:30:00+00:00",
+                "effectiveDateTime": "2024-08-20T14:30:00+00:00Z",
                 "performer": [
                     {
                         "actor": {

@@ -123,12 +123,12 @@
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc",
-                        "code": "M",
-                        "display": "Primary code in multiple coding"
+                        "system": "http://fhir.de/CodeSystem/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                        "code": "†",
+                        "display": "Ätiologie"
                       }
                     ],
-                    "text": "Primary code in multiple coding"
+                    "text": "Ätiologie"
                   }
                 }, {
                   "url":    "http://fhir.de/StructureDefinition/seitenlokalisation",

@@ -276,14 +276,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "Appendectomy",
+          "value" : "Therapeutic",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-intend"
             },
-            "code_string" : "80146002"
+            "code_string" : "262202000"
           }
         },
         "archetype_node_id" : "at0014"
