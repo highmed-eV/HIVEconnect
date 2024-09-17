@@ -563,14 +563,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "Primary code in multiple coding: †",
+                  "value": "†",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
-                      "value": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc"
+                      "value": "local"
                     },
-                    "code_string": "P: at0002 This is internal coded in the template"
+                    "code_string": "at0002"
                   }
                 },
                 "archetype_node_id": "at0001"

@@ -544,7 +544,7 @@
             },
             "value" : {
               "_type" : "DV_TIME",
-              "value" : "04:05:06"
+              "value" : "2024-08-20T14:30:00+00:00"
             },
             "archetype_node_id" : "at0004"
           } ],

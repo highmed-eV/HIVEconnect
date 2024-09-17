@@ -92,7 +92,8 @@
       "name" : "DOE, John"
     }
   },
-  "content" : [ {
+  "content" : [
+    {
     "_type" : "EVALUATION",
     "name" : {
       "_type" : "DV_TEXT",
@@ -194,7 +195,8 @@
       "archetype_node_id" : "at0002"
     },
     "archetype_node_id" : "openEHR-EHR-EVALUATION.gender.v1"
-  }, {
+  },
+    {
     "_type" : "ADMIN_ENTRY",
     "name" : {
       "_type" : "DV_TEXT",
@@ -244,7 +246,8 @@
         "_type" : "DV_TEXT",
         "value" : "Baum"
       },
-      "items" : [ {
+      "items" : [
+        {
         "_type" : "CLUSTER",
         "name" : {
           "_type" : "DV_TEXT",
@@ -318,7 +321,7 @@
               },
               "value" : {
                 "_type" : "DV_TEXT",
-                "value" : "Mr"
+                "value" : "John"
               },
               "archetype_node_id" : "at0003"
             }, {
@@ -844,7 +847,8 @@
           },
           "rm_version" : "1.0.4"
         },
-        "items" : [ {
+        "items" : [
+          {
           "_type" : "ELEMENT",
           "name" : {
             "_type" : "DV_TEXT",
@@ -905,14 +909,14 @@
             },
             "value" : {
               "_type" : "DV_CODED_TEXT",
-              "value" : "No example for termínology '//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm' available",
+              "value" : "Cause of death",
               "defining_code" : {
                 "_type" : "CODE_PHRASE",
                 "terminology_id" : {
                   "_type" : "TERMINOLOGY_ID",
-                  "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/icd-10-gm"
+                  "value" : "terminology://LOINC/CodeSystem?url=http://loinc.org"
                 },
-                "code_string" : "42"
+                "code_string" : "79378-6"
               }
             },
             "archetype_node_id" : "at0003"
@@ -1087,7 +1091,8 @@
       "archetype_node_id" : "at0001"
     },
     "archetype_node_id" : "openEHR-EHR-ADMIN_ENTRY.person_data.v0"
-  }, {
+  },
+    {
     "_type" : "EVALUATION",
     "name" : {
       "_type" : "DV_TEXT",
