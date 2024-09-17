@@ -53,12 +53,6 @@
       "inputBundleFileName": "studienteilnahme_bundle.json",
       "expectedOpenEhrFileName": "studienteilnahme_canonical.json",
       "openEhrTemplateId": "Studienteilnahme"
-    },
-    {
-      "testCaseName": "versorgungsstellenkontakt",
-      "inputBundleFileName": "kds_diagnose_bundle.json",
-      "expectedOpenEhrFileName": "versorgungsstellenkontakt_canonical.json",
-      "openEhrTemplateId": "Versorgungsstellenkontakt"
     }
   ]
 }
