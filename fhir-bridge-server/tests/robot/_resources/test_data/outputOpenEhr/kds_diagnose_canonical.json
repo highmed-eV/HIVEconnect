@@ -282,7 +282,7 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Malignant neoplasm of upper lobe of lung",
+              "value": "Adenocarcinoma of lung (disorder)",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
@@ -394,7 +394,7 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Entire cardiovascular system",
+              "value": "Right upper arm",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
@@ -439,14 +439,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "Upper lobe",
+                  "value": "rechts",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
-                      "value": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation"
+                      "value": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION"
                     },
-                    "code_string": "U"
+                    "code_string": "R"
                   }
                 },
                 "archetype_node_id": "at0002"
@@ -527,14 +527,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "Middle age",
+                  "value": "Old age (qualifier value)",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
                       "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
                     },
-                    "code_string": "367640001"
+                    "code_string": "271872005"
                   }
                 },
                 "archetype_node_id": "at0002"
@@ -598,14 +598,14 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Suspected diagnosis",
+              "value": "ausgeschlossen",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
                   "_type": "TERMINOLOGY_ID",
                   "value": "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_DIAGNOSESICHERHEIT"
                 },
-                "code_string": "S"
+                "code_string": "A"
               }
             },
             "archetype_node_id": "at0073"
@@ -794,7 +794,7 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Secondary malignant neoplasm of lymph node",
+              "value": "Metastatic malignant neoplasm (disorder)",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {
@@ -931,7 +931,7 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "Left side",
+                  "value": "links",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
@@ -1031,14 +1031,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "Middle age",
+                  "value": "Old age (qualifier value)",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
                       "value": "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/lebensphase-de"
                     },
-                    "code_string": "367640001"
+                    "code_string": "271872005"
                   }
                 },
                 "archetype_node_id": "at0002"
@@ -1067,14 +1067,14 @@
                 },
                 "value": {
                   "_type": "DV_CODED_TEXT",
-                  "value": "Primary code in multiple coding: †",
+                  "value": "†",
                   "defining_code": {
                     "_type": "CODE_PHRASE",
                     "terminology_id": {
                       "_type": "TERMINOLOGY_ID",
-                      "value": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc"
+                      "value": "local"
                     },
-                    "code_string": "M: at0002 this will fail as it is internal coded int he template"
+                    "code_string": "at0002"
                   }
                 },
                 "archetype_node_id": "at0001"
@@ -1102,7 +1102,7 @@
             },
             "value": {
               "_type": "DV_CODED_TEXT",
-              "value": "Confirmed diagnosis",
+              "value": "gesicherte Diagnose",
               "defining_code": {
                 "_type": "CODE_PHRASE",
                 "terminology_id": {

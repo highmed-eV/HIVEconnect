@@ -127,8 +127,8 @@
                     "coding": [
                         {
                             "system": "http://standardterms.edqm.eu",
-                            "code": "385055001",
-                            "display": "Tablet"
+                            "code": "10225000",
+                            "display": "Gastro-resistant tablet"
                         }
                     ]
                 },
@@ -178,7 +178,8 @@
                             "coding": [
                                 {
                                     "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                    "code": "VN"
+                                    "code": "VN",
+                                    "display" : "Visit number"
                                 }
                             ]
                         },
@@ -212,16 +213,18 @@
                     ]
                 },
                 "status": "active",
-                
+                "medicationReference": {
+                    "reference": "Medication/example-medication"
+                },
                 "medicationCodeableConcept": {
                     "coding": [
                         {
-                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
-                            "code": "1049630",
-                            "display": "Aspirin 81 MG Oral Tablet"
+                            "system": "http://snomed.info/sct",
+                            "code": "319775004",
+                            "display": "Aspirin 75 mg oral tablet"
                         }
                     ],
-                    "text": "Aspirin 81 MG Oral Tablet"
+                    "text": "Aspirin 75 mg oral tablet"
                 },
                 "subject": {
                     "identifier": {

@@ -421,14 +421,14 @@
           },
           "value" : {
             "_type" : "DV_CODED_TEXT",
-            "value" : "Aspirin 81 MG Oral Tablet",
+            "value" : "Aspirin 75 mg oral tablet",
             "defining_code" : {
               "_type" : "CODE_PHRASE",
               "terminology_id" : {
                 "_type" : "TERMINOLOGY_ID",
-                "value" : "http://www.nlm.nih.gov/research/umls/rxnorm"
+                "value" : "http://snomed.info/sct"
               },
-              "code_string" : "1049630"
+              "code_string" : "319775004"
             }
           },
           "archetype_node_id" : "at0133"

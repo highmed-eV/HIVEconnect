@@ -363,14 +363,14 @@
                                             },
                                             "value" : {
                                                 "_type" : "DV_CODED_TEXT",
-                                                "value" : "Crocin",
+                                                "value" : "naproxen",
                                                 "defining_code" : {
                                                 "_type" : "CODE_PHRASE",
                                                 "terminology_id" : {
                                                     "_type" : "TERMINOLOGY_ID",
-                                                    "value" : "http://www.nlm.nih.gov/research/umls/rxnorm"
+                                                    "value" : "http://www.whocc.no/atc"
                                                 },
-                                                "code_string" : "2262278"
+                                                "code_string" : "M01AE02"
                                                 }
                                             },
                                             "archetype_node_id": "at0132"
@@ -383,7 +383,6 @@
                                             },
                                             "value": {
                                                 "_type": "DV_CODED_TEXT",
-                                                "value": "Tablet",
                                                 "defining_code": {
                                                     "_type": "CODE_PHRASE",
                                                     "terminology_id": {
