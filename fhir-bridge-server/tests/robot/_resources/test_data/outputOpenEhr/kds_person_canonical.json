@@ -951,7 +951,7 @@
                 "_type" : "TERMINOLOGY_ID",
                 "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/patient-contactrelationship"
               },
-              "code_string" : "emergency"
+              "code_string" : "C"
             }
           },
           "archetype_node_id" : "at0004"

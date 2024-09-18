@@ -38,7 +38,7 @@
                   {
                     "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
                     "code": "MR",
-                    "display": "Patient Identification Number"
+                    "display": "Medical record number"
                   }
                 ]
               },
@@ -204,7 +204,7 @@
                   "coding": [
                     {
                       "system": "http://terminology.hl7.org/CodeSystem/v2-0131",
-                      "code": "emergency",
+                      "code": "C",
                       "display": "Emergency Contact"
                     }
                   ]
@@ -356,9 +356,9 @@
           "valueCodeableConcept": {
             "coding": [
               {
-                "system": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/ValueSet/Vitalstatus",
-                "code": "dead",
-                "display": "Dead"
+                "system": "https://www.medizininformatik-initiative.de/fhir/core/modul-person/CodeSystem/Vitalstatus",
+                "code": "T",
+                "display": "Patient verstorben"
               }
             ]
           },

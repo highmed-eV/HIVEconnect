@@ -257,14 +257,14 @@
         },
         "value" : {
           "_type" : "DV_CODED_TEXT",
-          "value" : "Diagnostic procedure",
+          "value" : "Surgical procedure",
           "defining_code" : {
             "_type" : "CODE_PHRASE",
             "terminology_id" : {
               "_type" : "TERMINOLOGY_ID",
               "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-category-sct"
             },
-            "code_string" : "103693007"
+            "code_string" : "387713003"
           }
         },
         "archetype_node_id" : "at0067"
