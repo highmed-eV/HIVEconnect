@@ -104,7 +104,7 @@
         "severity": {
           "coding": [
             {
-              "system": "http://snomed.info/id/246112005",
+              "system": "http://snomed.info/sct",
               "code": "246112005",
               "display": "Severity"
             }
@@ -135,12 +135,12 @@
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
+                        "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION",
                         "code": "L",
-                        "display": "Left side"
+                        "display": "links"
                       }
                     ],
-                    "text": "Left side"
+                    "text": "links"
                   }
                 },
                 {
@@ -148,12 +148,12 @@
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
+                        "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
                         "code": "G",
-                        "display": "Confirmed diagnosis"
+                        "display": "gesicherte Diagnose"
                       }
                     ],
-                    "text": "Confirmed diagnosis"
+                    "text": "gesicherte Diagnose"
                   }
                 }
               ]
@@ -176,10 +176,10 @@
             {
               "system": "http://snomed.info/sct",
               "code": "128462008",
-              "display": "Secondary malignant neoplasm of lymph node"
+              "display": "Metastatic malignant neoplasm (disorder)"
             }
           ],
-          "text": "Secondary malignant neoplasm of lymph node"
+          "text": "Metastatic malignant neoplasm (disorder)"
         },
         "bodySite": [
           {
@@ -262,11 +262,11 @@
                 "coding": [
                   {
                     "system": "http://snomed.info/sct",
-                    "code": "367640001",
-                    "display": "Middle age"
+                    "code": "271872005",
+                    "display": "Old age (qualifier value)"
                   }
                 ],
-                "text": "End of middle age phase"
+                "text": "Old age (qualifier value)"
               }
             }
           ]
@@ -344,7 +344,7 @@
       "severity": {
         "coding": [
           {
-            "system": "http://snomed.info/id/246112005",
+            "system": "http://snomed.info/sct",
             "code": "246112005",
             "display": "Severity"
           }
@@ -363,12 +363,12 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm-mc",
-                      "code": "P",
-                      "display": "Primary code in multiple coding"
+                      "system": "http://fhir.de/CodeSystem/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                      "code": "†",
+                      "display": "†"
                     }
                   ],
-                  "text": "Primary code in multiple coding"
+                  "text": "Ätiologie"
                 }
               },
               {
@@ -376,9 +376,9 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "system": "http://fhir.de/CodeSystem/dimdi/seitenlokalisation",
-                      "code": "U",
-                      "display": "Upper lobe"
+                      "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION",
+                      "code": "R",
+                      "display": "rechts"
                     }
                   ],
                   "text": "Upper lobe"
@@ -389,12 +389,12 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "system": "http://fhir.de/CodeSystem/dimdi/diagnosesicherheit",
-                      "code": "S",
-                      "display": "Suspected diagnosis"
+                      "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                      "code": "A",
+                      "display": "ausgeschlossen"
                     }
                   ],
-                  "text": "Suspected diagnosis"
+                  "text": "ausgeschlossen"
                 }
               }
             ]
@@ -412,7 +412,7 @@
           {
             "system": "http://snomed.info/sct",
             "code": "254626006",
-            "display": "Malignant neoplasm of the upper lobe of lung"
+            "display": "Adenocarcinoma of lung (disorder)"
           },
           {
             "system": "http://www.orpha.net",
@@ -428,7 +428,7 @@
             {
               "system": "http://snomed.info/sct",
               "code": "368209003",
-              "display": "Entire cardiovascular system"
+              "display": "Right upper arm"
             },
             {
               "system": "http://terminology.hl7.org/CodeSystem/icd-o-3",
@@ -500,11 +500,11 @@
                 "coding": [
                   {
                     "system": "http://snomed.info/sct",
-                    "code": "367640001",
-                    "display": "Middle age"
+                    "code": "271872005",
+                    "display": "Old age (qualifier value)"
                   }
                 ],
-                "text": "End of middle age phase"
+                "text": "Old age (qualifier value)"
               }
             }
           ]
@@ -562,11 +562,11 @@
               "coding": [
                 {
                   "system": "http://snomed.info/sct",
-                  "code": "164729004",
-                  "display": "Blood pressure measurement"
+                  "code": "127489000",
+                  "display": "Has active ingredient"
                 }
               ],
-              "text": "Blood pressure measurement"
+              "text": "Has active ingredient"
             }
           ]
         }
@@ -589,7 +589,8 @@
               "coding": [
                 {
                   "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                  "code": "VN"
+                  "code": "VN",
+                  "display" : "Visit number"
                 }
               ]
             },
