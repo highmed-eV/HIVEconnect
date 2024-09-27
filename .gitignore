@@ -4,14 +4,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
 
 ### IntelliJ IDEA ###
 .idea
@@ -30,6 +22,10 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
+.classpath
+.factorypath
+.project
+.settings/
 .vscode/
 fhir-bridge-server/tests/robot/_resources/variables/__pycache__/sut_config.cpython-311.pyc
 fhir-bridge-server/tests/report.html
@@ -38,3 +34,31 @@ fhir-bridge-server/tests/log.html
 log/output.xml
 log/report.html
 log/log.html
+
+*-local.yml
+keystore/
+logs/
+
+*.log
+.attach_pid*
+
+id_file
+# Python
+venv
+*.venv
+.pytest_cache
+*.pyc
+__pycache__/
+
+# Robot Tests
+results/
+log.html
+output.xml
+report.html
+.pabotsuitenames
+
+# VSCode REST Client
+# files for local usage only!
+local*.http
+
+mapping-output.json
