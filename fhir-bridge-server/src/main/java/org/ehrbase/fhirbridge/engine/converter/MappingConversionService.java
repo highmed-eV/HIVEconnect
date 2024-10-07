@@ -18,9 +18,17 @@ package org.ehrbase.fhirbridge.engine.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
+
+import org.apache.camel.Exchange;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.fhir.common.Profile;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.hl7.fhir.r4.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+
+import java.util.Optional;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +37,23 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class MappingConversionService {
 
-    public Object convert(Resource resource) {
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-        String resourceId = resource.getId();
-        String resourceTypeName = resource.getResourceType().name();
-        
-        String resourceKey = (resourceTypeName == "BUNDLE")?resourceId:resourceTypeName;
-        String canonicalJsonFile = ResourceToCanonicalMapper.getResourceToCanonicalMap(resourceKey);
+    public Object convert(Exchange exchange) {
+
+        Resource resource = exchange.getIn().getBody(Resource.class); 
+        Optional<Profile> profileOpt = (Optional<Profile>) exchange.getIn().getHeader(CamelConstants.PROFILE); 
+
+        String profileUri = null;
+        if (profileOpt.isPresent()) {
+            profileUri = profileOpt.get().getUri();
+            log.info("The URI for the profile is: " + profileUri);
+        } else {
+            throw new IllegalArgumentException("Profile not found for resource: " + resource.getResourceType());
+        }
+
+        String canonicalJsonFile = ProfileToCanonicalMapper.getProfileToCanonicalMap(profileUri);
+        log.info("Profile to me mapped: " + profileUri + "canaocal json: " + canonicalJsonFile);
         if (canonicalJsonFile == null) {
            throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
        }

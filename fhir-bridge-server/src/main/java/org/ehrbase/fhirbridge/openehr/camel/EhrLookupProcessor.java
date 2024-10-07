@@ -77,7 +77,7 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        IIdType patientId = getPatientId(exchange);
+         IIdType patientId = getPatientId(exchange);
         UUID ehrId = patientEhrRepository.findById(patientId.getIdPart())
                 .map(PatientEhr::getEhrId)
                 .orElseGet(() -> createOrGetPatientEhr(patientId));

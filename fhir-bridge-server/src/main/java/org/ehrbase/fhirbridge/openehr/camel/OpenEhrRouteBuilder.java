@@ -26,6 +26,8 @@ import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.engine.converter.ConversionException;
 
+import org.hl7.fhir.r4.model.Resource;
+
 /**
  * @author Renaud Subiger
  * @since 1.6
@@ -42,8 +44,9 @@ public class OpenEhrRouteBuilder extends RouteBuilder {
             .process(EhrLookupProcessor.BEAN_ID)
             .doTry()
 //                .to("bean:fhirResourceConversionService?method=convert(${headers.CamelFhirBridgeProfile}, ${body})")
-                .to("bean:fhirResourceMappingConversionService?method=convert(${body})")
-            .doCatch(ConversionException.class)
+                
+                .to("bean:fhirResourceMappingConversionService?method=convert")
+                .doCatch(ConversionException.class)
                 .throwException(UnprocessableEntityException.class, "${exception.message}")
             .end()
             .process(exchange -> {

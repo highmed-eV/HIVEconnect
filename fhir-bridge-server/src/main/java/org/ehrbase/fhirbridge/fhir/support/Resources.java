@@ -202,6 +202,7 @@ public class Resources {
 
     public static Optional<Profile> getResourceProfile(Resource resource) {
         Set<Profile> supportedProfiles = Profile.resolveAll(resource);
+        supportedProfiles.forEach(profile -> System.out.println(profile.getUri()));
         return supportedProfiles.stream()
                 .filter(profile -> resource.getMeta().getProfile().get(0).equals(profile.getUri()))
                         .findFirst();

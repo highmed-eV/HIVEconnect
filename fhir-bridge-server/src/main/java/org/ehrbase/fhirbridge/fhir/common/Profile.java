@@ -125,13 +125,17 @@ public enum Profile {
 
     private final Class<? extends Resource> resourceType;
 
-    private final String uri;
+    private String uri;
 
     <T extends Resource> Profile(Class<T> resourceType, String uri) {
         this.resourceType = resourceType;
         this.uri = uri;
     }
 
+    public void setDefaultProfileUrl(String defaultUri) {
+        uri = defaultUri;
+    }
+    
     public static <T extends Resource> Profile getDefaultProfile(Class<T> resourceType) {
         for (Profile profile : values()) {
             if (profile.isAssignable(resourceType) && profile.isDefault()) {

@@ -75,9 +75,9 @@ logging:
     ca.uhn.fhir: WARN
     com.zaxxer.hikari: WARN
     liquibase: INFO
-    org.apache.camel: INFO
+    org.apache.camel: DEBUG
     # org.ehrbase.client: WARN
-    org.ehrbase.fhirbridge: INFO
+    org.ehrbase.fhirbridge: DEBUG
     org.hibernate: INFO
     org.openehealth.ipf: ERROR
     org.quartz: WARN

@@ -26,6 +26,16 @@ public abstract class AbstractBundleConverter<T> implements Converter<Bundle, T>
                 .orElseThrow(() -> new UnprocessableEntityException("Root resource with profile '" + profile.getUri() + "' is missing"));
     }
 
+    @SuppressWarnings("unchecked")
+    protected T getRoot(Bundle bundle) {
+        //TODO: getting the first. Need to find the root resource.
+        return (T) bundle.getEntry().stream()
+                .map(Bundle.BundleEntryComponent::getResource)
+                .findFirst()
+                .orElseThrow(() -> new UnprocessableEntityException("Root resource  is missing"));
+    }
+
+
     protected Map<String, Resource> mapResources(Bundle bundle) {
         return bundle.getEntry().stream()
                 .collect(Collectors.toMap(Bundle.BundleEntryComponent::getFullUrl, Bundle.BundleEntryComponent::getResource));

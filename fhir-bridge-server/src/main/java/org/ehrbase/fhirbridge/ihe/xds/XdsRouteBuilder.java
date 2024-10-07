@@ -23,6 +23,7 @@ import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.engine.converter.ConversionException;
+import org.hl7.fhir.r4.model.Resource;
 import org.openehealth.ipf.commons.ihe.xds.core.requests.ProvideAndRegisterDocumentSet;
 
 /**
@@ -41,7 +42,8 @@ public class XdsRouteBuilder extends RouteBuilder {
                 .bean(XDSValidator.class)
                 .doTry()
 //                    .to("bean:fhirResourceConversionService?method=convert(${headers.CamelFhirBridgeProfile}, ${body})")
-                    .to("bean:fhirResourceMappingConversionService?method=convert(${body})")
+                    // .to("bean:fhirResourceMappingConversionService?method=convert(${body},${exchange.getIn().getHeader(CamelConstants.PROFILE)})")
+                    .to("bean:fhirResourceMappingConversionService?method=convert")
                     .doCatch(ConversionException.class)
                     .throwException(UnprocessableEntityException.class, "${exception.message}")
                 .end()

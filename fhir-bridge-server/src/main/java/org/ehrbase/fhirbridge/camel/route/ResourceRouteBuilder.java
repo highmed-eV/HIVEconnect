@@ -53,17 +53,17 @@ public class ResourceRouteBuilder extends AbstractRouteBuilder {
             .onCompletion()
                 .process(ProvideResourceAuditHandler.BEAN_ID)
             .end()
-            .process(FhirProfileValidator.BEAN_ID)
-            .choice()
-                .when(header(CamelConstants.PROFILE).isEqualTo(Profile.KONTAKT_GESUNDHEIT_ABTEILUNG))
-                    .bean(KDSEncounterValidator.class)
-                .when(header(CamelConstants.PROFILE).isEqualTo(Profile.MIBI_KULTUR))
-                    .bean(MibiKulturValidator.class)
-                .when(header(CamelConstants.PROFILE).isEqualTo(Profile.MIBI_MOLEKULARE_DIAGNOSTIC))
-                    .bean(MibiMolekDiagnostikValidator.class)
-                .when(header(CamelConstants.PROFILE).isEqualTo(Profile.KDS_PATIENT_PSEUDO))
-                    .bean(KdsPersonValidator.class)
-            .end()
+        //     .process(FhirProfileValidator.BEAN_ID)
+        //     .choice()
+        //         .when(header(CamelConstants.PROFILE).isEqualTo(Profile.KONTAKT_GESUNDHEIT_ABTEILUNG))
+        //             .bean(KDSEncounterValidator.class)
+        //         .when(header(CamelConstants.PROFILE).isEqualTo(Profile.MIBI_KULTUR))
+        //             .bean(MibiKulturValidator.class)
+        //         .when(header(CamelConstants.PROFILE).isEqualTo(Profile.MIBI_MOLEKULARE_DIAGNOSTIC))
+        //             .bean(MibiMolekDiagnostikValidator.class)
+        //         .when(header(CamelConstants.PROFILE).isEqualTo(Profile.KDS_PATIENT_PSEUDO))
+        //             .bean(KdsPersonValidator.class)
+        //     .end()
             .process(PatientReferenceProcessor.BEAN_ID)
             .process(ResourcePersistenceProcessor.BEAN_ID)
             .doTry()
@@ -73,19 +73,19 @@ public class ResourceRouteBuilder extends AbstractRouteBuilder {
 
 
         // @formatter:on
-        configureAuditEvent();
-        configureCondition();
-        configureConsent();
-        configureDiagnosticReport();
-        configureEncounter();
-        configureImmunization();
-        configureMedicationStatement();
-        configureObservation();
-        configurePatient();
-        configureProcedure();
-        configureQuestionnaireResponse();
-        configureComposition();
-        configureSpecimen();
+        // configureAuditEvent();
+        // configureCondition();
+        // configureConsent();
+        // configureDiagnosticReport();
+        // configureEncounter();
+        // configureImmunization();
+        // configureMedicationStatement();
+        // configureObservation();
+        // configurePatient();
+        // configureProcedure();
+        // configureQuestionnaireResponse();
+        // configureComposition();
+        // configureSpecimen();
     }
 
     /**

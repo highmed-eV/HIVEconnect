@@ -23,6 +23,7 @@ import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.DeleteObjectProcessor;
 import org.ehrbase.fhirbridge.camel.processor.DocumentReferenceProcessor;
 import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
+import org.hl7.fhir.r4.model.Resource;
 import org.ehrbase.fhirbridge.camel.processor.FhirProfileValidator;
 import org.ehrbase.fhirbridge.camel.processor.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.camel.processor.PatientReferenceProcessor;
@@ -42,14 +43,15 @@ public class DocumentRouteBuilder extends RouteBuilder {
                 .process(DeleteObjectProcessor.BEAN_ID)
             .end()
             .setHeader(VALIDATION_MODE, constant(MODEL))
-            .process(FhirProfileValidator.BEAN_ID)
-            .process(itiRequestValidator())
+            // .process(FhirProfileValidator.BEAN_ID)
+            // .process(itiRequestValidator())
             .process(PatientReferenceProcessor.BEAN_ID)
             .process(DocumentReferenceProcessor.BEAN_ID)
             .process(EhrLookupProcessor.BEAN_ID)
             .doTry()
 //                .to("bean:fhirResourceConversionService?method=convert(${headers.CamelFhirBridgeProfile}, ${body})")
-                .to("bean:fhirResourceMappingConversionService?method=convert(${body})")
+                // .to("bean:fhirResourceMappingConversionService?method=convert(${body},${exchange.getIn().getHeader(CamelConstants.PROFILE)})")
+                .to("bean:fhirResourceMappingConversionService?method=convert")
                 .doCatch(ConversionException.class)
                 .process(DeleteObjectProcessor.BEAN_ID)
                 .throwException(UnprocessableEntityException.class, "${exception.message}")
