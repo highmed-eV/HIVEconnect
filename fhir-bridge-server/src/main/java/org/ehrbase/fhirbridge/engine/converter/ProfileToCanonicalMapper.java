@@ -9,7 +9,7 @@ public class ProfileToCanonicalMapper {
 
     static {
         // Initialize the map with resource type to canonical JSON mappings
-        profileToCanonicalMap.put("Patient", "GECCO_Personendaten_canonical.json");
+        profileToCanonicalMap.put("https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/Patient", "GECCO_Personendaten_canonical.json");
         profileToCanonicalMap.put("https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/blood-gas-panel", "kds_diagnose_canonical.json");
         
         profileToCanonicalMap.put("https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose", "kds_diagnose_canonical.json");

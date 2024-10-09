@@ -53,7 +53,7 @@ public class MappingConversionService {
         }
 
         String canonicalJsonFile = ProfileToCanonicalMapper.getProfileToCanonicalMap(profileUri);
-        log.info("Profile to me mapped: " + profileUri + "canaocal json: " + canonicalJsonFile);
+        log.info("Profile to be mapped: " + profileUri + "canaocal json: " + canonicalJsonFile);
         if (canonicalJsonFile == null) {
            throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
        }

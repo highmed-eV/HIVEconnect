@@ -73,19 +73,19 @@ public class ResourceRouteBuilder extends AbstractRouteBuilder {
 
 
         // @formatter:on
-        // configureAuditEvent();
-        // configureCondition();
-        // configureConsent();
-        // configureDiagnosticReport();
-        // configureEncounter();
-        // configureImmunization();
-        // configureMedicationStatement();
-        // configureObservation();
-        // configurePatient();
-        // configureProcedure();
-        // configureQuestionnaireResponse();
-        // configureComposition();
-        // configureSpecimen();
+        configureAuditEvent();
+        configureCondition();
+        configureConsent();
+        configureDiagnosticReport();
+        configureEncounter();
+        configureImmunization();
+        configureMedicationStatement();
+        configureObservation();
+        configurePatient();
+        configureProcedure();
+        configureQuestionnaireResponse();
+        configureComposition();
+        configureSpecimen();
     }
 
     /**
