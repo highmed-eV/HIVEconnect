@@ -327,14 +327,14 @@
               },
               "value" : {
                 "_type" : "DV_CODED_TEXT",
-                "value" : "Active",
+                "value" : "eligible",
                 "defining_code" : {
                   "_type" : "CODE_PHRASE",
                   "terminology_id" : {
                     "_type" : "TERMINOLOGY_ID",
                     "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/research-study-status"
                   },
-                  "code_string" : "active"
+                  "code_string" : "Eligible"
                 }
               },
               "archetype_node_id" : "at0005"
