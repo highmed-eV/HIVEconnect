@@ -1,0 +1,43 @@
+{
+    "resourceType": "Patient",
+    "meta": {
+        "profile": [
+            "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/Patient"
+        ]
+    },
+    "extension": [
+        {
+            "url": "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/ethnic-group",
+            "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "186019001",
+                "display": "Other ethnic, mixed origin"
+            }
+        },
+        {
+            "extension": [
+                {
+                    "url": "dateTimeOfDocumentation",
+                    "valueDateTime": "2020-10-01"
+                },
+                {
+                    "url": "age",
+                    "valueAge": {
+                        "value": 68,
+                        "unit": "years",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "a"
+                    }
+                }
+            ],
+            "url": "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/age"
+        }
+    ],
+    "identifier": [
+        {
+            "system": "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym",
+            "value": "codex_6348Q7"
+        }
+    ],
+    "birthDate": "1972-09-30"
+}
