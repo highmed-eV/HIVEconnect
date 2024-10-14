@@ -33,7 +33,7 @@
                     "reference": "Medication/example-medication"
                 },
                 "subject": {
-                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49",
+                    "reference": "Patient/b7e98761-ecd7-43d1-9faa-1d600004b3f0",
                     "identifier": {
                         "system": "urn:ietf:rfc:4122",
                         "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
@@ -42,7 +42,7 @@
                 "context": {
                     "reference": "Encounter/encounter-12345"
                 },
-                "effectiveDateTime": "2024-08-20T14:30:00+00:00Z",
+                "effectiveDateTime": "2024-08-20T14:30:00Z",
                 "performer": [
                     {
                         "actor": {
@@ -64,13 +64,12 @@
                 ],
                 "dosage": {
                     "text": "20 mg orally once daily",
-                    
                     "route": {
                         "coding": [
                             {
-                            "system": "http://snomed.info/sct",
-                            "code": "26643006",
-                            "display": "Oral route"
+                                "system": "http://snomed.info/sct",
+                                "code": "26643006",
+                                "display": "Oral route"
                             }
                         ],
                         "text": "Oral"
@@ -95,7 +94,6 @@
                             "code": "h"
                         }
                     }
-                    
                 }
             },
             "request": {
@@ -104,7 +102,7 @@
             }
         },
         {
-            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fd76e5c72d",
+            "fullUrl": "Medication/example-medication",
             "resource": {
                 "resourceType": "Medication",
                 "id": "example-medication",
@@ -167,10 +165,15 @@
             }
         },
         {
-            "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5284ade",
+            "fullUrl": "Encounter/encounter-12345",
             "resource": {
                 "resourceType": "Encounter",
                 "id": "encounter-12345",
+                "class": {
+                    "code": "AMB",
+                    "display": "ambulatory",
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+                },
                 "identifier": [
                     {
                         "use": "official",
@@ -179,7 +182,7 @@
                                 {
                                     "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
                                     "code": "VN",
-                                    "display" : "Visit number"
+                                    "display": "Visit number"
                                 }
                             ]
                         },
@@ -189,14 +192,13 @@
                 ],
                 "status": "finished",
                 "subject": {
-                    "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49"
+                    "reference": "Patient/b7e98761-ecd7-43d1-9faa-1d600004b3f0"
                 },
                 "period": {
                     "start": "2024-08-21T09:00:00+01:00",
                     "end": "2024-08-21T09:30:00+01:00"
                 }
-            }
-        ,
+            },
             "request": {
                 "method": "POST",
                 "url": "Encounter"
@@ -213,9 +215,6 @@
                     ]
                 },
                 "status": "active",
-                "medicationReference": {
-                    "reference": "Medication/example-medication"
-                },
                 "medicationCodeableConcept": {
                     "coding": [
                         {
@@ -232,7 +231,6 @@
                         "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
                     }
                 }
-                
             },
             "request": {
                 "method": "POST",
