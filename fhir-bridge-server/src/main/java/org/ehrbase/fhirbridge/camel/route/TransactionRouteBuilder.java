@@ -18,6 +18,7 @@ package org.ehrbase.fhirbridge.camel.route;
 
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.BundleResponseProcessor;
 import org.ehrbase.fhirbridge.camel.processor.ITI65Processor;
@@ -56,6 +57,11 @@ public class TransactionRouteBuilder extends AbstractRouteBuilder {
         // @formatter:off
         from("bundle-provide:consumer?fhirContext=#fhirContext")
                 .setHeader(CamelConstants.PROFILE, method(Bundles.class, "getTransactionProfile"))
+                .process(exchange -> {
+                    if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                        exchange.getIn().setHeader("CamelFhirBridgeIncomingResource", exchange.getIn().getBody());
+                    }
+                })
                 .choice()
                     .when(header(CamelConstants.PROFILE).isEqualTo(Profile.ITI65))
                         .to("direct:processITI65")
