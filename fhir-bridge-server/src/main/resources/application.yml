@@ -39,12 +39,18 @@ spring:
     allow-circular-references: true             # Upgrade HAPI FHIR
   cache:
     cache-names: templateCache
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fhir-bridge
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
+    #      ddl-auto: create
     open-in-view: false
     properties:
-      hibernate.dialect: org.hibernate.dialect.H2Dialect
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect #org.hibernate.dialect.H2Dialect
       hibernate.search.enabled: true
       hibernate.search.backend.type: lucene
       hibernate.search.backend.analysis.configurer: ca.uhn.fhir.jpa.search.HapiLuceneAnalysisConfigurer
@@ -97,6 +103,10 @@ management:
     export:
       elastic:
         auto-create-index:
+
+open:
+  fhir:
+    url: http://localhost:8090/openfhir/toopenehr
 
 ################################################################################
 # Open eHealth Integration Platform Properties                                 #

@@ -18,6 +18,7 @@ package org.ehrbase.fhirbridge.camel.route;
 
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.BundleResponseProcessor;
 import org.ehrbase.fhirbridge.camel.processor.ITI65Processor;
@@ -38,6 +39,7 @@ import org.ehrbase.fhirbridge.fhir.bundle.validator.UCCSensorDatenValidator;
 import org.ehrbase.fhirbridge.fhir.bundle.validator.VirologischerBefundBundleValidator;
 import org.ehrbase.fhirbridge.fhir.common.Profile;
 import org.ehrbase.fhirbridge.fhir.support.Bundles;
+import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -56,6 +58,12 @@ public class TransactionRouteBuilder extends AbstractRouteBuilder {
         // @formatter:off
         from("bundle-provide:consumer?fhirContext=#fhirContext")
                 .setHeader(CamelConstants.PROFILE, method(Bundles.class, "getTransactionProfile"))
+                .process(exchange -> {
+                    if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                        Bundle inputResource = (Bundle) exchange.getIn().getBody();
+                        exchange.getIn().setHeader("CamelFhirBridgeIncomingResource", inputResource.copy());
+                    }
+                })
                 .choice()
                     .when(header(CamelConstants.PROFILE).isEqualTo(Profile.ITI65))
                         .to("direct:processITI65")
