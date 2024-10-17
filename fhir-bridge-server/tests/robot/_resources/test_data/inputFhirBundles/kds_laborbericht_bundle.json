@@ -92,7 +92,7 @@
         ],
         "result": [
           {
-            "reference": "Observation/987",
+            "reference": "Observation/mii-pr-labor-laboruntersuchung",
             "display": "Hemoglobin level"
           }
         ],
@@ -104,7 +104,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee",
+      "fullUrl": "Encounter/encounter-12345",
       "resource": {
         "resourceType": "Encounter",
         "id": "encounter-12345",
@@ -144,7 +144,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:75d2ecd3-0ec5-4a3b-94a0-c7203dde89dc",
+      "fullUrl": "Observation/mii-pr-labor-laboruntersuchung",
       "resource": {
         "resourceType": "Observation",
         "id": "mii-pr-labor-laboruntersuchung",
@@ -263,7 +263,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000002",
+      "fullUrl": "Specimen/example-blood",
       "request": {
         "method": "POST",
         "url": "Specimen"
@@ -273,7 +273,7 @@
         "id": "example-blood",
         "meta": {
           "profile": [
-            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
+            "http://hl7.org/fhir/StructureDefinition/Specimen"
           ]
         },
         "status": "available",

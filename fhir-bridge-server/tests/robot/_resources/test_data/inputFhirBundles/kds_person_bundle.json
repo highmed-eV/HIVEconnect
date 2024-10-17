@@ -251,7 +251,7 @@
         }
       },
       {
-        "fullUrl": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589h",
+        "fullUrl": "Condition/example-cause-of-death",
         "resource": {
           "resourceType": "Condition",
           "id": "example-cause-of-death",
@@ -330,7 +330,7 @@
         }
       },
       {
-        "fullUrl": "urn:uuid:04121321-4af5-424c-a0e1-ed1aab1c589d",
+        "fullUrl": "Observation/vitalstatus-example",
         "resource": {
           "resourceType": "Observation",
           "id": "vitalstatus-example",
@@ -374,7 +374,7 @@
         }
       },
       {
-        "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000002",
+        "fullUrl": "Organization/1234",
         "request": {
           "method": "POST",
           "url": "Organization"
@@ -392,7 +392,7 @@
         }
       },
       {
-        "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000003",
+        "fullUrl": "Organization/5678",
         "request": {
           "method": "POST",
           "url": "Organization"
