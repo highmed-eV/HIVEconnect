@@ -40,7 +40,7 @@ spring:
   cache:
     cache-names: templateCache
   datasource:
-    url: jdbc:postgresql://localhost:15432/fhir-bridge
+    url: jdbc:postgresql://localhost:5432/fhir-bridge
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
