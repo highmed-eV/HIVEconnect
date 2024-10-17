@@ -39,6 +39,7 @@ import org.ehrbase.fhirbridge.fhir.bundle.validator.UCCSensorDatenValidator;
 import org.ehrbase.fhirbridge.fhir.bundle.validator.VirologischerBefundBundleValidator;
 import org.ehrbase.fhirbridge.fhir.common.Profile;
 import org.ehrbase.fhirbridge.fhir.support.Bundles;
+import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -59,7 +60,8 @@ public class TransactionRouteBuilder extends AbstractRouteBuilder {
                 .setHeader(CamelConstants.PROFILE, method(Bundles.class, "getTransactionProfile"))
                 .process(exchange -> {
                     if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
-                        exchange.getIn().setHeader("CamelFhirBridgeIncomingResource", exchange.getIn().getBody());
+                        Bundle inputResource = (Bundle) exchange.getIn().getBody();
+                        exchange.getIn().setHeader("CamelFhirBridgeIncomingResource", inputResource.copy());
                     }
                 })
                 .choice()

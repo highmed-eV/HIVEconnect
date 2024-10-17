@@ -104,6 +104,10 @@ management:
       elastic:
         auto-create-index:
 
+open:
+  fhir:
+    url: http://localhost:8090/openfhir/toopenehr
+
 ################################################################################
 # Open eHealth Integration Platform Properties                                 #
 ################################################################################
