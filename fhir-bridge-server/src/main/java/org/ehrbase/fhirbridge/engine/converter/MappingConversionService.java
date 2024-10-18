@@ -16,33 +16,49 @@
 
 package org.ehrbase.fhirbridge.engine.converter;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.nedap.archie.rm.composition.Composition;
-
 import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.fhir.common.Profile;
+import org.ehrbase.fhirbridge.fhir.support.Resources;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.hl7.fhir.r4.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
-
-import java.util.Optional;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.Optional;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class MappingConversionService {
+
+    @Value("${open.fhir.url}")
+    private String openFhirUrl;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     public Object convert(Exchange exchange) {
 
-        Resource resource = exchange.getIn().getBody(Resource.class); 
-        Optional<Profile> profileOpt = (Optional<Profile>) exchange.getIn().getHeader(CamelConstants.PROFILE); 
+        Resource resource = exchange.getIn().getBody(Resource.class);
+        Optional<Profile> profileOpt = (Optional<Profile>) exchange.getIn().getHeader(CamelConstants.PROFILE);
 
         String profileUri = null;
         if (profileOpt.isPresent()) {
@@ -55,27 +71,64 @@ public class MappingConversionService {
         String canonicalJsonFile = ProfileToCanonicalMapper.getProfileToCanonicalMap(profileUri);
         log.info("Profile to be mapped: " + profileUri + "canaocal json: " + canonicalJsonFile);
         if (canonicalJsonFile == null) {
-           throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
-       }
-
-        String canonicalJsonFilePath = "canonical_json/" + canonicalJsonFile;
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(canonicalJsonFilePath);
-        if (inputStream == null) {
-            throw new RuntimeException("File not found: " + canonicalJsonFile);
+            throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
         }
 
-        String canonicalComposition;
-        try {
-            canonicalComposition = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if(Resources.isPatient(resource)){
+            String canonicalJsonFilePath = "canonical_json/" + canonicalJsonFile;
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(canonicalJsonFilePath);
+            if (inputStream == null) {
+                throw new RuntimeException("File not found: " + canonicalJsonFile);
+            }
+            String canonicalComposition;
+            try {
+                canonicalComposition = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            CanonicalJson canonicalJson = new CanonicalJson();
+            Composition composition = canonicalJson.unmarshal(canonicalComposition, Composition.class);
+
+            return composition;
+        }
+
+
+        Resource inputResource = (Resource) exchange.getIn().getHeader("CamelFhirBridgeIncomingResource");
+        if(Objects.isNull(inputResource)){
+            inputResource = resource;
+        }
+
+        FhirContext fhirContext = FhirContext.forR4();
+        IParser jsonParser = fhirContext.newJsonParser();
+        jsonParser.setPrettyPrint(false);
+        jsonParser.setSuppressNarratives(true);
+        String resourceJson = jsonParser.encodeResourceToString(inputResource);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<>(resourceJson, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                openFhirUrl,
+                HttpMethod.POST,
+                requestEntity,
+                String.class
+        );
+
+        if (response.getStatusCodeValue() != 200) {
+            throw new RuntimeException("API returned error response: " + response.getStatusCode() + " - " + response.getBody());
+        }
+
+        String canonicalComposition = response.getBody();
+        if (canonicalComposition == null || canonicalComposition.isEmpty()) {
+            throw new RuntimeException("Empty canonical JSON received from API");
         }
 
         CanonicalJson canonicalJson = new CanonicalJson();
         Composition composition = canonicalJson.unmarshal(canonicalComposition, Composition.class);
 
         return composition;
-    }
 
+    }
 
 }
