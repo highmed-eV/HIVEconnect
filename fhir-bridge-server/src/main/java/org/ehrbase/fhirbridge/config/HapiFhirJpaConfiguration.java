@@ -54,6 +54,12 @@ import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.SearchParameter;
 import org.hl7.fhir.r4.model.ValueSet;
+import org.hl7.fhir.r4.model.ResearchSubject;
+import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.Practitioner;
+import org.hl7.fhir.r4.model.ListResource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -231,6 +237,60 @@ public class HapiFhirJpaConfiguration extends BaseR4Config {
         questionnaireResponseDao.setContext(fhirContext());
         questionnaireResponseDao.setSearchParamRegistry(searchParamRegistry());
         return questionnaireResponseDao;
+    }
+
+    @Bean
+    public IFhirResourceDao<ResearchSubject> researchSubjectResponseDao() {
+        JpaResourceDao<ResearchSubject> researchSubjectResponseDao = new JpaResourceDao<>();
+        researchSubjectResponseDao.setResourceType(ResearchSubject.class);
+        researchSubjectResponseDao.setContext(fhirContext());
+        researchSubjectResponseDao.setSearchParamRegistry(searchParamRegistry());
+        return researchSubjectResponseDao;
+    }
+
+    @Bean
+    public IFhirResourceDao<ServiceRequest> serviceRequestResponseDao() {
+        JpaResourceDao<ServiceRequest> serviceRequestResponseDao = new JpaResourceDao<>();
+        serviceRequestResponseDao.setResourceType(ServiceRequest.class);
+        serviceRequestResponseDao.setContext(fhirContext());
+        serviceRequestResponseDao.setSearchParamRegistry(searchParamRegistry());
+        return serviceRequestResponseDao;
+    }
+
+    @Bean
+    public IFhirResourceDao<MedicationAdministration> medicationAdministrationDao() {
+        JpaResourceDao<MedicationAdministration> medicationAdministrationDao = new JpaResourceDao<>();
+        medicationAdministrationDao.setResourceType(MedicationAdministration.class);
+        medicationAdministrationDao.setContext(fhirContext());
+        medicationAdministrationDao.setSearchParamRegistry(searchParamRegistry());
+        return medicationAdministrationDao;
+    }
+
+    @Bean
+    public IFhirResourceDao<Organization> organizationDao() {
+        JpaResourceDao<Organization> organizationDao = new JpaResourceDao<>();
+        organizationDao.setResourceType(Organization.class);
+        organizationDao.setContext(fhirContext());
+        organizationDao.setSearchParamRegistry(searchParamRegistry());
+        return organizationDao;
+    }
+
+    @Bean
+    public IFhirResourceDao<ListResource> listResourceDao() {
+        JpaResourceDao<ListResource> listResourceDao = new JpaResourceDao<>();
+        listResourceDao.setResourceType(ListResource.class);
+        listResourceDao.setContext(fhirContext());
+        listResourceDao.setSearchParamRegistry(searchParamRegistry());
+        return listResourceDao;
+    }
+
+    @Bean
+    public IFhirResourceDao<Practitioner> practitionerDao() {
+        JpaResourceDao<Practitioner> practitionerDao = new JpaResourceDao<>();
+        practitionerDao.setResourceType(Practitioner.class);
+        practitionerDao.setContext(fhirContext());
+        practitionerDao.setSearchParamRegistry(searchParamRegistry());
+        return practitionerDao;
     }
 
     @Bean(name = "myCodeSystemDaoR4")

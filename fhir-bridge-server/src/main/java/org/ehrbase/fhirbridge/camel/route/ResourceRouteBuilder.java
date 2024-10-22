@@ -218,7 +218,9 @@ public class ResourceRouteBuilder extends AbstractRouteBuilder {
                 .process(ResourcePersistenceProcessor.BEAN_ID);
     }
 
-
+    /**
+     * Configures available endpoints for {@link org.hl7.fhir.r4.model.Specimen Specimen} resource.
+     */
     private void configureSpecimen() {
         from("specimen-provide:specimenEndpoint?fhirContext=#fhirContext")
                 .to("direct:provideResource");
@@ -227,5 +229,48 @@ public class ResourceRouteBuilder extends AbstractRouteBuilder {
                 .process(ResourcePersistenceProcessor.BEAN_ID);
     }
 
+    /**
+     * Configures available endpoints for {@link org.hl7.fhir.r4.model.ResearchSubject ResearchSubject} resource.
+     */
+    private void configureResearchSubject() {
+        from("research-subject-provide:researchSubjectEndpoint?fhirContext=#fhirContext")
+                .to("direct:provideResource");
+
+        from("research-subject-find:researchSubjectEndpoint?fhirContext=#fhirContext&lazyLoadBundles=true")
+                .process(ResourcePersistenceProcessor.BEAN_ID);
+    }
+
+    /**
+     * Configures available endpoints for {@link org.hl7.fhir.r4.model.ServiceRequest ServiceRequest} resource.
+     */
+    private void configureServiceRequest() {
+        from("service-request-provide:serviceRequestEndpoint?fhirContext=#fhirContext")
+                .to("direct:provideResource");
+
+        from("service-request-find:serviceRequestEndpoint?fhirContext=#fhirContext&lazyLoadBundles=true")
+                .process(ResourcePersistenceProcessor.BEAN_ID);
+    }
+
+    /**
+     * Configures available endpoints for {@link org.hl7.fhir.r4.model.MedicationAdministration MedicationAdministration} resource.
+     */
+    private void configureMedicationAdministration() {
+        from("medication-administration-provide:medicationAdministrationEndpoint?fhirContext=#fhirContext")
+                .to("direct:provideResource");
+
+        from("medication-administration-find:medicationAdministrationEndpoint?fhirContext=#fhirContext&lazyLoadBundles=true")
+                .process(ResourcePersistenceProcessor.BEAN_ID);
+    }
+
+    /**
+     * Configures available endpoints for {@link org.hl7.fhir.r4.model.ListResource ListResource} resource.
+     */
+    private void configureListResource() {
+        from("list-resource-provide:listResourceEndpoint?fhirContext=#fhirContext")
+                .to("direct:provideResource");
+
+        from("list-resource-find:listResourceEndpoint?fhirContext=#fhirContext&lazyLoadBundles=true")
+                .process(ResourcePersistenceProcessor.BEAN_ID);
+    }
 
 }

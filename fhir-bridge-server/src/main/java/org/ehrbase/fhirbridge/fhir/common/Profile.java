@@ -13,6 +13,10 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.ResearchSubject;
+import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.ListResource;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -121,7 +125,19 @@ public enum Profile {
     RESPIRATORY_THERAPIES_PROCEDURE(Procedure.class, "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/respiratory-therapies"),
 
     // QuestionnaireResponse
-    QUESTIONNAIRE_RESPONSE_DEFAULT(QuestionnaireResponse.class, null);
+    QUESTIONNAIRE_RESPONSE_DEFAULT(QuestionnaireResponse.class, null),
+
+    // ResearchSubject
+    RESEARCH_SUBJECT(ResearchSubject.class, "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject"),
+
+    //ServiceRequest
+    SERVICE_REQUEST(ServiceRequest .class, "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"),
+
+    //MedicationAdministration
+    MEDICATION_ADMINISTRATION(MedicationAdministration .class, "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"),
+
+    // ListResource
+    MEDICATION_LIST(ListResource .class, "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/medikationsliste");
 
     private final Class<? extends Resource> resourceType;
 
