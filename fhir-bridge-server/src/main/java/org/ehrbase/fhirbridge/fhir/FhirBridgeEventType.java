@@ -72,7 +72,27 @@ public enum FhirBridgeEventType implements EventType, EnumeratedCodedValue<Event
     //Specimen
     PROVIDE_SPECIMEN("specimen-provide", "Provide Specimen"),
 
-    FIND_SPECIMEN("specimen-find", "Find Specimen");
+    FIND_SPECIMEN("specimen-find", "Find Specimen"),
+
+    // ResearchSubject
+    PROVIDE_RESEARCH_SUBJECT("research-subject-provide", "Provide Research Subject"),
+
+    FIND_RESEARCH_SUBJECT("research-subject-find", "Find Research Subject"),
+
+    // ServiceRequest
+    PROVIDE_SERVICE_REQUEST("service-request-provide", "Provide Service Request"),
+
+    FIND_SERVICE_REQUEST("service-request-find", "Find Service Request"),
+
+    // MedicationAdministration
+    PROVIDE_MEDICATION_ADMINISTRATION("medication-administration-provide", "Provide Medication Administration"),
+
+    FIND_MEDICATION_ADMINISTRATION("medication-administration-find", "Find Medication Administration"),
+
+    // ListResource
+    PROVIDE_LIST_RESOURCE("list-resource-provide", "Provide List Resource"),
+
+    FIND_LIST_RESOURCE("list-resource-find", "Find List Resource");
 
     private final EventType value;
 

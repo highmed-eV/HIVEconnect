@@ -19,6 +19,10 @@ import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Specimen;
+import org.hl7.fhir.r4.model.ResearchSubject;
+import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.ListResource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -82,6 +86,14 @@ public class Resources {
                 return getSubject((Specimen) resource);
             case Composition:
                 return getSubject((Composition) resource);
+            case ResearchSubject:
+                return getConsent((ResearchSubject) resource);
+            case ServiceRequest:
+                return getSubject((ServiceRequest) resource);
+            case MedicationAdministration:
+                return getSubject((MedicationAdministration) resource);
+            case List:
+                return getSubject((ListResource) resource);
             default:
                 throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
         }
@@ -124,6 +136,14 @@ public class Resources {
                 break;
             case Composition:
                 ((Composition) resource).setSubject(subject);
+            case ResearchSubject:
+                ((ResearchSubject) resource).setConsent(subject);
+            case ServiceRequest:
+                ((ServiceRequest) resource).setSubject(subject);
+            case MedicationAdministration:
+                ((MedicationAdministration) resource).setSubject(subject);
+            case List:
+                ((ListResource) resource).setSubject(subject);
             default:
                 throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
         }
@@ -198,6 +218,22 @@ public class Resources {
 
     private static Optional<Reference> getSubject(Composition composition) {
         return composition.hasSubject() ? Optional.of(composition.getSubject()) : Optional.empty();
+    }
+
+    private static Optional<Reference> getConsent(ResearchSubject researchSubject) {
+        return researchSubject.hasConsent() ? Optional.of(researchSubject.getConsent()) : Optional.empty();
+    }
+
+    private static Optional<Reference> getSubject(ServiceRequest serviceRequest) {
+        return serviceRequest.hasSubject() ? Optional.of(serviceRequest.getSubject()) : Optional.empty();
+    }
+
+    private static Optional<Reference> getSubject(MedicationAdministration medicationAdministration) {
+        return medicationAdministration.hasSubject() ? Optional.of(medicationAdministration.getSubject()) : Optional.empty();
+    }
+
+    private static Optional<Reference> getSubject(ListResource listResource) {
+        return listResource.hasSubject() ? Optional.of(listResource.getSubject()) : Optional.empty();
     }
 
     public static Optional<Profile> getResourceProfile(Resource resource) {
