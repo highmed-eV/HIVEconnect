@@ -30,6 +30,6 @@ import java.util.Optional;
 public class ProvideResearchSubjectAuditStrategy extends GenericFhirAuditStrategy<ResearchSubject> {
 
     public ProvideResearchSubjectAuditStrategy() {
-        super(true, OperationOutcomeOperations.INSTANCE, researchSubject -> Optional.of(researchSubject.getConsent()));
+        super(true, OperationOutcomeOperations.INSTANCE, researchSubject -> Optional.of(researchSubject.getIndividual()));
     }
 }
