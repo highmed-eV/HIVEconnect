@@ -60,6 +60,7 @@ import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.r4.model.ListResource;
+import org.hl7.fhir.r4.model.ResearchStudy;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -291,6 +292,15 @@ public class HapiFhirJpaConfiguration extends BaseR4Config {
         practitionerDao.setContext(fhirContext());
         practitionerDao.setSearchParamRegistry(searchParamRegistry());
         return practitionerDao;
+    }
+
+    @Bean
+    public IFhirResourceDao<ResearchStudy> researchStudyDao() {
+        JpaResourceDao<ResearchStudy> researchStudyDao = new JpaResourceDao<>();
+        researchStudyDao.setResourceType(ResearchStudy.class);
+        researchStudyDao.setContext(fhirContext());
+        researchStudyDao.setSearchParamRegistry(searchParamRegistry());
+        return researchStudyDao;
     }
 
     @Bean(name = "myCodeSystemDaoR4")

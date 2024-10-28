@@ -87,7 +87,7 @@ public class Resources {
             case Composition:
                 return getSubject((Composition) resource);
             case ResearchSubject:
-                return getConsent((ResearchSubject) resource);
+                return getIndividual((ResearchSubject) resource);
             case ServiceRequest:
                 return getSubject((ServiceRequest) resource);
             case MedicationAdministration:
@@ -137,7 +137,7 @@ public class Resources {
             case Composition:
                 ((Composition) resource).setSubject(subject);
             case ResearchSubject:
-                ((ResearchSubject) resource).setConsent(subject);
+                ((ResearchSubject) resource).setIndividual(subject);
             case ServiceRequest:
                 ((ServiceRequest) resource).setSubject(subject);
             case MedicationAdministration:
@@ -220,8 +220,8 @@ public class Resources {
         return composition.hasSubject() ? Optional.of(composition.getSubject()) : Optional.empty();
     }
 
-    private static Optional<Reference> getConsent(ResearchSubject researchSubject) {
-        return researchSubject.hasConsent() ? Optional.of(researchSubject.getConsent()) : Optional.empty();
+    private static Optional<Reference> getIndividual(ResearchSubject researchSubject) {
+        return researchSubject.hasIndividual() ? Optional.of(researchSubject.getIndividual()) : Optional.empty();
     }
 
     private static Optional<Reference> getSubject(ServiceRequest serviceRequest) {
