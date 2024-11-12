@@ -27,7 +27,8 @@
                             "code": "inpatient",
                             "display": "Inpatient"
                         }
-                    ]
+                    ],
+                    "text": "Inpatient"
                 },
                 "medicationReference": {
                     "reference": "Medication/example-medication"
@@ -59,7 +60,8 @@
                                 "code": "38341003",
                                 "display": "Hypertensive disorder, systemic arterial"
                             }
-                        ]
+                        ],
+                        "text": "Hypertensive disorder, systemic arterial"
                     }
                 ],
                 "dosage": {
@@ -128,7 +130,8 @@
                             "code": "10225000",
                             "display": "Gastro-resistant tablet"
                         }
-                    ]
+                    ],
+                    "text": "Gastro-resistant tablet"
                 },
                 "ingredient": [
                     {
@@ -140,7 +143,7 @@
                                     "display": "Paracetamol"
                                 }
                             ],
-                            "text": "Paracetamol"
+                            "text": "Common"
                         },
                         "strength": {
                             "numerator": {
@@ -184,7 +187,8 @@
                                     "code": "VN",
                                     "display": "Visit number"
                                 }
-                            ]
+                            ],
+                            "text": "Visit number"
                         },
                         "system": "http://hospital.smarthealthit.org",
                         "value": "encounter-id-1245"

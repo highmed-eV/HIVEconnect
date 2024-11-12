@@ -139,7 +139,8 @@
                                     "code": "PO",
                                     "display": "Swallow, oral"
                                 }
-                            ]
+                            ],
+                            "text": "route of medication"
                         },
                         "asNeededBoolean": true,
                         "doseAndRate": [
@@ -192,7 +193,8 @@
                             "code": "10219000",
                             "display": "Tablet"
                         }
-                    ]
+                    ],
+                    "text": "Tablet"
                 },
                 "amount": {
                     "numerator": {
@@ -323,7 +325,8 @@
                                     "code": "VN",
                                     "display": "Visit number"
                                 }
-                            ]
+                            ],
+                            "text": "Visit number"
                         },
                         "system": "http://hospital.smarthealthit.org",
                         "value": "encounter-id-1245"
