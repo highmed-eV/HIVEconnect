@@ -32,12 +32,11 @@ POST /Bundle with ehr reference
     Log To Console    Fhir bundle API call for ${fhir_bundle_name}
     # POST CALL TO STORE THE FHIR BUNDLE
     &{resp}             POST    ${BASE_URL}    body=${payload}
-    # Output Debug Info To Console
-    Log To Console    Response after storing thr fhir bundle &{resp}
+    Log To Console    Response of the post call to store the fhir bundle &{resp}
 
 validate response - 201
-    [Documentation]     Validates response of POST to ${BASE_URL}/BUNDLE_NAME endpoint
-    # Integer    response status    201
+    [Documentation]     Validates response of POST to ${BASE_URL} endpoint
+    Integer    response status    201
     [Arguments]         ${expected_openehr_canonical_file_name}
     # compare expected_openehr_canonical_file_name with output(response_aql)
     Log To Console    In Fhir bundle validate response
@@ -66,10 +65,10 @@ POST /BundleAQL with ehr reference
     # replace the template id - ${openehr_template} in the aql and pass to openehr cdr
 
     # POST CALL TO GET AQL RESPONSE
-    # &{resp_ehr}             POST    ${BASE_URL}/ehrbase/rest/openehr/v1/query/aql    body=${payload}
-    # Output Debug Info To Console
+    &{resp_ehr}             POST    ${EHRBASE_URL}/query/aql    body=${payload}
+    Log To Console    AQL Response &{resp_ehr}
     # currently mocking the aql response from the file
-    &{resp_ehr}=    Load JSON From File    ${EHR_COMPOSITION}/${openehr_canonical_file_name}
+#    &{resp_ehr}=    Load JSON From File    ${EHR_COMPOSITION}/${openehr_canonical_file_name}
     Log To Console    In openEHR AQL API call for ${openehr_canonical_file_name}
                     Set Suite Variable    ${response_aql}    ${resp_ehr}
 
