@@ -31,8 +31,9 @@ POST /Bundle with ehr reference
     ${payload}         Load JSON From File    ${DATA_SET_PATH_KDSFHIRBUNDLE}/${fhir_bundle_file_name}
     Log To Console    Fhir bundle API call for ${fhir_bundle_name}
     # POST CALL TO STORE THE FHIR BUNDLE
-    # &{resp}             POST    ${BASE_URL}/Bundle    body=${payload}
+    &{resp}             POST    ${BASE_URL}    body=${payload}
     # Output Debug Info To Console
+    Log To Console    Response after storing thr fhir bundle &{resp}
 
 validate response - 201
     [Documentation]     Validates response of POST to ${BASE_URL}/BUNDLE_NAME endpoint

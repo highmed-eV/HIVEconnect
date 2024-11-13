@@ -48,7 +48,8 @@
                 "code": "laboratory",
                 "display": "Laboratory"
               }
-            ]
+            ],
+            "text": "Laboratory"
           }
         ],
         "code": {

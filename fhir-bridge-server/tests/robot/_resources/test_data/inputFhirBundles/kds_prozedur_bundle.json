@@ -19,7 +19,7 @@
             "valueDateTime": "2023-11-29T14:00:00Z"
           },
           {
-            "url": "https://www.medizininformatik-initiative.de/fhir/core/modulprozedur/StructureDefinition/Durchfuehrungsabsicht",
+            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht",
             "valueCoding": {
               "system": "http://snomed.info/sct",
               "code": "103693007",

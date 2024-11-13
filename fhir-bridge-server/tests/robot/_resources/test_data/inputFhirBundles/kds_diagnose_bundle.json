@@ -77,7 +77,8 @@
               "code": "active",
               "display": "Active"
             }
-          ]
+          ],
+          "text":"Active"
         },
         "verificationStatus": {
           "coding": [
@@ -289,7 +290,8 @@
               "code": "active",
               "display": "Active"
             }
-          ]
+          ],
+          "text": "Active"
         },
         "verificationStatus": {
           "coding": [
@@ -298,7 +300,8 @@
               "code": "confirmed",
               "display": "Confirmed"
             }
-          ]
+          ],
+          "text": "Confirmed"
         },
         "category": [
           {
@@ -523,7 +526,8 @@
                   "code": "VN",
                   "display" : "Visit number"
                 }
-              ]
+              ],
+              "text": "Visit number"
             },
             "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/encounters",
             "value": "encounter-id-1245"
