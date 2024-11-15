@@ -1,0 +1,8 @@
+# @formatter:off
+
+fhir-bridge:
+  mode: xds
+  xds:
+    hostname: localhost
+    port: 9999
+    context-path: /ihe-mock-server/services/iti41

@@ -18,7 +18,7 @@
 
 *** Settings ***
 
-#Library     REST    ssl_verify=false
+Library     REST    ssl_verify=false
 Library     String
 Library     Collections
 Library     OperatingSystem
@@ -37,7 +37,7 @@ Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
 
 *** Variables ***
 
-# ${BASE_URL}                           http://localhost:8888/fhir-bridge/fhir
+${BASE_URL}                             http://localhost:8888/fhir-bridge/fhir
 # ${EHRBASE_URL}                        http://localhost:8080/ehrbase/rest/openehr/v1
 ${TEST_CASE_LIST_FILE}                  ${EXECDIR}/robot/BUNDLE/test_case_list.json
 ${EHR_COMPOSITION}                      ${EXECDIR}/robot/_resources/test_data/outputOpenEhr

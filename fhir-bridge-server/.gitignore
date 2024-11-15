@@ -31,3 +31,34 @@ build/
 
 ### VS Code ###
 .vscode/
+.classpath
+.factorypath
+.project
+.settings/
+
+
+*-local.yml
+keystore/
+logs/
+
+*.log
+.attach_pid*
+
+id_file
+# Python
+venv
+*.venv
+.pytest_cache
+*.pyc
+__pycache__/
+
+# Robot Tests
+results/
+log.html
+output.xml
+report.html
+.pabotsuitenames
+
+# VSCode REST Client
+# files for local usage only!
+local*.http
