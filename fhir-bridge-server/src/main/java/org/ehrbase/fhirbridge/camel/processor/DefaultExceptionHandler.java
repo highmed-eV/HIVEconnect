@@ -21,7 +21,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.client.exception.WrongStatusCodeException;
-import org.ehrbase.fhirbridge.engine.converter.ConversionException;
+import org.ehrbase.fhirbridge.exception.ConversionException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;

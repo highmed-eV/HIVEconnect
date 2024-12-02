@@ -1,8 +1,9 @@
 package org.ehrbase.fhirbridge.openehr.openehrclient;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import static org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient.OBJECT_MAPPER;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

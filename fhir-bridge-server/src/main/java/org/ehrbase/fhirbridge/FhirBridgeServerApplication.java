@@ -9,15 +9,11 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
-@SpringBootApplication(exclude = {
-    ManagementWebSecurityAutoConfiguration.class,
-    SecurityAutoConfiguration.class
-})
-@ComponentScan(excludeFilters = {
-    @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.ehrbase.fhirbridge.openehr.*"),
-    @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.ehrbase.fhirbridge.ihe.xds.*")
-})
-
+@SpringBootApplication
+// (exclude = {
+//     ManagementWebSecurityAutoConfiguration.class,
+//     SecurityAutoConfiguration.class
+// })
 public class FhirBridgeServerApplication {
 
     public static void main(String[] args) {

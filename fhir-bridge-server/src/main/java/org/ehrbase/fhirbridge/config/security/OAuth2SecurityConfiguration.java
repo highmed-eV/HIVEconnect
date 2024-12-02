@@ -19,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * @since 1.6
  */
 @Configuration(proxyBeanMethods = false)
-@EnableWebSecurity
+@EnableWebSecurity //MedBlocks
 @ConditionalOnProperty(value = "fhir-bridge.security.type", havingValue = "oauth2")
 public class OAuth2SecurityConfiguration {
 

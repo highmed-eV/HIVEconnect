@@ -1,7 +1,6 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.fhirbridge.fhir.common.Profile;
 import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.Composition;
 import org.hl7.fhir.r4.model.Condition;
@@ -156,21 +155,7 @@ public class Resources {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public static boolean hasProfile(Resource resource, Profile profile) {
-        return hasAnyProfile(resource, profile);
-    }
-
-    public static boolean hasAnyProfile(Resource resource, Profile... profiles) {
-        Set<String> c1 = resource.getMeta().getProfile()
-                .stream()
-                .map(PrimitiveType::getValue)
-                .collect(Collectors.toSet());
-        Set<String> c2 = Arrays.stream(profiles)
-                .map(Profile::getUri)
-                .collect(Collectors.toSet());
-
-        return !Collections.disjoint(c1, c2);
-    }
+    
 
     private static Optional<Reference> getSubject(Condition condition) {
         return condition.hasSubject() ? Optional.of(condition.getSubject()) : Optional.empty();
@@ -236,11 +221,4 @@ public class Resources {
         return listResource.hasSubject() ? Optional.of(listResource.getSubject()) : Optional.empty();
     }
 
-    public static Optional<Profile> getResourceProfile(Resource resource) {
-        Set<Profile> supportedProfiles = Profile.resolveAll(resource);
-        supportedProfiles.forEach(profile -> System.out.println(profile.getUri()));
-        return supportedProfiles.stream()
-                .filter(profile -> resource.getMeta().getProfile().get(0).equals(profile.getUri()))
-                        .findFirst();
-    }
 }

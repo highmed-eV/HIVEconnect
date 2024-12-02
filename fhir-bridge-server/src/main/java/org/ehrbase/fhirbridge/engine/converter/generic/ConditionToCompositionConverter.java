@@ -1,15 +1,15 @@
-package org.ehrbase.fhirbridge.engine.converter.generic;
+// package org.ehrbase.fhirbridge.engine.converter.generic;
 
-import com.nedap.archie.rm.generic.PartyIdentified;
-import com.nedap.archie.rm.generic.PartyProxy;
-import com.nedap.archie.rm.generic.PartySelf;
-import io.micrometer.core.lang.NonNull;
-import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
-import org.hl7.fhir.r4.model.Condition;
+// import com.nedap.archie.rm.generic.PartyIdentified;
+// import com.nedap.archie.rm.generic.PartyProxy;
+// import com.nedap.archie.rm.generic.PartySelf;
+// import io.micrometer.core.lang.NonNull;
+// import org.ehrbase.client.classgenerator.interfaces.CompositionEntity;
+// import org.hl7.fhir.r4.model.Condition;
 
-import java.util.Optional;
+// import java.util.Optional;
 
-public abstract class ConditionToCompositionConverter<C extends CompositionEntity> extends CompositionConverter<Condition, C> {
+// public abstract class ConditionToCompositionConverter<C extends CompositionEntity> extends CompositionConverter<Condition, C> {
 
 //    @Override
 //    public C convert(@NonNull Condition resource) {
@@ -18,7 +18,7 @@ public abstract class ConditionToCompositionConverter<C extends CompositionEntit
 //        TimeConverter.convertConditionEndTime(resource).ifPresent(composition::setEndTimeValue);
 //        return composition;
 //    }
-//
+
 //    @Override
 //    protected PartyProxy convertComposer(Condition resource) {
 //        if (!resource.hasRecorder()) {
@@ -26,9 +26,9 @@ public abstract class ConditionToCompositionConverter<C extends CompositionEntit
 //        }
 //        return new ReferenceToPartyIdentifiedConverter().convert(resource.getRecorder());
 //    }
-//
+
 //    @Override
 //    protected Optional<PartyIdentified> convertHealthCareFacility(Condition resource) {
 //        return Optional.empty();
 //    }
-}
+// }

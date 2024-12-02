@@ -28,48 +28,49 @@ public class EhrStatusService {
 
     private final PatientEhrRepository patientEhrRepository;
 
-    private final IFhirResourceDao<Patient> patientDao;
+    // private final IFhirResourceDao<Patient> patientDao;
 
     private final EhrEndpoint ehrEndpoint;
 
-    public EhrStatusService(PatientEhrRepository patientEhrRepository, IFhirResourceDao<Patient> patientDao,
+    public EhrStatusService(PatientEhrRepository patientEhrRepository, 
+                            // IFhirResourceDao<Patient> patientDao, //Medblocks
                             OpenEhrClient openEhrClient) {
         this.patientEhrRepository = patientEhrRepository;
-        this.patientDao = patientDao;
+        // this.patientDao = patientDao;
         this.ehrEndpoint = openEhrClient.ehrEndpoint();
     }
 
     @Async
     public void updateEhrStatus() {
         log.info("--- Start Update Process ---");
-        Pageable pageable = PageRequest.of(0, 100);
-        Page<PatientEhr> result = null;
+        // Pageable pageable = PageRequest.of(0, 100); //Medblocks
+        // Page<PatientEhr> result = null;
 
-        int count = 0;
-        while (result == null || result.hasNext()) {
-            result = patientEhrRepository.findAll(pageable);
-            pageable = result.getPageable().next();
+        // int count = 0;
+        // while (result == null || result.hasNext()) {
+        //     result = patientEhrRepository.findAll(pageable);
+        //     pageable = result.getPageable().next();
 
-            for (var patientEhr : result) {
-                handlePatient(patientEhr);
-                log.info("Processing: {}/{}", ++count, result.getTotalElements());
-            }
-        }
+        //     for (var patientEhr : result) {
+        //         handlePatient(patientEhr);
+        //         log.info("Processing: {}/{}", ++count, result.getTotalElements());
+        //     }
+        // }
 
         log.info("--- Update Process Completed ---");
     }
 
-    private void handlePatient(PatientEhr patientEhr) {
-        var patient = patientDao.read(new IdType("Patient", patientEhr.getPatientId()));
-        UUID ehrId = patientEhr.getEhrId();
-        Optional<EhrStatus> existing = ehrEndpoint.getEhrStatus(ehrId);
-        if (existing.isEmpty()) {
-            log.warn("Patient[id={}, ehr_id={}]", patientEhr.getPatientId(), patientEhr.getEhrId());
-        } else {
-            EhrStatus status = existing.get();
-            Identifier pseudonym = PatientUtils.getPseudonym(patient);
-            status.getSubject().getExternalRef().getId().setValue(pseudonym.getValue());
-            ehrEndpoint.updateEhrStatus(ehrId, status);
-        }
-    }
+    // private void handlePatient(PatientEhr patientEhr) { //Medblocks
+    //     var patient = patientDao.read(new IdType("Patient", patientEhr.getPatientId()));
+    //     UUID ehrId = patientEhr.getEhrId();
+    //     Optional<EhrStatus> existing = ehrEndpoint.getEhrStatus(ehrId);
+    //     if (existing.isEmpty()) {
+    //         log.warn("Patient[id={}, ehr_id={}]", patientEhr.getPatientId(), patientEhr.getEhrId());
+    //     } else {
+    //         EhrStatus status = existing.get();
+    //         Identifier pseudonym = PatientUtils.getPseudonym(patient);
+    //         status.getSubject().getExternalRef().getId().setValue(pseudonym.getValue());
+    //         ehrEndpoint.updateEhrStatus(ehrId, status);
+    //     }
+    // }
 }
