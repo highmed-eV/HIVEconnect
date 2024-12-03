@@ -4,7 +4,7 @@
   "type": "transaction",
   "entry": [
     {
-      "fullUrl": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589e",
+      "fullUrl": "urn:uuid:302c42bf-e35b-4084-995f-4fb8857c1a16",
       "resource": {
         "resourceType": "ResearchSubject",
         "id": "example-research-subject",
@@ -18,8 +18,8 @@
             "type": {
               "coding": [
                 {
-                  "code": "ANON",
                   "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "ANON",
                   "display": "Anonymous identifier"
                 }
               ],
@@ -36,13 +36,17 @@
           "end": "2024-08-22T08:30:00Z"
         },
         "study": {
-          "reference": "ResearchStudy/45082687"
+          "reference": "ResearchStudy/example-study"
         },
         "individual": {
-          "reference": "Patient/787b4e68-56a9-4605-800f-582e504ac588"
+          "reference": "Patient/{{patientId_fhir-server}}",
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "{{patientId_fhir-server}}"
+          }
         },
         "consent": {
-          "reference": "Consent/example-consent-id"
+          "reference": "Consent/6dabfb58-d2b9-4f68-844c-368294474f94"
         }
       },
       "request": {
@@ -51,7 +55,7 @@
       }
     },
     {
-      "fullUrl": "Consent/example-consent-id",
+      "fullUrl": "urn:uuid:6dabfb58-d2b9-4f68-844c-368294474f94",
       "resource": {
         "resourceType": "Consent",
         "id": "example-consent-id",
@@ -90,7 +94,7 @@
               "display": "Research"
             }
           ],
-          "coding": "Research"
+          "text": "Research"
         },
         "category": [
           {
@@ -115,10 +119,10 @@
           }
         ],
         "patient": {
-          "reference": "Patient/787b4e68-56a9-4605-800f-582e504ac588",
+          "reference": "Patient/{{patientId_fhir-server}}",
           "identifier": {
             "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
+            "value": "{{patientId_fhir-server}}"
           }
         },
         "dateTime": "2024-08-22T08:30:00Z",
@@ -209,7 +213,11 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/787b4e68-56a9-4605-800f-582e504ac588"
+          "reference": "Patient/{{patientId_fhir-server}}",
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "{{patientId_fhir-server}}"
+          }
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
@@ -222,7 +230,7 @@
       }
     },
     {
-      "fullUrl": "Organization/example-lab",
+      "fullUrl": "urn:uuid:aae023b3-ff98-4b97-9287-baa01084ba1e",
       "request": {
         "method": "POST",
         "url": "Organization"
