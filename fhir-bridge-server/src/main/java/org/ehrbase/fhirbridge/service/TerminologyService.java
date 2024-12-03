@@ -3,6 +3,7 @@ package org.ehrbase.fhirbridge.service;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import org.hl7.fhir.r4.model.CodeSystem;
 import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.UriType;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,11 +28,12 @@ public class TerminologyService {
                 .withParameters(in)
                 .execute();
 
-        StringType display = (StringType) out.getParameter("display");
+        ParametersParameterComponent display = (ParametersParameterComponent) out.getParameter("display");
         if (display == null) {
             throw new TerminologyServiceException("Cannot find display for coding: system=" + system + ", code=" + code);
         }
 
-        return display.getValue();
+        //TODO check
+        return display.getValue().toString();
     }
 }

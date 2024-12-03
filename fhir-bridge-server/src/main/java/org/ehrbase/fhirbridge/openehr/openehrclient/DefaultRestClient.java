@@ -147,7 +147,8 @@ public class DefaultRestClient implements OpenEhrClient {
         headers.forEach(request::addHeader);
       }
       response = executor.execute(request).returnResponse();
-      checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
+      checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT,
+      HttpStatus.SC_UNPROCESSABLE_ENTITY);
     } catch (IOException e) {
       throw new ClientException(e.getMessage(), e);
     }
@@ -171,7 +172,8 @@ public class DefaultRestClient implements OpenEhrClient {
       }
       HttpResponse response = executor.execute(request).returnResponse();
       checkStatus(
-          response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_PRECONDITION_FAILED);
+          response, HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT, HttpStatus.SC_PRECONDITION_FAILED,
+          HttpStatus.SC_UNPROCESSABLE_ENTITY);
       if (HttpStatus.SC_PRECONDITION_FAILED == response.getStatusLine().getStatusCode()) {
         throw new OptimisticLockException("Entity outdated");
       }

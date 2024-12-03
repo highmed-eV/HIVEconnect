@@ -34,6 +34,8 @@ public class CompositionProducer extends DefaultProducer {
         CompositionOperation operation = determineOperation(exchange);
         if (operation == CompositionOperation.mergeCompositionEntity) {
             mergeCompositionEntity(ehrId, exchange);
+        } else if (operation == CompositionOperation.mergeCanonicalCompositionEntity) {
+            mergeCanonicalCompositionEntity(ehrId, exchange);
         } else if (operation == CompositionOperation.find) {
             find(ehrId, exchange);
         } else {
@@ -60,9 +62,32 @@ public class CompositionProducer extends DefaultProducer {
         exchange.getMessage().setBody(mergedComposition);
     }
 
+    private void mergeCanonicalCompositionEntity(UUID ehrId, Exchange exchange) {
+        String body = (String) exchange.getIn().getBody();
+        if (body == null) {
+            throw new IllegalArgumentException("Body must not be null");
+        }
+
+        if (endpoint.getProperties().isEnabled()) {
+            debugCanonicalMapping(body);
+        }
+
+        //This internally checks if versionUID is present
+        //if yes: post and return the mergedCompositions versionUid
+        //else put and return the mergedCompositions versionUid
+        Object mergedComposition = endpoint.getOpenEhrClient().compositionEndpoint(ehrId).mergeCanonicalCompositionEntity(body);
+        exchange.getMessage().setHeader(CompositionConstants.VERSION_UID, ((Composition) mergedComposition));
+
+        exchange.getMessage().setBody(mergedComposition);
+    }
+
     private void debugMapping(Composition composition) {
         CanonicalJson canonicalJson = new CanonicalJson();
         String compositionJson = canonicalJson.marshal(composition);
+        writeToFile(compositionJson);
+    }
+
+    private void debugCanonicalMapping(String compositionJson) {
         writeToFile(compositionJson);
     }
 

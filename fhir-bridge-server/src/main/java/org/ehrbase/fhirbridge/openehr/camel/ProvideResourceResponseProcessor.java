@@ -48,18 +48,25 @@ public class ProvideResourceResponseProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        Composition composition = exchange.getIn().getBody(Composition.class);
-        MethodOutcome outcome = exchange.getProperty(CamelConstants.OUTCOME, MethodOutcome.class);
+        //TODO: Logic to update the resource to compositionmp
 
-        String resourceId = outcome.getId().getIdPart();
-        ResourceComposition resourceComposition = resourceCompositionRepository.findById(resourceId)
-                .orElse(new ResourceComposition(resourceId));
-        resourceComposition.setCompositionId(getCompositionId(composition));
-        resourceCompositionRepository.save(resourceComposition);
-        LOG.debug("Saved ResourceComposition: resourceId={}, compositionId={}",
-                resourceComposition.getResourceId(), resourceComposition.getCompositionId());
+        // Composition composition = exchange.getIn().getBody(Composition.class);
+        // MethodOutcome outcome = exchange.getProperty(CamelConstants.OUTCOME, MethodOutcome.class);
 
-        exchange.getMessage().setBody(outcome);
+        // String resourceId = outcome.getId().getIdPart();
+        // ResourceComposition resourceComposition = resourceCompositionRepository.findById(resourceId)
+        //         .orElse(new ResourceComposition(resourceId));
+        // resourceComposition.setCompositionId(getCompositionId(composition));
+        // resourceCompositionRepository.save(resourceComposition);
+        // LOG.debug("Saved ResourceComposition: resourceId={}, compositionId={}",
+        //         resourceComposition.getResourceId(), resourceComposition.getCompositionId());
+        LOG.info("ProvideResourceResponseProcessor");
+        String response = (String) exchange.getMessage().getHeader(CamelConstants.FHIR_SERVER_OUTCOME) +
+                            "\\n" +
+                            (String) exchange.getMessage().getHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME) +
+                            "\\n" +
+                            (String) exchange.getMessage().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME);  
+        exchange.getMessage().setBody(response);
     }
 
     private String getCompositionId(Composition composition) {

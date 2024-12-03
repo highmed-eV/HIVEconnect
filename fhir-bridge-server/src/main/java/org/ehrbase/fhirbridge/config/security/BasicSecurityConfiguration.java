@@ -16,12 +16,24 @@
 
 package org.ehrbase.fhirbridge.config.security;
 
+import org.ehrbase.fhirbridge.openehr.EhrStatusService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+// import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * {@link Configuration} for Spring Security using Basic Authentication.
@@ -30,9 +42,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * @since 1.6
  */
 @Configuration(proxyBeanMethods = false)
-@EnableWebSecurity
+@EnableWebSecurity //MedBlocks
 @ConditionalOnProperty(value = "fhir-bridge.security.type", havingValue = "basic")
-public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class BasicSecurityConfiguration  {
+
+    private final Logger log = LoggerFactory.getLogger(BasicSecurityConfiguration.class);
 
     private final SecurityProperties properties;
 
@@ -40,10 +54,49 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.properties = properties;
     }
 
+    
+    @Bean
+     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //  http.authorizeRequests().requestMatchers("/**").hasRole("USER").and().formLogin();
+        log.info("#########securityFilterChain");
+         http
+            .authorizeRequests()
+                .requestMatchers("/**")
+                    .permitAll()
+                .anyRequest()
+                    .authenticated()
+            .and().httpBasic()
+            .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf().disable();
+        return http.build();
+     }
+
+     @Bean
+     public UserDetailsService userDetailsService() {
+         UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("password")
+                .roles("USER")
+                .build();
+         UserDetails admin = User.withDefaultPasswordEncoder()
+             .username("admin")
+             .password("password")
+             .roles("ADMIN", "USER")
+             .build();
+         return new InMemoryUserDetailsManager(user, admin);
+     }
+
+    //New spring security
+    // @Bean
+    // public WebSecurityCustomizer webSecurityCustomizer() {
+    //     return (web) -> web.ignoring().antMatchers("/ignore1", "/ignore2");
+    // }
+
     /**
      * @see WebSecurityConfigurerAdapter#configure(HttpSecurity)
      */
-    @Override
+    // @Override //MedBlocks
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http
@@ -59,7 +112,7 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * @see WebSecurityConfigurerAdapter#configure(AuthenticationManagerBuilder)
      */
-    @Override
+    // @Override //MedBlocks
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // @formatter:off
         auth

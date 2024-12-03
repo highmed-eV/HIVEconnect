@@ -22,11 +22,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient;
-import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
-import org.ehrbase.fhirbridge.openehr.camel.OpenEhrRouteBuilder;
+import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.fhirbridge.security.oauth2.AccessTokenService;
+import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
 import org.ehrbase.fhirbridge.security.oauth2.TokenAuthenticationInterceptor;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.slf4j.Logger;
@@ -53,8 +52,8 @@ import static org.ehrbase.fhirbridge.config.openehr.OpenEhrProperties.SecurityTy
  * @since 1.6
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "fhir-bridge", name = "mode", havingValue = "openehr", matchIfMissing = true)
-@ComponentScan(basePackages = "org.ehrbase.fhirbridge.openehr")
+// @ConditionalOnProperty(prefix = "fhir-bridge", name = "mode", havingValue = "openehr", matchIfMissing = true)
+// @ComponentScan(basePackages = "org.ehrbase.fhirbridge")
 @EnableConfigurationProperties(OpenEhrProperties.class)
 public class OpenEhrConfiguration {
 
@@ -65,10 +64,10 @@ public class OpenEhrConfiguration {
         log.info("Running FHIR Bridge using openEHR");
     }
 
-    @Bean(name = "openEhrRouteBuilder")
-    public OpenEhrRouteBuilder routeBuilder() {
-        return new OpenEhrRouteBuilder();
-    }
+    // @Bean(name = "openEhrRouteBuilder")
+    // public OpenEhrRouteBuilder routeBuilder() {
+    //     return new OpenEhrRouteBuilder();
+    // }
 
     @Bean
     public OpenEhrClient openEhrClient(OpenEhrClientConfig configuration, TemplateProvider templateProvider,

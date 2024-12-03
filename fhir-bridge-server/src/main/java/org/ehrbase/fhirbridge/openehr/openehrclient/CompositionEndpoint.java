@@ -20,6 +20,16 @@ public interface CompositionEndpoint {
      */
     <T> T mergeCompositionEntity(T entity);
 
+     /**
+     * Save a Canonical-Entity to remote systems.
+     *
+     * @param entity Canonical-Entity to save.
+     * @return CompositionId
+     * @throws ClientException
+     * @throws WrongStatusCodeException
+     */
+    String mergeCanonicalCompositionEntity(String entity);
+
     VersionUid mergeRaw(Composition composition);
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,15 @@
  * limitations under the License.
  */
 
-package org.ehrbase.fhirbridge.config;
+ package org.ehrbase.fhirbridge.exception;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+public class ConversionException extends RuntimeException {
 
-/**
- * @author Renaud Subiger
- * @since 1.6
- */
-@ConfigurationProperties(prefix = "fhir-bridge")
-public class FhirBridgeProperties {
-
-    private Mode mode = Mode.OPENEHR;
-
-    public Mode getMode() {
-        return mode;
+    public ConversionException(String message) {
+        super(message);
     }
 
-    public void setMode(Mode mode) {
-        this.mode = mode;
-    }
-
-    public enum Mode {
-
-        OPENEHR
+    public ConversionException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

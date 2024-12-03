@@ -1,7 +1,5 @@
 package org.ehrbase.fhirbridge.openehr.openehrclient;
 
-import static org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient.OBJECT_MAPPER;
-
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -13,6 +11,9 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+
+import static org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient.OBJECT_MAPPER;
+
 import java.io.IOException;
 import java.net.URI;
 import java.time.temporal.TemporalAccessor;
