@@ -1,5 +1,7 @@
 package org.ehrbase.fhirbridge.camel.route;
 
+import java.util.UUID;
+
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
@@ -23,12 +25,13 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
             // Step 5: Commit the openEHR composition to the openEHR server
             .process(exchange -> {
                 String openEhrJson = exchange.getIn().getBody(String.class);
-                String ehrId = exchange.getIn().getHeader(CompositionConstants.EHR_ID, String.class); // Retrieve EHRId from exchange header
+                UUID ehrId = exchange.getIn().getHeader(CompositionConstants.EHR_ID, UUID.class); // Retrieve EHRId from exchange header
                 // Pass the EHRId with the openEHR composition
                 exchange.getIn().setBody(openEhrJson);
             })
             .doTry()
-                .to("bean:fhirBridgeOpenEHRAdapter?method=commitComposition")
+                .to("ehr-composition:compositionProducer?operation=mergeCanonicalCompositionEntity")
+                // .to("bean:fhirBridgeOpenEHRAdapter?method=commitComposition")
             .doCatch(ClientException.class)
                 .process(new OpenEhrClientExceptionHandler())
             .end()
@@ -39,6 +42,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
         from("direct:patientIdToEhrIdMapperProcess")
             .routeId("patientIdToEhrIdMapperProcess")
             //if Patient resource create ehrid
+            .log("patientIdToEhrIdMapperProcess: calling EhrLookupProcessor")
             .process(EhrLookupProcessor.BEAN_ID)
             
             // // Step 1: Extract or find the Patient ID from the resource

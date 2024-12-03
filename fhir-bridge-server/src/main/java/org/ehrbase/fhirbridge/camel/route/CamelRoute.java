@@ -145,13 +145,15 @@ public class CamelRoute extends RouteBuilder {
                 .to("direct:OpenFHIRProcess")
             .doCatch(Exception.class)
                 .process(new FhirBridgeExceptionHandler())
+            .end()
 
             // Process the EHR Input 
             .doTry()
-                // .wireTap("direct:OpenEHRProcess")
+            // .wireTap("direct:OpenEHRProcess")
                 .to("direct:OpenEHRProcess")
             .doCatch(ClientException.class)
                 .process(new OpenEhrClientExceptionHandler())
+            .end()
             .process(ProvideResourceResponseProcessor.BEAN_ID);
             
             // @formatter:on
