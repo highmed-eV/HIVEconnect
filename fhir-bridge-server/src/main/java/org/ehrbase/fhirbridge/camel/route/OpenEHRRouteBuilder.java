@@ -28,12 +28,12 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
     
             // Step 5: Commit the openEHR composition to the openEHR server
             .process(exchange -> {
-//                String openEhrJson = exchange.getIn().getBody(String.class);
+                String openEhrJson = exchange.getIn().getBody(String.class);
                 UUID ehrId = exchange.getIn().getHeader(CompositionConstants.EHR_ID, UUID.class); // Retrieve EHRId from exchange header
                 // Pass the EHRId with the openEHR composition
                 // hardcoded correct openEhrJson
-                String filePath = "C:\\FHIR-OpenEHR\\fhir-bridge\\fhir-bridge-server\\src\\main\\resources\\test_canonical_json\\KDS_Diagnose.json";
-                String openEhrJson = new String(Files.readAllBytes(Paths.get(filePath)));
+                // String filePath = "C:\\FHIR-OpenEHR\\fhir-bridge\\fhir-bridge-server\\src\\main\\resources\\test_canonical_json\\KDS_Diagnose.json";
+                // String openEhrJson = new String(Files.readAllBytes(Paths.get(filePath)));
                 Composition composition = new CanonicalJson().unmarshal(openEhrJson, Composition.class);
                 exchange.getIn().setBody(composition);
             })
