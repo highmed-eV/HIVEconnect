@@ -43,5 +43,19 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123456
     command: server /data --console-address ":9001"
+  hapi-fhir-server:
+    image: hapiproject/hapi:latest
+    container_name: hapi-fhir-server
+    ports:
+      - 8088:8080
+    networks:
+      - ehrbase-network
+    volumes:
+      - ./fhir-bridge-server/src/main/resources/application.yml:/etc/hapi-fhir/hapi-fhir-config.yaml
+    environment:
+#      HAPI_FHIR_VALIDATION_REQUESTS_ENABLED: 'true'
+      HAPI_FHIR_SERVER_VALIDATION_FLAG_FAIL_ON_SEVERITY: error
+      HAPI_FHIR_SERVER_VALIDATION_FLAG_ENFORCE_REQUIREMENT: 'true'
+      HAPI_FHIR_CONFIG_PATH: /etc/hapi-fhir/hapi-fhir-config.yaml
 networks:
   ehrbase-network: { }

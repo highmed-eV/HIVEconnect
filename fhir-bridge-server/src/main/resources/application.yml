@@ -51,7 +51,8 @@ spring:
     driverClassName: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    #      ddl-auto: none
     #      ddl-auto: create
     open-in-view: false
     # properties:
@@ -119,7 +120,8 @@ management:
 #fhir server
 fhir:
   server:
-    url: http://localhost:8088/fhir-bridge
+    url: http://localhost:8088
+#    http://localhost:8088/fhir-bridge
 
 #openFhir
 openfhir:
@@ -133,7 +135,8 @@ openehr:
 
 
 #camel fhir
-serverUrl: http://localhost:8088/fhir-bridge/fhir
+#serverUrl: http://localhost:8088/fhir-bridge/fhir
+serverUrl: http://localhost:8088/fhir
 fhirVersion: R4
 connectionTimeout: 20000
 socketTimeout: 20000

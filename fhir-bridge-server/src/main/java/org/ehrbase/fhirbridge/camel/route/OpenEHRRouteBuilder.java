@@ -1,13 +1,17 @@
 package org.ehrbase.fhirbridge.camel.route;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
 
+import com.nedap.archie.rm.composition.Composition;
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,7 +31,11 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
                 String openEhrJson = exchange.getIn().getBody(String.class);
                 UUID ehrId = exchange.getIn().getHeader(CompositionConstants.EHR_ID, UUID.class); // Retrieve EHRId from exchange header
                 // Pass the EHRId with the openEHR composition
-                exchange.getIn().setBody(openEhrJson);
+                // hardcoded correct openEhrJson
+                // String filePath = "C:\\FHIR-OpenEHR\\fhir-bridge\\fhir-bridge-server\\src\\main\\resources\\test_canonical_json\\KDS_Diagnose.json";
+                // String openEhrJson = new String(Files.readAllBytes(Paths.get(filePath)));
+                Composition composition = new CanonicalJson().unmarshal(openEhrJson, Composition.class);
+                exchange.getIn().setBody(composition);
             })
             .doTry()
                 .to("ehr-composition:compositionProducer?operation=mergeCanonicalCompositionEntity")

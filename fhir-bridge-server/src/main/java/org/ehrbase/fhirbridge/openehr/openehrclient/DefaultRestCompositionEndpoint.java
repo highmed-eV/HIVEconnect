@@ -85,8 +85,8 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
   }
 
   @Override
-  public String mergeCanonicalCompositionEntity(String entity) {
-    Composition composition = new CanonicalJson().unmarshal(entity, Composition.class);
+  public Composition mergeCanonicalCompositionEntity(Composition composition) {
+
     UIDBasedId compUIDBasedId = composition.getUid();
 
     Optional<VersionUid> versionUid = compUIDBasedId != null && compUIDBasedId.getValue() != null 
@@ -104,9 +104,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
       composition.getUid().setValue(updatedVersion.toString());
     }
 
-
-    String updatedEntityStr = new CanonicalJson().marshal(composition);
-    return updatedEntityStr;
+    return composition;
   }
 
   private VersionUid internalMerge(Composition composition, VersionUid versionUid) {

@@ -28,7 +28,7 @@ public interface CompositionEndpoint {
      * @throws ClientException
      * @throws WrongStatusCodeException
      */
-    String mergeCanonicalCompositionEntity(String entity);
+    Composition mergeCanonicalCompositionEntity(Composition composition);
 
     VersionUid mergeRaw(Composition composition);
 

@@ -145,7 +145,7 @@ public class FhirUtils {
         return null; // Return null if no patient ID is found
     }
 
-    public static String getPatientIdFromOutCome(Resource  resource){
+    public static String getPatientIdFromOutCome(String resource){
         //Ned to get the Patient ID from the Outcome json
         return "String";
     }

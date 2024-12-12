@@ -4,6 +4,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.support.DefaultProducer;
 import org.apache.commons.io.FileUtils;
 import com.nedap.archie.rm.composition.Composition;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,20 +64,24 @@ public class CompositionProducer extends DefaultProducer {
     }
 
     private void mergeCanonicalCompositionEntity(UUID ehrId, Exchange exchange) {
-        String body = (String) exchange.getIn().getBody();
+        Composition body = exchange.getIn().getBody(Composition.class);
         if (body == null) {
             throw new IllegalArgumentException("Body must not be null");
         }
 
         if (endpoint.getProperties().isEnabled()) {
-            debugCanonicalMapping(body);
+            String compositionStr = new CanonicalJson().marshal(body);
+            debugCanonicalMapping(compositionStr);
         }
 
         //This internally checks if versionUID is present
         //if yes: post and return the mergedCompositions versionUid
         //else put and return the mergedCompositions versionUid
-        Object mergedComposition = endpoint.getOpenEhrClient().compositionEndpoint(ehrId).mergeCanonicalCompositionEntity(body);
-        exchange.getMessage().setHeader(CompositionConstants.VERSION_UID, ((Composition) mergedComposition));
+        Composition mergedComposition = endpoint.getOpenEhrClient().compositionEndpoint(ehrId).mergeCanonicalCompositionEntity(body);
+        exchange.getMessage().setHeader(CompositionConstants.VERSION_UID, mergedComposition.getUid());
+
+        String mergedCompositionStr = new CanonicalJson().marshal(mergedComposition);
+        exchange.getMessage().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME, mergedCompositionStr);
 
         exchange.getMessage().setBody(mergedComposition);
     }
