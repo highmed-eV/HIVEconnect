@@ -1,9 +1,11 @@
 package org.ehrbase.fhirbridge.camel.route;
 
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.springframework.stereotype.Component;
@@ -35,7 +37,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             //Store the response in the Exchange
             .process(exchange -> {
                 //Response may not be resource. It is OutCome
-                Resource response = exchange.getIn().getBody(Resource.class);
+                MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
                 exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
             });
 
@@ -97,14 +99,19 @@ public class FhirRouteBuilder extends RouteBuilder {
             // if Internal contained reference
             // or Transaction reference
             // Extract or find the Patient ID from the resource
-            .process(exchange -> {
-                //May not be resource. It will be OutCome
-                Resource  resource = (Resource) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
-                String serverPatientId = FhirUtils.getPatientIdFromOutCome(resource);
-                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
-                //Need to set SERVER_PATIENT_RESOURCE
-            })
-            .log("FHIR server Patient ID ${exchangeProperty.CamelFhirServerPatientId}");
+            .choice()
+                .when(header(CamelConstants.SERVER_PATIENT_ID).isNull())
+                    .process(exchange -> {
+                        //May not be resource. It will be OutCome
+                        String resource = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
+                        String serverPatientId = FhirUtils.getPatientIdFromOutCome(resource);
+                        exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                        //Need to set SERVER_PATIENT_RESOURCE
+                    })
+                    .log("FHIR server Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                .otherwise()
+                    .log("FHIR server Patient ID already set: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+            .end();
     }    
 
     // @Override

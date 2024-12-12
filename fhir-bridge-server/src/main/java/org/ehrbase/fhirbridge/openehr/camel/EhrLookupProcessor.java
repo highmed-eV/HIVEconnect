@@ -49,6 +49,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * {@link org.apache.camel.Processor Processor} that retrieves the EHR ID of the patient involved in the current
@@ -81,7 +83,8 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         Patient resource = (Patient) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE);
         // String patientId = getPatientId(exchange);
 
-        String patientId = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
+        String patientIdStr = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
+        String patientId = extractPatientId(patientIdStr);
         LOG.info("findById(patientId): " + patientId);
         UUID ehrId = patientEhrRepository.findById(patientId)
                 .map(PatientEhr::getEhrId)
@@ -90,6 +93,15 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         exchange.getMessage().setHeader(CompositionConstants.EHR_ID, ehrId);
     }
 
+    public static String extractPatientId(String patientIdStr) {
+        String regex = "/([^/]+/\\d+)/";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(patientIdStr);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return patientIdStr;
+    }
     
     /**
      * Gets the current patient ID.
