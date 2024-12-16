@@ -1,15 +1,19 @@
 package org.ehrbase.fhirbridge.camel.route;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
+
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.springframework.stereotype.Component;
 
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 
 @Component
@@ -18,29 +22,63 @@ public class FhirRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        
+
+        onException(BaseServerResponseException.class)
+        .handled(true)      
+        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
+        .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
+        .setBody(exceptionMessage())
+        // .useOriginalBody()
+        .log("######### FhirRouteBuilder")
+        ;
+
+        // onException(ResourceNotFoundException.class)
+        // .handled(true)      
+        // .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(404))
+        // .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
+        // .setBody(exceptionMessage())
+        // // .useOriginalBody()
+        // .log("######### FhirRouteBuilder")
+        // ;
+
         from("direct:FHIRProcess")
             // Forward request to FHIR server
-            .choice()
-                .when().jsonpath("$[?(@.type == 'transaction')]")
-                    // if body.type == "transaction"
-                    // create Transaction bundle in our FHIR server
-                    .log("Transaction FHIR request. Starting process...")
-                    .to("fhir://transaction/withBundle?inBody=stringBundle&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-            .otherwise()
-                // else create Resource in our FHIR server
-                .log("Resource FHIR request. Starting process...")
-                .to("fhir://create/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-            .end()
-            .log("FHIR request processed by FHIR server ${body}")
+                .choice()
+                    .when().jsonpath("$[?(@.type == 'transaction')]")
+                        // if body.type == "transaction"
+                        // create Transaction bundle in our FHIR server
+                        .log("Transaction FHIR request. Starting process...")
+                        .doTry()
+                            .to("fhir://transaction/withBundle?inBody=stringBundle&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                            //Store the response in the Exchange
+                            .process(exchange -> {
+                                //Response may not be resource. It is OutCome
+                                String response = exchange.getIn().getBody(String.class);
+                                exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
+                            })
+                        .doCatch(Exception.class)
+                            .log("direct:FHIRProcess fhir://transaction catch exception")
+                            .process(new FhirBridgeExceptionHandler())
+                        .endDoTry()
 
-            //Store the response in the Exchange
-            .process(exchange -> {
-                //Response may not be resource. It is OutCome
-                MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
-                exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
-            });
-
+                    .endChoice()
+                .otherwise()
+                    // else create Resource in our FHIR server
+                    .log("Resource FHIR request. Starting process...")
+                    .doTry()
+                        .to("fhir://create/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                        //Store the response in the Exchange
+                        .process(exchange -> {
+                            //Response may not be resource. It is OutCome
+                            MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
+                            exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
+                        })
+                    .doCatch(Exception.class)
+                        .log("direct:FHIRProcess fhir://create catch exception")
+                        .process(new FhirBridgeExceptionHandler())
+                    .endDoTry()
+                .end()
+                .log("FHIR request processed by FHIR server ${body}");
 
         // Extract Patient Id from the FHIR Input Resource
         from("direct:patientReferenceProcessor")
@@ -78,7 +116,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                         })
                     .doCatch(ResourceNotFoundException.class)
                         .throwException(ResourceNotFoundException.class, "${exception.message}")
-                    .end()
+                    .endDoTry()
                 .endChoice()
             .otherwise()
                 .throwException(ResourceNotFoundException.class, "PatientId does not exist")
@@ -114,59 +152,5 @@ public class FhirRouteBuilder extends RouteBuilder {
             .end();
     }    
 
-    // @Override
-    // public void configure() throws Exception {
-        
-    //     // Entry point: Receive a FHIR resource or bundle
-    //     from("direct:patientIdExtractor")
-    //         .routeId("PatientIdMapperProcessRoute")
-            
-    //         // Step 1: Extract or find the Patient ID from the resource
-    //         .process(exchange -> {
-    //             String  resource = exchange.getIn().getBody(String.class);
-    //             String patientId = FhirUtils.getPatientId(resource);
-    //             exchange.setProperty("FHIRPatientId", patientId);
-    //         })
-    //         .log("FHIR Patient ID ${exchangeProperty.FHIRPatientId}")
-
-
-    //         // Step 2: Check if the patient exists in the FHIR server
-    //         .choice()
-    //             .when(simple("${exchangeProperty.FHIRPatientId} != null"))
-    //                 .doTry()
-    //                     .toD("fhir://read/resourceById?resourceClass=Patient&stringId=${exchangeProperty.FHIRPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-    //                 .doCatch(ResourceNotFoundException.class)
-    //                     .process(exchange -> {
-    //                         exchange.setProperty("FHIRPatientExists", false);
-    //                     })
-    //                 .end()
-    //             .endChoice()
-    //         .otherwise()
-    //             .setProperty("FHIRPatientExists", constant(false))
-    //         .end()
-
-    //         .log("FHIR Patient ID exists ${exchangeProperty.FHIRPatientExists}")
-    //         // Step 3: If patient does not exist, create a new Patient
-    //         .choice()
-    //             .when(simple("${exchangeProperty.FHIRPatientExists} == false"))
-    //                 .process(exchange -> {
-    //                     // Construct a new Patient resource as needed
-    //                     Patient newPatient = new Patient();
-    //                     newPatient.setId(exchange.getProperty("FHIRPatientId", String.class));
-    //                     exchange.getIn().setBody(newPatient);
-    //                 })
-    //                 .to("fhir://create/resource?inBody=resource&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-    //                 //TODO : add doTry and doCatch and handle exception
-    //                 // .process(exchange -> {
-    //                 //     exchange.setProperty("FHIRPatientId", createdPatient.getIdElement().getIdPart());
-    //                 // })
-    //         .end()
-    //         .process(exchange -> {
-    //             //set back the input json as body
-    //             String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
-    //             exchange.getIn().setBody(inputResource);
-    //         })
-    //         .log("FHIR PatientId Mapper Process Route completed: ${exchangeProperty.FHIRPatientId}");
-    // }
 }
 

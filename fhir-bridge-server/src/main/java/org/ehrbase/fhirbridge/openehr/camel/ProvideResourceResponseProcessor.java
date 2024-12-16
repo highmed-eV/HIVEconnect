@@ -17,10 +17,17 @@
 package org.ehrbase.fhirbridge.openehr.camel;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
+import net.minidev.json.JSONValue;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nedap.archie.rm.composition.Composition;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
@@ -31,12 +38,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
+// import jakarta.ws.rs.core.Response;
 /**
  * {@link Processor} that stores the link between the FHIR resource and the openEHR composition.
  *
@@ -58,21 +68,41 @@ public class ProvideResourceResponseProcessor implements Processor {
 
     @Override
     public void process(@NotNull Exchange exchange) throws Exception {
-        //TODO: Logic to update the resource to composition
-
         Composition composition = exchange.getIn().getBody(Composition.class);
 
+        //if not bundle take it as MethodOutcome
+        List<String> resourceIds = new ArrayList<>();
+        String inputResourceType = (String)exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
+        // boolean isBundle = "Bundle".equalsIgnoreCase(inputResourceType)?true:false;
+        if(!"Bundle".equals(inputResourceType)) {
+                MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
+                FhirContext fhirContext = FhirContext.forR4(); 
+                //TODO: serialize of Methodoutcome resulting in infinite loop
+                //Hence doing only outcome.getResource()
+                //move new ObjectMapper() to util
+                IParser parser = fhirContext.newJsonParser();
+                //Patient patient = parser.parseResource(Patient.class, outcome);
+                String jsonString = parser.encodeResourceToString(outcome.getResource());
+                // Convert JSON string to JsonNode using Jackson
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(jsonString);
+                exchange.getIn().setBody(jsonNode);
+                
+                String resourceId = outcome.getId().getIdPart();
+                String resourceIdStr = inputResourceType + "/" + resourceId;
+                resourceIds.add(resourceIdStr);
+                //TODO Check if this needs to be stored in the db?
 
-        MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
-        if (!Objects.isNull(outcome)) {
+        } else {
+            String outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, String.class);
+            JSONObject jsonObject = new JSONObject(outcome);
+        
+            if (!Objects.isNull(jsonObject)) {
             // Use FHIR context to serialize OperationOutcome resource to JSON
 //            FhirContext fhirContext = FhirContext.forR4();
 //            String json = fhirContext.newJsonParser().encodeResourceToString((IBaseResource) outcome);
-            JSONObject jsonObject = new JSONObject(outcome);
-            List<String> resourceIds = new ArrayList<>();
 
-            // Check if resourceType is "Bundle"
-            if ("Bundle".equalsIgnoreCase(jsonObject.optString("resourceType"))) {
+                //Get resource ids
                 JSONArray entries = jsonObject.optJSONArray("entry");
                 if (entries != null) {
                     for (int i = 0; i < entries.length(); i++) {
@@ -87,28 +117,35 @@ public class ProvideResourceResponseProcessor implements Processor {
                         }
                     }
                 }
-            } else {
-//              String resourceId = outcome.getId().getIdPart();
-                String resourceId = jsonObject.getString("resourceType") + "/" + jsonObject.getString("id");
-                resourceIds.add(resourceId);
+                for(String resourceId : resourceIds) {
+                    ResourceComposition resourceComposition = resourceCompositionRepository.findById(resourceId)
+                            .orElse(new ResourceComposition(resourceId));
+                    resourceComposition.setCompositionId(getCompositionId(composition));
+                    resourceCompositionRepository.save(resourceComposition);
+                    LOG.debug("Saved ResourceComposition: resourceId={}, compositionId={}", resourceComposition.getResourceId(), resourceComposition.getCompositionId());
+                }
             }
-            for(String resourceId : resourceIds) {
-                ResourceComposition resourceComposition = resourceCompositionRepository.findById(resourceId)
-                        .orElse(new ResourceComposition(resourceId));
-                resourceComposition.setCompositionId(getCompositionId(composition));
-                resourceCompositionRepository.save(resourceComposition);
-                LOG.debug("Saved ResourceComposition: resourceId={}, compositionId={}", resourceComposition.getResourceId(), resourceComposition.getCompositionId());
-            }
-        }
+        
+            // Jackson ObjectMapper
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // Parse JSON strings into JsonNode objects
+            JsonNode node1 = objectMapper.readTree((String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME));
+            JsonNode node2 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME));
+            JsonNode node3 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME));
+
+            // Merge JsonNode objects into a single ObjectNode
+            ObjectNode mergedJson = objectMapper.createObjectNode();
+            mergedJson.setAll((ObjectNode) node1);
+            mergedJson.setAll((ObjectNode) node2);
+            mergedJson.setAll((ObjectNode) node3);
+
+            exchange.getIn().setBody(mergedJson);
+
+        }        
         // Log the response and set it in the exchange
         LOG.info("ProvideResourceResponseProcessor");
-        String response = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME) +
-//                (String) exchange.getMessage().getHeader(CamelConstants.FHIR_SERVER_OUTCOME) +
-                "\n" +
-                (String) exchange.getMessage().getHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME) +
-                "\n" +
-                (String) exchange.getMessage().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME);
-        exchange.getMessage().setBody(response);
+
     }
 
     private String getCompositionId(Composition composition) {

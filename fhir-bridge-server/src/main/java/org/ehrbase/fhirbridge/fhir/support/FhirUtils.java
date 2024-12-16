@@ -1,95 +1,5 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
-import org.hl7.fhir.instance.model.api.IIdType;
-import org.hl7.fhir.r4.model.Resource;
-
-// import org.hl7.fhir.instance.model.api.IBaseResource;
-// import org.hl7.fhir.r4.model.Identifier;
-// import org.hl7.fhir.r4.model.Reference;
-// import org.hl7.fhir.r4.model.Resource;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
-// import org.hl7.fhir.r4.model.Observation;
-// import org.hl7.fhir.r4.model.Encounter;
-// import org.hl7.fhir.r4.model.Condition;
-// import org.hl7.fhir.r4.model.MedicationRequest;
-// import org.hl7.fhir.r4.model.DiagnosticReport;
-// import org.hl7.fhir.r4.model.Patient;
-
-// public class FhirUtils {
-//     private static final Logger logger = LoggerFactory.getLogger(FhirUtils.class);
-
-//     public static String getPatientId(IBaseResource resource) {
-//         if (resource instanceof Resource) {
-//             Resource fhirResource = (Resource) resource;
-
-//             // Check for resources that have a subject field referencing a patient
-//             Reference subjectReference = null;
-//             if (fhirResource instanceof Observation) {
-//                 subjectReference = ((Observation) fhirResource).getSubject();
-//             } else if (fhirResource instanceof Encounter) {
-//                 subjectReference = ((Encounter) fhirResource).getSubject();
-//             } else if (fhirResource instanceof Condition) {
-//                 subjectReference = ((Condition) fhirResource).getSubject();
-//             } else if (fhirResource instanceof MedicationRequest) {
-//                 subjectReference = ((MedicationRequest) fhirResource).getSubject();
-//             } else if (fhirResource instanceof DiagnosticReport) {
-//                 subjectReference = ((DiagnosticReport) fhirResource).getSubject();
-//             }
-
-//             // Try to get patient ID from reference if subjectReference is found
-//             if (subjectReference != null) {
-//                 String patientId = extractPatientIdFromReference(subjectReference);
-//                 if (patientId != null) {
-//                     logger.info("FHIR patient ID: {}", patientId);
-//                     return patientId;
-//                 }
-
-//                 // Check for patient ID in identifier if reference is not used
-//                 if (subjectReference.hasIdentifier()) {
-//                     Identifier patientIdentifier = subjectReference.getIdentifier();
-//                     logger.info("FHIR patient ID: {}", patientIdentifier.getValue());
-//                     return patientIdentifier.getValue();
-//                 }
-//             }
-
-//             // If the resource is a Patient resource, return the ID directly
-//             if (fhirResource instanceof Patient) {
-//                 return fhirResource.getIdElement().getIdPart();
-//             }
-//         }
-//         logger.info("FHIR patient ID null");
-        
-//         return null; // Return null if no patient reference or identifier is found
-//     }
-
-//     private static String extractPatientIdFromReference(Reference reference) {
-//         if (reference != null) {
-//             String referenceValue = reference.getReference();
-
-//             // Check for internal bundle reference (relative reference)
-//             if (referenceValue != null) {
-//                 if (referenceValue.startsWith("Patient/")) {
-//                     // Relative reference to Patient resource
-//                     return reference.getReferenceElement().getIdPart();
-//                 } else if (referenceValue.startsWith("#")) {
-//                     // Handle internal contained resource reference if needed
-//                     // For example, use Bundle to resolve the contained resource by ID
-//                     return referenceValue.substring(1); // returns the internal reference ID
-//                 } else {
-//                     // External reference
-//                     if (reference.getReferenceElement().getResourceType().equals("Patient")) {
-//                         return reference.getReferenceElement().getIdPart();
-//                     }
-//                 }
-//             }
-//         }
-//         return null;
-//     }
-// }
-
-
-//Alternate implementation
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -280,6 +190,94 @@ public class FhirUtils {
         }
         return null;
     }
+
+    
+//Old FB
+// import org.hl7.fhir.instance.model.api.IBaseResource;
+// import org.hl7.fhir.r4.model.Identifier;
+// import org.hl7.fhir.r4.model.Reference;
+// import org.hl7.fhir.r4.model.Resource;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
+// import org.hl7.fhir.r4.model.Observation;
+// import org.hl7.fhir.r4.model.Encounter;
+// import org.hl7.fhir.r4.model.Condition;
+// import org.hl7.fhir.r4.model.MedicationRequest;
+// import org.hl7.fhir.r4.model.DiagnosticReport;
+// import org.hl7.fhir.r4.model.Patient;
+
+// public class FhirUtils {
+//     private static final Logger logger = LoggerFactory.getLogger(FhirUtils.class);
+
+//     public static String getPatientId(IBaseResource resource) {
+//         if (resource instanceof Resource) {
+//             Resource fhirResource = (Resource) resource;
+
+//             // Check for resources that have a subject field referencing a patient
+//             Reference subjectReference = null;
+//             if (fhirResource instanceof Observation) {
+//                 subjectReference = ((Observation) fhirResource).getSubject();
+//             } else if (fhirResource instanceof Encounter) {
+//                 subjectReference = ((Encounter) fhirResource).getSubject();
+//             } else if (fhirResource instanceof Condition) {
+//                 subjectReference = ((Condition) fhirResource).getSubject();
+//             } else if (fhirResource instanceof MedicationRequest) {
+//                 subjectReference = ((MedicationRequest) fhirResource).getSubject();
+//             } else if (fhirResource instanceof DiagnosticReport) {
+//                 subjectReference = ((DiagnosticReport) fhirResource).getSubject();
+//             }
+
+//             // Try to get patient ID from reference if subjectReference is found
+//             if (subjectReference != null) {
+//                 String patientId = extractPatientIdFromReference(subjectReference);
+//                 if (patientId != null) {
+//                     logger.info("FHIR patient ID: {}", patientId);
+//                     return patientId;
+//                 }
+
+//                 // Check for patient ID in identifier if reference is not used
+//                 if (subjectReference.hasIdentifier()) {
+//                     Identifier patientIdentifier = subjectReference.getIdentifier();
+//                     logger.info("FHIR patient ID: {}", patientIdentifier.getValue());
+//                     return patientIdentifier.getValue();
+//                 }
+//             }
+
+//             // If the resource is a Patient resource, return the ID directly
+//             if (fhirResource instanceof Patient) {
+//                 return fhirResource.getIdElement().getIdPart();
+//             }
+//         }
+//         logger.info("FHIR patient ID null");
+        
+//         return null; // Return null if no patient reference or identifier is found
+//     }
+
+//     private static String extractPatientIdFromReference(Reference reference) {
+//         if (reference != null) {
+//             String referenceValue = reference.getReference();
+
+//             // Check for internal bundle reference (relative reference)
+//             if (referenceValue != null) {
+//                 if (referenceValue.startsWith("Patient/")) {
+//                     // Relative reference to Patient resource
+//                     return reference.getReferenceElement().getIdPart();
+//                 } else if (referenceValue.startsWith("#")) {
+//                     // Handle internal contained resource reference if needed
+//                     // For example, use Bundle to resolve the contained resource by ID
+//                     return referenceValue.substring(1); // returns the internal reference ID
+//                 } else {
+//                     // External reference
+//                     if (reference.getReferenceElement().getResourceType().equals("Patient")) {
+//                         return reference.getReferenceElement().getIdPart();
+//                     }
+//                 }
+//             }
+//         }
+//         return null;
+//     }
+// }
+
 }
 
 

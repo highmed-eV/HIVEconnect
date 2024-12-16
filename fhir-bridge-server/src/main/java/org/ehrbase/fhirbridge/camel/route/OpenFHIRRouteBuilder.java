@@ -13,7 +13,7 @@ public class OpenFHIRRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
         
         from("direct:OpenFHIRProcess")
-            // Step 4: Convert FHIR request JSON to openEHR format using openFHIR
+            //Convert FHIR request JSON to openEHR format using openFHIR
             .to("bean:fhirBridgeOpenFHIRAdapter?method=convertToOpenEHR")
             .log("FHIR converted to openEHR format.")
 
