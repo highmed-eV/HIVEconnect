@@ -49,6 +49,16 @@ public final class CamelConstants {
 
     public static final String RESOURCE_ID = "FhirBridgeResourceId";
 
+    public static final String INPUT_RESOURCE_IDS = "FhirBridgeResourceIds";
+
+    public static final String INTERNAL_RESOURCE_IDS = "FhirServerResourceIds";
+
+    public static final String SERVER_EXISTING_RESOURCES = "CamelFhirServerExistingResources";
+
+    public static final String INTERNAL_RESOURCE_TYPE = "FhirServerResourceType";
+
+    public static final String STRING_INTERAL_ID = "FhirServerExistingId";
+
     private CamelConstants() {
     }
 }

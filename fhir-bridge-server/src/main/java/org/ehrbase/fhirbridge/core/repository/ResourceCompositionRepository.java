@@ -18,6 +18,13 @@ package org.ehrbase.fhirbridge.core.repository;
 
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ResourceCompositionRepository extends JpaRepository<ResourceComposition, String> {
+
+    @Query("SELECT rc.inputResourceId FROM ResourceComposition rc WHERE rc.internalResourceId = :internalResourceId")
+    String getInputResourceIds(@Param("internalResourceId") String internalResourceId);
 }

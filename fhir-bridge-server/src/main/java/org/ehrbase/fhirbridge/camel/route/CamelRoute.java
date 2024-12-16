@@ -4,6 +4,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.apache.camel.util.ObjectHelper;
+import org.ehrbase.fhirbridge.fhir.camel.ExistingResourceReferenceProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -122,6 +123,16 @@ public class CamelRoute extends RouteBuilder {
                 //     .process(new FhirBridgeExceptionHandler())
                 .end()
             // .endChoice()
+
+            // Step : Extract Reference Resource Id from the FHIR Input Resource
+            .choice()
+            .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
+            // .doTry()
+                .to("direct:resourceReferenceProcessor")
+            // .doCatch(Exception.class)
+            //     .process(new FhirBridgeExceptionHandler())
+            .end()
+            // .endChoice()
             
 
             // Step 2: Forward request to FHIR server
@@ -132,6 +143,10 @@ public class CamelRoute extends RouteBuilder {
             // marshall to JSON for logging
             // .marshal().fhirJson("{{fhirVersion}}")
             // .log("Inserting Patient: ${body}")
+
+                // Get the reference resources fetched from the fhir resource
+                // add it in the input Bundle.
+                .process(ExistingResourceReferenceProcessor.BEAN_ID)
 
             // Step 3: Extract Patient Id created in the FHIR server
             .choice()
