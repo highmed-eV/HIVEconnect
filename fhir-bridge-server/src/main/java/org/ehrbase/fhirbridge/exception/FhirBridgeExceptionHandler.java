@@ -16,6 +16,7 @@
 
 package org.ehrbase.fhirbridge.exception;
 
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import org.apache.camel.Exchange;
@@ -39,6 +40,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
     public void process(Exchange exchange) throws Exception {
         Exception ex = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
         Assert.notNull(ex, "Exception must not be null");
+        exchange.getIn().setBody(ex.getMessage());
 
         if (ex instanceof WrongStatusCodeException) {
             handleWrongStatusCode((WrongStatusCodeException) ex);
@@ -61,7 +63,6 @@ public class FhirBridgeExceptionHandler  implements Processor {
     }
 
     private void handleException(Exception ex) {
-        LOG.error("Error occurred while processing fhir bridge: " + ex.getMessage());
-        throw new UnprocessableEntityException("Error occurred while processing fhir bridge: " + ex.getMessage(), ex);
+        throw new InternalErrorException("Error occurred while processing fhir bridge: " + ex.getMessage(), ex);
     }
 }

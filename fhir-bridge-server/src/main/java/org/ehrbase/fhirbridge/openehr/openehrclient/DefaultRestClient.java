@@ -123,7 +123,8 @@ public class DefaultRestClient implements OpenEhrClient {
             ContentType.APPLICATION_JSON,
             ContentType.APPLICATION_JSON.getMimeType());
     Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
-    return buildVersionUidFromETag(eTag);
+    VersionUid versionUid = eTag == null ? null: buildVersionUidFromETag(eTag);
+    return versionUid;
   }
 
   private VersionUid buildVersionUidFromETag(Header eTag) {
@@ -147,8 +148,9 @@ public class DefaultRestClient implements OpenEhrClient {
         headers.forEach(request::addHeader);
       }
       response = executor.execute(request).returnResponse();
-      checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT,
-      HttpStatus.SC_UNPROCESSABLE_ENTITY);
+      // checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT,
+      // HttpStatus.SC_UNPROCESSABLE_ENTITY);
+      checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
     } catch (IOException e) {
       throw new ClientException(e.getMessage(), e);
     }

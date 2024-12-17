@@ -16,6 +16,7 @@
 
 package org.ehrbase.fhirbridge.exception;
 
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
@@ -23,6 +24,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.springframework.util.Assert;
 
 /**
@@ -37,6 +39,7 @@ public class OpenEhrClientExceptionHandler implements Processor {
     public void process(Exchange exchange) throws Exception {
         Exception ex = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
         Assert.notNull(ex, "Exception must not be null");
+        exchange.getIn().setBody(ex.getMessage());
 
         if (ex instanceof WrongStatusCodeException) {
             handleWrongStatusCode((WrongStatusCodeException) ex);
@@ -47,7 +50,7 @@ public class OpenEhrClientExceptionHandler implements Processor {
     }
 
     private void handleWrongStatusCode(WrongStatusCodeException ex) {
-        if (ex.getActualStatusCode() == 400) {
+        if (ex.getActualStatusCode() == 400 ) {  //|| ex.getActualStatusCode() == 422) {
             throw new UnprocessableEntityException(ex.getMessage());
         } else {
             handleException(ex);

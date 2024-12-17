@@ -16,8 +16,18 @@
 
 package org.ehrbase.fhirbridge.openehr.camel;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
+import net.minidev.json.JSONValue;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nedap.archie.rm.composition.Composition;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
@@ -27,12 +37,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
+// import jakarta.ws.rs.core.Response;
 /**
  * {@link Processor} that stores the link between the FHIR resource and the openEHR composition.
  *
@@ -57,40 +70,63 @@ public class ProvideResourceResponseProcessor implements Processor {
         // Logic to update the resource to composition
 
         Composition composition = exchange.getIn().getBody(Composition.class);
-
         String inputResource = exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE, String.class);
+        String inputResourceType = (String)exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
+        //TODO change this to map
         List<String> inputResourceIds = new ArrayList<>();
-        if (!Objects.isNull(inputResource)) {
-            JSONObject inputJsonObject = new JSONObject(inputResource);
+        List<String> internalResourceIds = new ArrayList<>();
+       
+        JSONObject inputJsonObject = new JSONObject(inputResource);
+        if(!"Bundle".equals(inputResourceType)) {
+                //if not bundle take fhir response as MethodOutcome
+                MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
+                //TODO: serialize of Methodoutcome resulting in infinite loop
+                //Hence not using JSONObject. And serializing only outcome.getResource()
+                // JSONObject jsonObject = new JSONObject(outcome);
+                FhirContext fhirContext = FhirContext.forR4(); 
+                IParser parser = fhirContext.newJsonParser();
+                String responseJsonString = parser.encodeResourceToString(outcome.getResource());
+                ObjectMapper objectMapper = new ObjectMapper();
+                //TODO: check take it as JsonObject
+                JsonNode responseJsonNode = objectMapper.readTree(responseJsonString);
 
-            if ("Bundle".equalsIgnoreCase(inputJsonObject.optString("resourceType"))) {
-                JSONArray entries = inputJsonObject.optJSONArray("entry");
-                if (entries != null) {
-                    for (int i = 0; i < entries.length(); i++) {
-                        JSONObject resource = entries.getJSONObject(i).optJSONObject("resource");
-                        if (resource != null) {
-                            String inputResourceId = resource.optString("resourceType") + "/" + resource.optString("id");
-                            inputResourceIds.add(inputResourceId);
-                        }
+                // //TODO check: Input resource will not have id
+                // String inputResourceId = inputJsonObject.getString("resourceType") + "/" + inputJsonObject.getString("id");
+                // inputResourceIds.add(inputResourceId);
+                
+                //Get internal resource id
+                String serverResourceId = responseJsonNode.get("resourceType") + "/" + responseJsonNode.get("id");
+                internalResourceIds.add(serverResourceId);
+                //TODO Check if this needs to be stored in the db?
+
+                //Set response in exchange body
+                exchange.getIn().setBody(responseJsonNode);
+    
+        } else {
+            //get inputresourceIds
+            JSONArray entries = inputJsonObject.optJSONArray("entry");
+            if (entries != null) {
+                for (int i = 0; i < entries.length(); i++) {
+                    JSONObject resource = entries.getJSONObject(i).optJSONObject("resource");
+                    if (resource != null) {
+                        String inputResourceId = resource.optString("resourceType") + "/" + resource.optString("id");
+                        inputResourceIds.add(inputResourceId);
                     }
                 }
-            } else {
-                String inputResourceId = inputJsonObject.getString("resourceType") + "/" + inputJsonObject.getString("id");
-                inputResourceIds.add(inputResourceId);
             }
-        }
 
-        String outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, String.class);
-        List<String> internalResourceIds = new ArrayList<>();
-        if (!Objects.isNull(outcome)) {
+            //if bundle take fhir server response as String
+            String outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, String.class);
             JSONObject jsonObject = new JSONObject(outcome);
-
-            // Check if resourceType is "Bundle"
-            if ("Bundle".equalsIgnoreCase(jsonObject.optString("resourceType"))) {
-                JSONArray entries = jsonObject.optJSONArray("entry");
-
+        
+            //Get server response resource ids
+            if (!Objects.isNull(jsonObject)) {
+                // Use FHIR context to serialize OperationOutcome resource to JSON
+                //FhirContext fhirContext = FhirContext.forR4();
+                //String json = fhirContext.newJsonParser().encodeResourceToString((IBaseResource) outcome);
+                JSONArray serverEntries = jsonObject.optJSONArray("entry");
                 if (entries != null) {
-                    for (int i = 0; i < entries.length(); i++) {
+                    for (int i = 0; i < serverEntries.length(); i++) {
                         JSONObject response = entries.getJSONObject(i).optJSONObject("response");
                         if (response != null) {
                             String location = response.optString("location");
@@ -102,12 +138,27 @@ public class ProvideResourceResponseProcessor implements Processor {
                         }
                     }
                 }
-            } else {
-                String internalResourceId = jsonObject.getString("resourceType") + "/" + jsonObject.getString("id");
-                internalResourceIds.add(internalResourceId);
             }
-        }
+        
+            //Set response in exchange body
+            //move new ObjectMapper() to util
+            ObjectMapper objectMapper = new ObjectMapper();
+            // Parse JSON strings into JsonNode objects
+            JsonNode node1 = objectMapper.readTree((String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME));
+            JsonNode node2 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME));
+            JsonNode node3 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME));
 
+            // Merge JsonNode objects into a single ObjectNode
+            ObjectNode mergedJson = objectMapper.createObjectNode();
+            mergedJson.setAll((ObjectNode) node1);
+            mergedJson.setAll((ObjectNode) node2);
+            mergedJson.setAll((ObjectNode) node3);
+
+            exchange.getIn().setBody(mergedJson);
+
+        }
+        
+        //Update db with input resourceid, internalid and compositionid
         for (int i = 0; i < Math.min(internalResourceIds.size(), inputResourceIds.size()); i++) {
             String inputResourceId = inputResourceIds.get(i);
             String internalResourceId = internalResourceIds.get(i);
@@ -126,13 +177,7 @@ public class ProvideResourceResponseProcessor implements Processor {
 
         // Log the response and set it in the exchange
         LOG.info("ProvideResourceResponseProcessor");
-        String response = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME) +
-//                (String) exchange.getMessage().getHeader(CamelConstants.FHIR_SERVER_OUTCOME) +
-                "\n" +
-                (String) exchange.getMessage().getHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME) +
-                "\n" +
-                (String) exchange.getMessage().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME);
-        exchange.getMessage().setBody(response);
+
     }
 
     private String getCompositionId(Composition composition) {
