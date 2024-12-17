@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 
 import org.ehrbase.client.exception.ClientException;
@@ -91,18 +92,32 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             // Step 1: Extract Patient Id from the FHIR Input Resource
             .choice()
                 .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
-                .doTry()
-                    .to("direct:patientReferenceProcessor")
-                    .log("FHIR Patient ID ${exchangeProperty.FHIRPatientId}")
-                .doCatch(Exception.class)
-                    .process(new FhirBridgeExceptionHandler())
+                    .doTry()
+                        .to("direct:extractAndCheckPatientIdExistsProcessor")
+                        .log("FHIR Patient ID ${exchangeProperty.FHIRPatientId}")
+                    .doCatch(Exception.class)
+                        .process(new FhirBridgeExceptionHandler())
+                    // .endChoice()
+                // .otherwise()
+                //     .doTry()
+                //         .to("direct:extractAndCheckPatientIdExistsProcessor")
+                //         .log("FHIR Patient ID ${exchangeProperty.FHIRPatientId}")
+                //     .doCatch(ResourceNotFoundException.class)
+                //        //PatientId not found
+                //        //Continue and create ehrid
+                //        .log("PatientId not  found in server. Create Fhir Patient resource")
+                //     .end()
                 .end()
             .end()
             
 
-            // Step 2: Forward request to FHIR server
             .doTry()
+                // Step 2: Forward request to FHIR server
                 .to("direct:FHIRProcess")
+
+                // Step 3: Extract Patient Id created in the FHIR server
+                .to("direct:extractPatientIdFromFhirResponseProcessor")
+                .log("FHIR Patient ID ${header.FHIRPatientId}")
             .doCatch(Exception.class)
                 .log("direct:FHIRProcess catch exception")
                 .process(new FhirBridgeExceptionHandler())
@@ -112,11 +127,13 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             // .log("Inserting Patient: ${body}")
 
             .choice()
-                .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
-                    // Step 3: Extract Patient Id created in the FHIR server
-                    .to("direct:patientReferencePostProcessor")
-                    .log("FHIR Patient ID ${exchangeProperty.FHIRPatientId}")
-
+                .when(simple("${header.CamelFhirBridgeIncomingResourceType} == 'Patient'"))
+                    //Get the mapped openEHRId if avaialbe else create new ehrId 
+                    .to("direct:patientIdToEhrIdMapperProcess")
+                    .log("Patient ID mapped to EHR ID: ${header.CamelEhrCompositionEhrId}")
+                    // Prepare the final output 
+                    .process(ProvideResourceResponseProcessor.BEAN_ID)
+                .otherwise()
                     //Step 4: Process the openFHIR Input 
                     .doTry()
                         .to("direct:OpenFHIRProcess")
@@ -127,16 +144,20 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
 
                     //Step 5: Process the EHR Input 
                     .doTry()
-                    // .wireTap("direct:OpenEHRProcess")
+                        //Get the mapped openEHRId if avaialbe else create new ehrId 
+                        .to("direct:patientIdToEhrIdMapperProcess")
+                        .log("Patient ID mapped to EHR ID: ${exchangeProperty.CamelEhrCompositionEhrId}")
+    
+                        // .wireTap("direct:OpenEHRProcess")
                         .to("direct:OpenEHRProcess")
                     .doCatch(ClientException.class)
                         .log("direct:OpenEHRProcess catch exception")
                         .process(new OpenEhrClientExceptionHandler())
                     .end()
-                .end()
 
+                    //Step 6: Prepare the final output 
+                    .process(ProvideResourceResponseProcessor.BEAN_ID)
+                .end();
 
-            //Step 6: Prepare the final output 
-            .process(ProvideResourceResponseProcessor.BEAN_ID);
         }
 }

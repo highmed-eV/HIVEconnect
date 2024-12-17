@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
 
-import org.ehrbase.fhirbridge.config.security.Authenticator;
-import org.ehrbase.fhirbridge.core.PatientIdMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,17 +19,11 @@ public class CamelRoute extends RouteBuilder {
 
     private String contextPath;
     private String serverPort;
-    private PatientIdMapper patientIdMapper;
-    private final Authenticator authenticator;
 
-    public CamelRoute(PatientIdMapper patientIdMapper,
-                        @Value("${camel.servlet.mapping.contextPath}") String contextPath,
-                        @Value("${server.port}") String serverPort,
-                        Authenticator authenticator) {
-        this.patientIdMapper = patientIdMapper;
+    public CamelRoute(@Value("${camel.servlet.mapping.contextPath}") String contextPath,
+                        @Value("${server.port}") String serverPort) {
         this.contextPath = contextPath;
         this.serverPort = serverPort;
-        this.authenticator = authenticator;
     }
 
     @Override
@@ -58,7 +50,7 @@ public class CamelRoute extends RouteBuilder {
             .produces(MediaType.APPLICATION_JSON_VALUE)
             .post("/")
             .to("direct:FHIRBridgeProcess");
-
+            
             // @formatter:on
             configurePatient();
 
@@ -73,7 +65,7 @@ public class CamelRoute extends RouteBuilder {
             .consumes(MediaType.APPLICATION_JSON_VALUE)
             .produces(MediaType.APPLICATION_JSON_VALUE)
             .post("/")
-            // .outType(MethodOutcome.class)
+            .outType(MethodOutcome.class)
             .to("direct:FHIRBridgeProcess");
 
         // from("patient-find:patientEndpoint?fhirContext=#fhirContext&lazyLoadBundles=true")

@@ -26,25 +26,39 @@ import jakarta.persistence.Table;
 public class ResourceComposition {
 
     @Id
-    @Column(name = "RESOURCE_ID")
-    private String resourceId;
+    @Column(name = "INPUT_RESOURCE_ID")
+    private String inputResourceId;
+
+    @Column(name = "INTERNAL_RESOURCE_ID")
+    private String internalResourceId;
 
     @Column(name = "COMPOSITION_ID")
     private String compositionId;
 
+    @Column(name = "SYSTEM_ID")
+    private String systemId;
+
     public ResourceComposition() {
     }
 
-    public ResourceComposition(String resourceId) {
-        this.resourceId = resourceId;
+    public ResourceComposition(String inputResourceId) {
+        this.inputResourceId = inputResourceId;
     }
 
-    public String getResourceId() {
-        return resourceId;
+    public String getInputResourceId() {
+        return inputResourceId;
     }
 
-    public void setResourceId(String id) {
-        this.resourceId = id;
+    public void setInputResourceId(String id) {
+        this.inputResourceId = id;
+    }
+
+    public String getInternalResourceId() {
+        return internalResourceId;
+    }
+
+    public void setInternalResourceId(String internalResourceId) {
+        this.internalResourceId = internalResourceId;
     }
 
     public String getCompositionId() {
@@ -55,11 +69,21 @@ public class ResourceComposition {
         this.compositionId = versionUid;
     }
 
+    public String getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
+    }
+
     @Override
     public String toString() {
         return "ResourceComposition{" +
-                "resourceId='" + resourceId + '\'' +
+                "inputResourceId='" + inputResourceId + '\'' +
+                ", internalResourceId='" + internalResourceId + '\'' +
                 ", compositionId='" + compositionId + '\'' +
+                ", systemId='" + systemId + '\'' +
                 '}';
     }
 }

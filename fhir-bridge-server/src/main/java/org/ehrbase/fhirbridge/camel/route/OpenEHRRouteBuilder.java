@@ -19,10 +19,6 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
         
         from("direct:OpenEHRProcess")
-            //Get the mapped openEHRId if avaialbe else create new ehrId 
-            .to("direct:patientIdToEhrIdMapperProcess")
-            .log("Patient ID mapped to EHR ID: ${exchangeProperty.CamelEhrCompositionEhrId}")
-    
             //Commit the openEHR composition to the openEHR server
             .process(exchange -> {
                 String openEhrJson = exchange.getIn().getBody(String.class);
