@@ -20,7 +20,7 @@ public class OpenFHIRRouteBuilder extends RouteBuilder {
             //Store the response in the Exchange
             .process(exchange -> {
                 String response = exchange.getIn().getBody(String.class);
-                exchange.getMessage().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME, response);
+                exchange.getMessage().setHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME, response);
             });
     }
 }

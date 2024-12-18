@@ -19,16 +19,12 @@ package org.ehrbase.fhirbridge.openehr.camel;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
-import ca.uhn.fhir.rest.api.server.RequestDetails;
-import net.minidev.json.JSONValue;
-
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nedap.archie.rm.composition.Composition;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
@@ -37,15 +33,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.*;
 
-// import jakarta.ws.rs.core.Response;
 /**
  * {@link Processor} that stores the link between the FHIR resource and the openEHR composition.
  *
@@ -71,37 +62,27 @@ public class ProvideResourceResponseProcessor implements Processor {
 
         Composition composition = exchange.getIn().getBody(Composition.class);
         String inputResource = exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE, String.class);
-        String inputResourceType = (String)exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
-        //TODO change this to map
-        List<String> inputResourceIds = new ArrayList<>();
-        List<String> internalResourceIds = new ArrayList<>();
-       
+        String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
+        // map to store the corresponding inputResourceId  and internalResourceId
+        Map<String, String> resourceIdMap = new HashMap<>();
+
         JSONObject inputJsonObject = new JSONObject(inputResource);
-        if(!"Bundle".equals(inputResourceType)) {
-                //if not bundle take fhir response as MethodOutcome
-                MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
-                //TODO: serialize of Methodoutcome resulting in infinite loop
-                //Hence not using JSONObject. And serializing only outcome.getResource()
-                // JSONObject jsonObject = new JSONObject(outcome);
-                FhirContext fhirContext = FhirContext.forR4(); 
-                IParser parser = fhirContext.newJsonParser();
-                String responseJsonString = parser.encodeResourceToString(outcome.getResource());
-                ObjectMapper objectMapper = new ObjectMapper();
-                //TODO: check take it as JsonObject
-                JsonNode responseJsonNode = objectMapper.readTree(responseJsonString);
+        if (!"Bundle".equals(inputResourceType)) {
+            //if not bundle take fhir response as MethodOutcome
+            MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
+            //TODO: serialize of Methodoutcome resulting in infinite loop
+            //Hence not using JSONObject. And serializing only outcome.getResource()
+            // JSONObject jsonObject = new JSONObject(outcome);
+            FhirContext fhirContext = FhirContext.forR4();
+            IParser parser = fhirContext.newJsonParser();
+            String responseJsonString = parser.encodeResourceToString(outcome.getResource());
+            ObjectMapper objectMapper = new ObjectMapper();
+            //TODO: check take it as JsonObject
+            JsonNode responseJsonNode = objectMapper.readTree(responseJsonString);
 
-                // //TODO check: Input resource will not have id
-                // String inputResourceId = inputJsonObject.getString("resourceType") + "/" + inputJsonObject.getString("id");
-                // inputResourceIds.add(inputResourceId);
-                
-                //Get internal resource id
-                String serverResourceId = responseJsonNode.get("resourceType") + "/" + responseJsonNode.get("id");
-                internalResourceIds.add(serverResourceId);
-                //TODO Check if this needs to be stored in the db?
+            //Set response in exchange body
+            exchange.getIn().setBody(responseJsonNode);
 
-                //Set response in exchange body
-                exchange.getIn().setBody(responseJsonNode);
-    
         } else {
             //get inputresourceIds
             JSONArray entries = inputJsonObject.optJSONArray("entry");
@@ -110,7 +91,9 @@ public class ProvideResourceResponseProcessor implements Processor {
                     JSONObject resource = entries.getJSONObject(i).optJSONObject("resource");
                     if (resource != null) {
                         String inputResourceId = resource.optString("resourceType") + "/" + resource.optString("id");
-                        inputResourceIds.add(inputResourceId);
+                        // inputResourceIds.add(inputResourceId);
+                        // Placeholder for internalResourceId
+                        resourceIdMap.put(inputResourceId, null);
                     }
                 }
             }
@@ -118,28 +101,31 @@ public class ProvideResourceResponseProcessor implements Processor {
             //if bundle take fhir server response as String
             String outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, String.class);
             JSONObject jsonObject = new JSONObject(outcome);
-        
+
             //Get server response resource ids
             if (!Objects.isNull(jsonObject)) {
                 // Use FHIR context to serialize OperationOutcome resource to JSON
                 //FhirContext fhirContext = FhirContext.forR4();
                 //String json = fhirContext.newJsonParser().encodeResourceToString((IBaseResource) outcome);
                 JSONArray serverEntries = jsonObject.optJSONArray("entry");
-                if (entries != null) {
+                if (serverEntries != null) {
                     for (int i = 0; i < serverEntries.length(); i++) {
-                        JSONObject response = entries.getJSONObject(i).optJSONObject("response");
+                        JSONObject response = serverEntries.getJSONObject(i).optJSONObject("response");
                         if (response != null) {
                             String location = response.optString("location");
                             if (!location.isEmpty()) {
                                 // Extract resource ID (e.g., "Condition/20")
                                 String internalResourceId = location.split("/_history")[0];
-                                internalResourceIds.add(internalResourceId);
+                                // internalResourceIds.add(internalResourceId);
+                                String correspondingInputResourceId = findInputResourceIdByIndex(resourceIdMap, i);
+                                // Validate and update map
+                                validateAndUpdateMap(resourceIdMap, correspondingInputResourceId, internalResourceId);
                             }
                         }
                     }
                 }
             }
-        
+
             //Set response in exchange body
             //move new ObjectMapper() to util
             ObjectMapper objectMapper = new ObjectMapper();
@@ -157,11 +143,12 @@ public class ProvideResourceResponseProcessor implements Processor {
             exchange.getIn().setBody(mergedJson);
 
         }
-        
-        //Update db with input resourceid, internalid and compositionid
-        for (int i = 0; i < Math.min(internalResourceIds.size(), inputResourceIds.size()); i++) {
-            String inputResourceId = inputResourceIds.get(i);
-            String internalResourceId = internalResourceIds.get(i);
+
+        // Update database with resourceIdMap of inputResourceId  and internalResourceId
+        // with compositionId
+        for (Map.Entry<String, String> entry : resourceIdMap.entrySet()) {
+            String inputResourceId = entry.getKey();
+            String internalResourceId = entry.getValue();
 
             ResourceComposition resourceComposition = resourceCompositionRepository.findById(inputResourceId)
                     .orElse(new ResourceComposition(inputResourceId));
@@ -182,5 +169,32 @@ public class ProvideResourceResponseProcessor implements Processor {
 
     private String getCompositionId(Composition composition) {
         return composition.getUid().toString();
+    }
+
+    private String findInputResourceIdByIndex(Map<String, String> resourceIdMap, int index) {
+        List<String> keys = new ArrayList<>(resourceIdMap.keySet());
+        if (index < keys.size()) {
+            return keys.get(index);
+        }
+        return null;
+    }
+
+    private void validateAndUpdateMap(Map<String, String> resourceIdMap, String inputResourceId, String internalResourceId) {
+        if (inputResourceId == null || inputResourceId.isEmpty()) {
+            throw new IllegalArgumentException("Invalid inputResourceId: " + inputResourceId);
+        }
+
+        if (resourceIdMap.containsKey(inputResourceId)) {
+            String existingInternalId = resourceIdMap.get(inputResourceId);
+
+            if (existingInternalId != null && !existingInternalId.equals(internalResourceId)) {
+                throw new IllegalStateException("Conflict: inputResourceId '" + inputResourceId +
+                        "' is already mapped to a different internalResourceId: " + existingInternalId);
+            } else if (existingInternalId == null) {
+                resourceIdMap.put(inputResourceId, internalResourceId);
+            }
+        } else {
+            resourceIdMap.put(inputResourceId, internalResourceId);
+        }
     }
 }
