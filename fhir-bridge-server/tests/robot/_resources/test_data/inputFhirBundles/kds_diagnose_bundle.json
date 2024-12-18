@@ -121,7 +121,7 @@
                   "valueCoding": {
                     "system": "http://fhir.de/CodeSystem/icd-10-gm-mehrfachcodierungs-kennzeichen",
                     "code": "†",
-                    "display": "Ätiologie"
+                    "display": "†"
                   }
                 },
                 {
