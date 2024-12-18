@@ -245,29 +245,31 @@ public class FhirUtils {
         }
 
         // Look for the "subject" field within the resource to get the resourceId
-        JsonNode referenceNode = resourceNode.path("subject");
+        if (resourceNode.has("subject")) {
+            JsonNode referenceNode = resourceNode.path("subject");
 
-        if (!referenceNode.isMissingNode()) {
-            // Check for "reference" field in subject
-            if (referenceNode.has("reference")) {
-                String reference = referenceNode.get("reference").asText();
-                String resourceId = extractResourceIdFromReference(reference);
-                resourceIds.add(resourceId);
-            } else if (referenceNode.has("identifier")) {
-                // Check for "identifier" field in subject
-
-                //handleSubjectReferenceInternal
-                //TODO: new TokenParam(identifier.getSystem(), identifier.getValue())
-                JsonNode identifierNode = referenceNode.get("identifier");
-                if (identifierNode.has("value")) {
-                    String resourceId = identifierNode.get("value").asText();
+            if (!referenceNode.isMissingNode()) {
+                // Check for "reference" field in subject
+                if (referenceNode.has("reference")) {
+                    String reference = referenceNode.get("reference").asText();
+                    String resourceId = extractResourceIdFromReference(reference);
                     resourceIds.add(resourceId);
+                } else if (referenceNode.has("identifier")) {
+                    // Check for "identifier" field in subject
+
+                    //handleSubjectReferenceInternal
+                    //TODO: new TokenParam(identifier.getSystem(), identifier.getValue())
+                    JsonNode identifierNode = referenceNode.get("identifier");
+                    if (identifierNode.has("value")) {
+                        String resourceId = resourceNode.get("resourceType").asText() + "/" + identifierNode.get("value").asText();
+                        resourceIds.add(resourceId);
+                    }
+                } else {
+                    throw new UnprocessableEntityException("Subject identifier is required");
                 }
             } else {
-                throw new UnprocessableEntityException("Subject identifier is required");
+                throw new UnprocessableEntityException(resourceNode.path("resourceType") + " should be linked to a subject");
             }
-        } else {
-            throw new UnprocessableEntityException(resourceNode.path("resourceType") + " should be linked to a subject");
         }
 
         return resourceIds;
@@ -275,7 +277,7 @@ public class FhirUtils {
 
     private static String extractResourceIdFromReference(String reference) {
         if (reference != null) {
-            String regex = "^[A-Za-z]+/\\d+$";
+            String regex = "^[^/]+/[A-Za-z0-9-]+$";
             if (Pattern.matches(regex, reference)) {
                 // Internal
                 // Relative reference to resource

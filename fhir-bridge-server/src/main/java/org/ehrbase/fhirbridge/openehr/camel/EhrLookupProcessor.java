@@ -94,7 +94,7 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
     }
 
     public static String extractPatientId(String patientIdStr) {
-        String regex = "/([^/]+/\\d+)/";
+        String regex = "/([^/]+/[^/]+)/";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(patientIdStr);
         if (matcher.find()) {
