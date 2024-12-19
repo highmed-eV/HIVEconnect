@@ -191,7 +191,7 @@
           }
         ],
         "encounter": {
-          "reference": "Encounter/encounter-12345",
+          "reference": "urn:uuid:a6ea47e6-f871-4a1d-a03a-6a8cd3d5909e",
           "display": "Inpatient Encounter for Asthma",
           "type": "Encounter",
           "identifier": {
@@ -386,11 +386,11 @@
           "reference": "Patient/{{patientId_fhir-server}}"
         },
         "encounter": {
-          "reference": "Encounter/a6ea47e6-f871-4a1d-a03a-6a8cd3d5909e",
+          "reference": "urn:uuid:a6ea47e6-f871-4a1d-a03a-6a8cd3d5909e",
           "display": "Inpatient Encounter for Asthma",
           "type": "Encounter",
           "identifier": {
-            // "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/encounters",
+            "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/encounters",
             "value": "encounter-id-1245",
             "use": "official",
             "type": {
@@ -415,11 +415,11 @@
         "onsetDateTime": "2024-02-08T00:00:00Z",
         "recordedDate": "2024-05-02T00:00:00Z",
         "recorder": {
-          "reference": "Practitioner/example-recorder",
+          // "reference": "Practitioner/example-recorder",
           "display": "Dr. John Doe"
         },
         "asserter": {
-          "reference": "Practitioner/example-practitioner",
+        //   "reference": "http://external.fhir.server/Practitioner/f201",
           "display": "Dr. John Doe"
         },
         "stage": [
@@ -497,7 +497,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "{Patient/}{patientId_fhir-server}}"
+          "reference": "Patient/{{patientId_fhir-server}}"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
