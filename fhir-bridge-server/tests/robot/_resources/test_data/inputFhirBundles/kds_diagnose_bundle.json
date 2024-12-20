@@ -218,7 +218,7 @@
           }
         },
         "subject": {
-          "reference": "Patient/{{patientId_fhir-server}}"
+          "reference": "Patient/1"
         },
         "onsetDateTime": "2024-02-08T00:00:00Z",
         "recordedDate": "2022-02-03T00:00:00Z",
@@ -265,16 +265,6 @@
             }
           }
         ],
-        // "clinicalStatus": {
-        //   "coding": [
-        //     {
-        //       "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-        //       "code": "active",
-        //       "display": "Active"
-        //     }
-        //   ],
-        //   "text": "Active"
-        // },
         "verificationStatus": {
           "coding": [
             {
@@ -383,7 +373,7 @@
           }
         ],
         "subject": {
-          "reference": "Patient/{{patientId_fhir-server}}"
+          "reference": "Patient/1"
         },
         "encounter": {
           "reference": "urn:uuid:a6ea47e6-f871-4a1d-a03a-6a8cd3d5909e",
@@ -415,11 +405,9 @@
         "onsetDateTime": "2024-02-08T00:00:00Z",
         "recordedDate": "2024-05-02T00:00:00Z",
         "recorder": {
-          // "reference": "Practitioner/example-recorder",
           "display": "Dr. John Doe"
         },
         "asserter": {
-        //   "reference": "http://external.fhir.server/Practitioner/f201",
           "display": "Dr. John Doe"
         },
         "stage": [
@@ -497,7 +485,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/{{patientId_fhir-server}}"
+          "reference": "Patient/1"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
