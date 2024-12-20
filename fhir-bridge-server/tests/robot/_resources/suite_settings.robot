@@ -18,16 +18,17 @@
 
 *** Settings ***
 
-#Library     REST    ssl_verify=false
+Library     REST    ssl_verify=false
 Library     String
 Library     Collections
 Library     OperatingSystem
 Library     Process
 Library     JSONLibrary
 Library     BuiltIn
+Library     DatabaseLibrary
 Library     ${EXECDIR}/robot/_resources/functions/json_normalizer.py
 
-Resource     ${EXECDIR}/robot/_resources/keywords/ehr.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/ehr.robot
 Resource    ${EXECDIR}/robot/_resources/keywords/fhirbridge.robot
 
 Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
@@ -37,12 +38,13 @@ Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
 
 *** Variables ***
 
-# ${BASE_URL}                           http://localhost:8888/fhir-bridge/fhir
-# ${EHRBASE_URL}                        http://localhost:8080/ehrbase/rest/openehr/v1
+${BASE_URL}                             http://localhost:8888/fhir-bridge/fhir
+${EHRBASE_URL}                          http://localhost:8080/ehrbase/rest/openehr/v1
 ${TEST_CASE_LIST_FILE}                  ${EXECDIR}/robot/BUNDLE/test_case_list.json
 ${EHR_COMPOSITION}                      ${EXECDIR}/robot/_resources/test_data/outputOpenEhr
 ${DATA_SET_PATH_KDSFHIRBUNDLE}          ${EXECDIR}/robot/_resources/test_data/inputFhirBundles
 ${VALID EHR DATA SETS}                  ${EXECDIR}/robot/_resources/test_data/ehr/valid
+${AQL_QUERY}                            ${EXECDIR}/robot/_resources/test_data/aql
 ${OUTPUT_LEVEL}                         verbose
 
 ${SUT}                                  LOCAL
@@ -52,3 +54,11 @@ ${CODE_COVERAGE}                        False
 ${REDUMP_REQUIRED}                      ${FALSE}
 ${ALLOW-TEMPLATE-OVERWRITE}             ${TRUE}
 ${CACHE-ENABLED}                        ${TRUE}
+
+${DB_HOST}    localhost
+${DB_PORT}    5432
+${DB_NAME}    fhir-bridge
+${DB_USER}    postgres
+${DB_PASSWORD}    postgres
+${DB_DRIVER}    org.postgresql.Driver
+${DB_URL}    jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
