@@ -20,15 +20,35 @@
               "coding": [
                 {
                   "system": "http://fhir.de/CodeSystem/identifier-type-de-basis",
-                  "code": "ZANR",
-                  "display": "Zahnarztnummer"
+                  "code": "KVZ10",
+                  "display": "Krankenversichertennummer"
+                },
+                {
+                  "system": "http://fhir.de/CodeSystem/identifier-type-de-basis",
+                  "code": "GKV",
+                  "display": "Gesetzliche Krankenversicherung"
                 }
-              ]
+              ],
+              "text": "versichertenId_GKV"
             },
             "system": "http://fhir.de/sid/gkv/kvid-10",
-            "value": "GKV123456789",
+            "value": "K123456789",
             "assigner": {
-              "reference": "Organization/1234",
+              // "reference": "Organization/1234",
+              "identifier": {
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                      "code": "XX",
+                      "display": "Organisations-ID"
+                    }
+                  ],
+                  "text": "Health Insurance ID"
+                },
+                "system": "http://fhir.de/sid/arge-ik/iknr",
+                "value": "123456789"
+              },
               "display": "German Public Health Insurance"
             }
           },
@@ -41,12 +61,25 @@
                   "code": "MR",
                   "display": "Medical record number"
                 }
-              ]
+              ],
+              "text": "pid"
             },
-            "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/patient",
+            "system": "http://www.acme.com/identifiers/patient",
             "value": "PID987654321",
             "assigner": {
-              "display": "Example Hospital"
+              "display": "Example Hospital",
+              "identifier": {
+                "type": {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                      "code": "XX"
+                    }
+                  ]
+                },
+                "system": "http://www.acme.com/identifiers/patient",
+                "value": "ASSIGNER002"
+              }
             }
           },
           {
@@ -69,7 +102,8 @@
         ],
         "name": [
           {
-            "family": {
+            "family": "official family name",
+            "_family": {
               "extension": [
                 {
                   "url": "http://fhir.de/StructureDefinition/humanname-namenszusatz",
@@ -95,7 +129,8 @@
             ]
           },
           {
-            "family": {
+            "family": "official family name",
+            "_family": {
               "extension": [
                 {
                   "url": "http://fhir.de/StructureDefinition/humanname-namenszusatz",
@@ -111,12 +146,8 @@
                 }
               ]
             },
-
             "text": "Von Smith",
-            "use": "maiden",
-            "prefix": [
-              "Mr."
-            ]
+            "use": "maiden"
           }
         ],
         "gender": "male",
@@ -133,6 +164,9 @@
             "use": "home",
             "type": "both",
             "line": [
+              "Mitte"
+            ],
+            "_line": [
               {
                 "extension": [
                   {
@@ -150,7 +184,8 @@
                 ]
               }
             ],
-            "city": [
+            "city": "Hamburg",
+            "_city": [
               {
                 "extension": [
                   {
@@ -160,9 +195,9 @@
                 ]
               }
             ],
-            "state": "Hamburg",
+            "state": "DE-HH",
             "postalCode": "20095",
-            "country": "Germany"
+            "country": "DE"
           },
           {
             "extension": [
@@ -174,6 +209,9 @@
             "use": "billing",
             "type": "postal",
             "line": [
+              "Kreuzberg"
+            ],
+            "_line": [
               {
                 "extension": [
                   {
@@ -183,7 +221,8 @@
                 ]
               }
             ],
-            "city": [
+            "city": "Berlin",
+            "_city": [
               {
                 "extension": [
                   {
@@ -193,9 +232,9 @@
                 ]
               }
             ],
-            "state": "Berlin",
+            "state": "DE-BE",
             "postalCode": "10997",
-            "country": "Germany"
+            "country": "DE"
           }
         ],
         "contact": [
@@ -231,20 +270,16 @@
                 "value": "jane.doe@example.com"
               }
             ],
-            "organization":
-            {
+            "organization": {
               "reference": "Organization/5678",
               "display": "Organization"
             }
-
           }
         ],
-        "managingOrganization":
-        {
+        "managingOrganization": {
           "reference": "Organization/1234",
           "display": "managing Organization"
         }
-
       },
       "request": {
         "method": "POST",
@@ -252,7 +287,7 @@
       }
     },
     {
-      "fullUrl": "Condition/example-cause-of-death",
+      "fullUrl": "urn:uuid:4127965e-ebd6-411d-bcc8-4bd4491da96a",
       "resource": {
         "resourceType": "Condition",
         "id": "example-cause-of-death",
@@ -299,7 +334,8 @@
               {
                 "system": "http://loinc.org",
                 "code": "79378-6",
-                "display": "Cause of death"
+                "display": "Covid-19 SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) RNA panel"
+                //"display": "Cause of death"
               }
             ],
             "text": "Cause of death"
@@ -309,6 +345,7 @@
           "coding": [
             {
               "system": "http://hl7.org/fhir/sid/icd-10",
+              "version": "1",
               "code": "I60",
               "display": "Subarachnoid hemorrhage"
             }
@@ -316,7 +353,7 @@
           "text": "Subarachnoid hemorrhage"
         },
         "subject": {
-          "reference": "Patient/example-patient"
+          "reference": "Patient/{{patientId_fhir_engine}}"
         },
         "recordedDate": "2024-08-24T00:00:00Z",
         "note": [
@@ -331,7 +368,7 @@
       }
     },
     {
-      "fullUrl": "Observation/vitalstatus-example",
+      "fullUrl": "urn:uuid:5114281c-218a-482d-9127-da37bdc05501",
       "resource": {
         "resourceType": "Observation",
         "id": "vitalstatus-example",
@@ -341,17 +378,33 @@
           ]
         },
         "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey"
+              }
+              // {
+              //     "system": "http://hl7.org/fhir/reference",
+              //     "version": "1",
+              //     "display": "Vital signs"
+              // }
+            ],
+            "text": "Vital signs"
+          }
+        ],
         "code": {
           "coding": [
             {
               "system": "http://loinc.org",
-              "code": "8716-3",
+              "code": "67162-8",
               "display": "Vital signs"
             }
           ]
         },
         "subject": {
-          "reference": "Patient/example-patient"
+          "reference": "Patient/{{patientId_fhir_engine}}"
         },
         "effectiveDateTime": "2024-08-21T14:30:00+00:00",
         "valueCodeableConcept": {
@@ -361,11 +414,17 @@
               "code": "T",
               "display": "Patient verstorben"
             }
-          ]
+          ],
+          "text": "Patient verstorben"
         },
         "note": [
           {
             "text": "The patient is recorded Dead. Cause of death is based on the patient's medical history."
+          }
+        ],
+        "performer": [
+          {
+            "reference": "Organization/example-lab"
           }
         ]
       },
@@ -375,14 +434,14 @@
       }
     },
     {
-      "fullUrl": "Organization/1234",
+      "fullUrl": "urn:uuid:f2201de3-7a9b-4ed6-b0b0-e4d840de2f0a",
       "request": {
         "method": "POST",
         "url": "Organization"
       },
       "resource": {
         "resourceType": "Organization",
-        "id": "1234",
+        "id": "example-administrative-organization",
         "name": "Example Administrative Organization",
         "identifier": [
           {
@@ -393,14 +452,14 @@
       }
     },
     {
-      "fullUrl": "Organization/5678",
+      "fullUrl": "urn:uuid:42a8d7bb-c440-439b-8377-262b24b4e4cd",
       "request": {
         "method": "POST",
         "url": "Organization"
       },
       "resource": {
         "resourceType": "Organization",
-        "id": "5678",
+        "id": "example-health-clinic",
         "name": "Example Health Clinic",
         "identifier": [
           {

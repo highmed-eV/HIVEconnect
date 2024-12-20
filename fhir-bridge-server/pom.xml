@@ -6,407 +6,63 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ehrbase.fhirbridge</groupId>
-    <artifactId>fhir-bridge-server</artifactId>
-    <name>fhir-bridge-server</name>
-    <version>0.0.1-SNAPSHOT</version>
-
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.7</version>
-        <relativePath/>
-    </parent>
-
-    <properties>
-        <java.version>17</java.version>
-        <ipf.version>4.1.0</ipf.version>
-        
-        <skipITs>true</skipITs>
-        <commandLineArguments/>
-        <checker.version>3.10.0</checker.version>
-        <classgraph.version>4.8.98</classgraph.version>
-        <commons-compress.version>1.21</commons-compress.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <commons-text.version>1.9</commons-text.version>
-        <ehrbase-sdk.version>1.18.0</ehrbase-sdk.version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.2</version>
+		<relativePath/> 
+	</parent>
+	<groupId>org.ehrbase.fhirbridge</groupId>
+	<artifactId>fhir-bridge-server</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>fhir-bridge-server</name>
+	<description>FHIR Bridge Server</description>
+	<properties>
+		<java.version>17</java.version>
+		<spring-boot-version>3.2.4</spring-boot-version>
+		<!-- <spring-boot-version>3.3.2</spring-boot-version> -->
+		<javers.version>7.3.7</javers.version>
+		<camel.version>4.5.0</camel.version>
+		<hapi-fhir.version>7.4.2</hapi-fhir.version>
         <!-- <ehrbase-sdk.version>2.9.1</ehrbase-sdk.version> -->
-        <hapi-fhir.version>5.4.2</hapi-fhir.version>
-        <guava.version>31.0.1-jre</guava.version>
-        <javassist.version>3.28.0-GA</javassist.version>
-        <javers.version>7.3.7</javers.version>
-        <jaxb-core.version>2.3.0</jaxb-core.version>
-        <jena.version>4.2.0</jena.version>
-        <jsr305.version>3.0.2</jsr305.version>
-        <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
-        <maven-jacoco-plugin.version>0.8.8</maven-jacoco-plugin.version>
-        <minio.version>8.3.1</minio.version>
-        <okhttp.version>4.9.2</okhttp.version>
-        <saxon.version>10.5</saxon.version>
-        <woodstox.version>6.2.6</woodstox.version>
+		<ehrbase-sdk.version>1.18.0</ehrbase-sdk.version>
+	</properties>
 
-        <docker-image-name>numresearchdataplatform/num-fhir-bridge</docker-image-name>
+	<dependencyManagement>
+		<dependencies>
+			<!--Import as a pom to let spring-boot to manage spring-boot dependencies version -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot-version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-        <docker-maven-plugin.version>0.41.0</docker-maven-plugin.version>
+			<!--Import as a pom to let camel to manage camel-spring-boot dependencies version-->
+			<dependency>
+				<groupId>org.apache.camel.springboot</groupId>
+				<artifactId>camel-spring-boot-dependencies</artifactId>
+				<version>${camel.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-        <docker-image-from>eclipse-temurin:11-jre-jammy</docker-image-from>
+		</dependencies>
+	</dependencyManagement>
 
-        <database.port>5432</database.port>
-    </properties>
+	<dependencies>
 
-    <profiles>
-        <profile>
-            <id>circleci</id>
-            <properties>
-                <commandLineArguments>
-                    --logging.level.root=error --logging.level.org.apache.camel=off
-                </commandLineArguments>
-            </properties>
-        </profile>
-        <profile>
-            <id>docker</id>
-            <activation>
-                <property>
-                    <name>name</name>
-                    <value>!skip-docker</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>${docker-maven-plugin.version}</version>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <alias>redis</alias>
-                                    <name>redis:latest</name>
-                                    <run>
-                                        <ports>
-                                            <port>6379:6379</port>
-                                        </ports>
-                                        <log>
-                                            <enabled>true</enabled>
-                                            <prefix>REDIS__</prefix>
-                                            <color>green</color>
-                                        </log>
-                                        <wait>
-                                            <time>2000</time>
-                                        </wait>
-                                    </run>
-                                </image>
-                                <image>
-                                    <name>postgres:14</name>
-                                    <alias>postgres</alias>
-                                    <run>
-                                        <env>
-                                            <TZ>Europe/Berlin</TZ>
-                                            <POSTGRES_PASSWORD>postgres</POSTGRES_PASSWORD>
-                                            <POSTGRES_USER>postgres</POSTGRES_USER>
-                                            <POSTGRES_DB>postgres</POSTGRES_DB>
-                                        </env>
-                                        <volumes>
-                                            <bind>
-                                                <volume>./db/init:/docker-entrypoint-initdb.d:ro</volume>
-                                            </bind>
-                                        </volumes>
-                                        <ports>
-                                            <port>${database.port}:${database.port}</port>
-                                        </ports>
-                                        <wait>
-                                            <!--<log>database system is ready to accept connections</log>-->
-                                            <time>5000</time>
-                                        </wait>
-                                        <log>
-                                            <enabled>true</enabled>
-                                            <prefix>DB__</prefix>
-                                            <color>red</color>
-                                        </log>
-                                    </run>
-                                </image>
-                                <image>
-                                    <name>numresearchdataplatform/num-ehrbase:latest</name>
-                                    <alias>ehrbase</alias>
-                                    <run>
-                                        <env>
-                                            <SPRING_PROFILES_ACTIVE>docker</SPRING_PROFILES_ACTIVE>
-                                            <JDK_JAVA_OPTIONS>-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=70.0 -XX:InitialRAMPercentage=70.0</JDK_JAVA_OPTIONS>
-                                            <DB_URL>jdbc:postgresql://postgres:5432/ehrbase</DB_URL>
-                                            <SPRING_DATASOURCE_USERNAME>ehrbase_restricted</SPRING_DATASOURCE_USERNAME>
-                                            <SPRING_DATASOURCE_PASSWORD>ehrbase_restricted</SPRING_DATASOURCE_PASSWORD>
-                                            <SPRING_FLYWAY_USER>ehrbase</SPRING_FLYWAY_USER>
-                                            <SPRING_FLYWAY_PASSWORD>ehrbase</SPRING_FLYWAY_PASSWORD>
-                                            <SPRING_REDIS_HOST>redis</SPRING_REDIS_HOST>
-                                            <SECURITY_AUTHTYPE>NONE</SECURITY_AUTHTYPE>
-                                            <MANAGEMENT_SERVER_PORT>7979</MANAGEMENT_SERVER_PORT>
-                                            <MANAGEMENT_ENDPOINTS_WEB_EXPOSURE>env,health,info,metrics,prometheus</MANAGEMENT_ENDPOINTS_WEB_EXPOSURE>"
-                                            <MANAGEMENT_ENDPOINTS_WEB_BASEPATH>/management</MANAGEMENT_ENDPOINTS_WEB_BASEPATH>
-                                            <MANAGEMENT_ENDPOINT_ENV_ENABLED>false</MANAGEMENT_ENDPOINT_ENV_ENABLED>
-                                            <MANAGEMENT_ENDPOINT_HEALTH_ENABLED>true</MANAGEMENT_ENDPOINT_HEALTH_ENABLED>
-                                            <MANAGEMENT_ENDPOINT_HEALTH_DATASOURCE_ENABLED>false</MANAGEMENT_ENDPOINT_HEALTH_DATASOURCE_ENABLED>
-                                            <MANAGEMENT_ENDPOINT_INFO_ENABLED>false</MANAGEMENT_ENDPOINT_INFO_ENABLED>
-                                            <MANAGEMENT_ENDPOINT_METRICS_ENABLED>false</MANAGEMENT_ENDPOINT_METRICS_ENABLED>
-                                            <MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED>false</MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED>
-                                            <MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED>true</MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED>
-                                            <CACHE_ENABLED>true</CACHE_ENABLED>
-                                        </env>
-                                        <ports>
-                                            <port>9080:8080</port>
-                                            <port>9999:7979</port>
-                                        </ports>
+		<!--   spring boot dependencies   -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
-                                        <dependsOn>
-                                            <container>postgres</container>
-                                            <container>redis</container>
-                                        </dependsOn>
-                                        <links>
-                                            <link>postgres</link>
-                                            <link>redis</link>
-                                        </links>
-                                        <wait>
-                                            <http>
-                                                <url>http://localhost:9999/management/health</url>
-                                                <method>get</method>
-                                                <status>200</status>
-                                            </http>
-                                            <time>50000</time>
-                                        </wait>
-                                        <log>
-                                            <enabled>true</enabled>
-                                            <prefix>EHRBASE__</prefix>
-                                            <color>yellow</color>
-                                        </log>
-                                    </run>
-                                </image>
-                                <image>
-                                    <name>${docker-image-name}</name>
-                                    <build>
-                                        <from>${docker-image-from}</from>
-                                        <buildx>
-                                            <platforms>
-                                                <platform>linux/amd64</platform>
-                                                <platform>linux/arm64</platform>
-                                            </platforms>
-                                        </buildx>
-                                        <tags>
-                                            <tag>latest</tag>
-                                            <tag>${project.version}</tag>
-                                        </tags>
-                                        <ports>
-                                            <port>8888</port>
-                                            <port>7979</port>
-                                        </ports>
-                                        <entryPoint>
-                                            <shell>exec java -jar ${project.artifactId}.${project.packaging} $JAVA_ARGS</shell>
-                                        </entryPoint>
-                                        <assembly>
-                                            <mode>dir</mode>
-                                            <basedir>/</basedir>
-                                            <descriptor>docker-assembly.xml</descriptor>
-                                        </assembly>
-                                    </build>
-                                    <run>
-                                        <dependsOn>
-                                            <container>ehrbase</container>
-                                        </dependsOn>
-                                        <links>
-                                            <link>ehrbase</link>
-                                        </links>
-                                        <env>
-                                            <SPRING_PROFILES_ACTIVE></SPRING_PROFILES_ACTIVE>
-                                            <FHIR_BRIDGE_OPENEHR_URL>http://ehrbase:8080/ehrbase/</FHIR_BRIDGE_OPENEHR_URL>
-                                            <FHIR_BRIDGE_OPENEHR_SECURITY_TYPE>NONE</FHIR_BRIDGE_OPENEHR_SECURITY_TYPE>
-                                        </env>
-                                        <ports>
-                                            <port>9088:8888</port>
-                                            <!--<port>9988:7979</port>-->
-                                        </ports>
-                                        <wait>
-                                            <http>
-                                                <url>http://localhost:9088/fhir-bridge/actuator/health</url>
-                                                <method>get</method>
-                                                <status>200</status>
-                                            </http>
-                                            <time>80000</time>
-                                        </wait>
-                                        <log>
-                                            <enabled>true</enabled>
-                                            <prefix>FHIR_BRIDGE__</prefix>
-                                            <color>blue</color>
-                                        </log>
-                                    </run>
-                                </image>
-                            </images>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>prepare-it-environment</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>start</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>remove-it-environment</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <configuration>
-                    <configLocation>${project.basedir}/config/checkstyle/ehrbase_checks.xml</configLocation>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>false</fork>
-                    <image>
-                        <name>${docker-image-name}</name>
-                    </image>
-                    <wait>1000</wait>
-                    <maxAttempts>180</maxAttempts>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build-info</goal>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipITs}</skip>
-                            <commandlineArguments>${commandLineArguments}</commandlineArguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>post-integration-test</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipITs}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <!-- SETS THE VM ARGUMENT LINE USED WHEN UNIT TESTS ARE RUN. -->
-                    <argLine>${surefireArgLine}</argLine>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <!-- SETS THE VM ARGUMENT LINE USED WHEN INTEGRATION TESTS ARE RUN. -->
-                            <argLine>${failsafeArgLine}</argLine>
-                            <includes>
-                                <include>**/*IT.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <additionalClasspathElements>
-                        <additionalClasspathElement>${project.build.outputDirectory}</additionalClasspathElement>
-                    </additionalClasspathElements>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${maven-jacoco-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>agent for unit tests</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <propertyName>surefireArgLine</propertyName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>agent for integration tests</id>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
-                        </goals>
-                        <configuration>
-                            <propertyName>failsafeArgLine</propertyName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-report</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
@@ -414,77 +70,85 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>		
+		<dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.openehealth.ipf.boot</groupId>
-            <artifactId>ipf-fhir-r4-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openehealth.ipf.boot</groupId>
-            <artifactId>ipf-xds-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openehealth.ipf.platform-camel</groupId>
-            <artifactId>ipf-platform-camel-ihe-fhir-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openehealth.ipf.platform-camel</groupId>
-            <artifactId>ipf-platform-camel-ihe-xds</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
+        </dependency>		
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
         </dependency>
 
-        <!-- <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>6.0.0</version> 
-        </dependency> -->
-
-        <!-- added redis dependency-->
         <dependency>
+            <groupId>org.javers</groupId>
+            <artifactId>javers-core</artifactId>
+            <version>${javers.version}</version>
+        </dependency>
+				
+		<dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>		
+		<!-- camel dependencies -->
+
+		<dependency>
+            <groupId>org.apache.camel.springboot</groupId>
+            <artifactId>camel-fhir-starter</artifactId>
         </dependency>
 
+		<!-- camel dependencies -->
 
-        <!-- Cleanup-->
+		<dependency>
+			<groupId>org.apache.camel.springboot</groupId>
+			<artifactId>camel-spring-boot-starter</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>ca.uhn.hapi.fhir</groupId>
-            <artifactId>hapi-fhir-jpaserver-base</artifactId>
-            <version>${hapi-fhir.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.elasticsearch.client</groupId>
-                    <artifactId>elasticsearch-rest-high-level-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.hibernate.search</groupId>
-                    <artifactId>hibernate-search-backend-elasticsearch</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xpp3</groupId>
-                    <artifactId>xpp3</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.openehealth.ipf.platform-camel</groupId>
-            <artifactId>ipf-platform-camel-ihe-fhir-r4-mhd</artifactId>
-            <version>${ipf.version}</version>
-        </dependency>
-        <dependency>
+		<dependency>
+			<groupId>org.apache.camel.springboot</groupId>
+			<artifactId>camel-servlet-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel.springboot</groupId>
+			<artifactId>camel-jackson-starter</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-swagger-java-starter -->
+		<!-- <dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-swagger-java-starter</artifactId>
+			<version>2.25.2</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>org.apache.camel.springboot</groupId>
+			<artifactId>camel-openapi-java-starter</artifactId>
+			<version>4.3.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.camel.springboot</groupId>
+			<artifactId>camel-jpa-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel.springboot</groupId>
+			<artifactId>camel-jsonpath-starter</artifactId>
+		</dependency>
+		<!-- EhrBase SDK -->
+		<dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>client</artifactId>
             <version>${ehrbase-sdk.version}</version>
@@ -495,92 +159,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
-            <version>${minio.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.javers</groupId>
-            <artifactId>javers-core</artifactId>
-            <version>${javers.version}</version>
-        </dependency>
-        <!-- Test Dependencies-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-				
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
-        </dependency>
-    </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.openehealth.ipf.boot</groupId>
-                <artifactId>ipf-fhir-r4-spring-boot-starter</artifactId>
-                <version>${ipf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openehealth.ipf.boot</groupId>
-                <artifactId>ipf-xds-spring-boot-starter</artifactId>
-                <version>${ipf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openehealth.ipf.platform-camel</groupId>
-                <artifactId>ipf-platform-camel-ihe-fhir-core</artifactId>
-                <version>${ipf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openehealth.ipf.platform-camel</groupId>
-                <artifactId>ipf-platform-camel-ihe-xds</artifactId>
-                <version>${ipf.version}</version>
-            </dependency>
-
-            <!--            Cleanup -->
-            <dependency>
-                <groupId>ca.uhn.hapi.fhir</groupId>
-                <artifactId>hapi-fhir-base</artifactId>
-                <version>${hapi-fhir.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ca.uhn.hapi.fhir</groupId>
-                <artifactId>hapi-fhir-client</artifactId>
-                <version>${hapi-fhir.version}</version>
-            </dependency>
+		<!-- Hapi -->
             <dependency>
                 <groupId>ca.uhn.hapi.fhir</groupId>
                 <artifactId>hapi-fhir-server</artifactId>
                 <version>${hapi-fhir.version}</version>
             </dependency>
-            <dependency>
+		<dependency>
                 <groupId>ca.uhn.hapi.fhir</groupId>
                 <artifactId>hapi-fhir-structures-r4</artifactId>
                 <version>${hapi-fhir.version}</version>
@@ -590,94 +175,103 @@
                 <artifactId>hapi-fhir-validation</artifactId>
                 <version>${hapi-fhir.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.fasterxml.woodstox</groupId>
-                <artifactId>woodstox-core</artifactId>
-                <version>${woodstox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${jsr305.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>${jaxb-core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${okhttp.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.classgraph</groupId>
-                <artifactId>classgraph</artifactId>
-                <version>${classgraph.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sf.saxon</groupId>
-                <artifactId>Saxon-HE</artifactId>
-                <version>${saxon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-compress</artifactId>
-                <version>${commons-compress.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.jena</groupId>
-                <artifactId>jena-arq</artifactId>
-                <version>${jena.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-text</artifactId>
-                <version>${commons-text.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.checkerframework</groupId>
-                <artifactId>checker-qual</artifactId>
-                <version>${checker.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.jsonld-java</groupId>
-                <artifactId>jsonld-java</artifactId>
-                <version>0.13.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-                <scope>runtime</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+			<dependency>
+				<groupId>ca.uhn.hapi.fhir</groupId>
+				<artifactId>hapi-fhir-jpaserver-base</artifactId>
+				<version>${hapi-fhir.version}</version>
+				<!-- <exclusions>
+					<exclusion>
+						<groupId>org.elasticsearch.client</groupId>
+						<artifactId>elasticsearch-rest-high-level-client</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate.search</groupId>
+						<artifactId>hibernate-search-backend-elasticsearch</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>xpp3</groupId>
+						<artifactId>xpp3</artifactId>
+					</exclusion>
+				</exclusions> -->
+			</dependency>
 
-    <repositories>
-        <repository>
-            <id>ossrh-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+		<!-- <dependency>
+			<groupId>org.apache.camel.springboot</groupId>
+			<artifactId>camel-jpa-starter</artifactId>
+		</dependency> -->
+
+		<!-- database dependencies -->
+
+		<!-- <dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.12</version>
+		</dependency> -->
+
+		<!-- logging -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- test dependencies -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+		<!-- <dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-test-spring</artifactId>
+			<scope>test</scope>
+		</dependency> -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-test-spring-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot-version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

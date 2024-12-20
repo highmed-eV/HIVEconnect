@@ -29,13 +29,6 @@ import org.springframework.context.annotation.Configuration;
 @SuppressWarnings("java:S6212")
 public class ConversionConfiguration {
 
-//    @Bean(name = "fhirResourceConversionService")
-//    public ConversionService conversionService() {
-//        ConversionService conversionService = new ConversionService();
-////        registerSampleConverter(conversionService);
-//        return conversionService;
-//    }
-
     @Bean
     @ConditionalOnProperty(prefix = "fhir-bridge.fhir.terminology-server", name = "url")
     public TerminologyService myTerminologyService(HttpClient httpClient, FhirProperties properties) {
@@ -43,25 +36,5 @@ public class ConversionConfiguration {
         context.getRestfulClientFactory().setHttpClient(httpClient);
         return new TerminologyService(context.newRestfulGenericClient(properties.getTerminologyServer().getUrl()));
     }
-
-//    private void registerSampleConverter(ConversionService conversionService) {
-//        conversionService.registerConverter(Profile.KDS_DIAGNOSE, new KDSDiagnoseCompositionConverter());
-//    }
-
-    //    @Bean(name = "fhirResourceConversionService")
-//    public Object convert(Profile profile, Resource resource) {
-//        KDSDiagnoseComposition composition;
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("flat_json/kds_diagnose_flat.json")) {
-//            if (inputStream == null) {
-//                throw new FileNotFoundException("File not found in resources");
-//            }
-//            composition = objectMapper.readValue(inputStream, KDSDiagnoseComposition.class);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return composition;
-//    }
 
 }

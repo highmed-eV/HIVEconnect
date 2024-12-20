@@ -12,6 +12,11 @@ public enum CompositionOperation {
     mergeCompositionEntity,
 
     /**
+     * Save a Canonocal-Entity to remote systems.
+     */
+    mergeCanonicalCompositionEntity,
+
+    /**
      * Finds a Flat-Entity by CompositionId.
      */
     find

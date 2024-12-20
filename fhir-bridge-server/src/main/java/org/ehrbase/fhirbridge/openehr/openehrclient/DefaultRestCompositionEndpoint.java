@@ -22,6 +22,7 @@ import org.ehrbase.client.exception.ClientException;
 // import org.ehrbase.client.flattener.Flattener;
 // import org.ehrbase.client.flattener.Unflattener;
 // import org.ehrbase.client.openehrclient.CompositionEndpoint;
+import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 
 public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
   public static final String COMPOSITION_PATH = "/composition/";
@@ -81,6 +82,29 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     // Flattener.addVersion(entity, updatedVersion);
 
     return entity;
+  }
+
+  @Override
+  public Composition mergeCanonicalCompositionEntity(Composition composition) {
+
+    UIDBasedId compUIDBasedId = composition.getUid();
+
+    Optional<VersionUid> versionUid = compUIDBasedId != null && compUIDBasedId.getValue() != null 
+                                    ? Optional.of(new VersionUid(compUIDBasedId.getValue())) 
+                                    : Optional.empty();
+
+    final VersionUid updatedVersion = internalMerge(composition, versionUid.orElse(null));
+    
+    //TODO: update version
+    if (composition.getUid() == null) {
+      UIDBasedId uIDBasedId = new ObjectVersionId(updatedVersion.toString());
+      composition.setUid(uIDBasedId);
+    } else {
+      //update with the incremented versionedUID
+      composition.getUid().setValue(updatedVersion.toString());
+    }
+
+    return composition;
   }
 
   private VersionUid internalMerge(Composition composition, VersionUid versionUid) {
