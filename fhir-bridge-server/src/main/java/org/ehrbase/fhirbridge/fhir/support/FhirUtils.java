@@ -1,15 +1,16 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
+import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class FhirUtils {
@@ -200,132 +201,83 @@ public class FhirUtils {
         return null;
     }
 
-    public static List<String> getResourceIds(String resourceJson) {
-        //ResourceReferenceProcessor
+    public static @NotNull List<String> getResourceIds(String resourceJson) {
         try {
             // Parse the JSON
+            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(resourceJson);
             Set<String> resultSet = new HashSet<>();
+
+            List<String> fullUrlList = extractFullUrls(rootNode);
             // Check if the resource is a Bundle
             if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
                 // Handle as a Bundle
-                JsonNode entryArray = rootNode.path("entry");
-                for (JsonNode entryNode : entryArray) {
-                    List<String> extractedResourceIds = new ArrayList<>();
-                    // Get the resource in each entry
-                    JsonNode resourceNode = entryNode.path("resource");
-                    extractedResourceIds = extractResourceIdFromResource(resourceNode);
+                // Collect all resource IDs from "reference" keys
+                List<String> extractedResourceIds = extractResourceIds(rootNode, fullUrlList);
+                if(!Objects.isNull(extractedResourceIds)){
+                    // Collect all the uniques resource IDs
                     resultSet.addAll(extractedResourceIds);
-                }
-                // List of all the resource Ids in the input bundle or single resource
-                List<String> resourceIds = new ArrayList<>(resultSet);
-                if (resourceIds != null) {
-                    return resourceIds;
+                    // List of all the unique resource Ids in the input bundle or single resource
+                    return new ArrayList<>(resultSet);
                 }
             } else {
                 // Handle as a single resource
-                return extractResourceIdFromResource(rootNode);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return null; // Return null if no resource ID is found
+        return Collections.emptyList(); // Return an empty list if no resource ID is found
     }
 
-    private static List<String> extractResourceIdFromResource(JsonNode resourceNode) {
-
-        // List of all the resource Ids in the input bundle or single resource
+    private static List<String> extractResourceIds(JsonNode resourceNode, List<String> fullUrlList) {
         List<String> resourceIds = new ArrayList<>();
+        String regex = "^[^/]+/[A-Za-z0-9-]+$";
 
-        // If the resource itself is a Present, return its ID
-        if (resourceNode.has("resourceType")) {
-            String resourceId = resourceNode.get("resourceType").asText() + "/" + resourceNode.get("id").asText();
-            resourceIds.add(resourceId);
-        }
-
-        // Look for the "subject" field within the resource to get the resourceId
-        if (resourceNode.has("subject")) {
-            JsonNode referenceNode = resourceNode.path("subject");
-
-            if (!referenceNode.isMissingNode()) {
-                // Check for "reference" field in subject
-                if (referenceNode.has("reference")) {
-                    String reference = referenceNode.get("reference").asText();
-                    String resourceId = extractResourceIdFromReference(reference);
-                    resourceIds.add(resourceId);
-                } else if (referenceNode.has("identifier")) {
-                    // Check for "identifier" field in subject
-
-                    //handleSubjectReferenceInternal
-                    //TODO: new TokenParam(identifier.getSystem(), identifier.getValue())
-                    JsonNode identifierNode = referenceNode.get("identifier");
-                    if (identifierNode.has("value")) {
-                        String resourceId = resourceNode.get("resourceType").asText() + "/" + identifierNode.get("value").asText();
-                        resourceIds.add(resourceId);
+        if (resourceNode.isObject()) {
+            Iterator<String> fieldNames = resourceNode.fieldNames();
+            while (fieldNames.hasNext()) {
+                String fieldName = fieldNames.next();
+                JsonNode childNode = resourceNode.get(fieldName);
+                // Skip the "subject" field
+                if ("subject".equals(fieldName)) {
+                    continue;
+                }
+                // If "reference" key is found, extract the ID
+                if ("reference".equals(fieldName) && childNode.isTextual()) {
+                    String reference = childNode.asText();
+                    if (Pattern.matches(regex, reference) || (reference.startsWith("urn:uuid") && !fullUrlList.contains(reference))) {
+                        // Extract resource ID from the reference value
+                        resourceIds.add(reference);
+                        break;
                     }
                 } else {
-                    throw new UnprocessableEntityException("Subject identifier is required");
+                    // Recursively process child nodes
+                    resourceIds.addAll(extractResourceIds(childNode, fullUrlList));
                 }
-            } else {
-                throw new UnprocessableEntityException(resourceNode.path("resourceType") + " should be linked to a subject");
+            }
+        } else if (resourceNode.isArray()) {
+            for (JsonNode arrayElement : resourceNode) {
+                resourceIds.addAll(extractResourceIds(arrayElement, fullUrlList));
             }
         }
-
         return resourceIds;
     }
 
-    private static String extractResourceIdFromReference(String reference) {
-        if (reference != null) {
-            String regex = "^[^/]+/[A-Za-z0-9-]+$";
-            if (Pattern.matches(regex, reference)) {
-                // Internal
-                // Relative reference to resource
-                return reference;
-            } else if (reference.startsWith("#")) {
-                // Internal contained reference
-                //TODO Check what needs to be done here
-                //The contained id will be created and an id will be
-                //returned by the server after the resource is created
-                // Contained:
-                // {
-                // "subject": {
-                //     "reference": "#patient1"
-                // },
-                // "contained": [
-                //     {
-                //     "resourceType": "Patient",
-                //     "id": "patient1",
-                //     "name": [
-                //         {
-                //         "family": "Doe",
-                //         "given": ["John"]
-                //         }
-                //     ]
-                //     }
-                // ]
-                // }
+    private static List<String> extractFullUrls(JsonNode rootNode) {
+        List<String> fullUrls = new ArrayList<>();
 
-                // return reference.substring(1);
-
-            } else if (reference.startsWith("urn:uuid")) {
-                // Internal reference
-
-            } else {
-                // External reference (absolute URL)
-                //TODO Check what needs to be done here
-                // External/absolute url:
-                // {
-                // "subject": {
-                //     "reference": "http://external-fhir-server.com/Patient/456"
-                // }
-                // }
+        // Directly target the `entry` array
+        if (rootNode.has("entry") && rootNode.get("entry").isArray()) {
+            for (JsonNode entry : rootNode.get("entry")) {
+                if (entry.has("fullUrl") && entry.get("fullUrl").isTextual()) {
+                    fullUrls.add(entry.get("fullUrl").asText());
+                }
             }
         }
-        return null;
+        return fullUrls;
     }
 
-    
 //Old FB
 // import org.hl7.fhir.instance.model.api.IBaseResource;
 // import org.hl7.fhir.r4.model.Identifier;

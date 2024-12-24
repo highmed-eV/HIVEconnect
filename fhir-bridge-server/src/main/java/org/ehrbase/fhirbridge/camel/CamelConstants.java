@@ -49,7 +49,7 @@ public final class CamelConstants {
 
     public static final String RESOURCE_ID = "FhirBridgeResourceId";
 
-    public static final String INPUT_RESOURCE_IDS = "FhirBridgeResourceIds";
+    public static final String REFERENCE_INPUT_RESOURCE_IDS = "FhirBridgeReferenceInputResourceIds";
 
     public static final String INTERNAL_RESOURCE_IDS = "FhirServerResourceIds";
 
