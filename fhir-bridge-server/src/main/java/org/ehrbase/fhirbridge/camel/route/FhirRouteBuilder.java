@@ -8,6 +8,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
+import org.ehrbase.fhirbridge.fhir.camel.ExistingResourceReferenceProcessor;
 import org.ehrbase.fhirbridge.fhir.camel.ResourceLookupProcessor;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
 import org.hl7.fhir.r4.model.Patient;
@@ -18,7 +19,6 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -170,86 +170,88 @@ public class FhirRouteBuilder extends RouteBuilder {
             .end();
 
         // Extract Reference Resource Ids from the FHIR Input Resource
+        from("direct:mapInternalResourceProcessor")
+            .routeId("MapInternalResourceProcessor")
+
+            // 1. Extract or find the Reference Resource ID(s) from the resource
+            // 2. Check if the reference resource Id(s) already exist in the bundle or not.
+            // If the reference resource Id(s) doesn't exist in the bundle.
+            // Add it in the referenceResourceIds(excluding subject.reference)
+            .process(exchange -> {
+                // String resource = exchange.getIn().getBody(String.class);
+                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                List<String> referenceInputResourceIds = FhirUtils.getResourceIds(inputResource);
+                exchange.setProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS, referenceInputResourceIds);
+            })
+            .log("FHIR Reference Resource ID(s) : ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "}")
+            // 3. Check the mapping table : FB_RESOURCE_COMPOSITION
+            // and get the internalResourceId(s) for corresponding inputResourceId(s).
+            // 4. Replace the reference inputResourceId(s) with the internalResourceId(s) in the input fhir bundle
+            .choice()
+                .when(exchangeProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS).isNotNull())
+                    .log("Reference Resource IDs: " + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS)
+                    .process(ResourceLookupProcessor.BEAN_ID)
+            .end()
+            .log("FHIR INTERNAL RESOURCE ID(s) : ${exchangeProperty." + CamelConstants.INTERNAL_RESOURCE_IDS + "}")
+            .log("Updated input resouce bundle with the internalResourceIds");
+
+        // Add the extracted Reference Resource Ids as resource in the FHIR Input Bundle Resource
         from("direct:resourceReferenceProcessor")
-                .routeId("ResourceReferenceProcessorRoute")
-
-                // Extract or find the Reference Resource ID from the resource
-                .process(exchange -> {
-                    String  resource = exchange.getIn().getBody(String.class);
-                    List<String> resourceIds = FhirUtils.getResourceIds(resource);
-                    exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, resourceIds);
-                })
-                .log("FHIR Resource ID(s) : ${exchangeProperty.CamelConstants.INPUT_RESOURCE_IDS}")
-                // check the mapping table : FB_RESOURCE_COMPOSITION
-                // get the inputResourceId for corresponding inputResourceId
-                // Internal Reference : verify if the resource id(s) is/are in the server
-                // If resource(s) is/are found in server get the resources
-                .process(ResourceLookupProcessor.BEAN_ID)
-                .log("FHIR INTERNAL RESOURCE ID(s) : ${exchangeProperty.CamelConstants.INTERNAL_RESOURCE_IDS}")
-//                .process(exchange -> {
-//                    // Retrieve the list of resource strings from the property
-//                    List<String> resourceIds = exchange.getProperty(CamelConstants.INTERNAL_RESOURCE_IDS, List.class);
-//                    // Add the list to the exchange body for splitting
-//                    exchange.getIn().setBody(resourceIds);
-//                })
-                .choice()
-                    .when(exchangeProperty(CamelConstants.INTERNAL_RESOURCE_IDS).isNotNull())
-//                    .when(simple("${exchangeProperty.CamelConstants.INTERNAL_RESOURCE_IDS} != null"))
-                        .log("Property CamelConstants.INTERNAL_RESOURCE_IDS is present.")
-                        // Process the list of internal resource IDs
+            .routeId("ResourceReferenceProcessorRoute")
+            .choice()
+                .when(exchangeProperty(CamelConstants.INTERNAL_RESOURCE_IDS).isNotNull())
+                // .when(simple("${exchangeProperty.CamelConstants.INTERNAL_RESOURCE_IDS} != null"))
+                    // 1. Fetch the resources for the internalResourceId(s) is/are in the server.
+                    // 2. Add the resources in the input fhir bundle.
+                    .log("Property" + CamelConstants.INTERNAL_RESOURCE_IDS + "is present.")
+                    // Process the list of internal resource IDs
+                    .process(exchange -> {
+                        // Retrieve the list of resource strings from the property
+                        List<String> resourceIds = exchange.getProperty(CamelConstants.INTERNAL_RESOURCE_IDS, List.class);
+                        // Add the list to the exchange body for splitting
+                        exchange.getIn().setBody(resourceIds);
+                        // Initialize the list before split
+                        List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
+                        if (existingResources == null) {
+                            existingResources = new ArrayList<>();
+                            exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+                        }
+                    })
+                    // Split the list to process each resource string individually
+                    .split(body()).shareUnitOfWork()
                         .process(exchange -> {
-                            // Retrieve the list of resource strings from the property
-                            List<String> resourceIds = exchange.getProperty(CamelConstants.INTERNAL_RESOURCE_IDS, List.class);
-                            // Add the list to the exchange body for splitting
-                            exchange.getIn().setBody(resourceIds);
-
-                            // Ensure that the list is initialized before splitting
-                            List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
-                            if (existingResources == null) {
-                                existingResources = new ArrayList<>();
-                                exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);  // Initialize the list before split
+                            // Extract resourceClass and stringId from the current string
+                            String resourceString = exchange.getIn().getBody(String.class);
+                            // Use regular expression to extract resourceType and id
+                            Pattern pattern = Pattern.compile("([^/]+)/([^/]+)");
+                            Matcher matcher = pattern.matcher(resourceString);
+                            if (matcher.matches()) {
+                                exchange.setProperty(CamelConstants.INTERNAL_RESOURCE_TYPE, matcher.group(1));
+                                exchange.setProperty(CamelConstants.STRING_INTERAL_ID, matcher.group(2));
                             }
                         })
-                        // Split the list to process each resource string individually
-                        .split(body()).shareUnitOfWork()
+                        .log("Processing resource: Class = ${exchangeProperty.FhirServerResourceType}, ID = ${exchangeProperty.FhirServerExistingId}")
+                        .doTry()
+                            .toD("fhir:read/resourceById?resourceClass=${exchangeProperty.FhirServerResourceType}&stringId=${exchangeProperty.FhirServerExistingId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                             .process(exchange -> {
-                                // Extract resourceClass and stringId from the current string
-                                String resourceString = exchange.getIn().getBody(String.class);
-                                // Use regular expression to extract resourceType and id
-                                Pattern pattern = Pattern.compile("([^/]+)/([^/]+)");
-                                Matcher matcher = pattern.matcher(resourceString);
-                                if (matcher.matches()) {
-                                    exchange.setProperty(CamelConstants.INTERNAL_RESOURCE_TYPE, matcher.group(1));  // First group is resourceType (e.g., "Condition")
-                                    exchange.setProperty(CamelConstants.STRING_INTERAL_ID, matcher.group(2));       // Second group is the id (e.g., "7")
+                                if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                                    // Retrieve existing resources or initialize list
+                                    List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
+                                    // Add resource response to the list
+                                    Resource resourceResponse = exchange.getIn().getBody(Resource.class);
+                                    // Convert the resource to String using HAPI FHIR JSON parser
+                                    FhirContext fhirContext = FhirContext.forR4();
+                                    String resourceResponseStr = fhirContext.newJsonParser().encodeResourceToString(resourceResponse);
+                                    existingResources.add(resourceResponseStr);
+                                    exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
                                 }
                             })
-                            .log("Processing resource: Class = ${exchangeProperty.FhirServerResourceType}, ID = ${exchangeProperty.FhirServerExistingId}")
-                            .doTry()
-                                .toD("fhir:read/resourceById?resourceClass=${exchangeProperty.FhirServerResourceType}&stringId=${exchangeProperty.FhirServerExistingId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-                                .process(exchange -> {
-                                    if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
-                                        // Retrieve existing resources or initialize list
-                                        List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
-                                        // Add resource response to the list
-                                        Resource resourceResponse = exchange.getIn().getBody(Resource.class);
-                                        // Convert the resource to String using HAPI FHIR JSON parser
-                                        FhirContext fhirContext = FhirContext.forR4();
-                                        String resourceResponseStr = fhirContext.newJsonParser().encodeResourceToString(resourceResponse);
-                                        existingResources.add(resourceResponseStr);
-                                        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
-                                    }
-                                })
-                            .doCatch(ResourceNotFoundException.class)
-                                    .log("Resource not found for resourceClass=${exchangeProperty.resourceClass}, stringId=${exchangeProperty.stringId}. Skipping...")
-                                // .throwException(ResourceNotFoundException.class, "${exception.message}")
-                        .end() // End the split block
-                .end()
-
-                .process(exchange -> {
-                    //set back the input json as body
-                    String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
-                    exchange.getIn().setBody(inputResource);
-                });
+                        .doCatch(ResourceNotFoundException.class)
+                            .log("Resource not found for resourceClass=${exchangeProperty.resourceClass}, stringId=${exchangeProperty.stringId}. Skipping...")
+                    .end() // End the split block
+            .end()
+            .process(ExistingResourceReferenceProcessor.BEAN_ID)
+            .log("Updated input resouce bundle with the referece resources");
     }
 
 }
