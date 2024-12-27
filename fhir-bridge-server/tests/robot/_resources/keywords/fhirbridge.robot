@@ -30,13 +30,18 @@ POST /Bundle with ehr reference
     Log To Console    \n\nFhir bundle API call for ${fhir_bundle_name}
 
     ${patient_id_list}=  Get Value From Json    ${payload}    $..entry[0].resource.subject.reference
-    ${patient_id}=  Get From List    ${patient_id_list}    0
-    Log To Console    \npatientId from the input bundle: ${patient_id}
-    Set Suite Variable    ${patient_id}    ${patient_id}
+    Run Keyword If    ${patient_id_list}    Set Suite Variable    ${patient_id}    ${patient_id_list}[0]
+        ...                ELSE    Run Keyword    Handle Missing Subject Reference    ${payload}
 
     # POST call to store the FHIR bundle
     ${resp}=    POST    ${BASE_URL}    body=${payload}
     Log To Console    \nResponse of the post call to store the FHIR bundle: ${resp}
+
+Handle Missing Subject Reference
+    [Arguments]         ${payload}
+    ${patient_id_list}=    Get Value From Json    ${payload}    $..entry[0].resource.subject.identifier.value
+    ${patient_id}=    Get From List    ${patient_id_list}    0
+    Set Suite Variable    ${patient_id}    Patient/${patient_id}
 
 validate response - 200
     [Documentation]     Validates response of POST to ${BASE_URL} endpoint

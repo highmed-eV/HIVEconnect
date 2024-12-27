@@ -5,6 +5,24 @@
       "inputBundleFileName": "kds_diagnose_bundle.json",
       "expectedOpenEhrFileName": "kds_diagnose_canonical.json",
       "openEhrTemplateId": "KDS_Diagnose"
+    },
+    {
+      "testCaseName": "kdslaborauftrag",
+      "inputBundleFileName": "kds_laborauftrag_bundle.json",
+      "expectedOpenEhrFileName": "kds_laborauftrag_canonical.json",
+      "openEhrTemplateId": "KDS_Laborauftrag"
+    },
+    {
+      "testCaseName": "kdslaborbericht",
+      "inputBundleFileName": "kds_laborbericht_bundle.json",
+      "expectedOpenEhrFileName": "kds_laborbericht_canonical.json",
+      "openEhrTemplateId": "KDS_Laborbericht"
+    },
+    {
+      "testCaseName": "kdsprozedur",
+      "inputBundleFileName": "kds_prozedur_bundle.json",
+      "expectedOpenEhrFileName": "kds_prozedur_canonical.json",
+      "openEhrTemplateId": "KDS_Prozedur"
     }
   ]
 }
