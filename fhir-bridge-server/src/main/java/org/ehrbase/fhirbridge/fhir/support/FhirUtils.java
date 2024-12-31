@@ -4,12 +4,7 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
-import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -34,7 +29,7 @@ public class FhirUtils {
         return null; // Return null if no patient ID is found
     }
 
-    public static String getPatientId(String resourceJson) {
+    public static JsonNode getPatientResource(String resourceJson) {
         //PatientReferenceProcessor
         try {
             // Parse the JSON
@@ -47,14 +42,11 @@ public class FhirUtils {
                 for (JsonNode entryNode : entryArray) {
                     // Get the resource in each entry
                     JsonNode resourceNode = entryNode.path("resource");
-                    String patientId = extractPatientIdFromResource(resourceNode);
-                    if (patientId != null) {
-                        return patientId;
-                    }
+                    return extractPatientFromResource(resourceNode);
                 }
             } else {
                 // Handle as a single resource
-                return extractPatientIdFromResource(rootNode);
+                return extractPatientFromResource(rootNode);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,62 +62,26 @@ public class FhirUtils {
         return inputResourceId;
     }
 
-    private static String extractPatientIdFromResource(JsonNode resourceNode) {
+    public static JsonNode extractPatientFromResource(JsonNode resourceNode) {
         // If the resource itself is a Patient, return its ID
         if (resourceNode.has("resourceType") && "Patient".equals(resourceNode.get("resourceType").asText())) {
-            return resourceNode.path("id").asText();
+            return resourceNode;
         }
 
         // Look for the "subject" field within the resource
-        JsonNode referenceNode = resourceNode.path("subject");
+        JsonNode subjectNode = resourceNode.path("subject");
         //patient(Consent, Immunization) individual(ResearchSubject)
 
-        if (!referenceNode.isMissingNode()) {
-            // Check for "reference" field in subject
-            if (referenceNode.has("reference")) {
-                String reference = referenceNode.get("reference").asText();
-                return extractPatientIdFromReference(reference);
-            } else if (referenceNode.has("identifier")) {
-                // Check for "identifier" field in subject
-                // private IIdType handleSubjectReferenceInternal(Reference subject, RequestDetails requestDetails) {
-                //     Patient patientReference = (Patient) subject.getResource();
-                //     Identifier identifier =  patientReference.getIdentifier().get(0); //TODO bad practice
-                //     SearchParameterMap parameters = new SearchParameterMap();
-                //     parameters.add(Patient.SP_IDENTIFIER, new TokenParam(identifier.getSystem(), identifier.getValue()));
-                //     Set<ResourcePersistentId> ids = patientDao.searchForIds(parameters, requestDetails);
-                //     IIdType patientId;
-                //     if (ids.isEmpty()) {
-                //         patientId = createPatient(identifier, requestDetails);
-                //     } else if (ids.size() == 1) {
-                //         IBundleProvider bundleProvider = patientDao.search(parameters, requestDetails);
-                //         List<IBaseResource> result = bundleProvider.getResources(0, 1);
-                //         Patient patient = (Patient) result.get(0);
-                //         patientId = patient.getIdElement();
-                //         LOG.debug("Resolved existing Patient: id={}", patientId);
-                //     } else {
-                //         throw new UnprocessableEntityException("More than one patient matching the given identifier system and value");
-                //     }
-                //     subject.setReferenceElement(patientId);
-                //     return patientId;
-                // }
-
-                //handleSubjectReferenceInternal
-                //TODO: new TokenParam(identifier.getSystem(), identifier.getValue())
-                JsonNode identifierNode = referenceNode.get("identifier");
-                if (identifierNode.has("value")) {
-                    return identifierNode.get("value").asText();
-                }
-            } else {
-                throw new UnprocessableEntityException("Subject identifier is required");
-            }
+        if (!subjectNode.isMissingNode()) {
+                return subjectNode;
+            
         } else {
             throw new UnprocessableEntityException(resourceNode.path("resourceType") + " should be linked to a subject/patient");
         }
 
-        return null;
     }
 
-    private static String extractPatientIdFromReference(String reference) {
+    public static String extractPatientIdFromReference(JsonNode resourceNode, String reference) {
         if (reference != null) {
             if (reference.startsWith("Patient/")) {
                 //Internal Reference
@@ -174,6 +130,7 @@ public class FhirUtils {
                 //     "resourceType": "Patient",
 
                 // return reference.substring(1);
+                JsonNode resource = extractFullUrlResource(resourceNode, reference);
             } else {
                 // External reference (absolute URL)
                 //TODO Check what needs to be done here
@@ -276,6 +233,20 @@ public class FhirUtils {
             }
         }
         return fullUrls;
+    }
+
+    private static JsonNode extractFullUrlResource(JsonNode rootNode, String fullUrl) {
+        JsonNode resource = null;
+
+        // Directly target the `entry` array
+        if (rootNode.has("entry") && rootNode.get("entry").isArray()) {
+            for (JsonNode entry : rootNode.get("entry")) {
+                if (entry.has("fullUrl") && entry.get("fullUrl").isTextual() && fullUrl.equals(entry.get("fullUrl").asText())) {
+                    resource = entry.deepCopy();
+                }
+            }
+        }
+        return resource;
     }
 
 //Old FB
