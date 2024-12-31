@@ -19,10 +19,28 @@
       "openEhrTemplateId": "KDS_Laborbericht"
     },
     {
+      "testCaseName": "kdsmedikamentenverabreichungen",
+      "inputBundleFileName": "kds_medikamentenverabreichungen_bundle.json",
+      "expectedOpenEhrFileName": "kds_medikamentenverabreichungen_canonical.json",
+      "openEhrTemplateId": "KDS_Medikamentenverabreichungen"
+    },
+    {
+      "testCaseName": "kdsmedikationseintrag",
+      "inputBundleFileName": "kds_medikationseintrag_bundle.json",
+      "expectedOpenEhrFileName": "kds_medikationseintrag_v1_canonical.json",
+      "openEhrTemplateId": "KDS_Medikationseintrag_v1"
+    },
+    {
       "testCaseName": "kdsprozedur",
       "inputBundleFileName": "kds_prozedur_bundle.json",
       "expectedOpenEhrFileName": "kds_prozedur_canonical.json",
       "openEhrTemplateId": "KDS_Prozedur"
+    },
+    {
+      "testCaseName": "stationärerversorgungsfall",
+      "inputBundleFileName": "stationarer_versorgungsfall_bundle.json",
+      "expectedOpenEhrFileName": "stationarer_versorgungsfall_canonical.json",
+      "openEhrTemplateId": "Stationärer Versorgungsfall"
     }
   ]
 }
