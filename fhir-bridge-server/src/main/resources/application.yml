@@ -135,7 +135,7 @@ openehr:
 
 
 #camel fhir
-#serverUrl: http://localhost:8088/fhir-bridge/fhir
+# serverUrl: http://localhost:8088/fhir-bridge/fhir
 serverUrl: http://localhost:8088/fhir
 fhirVersion: R4
 connectionTimeout: 20000

@@ -23,10 +23,6 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
             .process(exchange -> {
                 String openEhrJson = exchange.getIn().getBody(String.class);
                 UUID ehrId = exchange.getIn().getHeader(CompositionConstants.EHR_ID, UUID.class); // Retrieve EHRId from exchange header
-                // Pass the EHRId with the openEHR composition
-                // hardcoded correct openEhrJson
-                // String filePath = "C:\\FHIR-OpenEHR\\fhir-bridge\\fhir-bridge-server\\src\\main\\resources\\test_canonical_json\\KDS_Diagnose.json";
-                // String openEhrJson = new String(Files.readAllBytes(Paths.get(filePath)));
                 Composition composition = new CanonicalJson().unmarshal(openEhrJson, Composition.class);
                 exchange.getIn().setBody(composition);
             })
@@ -36,7 +32,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
                 .log("composition:compositionProducer catch exception")
                 .process(new OpenEhrClientExceptionHandler())
             .endDoTry()
-            .log("Successfully committed composition to openEHR server with EHR ID: ${header.EHRId}");
+            .log("Successfully committed composition to openEHR server with EHR ID: ${header." + CompositionConstants.EHR_ID + "}");
 
 
         from("direct:patientIdToEhrIdMapperProcess")
@@ -45,7 +41,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
             //if Patient resource create ehrid
             .log("patientIdToEhrIdMapperProcess: calling EhrLookupProcessor")
             .process(EhrLookupProcessor.BEAN_ID)
-            .log("openEHR EHRId Mapper Process Route completed: ${exchangeProperty.OpenEHRId}");
+            .log("openEHR EHRId Mapper Process Route completed: ${header." + CompositionConstants.EHR_ID + "}");
     }
 }
 

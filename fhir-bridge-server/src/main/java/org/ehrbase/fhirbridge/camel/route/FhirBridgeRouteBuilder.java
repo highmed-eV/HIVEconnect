@@ -94,7 +94,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                 .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
                     .doTry()
                         .to("direct:extractAndCheckPatientIdExistsProcessor")
-                        .log("FHIR Patient ID ${exchangeProperty.FHIRPatientId}")
+                        .log("FHIR Patient ID ${header.CamelFhirPatientId}")
                     .doCatch(Exception.class)
                         .process(new FhirBridgeExceptionHandler())
                     // .endChoice()
@@ -162,7 +162,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                     .doTry()
                         //Get the mapped openEHRId if avaialbe else create new ehrId
                         .to("direct:patientIdToEhrIdMapperProcess")
-                        .log("Patient ID mapped to EHR ID: ${exchangeProperty.CamelEhrCompositionEhrId}")
+                        .log("Patient ID mapped to EHR ID: ${header.CamelEhrCompositionEhrId}")
     
                         // .wireTap("direct:OpenEHRProcess")
                         .to("direct:OpenEHRProcess")
