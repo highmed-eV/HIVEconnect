@@ -1,7 +1,9 @@
 *** Keywords ***
 load test cases from json
     # load json from test_case_list.json file
-    ${json_data}=    Load JSON From File    ${TEST_CASE_LIST_FILE}
+    # ${json_data}=    Load JSON From File    ${TEST_CASE_LIST_FILE}
+    # Load JSON from the test_case_list.json file using UTF-8 encoding
+    ${json_data}=    Load Json Utf8    ${TEST_CASE_LIST_FILE}
     # get the json dictionary for all the tes cases test cases
     ${TEST_CASES}=    Get From Dictionary    ${json_data}    testcases
     Set Suite Variable    ${TEST_CASES}
@@ -30,13 +32,18 @@ POST /Bundle with ehr reference
     Log To Console    \n\nFhir bundle API call for ${fhir_bundle_name}
 
     ${patient_id_list}=  Get Value From Json    ${payload}    $..entry[0].resource.subject.reference
-    ${patient_id}=  Get From List    ${patient_id_list}    0
-    Log To Console    \npatientId from the input bundle: ${patient_id}
-    Set Suite Variable    ${patient_id}    ${patient_id}
+    Run Keyword If    ${patient_id_list}    Set Suite Variable    ${patient_id}    ${patient_id_list}[0]
+        ...                ELSE    Run Keyword    Handle Subject Identifier    ${payload}
 
     # POST call to store the FHIR bundle
     ${resp}=    POST    ${BASE_URL}    body=${payload}
     Log To Console    \nResponse of the post call to store the FHIR bundle: ${resp}
+
+Handle Subject Identifier
+    [Arguments]         ${payload}
+    ${patient_id_list}=    Get Value From Json    ${payload}    $..entry[0].resource.subject.identifier.value
+    ${patient_id}=    Get From List    ${patient_id_list}    0
+    Set Suite Variable    ${patient_id}    Patient/${patient_id}
 
 validate response - 200
     [Documentation]     Validates response of POST to ${BASE_URL} endpoint
@@ -69,11 +76,11 @@ POST /BundleAQL with ehr reference
     # Replace placeholders with new values
     ${updated_query_string}=    Replace String    ${query_string}[0]    {{ehrUid}}    ${ehr_id}
     ${updated_query_string}=    Replace String    ${updated_query_string}    {{templateId}}    ${openehr_template}
-    Log To Console    \nupdated query string: ${updated_query_string}
+    Log To Console    \nUpdated query string: ${updated_query_string}
 
     # Update the JSON content with the new query string
     ${payload}=      Update Value To Json     ${aql_body}    $.q    ${updated_query_string}
-    Log To Console    \nupdated aql body: ${payload}
+    Log To Console    \nUpdated aql body: ${payload}
 
     # POST CALL TO GET AQL RESPONSE
     ${HEADERS}    Create Dictionary   Content-Type=application/json   Authorization=Basic bXl1c2VyOm15UGFzc3dvcmQ0MzI=   Prefer=return=representation
@@ -97,7 +104,7 @@ validate content response_aql_composition - 201
     [Arguments]         ${expected_openehr_file_name}
     Log To Console    \nIn openEHR AQL validate response for ${expected_openehr_file_name}
     # Load the expected JSON content
-    ${expected_resp_composition}=    Load JSON From File    ${EHR_COMPOSITION}/${expected_openehr_file_name}
+    ${expected_resp_composition}=    Load Json Utf8    ${EHR_COMPOSITION}/${expected_openehr_file_name}
     # Log To Console    \nEXP Response composition:: ${expected_resp_composition}
 
     ${expected_template_id}=  Get Value From Json    ${expected_resp_composition}    $..archetype_details.template_id.value

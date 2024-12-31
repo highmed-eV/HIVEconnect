@@ -26,7 +26,7 @@ public class FhirUtils {
             if (rootNode.has("resourceType")) {
                 return rootNode.get("resourceType").asText();
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,7 +63,7 @@ public class FhirUtils {
         return null; // Return null if no patient ID is found
     }
 
-    public static String getPatientIdFromOutCome(MethodOutcome resource){
+    public static String getPatientIdFromOutCome(MethodOutcome resource) {
         //Ned to get the Patient ID from the Outcome
         // String inputResourceId = resource.getId().getResourceType() + "/" + resource.getId().getValue();
         String inputResourceId = resource.getId().getIdPart();
@@ -76,9 +76,16 @@ public class FhirUtils {
             return resourceNode.path("id").asText();
         }
 
-        // Look for the "subject" field within the resource
-        JsonNode referenceNode = resourceNode.path("subject");
-        //patient(Consent, Immunization) individual(ResearchSubject)
+        JsonNode referenceNode;
+        String resourceType = resourceNode.path("resourceType").asText();
+        // patient(Consent, Immunization) individual(ResearchSubject)
+        // Determine the reference node(subject or individual) based on resource type
+        if ("ResearchSubject".equals(resourceType)) {
+            referenceNode = resourceNode.path("individual");
+        } else {
+            // Look for the "subject" field within the resource
+            referenceNode = resourceNode.path("subject");
+        }
 
         if (!referenceNode.isMissingNode()) {
             // Check for "reference" field in subject
@@ -190,7 +197,6 @@ public class FhirUtils {
 
                 //taking external ref id to internalid(dummy patient).
                 //external id to dummy patient
-                
 
 
                 // if (reference.contains("Patient")) {
@@ -214,7 +220,7 @@ public class FhirUtils {
                 // Handle as a Bundle
                 // Collect all resource IDs from "reference" keys
                 List<String> extractedResourceIds = extractResourceIds(rootNode, fullUrlList);
-                if(!Objects.isNull(extractedResourceIds)){
+                if (!Objects.isNull(extractedResourceIds)) {
                     // Collect all the uniques resource IDs
                     resultSet.addAll(extractedResourceIds);
                     // List of all the unique resource Ids in the input bundle or single resource
@@ -335,7 +341,7 @@ public class FhirUtils {
 //             }
 //         }
 //         logger.info("FHIR patient ID null");
-        
+
 //         return null; // Return null if no patient reference or identifier is found
 //     }
 

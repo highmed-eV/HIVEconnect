@@ -72,7 +72,7 @@
         "subject": {
           "identifier": {
             "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
+            "value": "1"
           }
         },
         "encounter": {
@@ -134,7 +134,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49"
+          "reference": "Patient/1"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
@@ -159,7 +159,8 @@
         "identifier": [
           {
             "assigner": {
-              "reference": "Organization/Charité"
+              "reference": "Organization/Charité",
+              "display": "example org"
             },
             "system": "https://www.charite.de/fhir/CodeSystem/lab-identifiers",
             "type": {
@@ -208,10 +209,10 @@
           "text": "Hemoglobin [Mass/volume] in Blood"
         },
         "subject": {
-          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49",
+          "reference": "Patient/1",
           "identifier": {
             "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
+            "value": "1"
           }
         },
         "effectiveDateTime": "2024-08-22T12:00:00+00:00",
@@ -308,7 +309,6 @@
         "collection": {
           "collectedDateTime": "2024-08-24T09:00:00Z",
           "collector": {
-            "reference": "Practitioner/123",
             "type": "Practitioner",
             "identifier": {
               "system": "http://hospital.org/practitioners",
