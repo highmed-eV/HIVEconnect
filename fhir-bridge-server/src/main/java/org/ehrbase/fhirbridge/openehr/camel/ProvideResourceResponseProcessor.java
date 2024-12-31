@@ -64,7 +64,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         String inputResource = exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE, String.class);
         String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
         // map to store the corresponding inputResourceId  and internalResourceId
-        Map<String, String> resourceIdMap = new HashMap<>();
+        Map<String, String> resourceIdMap = new LinkedHashMap<>();
 
         JSONObject inputJsonObject = new JSONObject(inputResource);
         if (!"Bundle".equals(inputResourceType)) {
