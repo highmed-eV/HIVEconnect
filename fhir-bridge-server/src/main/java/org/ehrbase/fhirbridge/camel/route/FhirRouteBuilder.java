@@ -104,20 +104,25 @@ public class FhirRouteBuilder extends RouteBuilder {
 
         // Extract Patient Id from the FHIR Input Resource
         from("direct:extractAndCheckPatientIdExistsProcessor")
-            .routeId("ExtractAndheckPatientIdExistsProcessorRoute")
+            .routeId("extractAndCheckPatientIdExistsProcessorRoute")
             //Get the patientid from input resource(Bundle, Patient or any resource)
             //find the patient id in the fhir server
             
             // Extract or find the Patient ID from the resource
             .process(exchange -> {
                 String  resource = exchange.getIn().getBody(String.class);
-                JsonNode resourceNode = FhirUtils.getPatientResource(resource);
+                JsonNode resourceNode = FhirUtils.getPatientInfoResource(resource);
 
                 String patientId = null;
                 if (resourceNode.has("resourceType") && "Patient".equals(resourceNode.get("resourceType").asText())) {
+                    //Patient resource
                     patientId =  resourceNode.path("id").asText();
+                    exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
+                    exchange.setProperty("STOP_INTERNAL", true);
+                    return;
                 }
                 
+                //subject, individual, patient resource
                 if (!resourceNode.isMissingNode()) {
                     // Check for "reference" field in subject
                     if (resourceNode.has("reference")) {
@@ -135,8 +140,13 @@ public class FhirRouteBuilder extends RouteBuilder {
             })
             .log("FHIR Patient ID ${header." + CamelConstants.PATIENT_ID + "}")
 
-
-
+            .choice()
+            .when(exchangeProperty("STOP_INTERNAL").isNotEqualTo(true))
+                .to("direct:checkPatientIdExistsProcessor");
+            
+            from ("direct:checkPatientIdExistsProcessor")
+                .routeId("checkPatientIdExistsProcessorRoute")
+            
             // Cannot throw ResourceNotFound here. As the patient can be created 
             // Internal Reference : verify the id is in the server: update the mapper table
             // Internal contained reference : get the sever id after the respource is created and then update themapper table
@@ -146,96 +156,96 @@ public class FhirRouteBuilder extends RouteBuilder {
             // If patient is found in server (PatientResourceFromServer) store this patientId 
             // as serverPatientId in excahnge so that it can be added to fhi-patient-id to ehr-id mapp table
             //else it has to be created after the resource is created in the server.
-            .choice()
-                .when(header(CamelConstants.PATIENT_ID).isNotNull())
-                    .doTry()
-                        .log("Read patient id  for ${header.CamelFhirPatientId}")
-                        .toD("fhir://read/resourceById?resourceClass=Patient&stringId=${header.CamelFhirPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-                        .process(exchange -> {
-                            if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
-                                Patient patientResource = (Patient) exchange.getIn().getBody();
-                                String serverPatientId = patientResource.getId();
+                .choice()
+                    .when(header(CamelConstants.PATIENT_ID).isNotNull())
+                        .doTry()
+                            .log("Read patient id  for ${header.CamelFhirPatientId}")
+                            .toD("fhir://read/resourceById?resourceClass=Patient&stringId=${header.CamelFhirPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                            .process(exchange -> {
+                                if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                                    Patient patientResource = (Patient) exchange.getIn().getBody();
+                                    String serverPatientId = patientResource.getId();
+                                    exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patientResource);
+                                    exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                                }
+                            })
+                        .doCatch(ResourceNotFoundException.class)
+                            .throwException(ResourceNotFoundException.class, "${exception.message}")
+                        .endDoTry()
+                    .endChoice()
+                    //else if identifier
+                    .when(header(CamelConstants.IDENTIFIER_OBJECT).isNotNull())
+                        .doTry()
+                            .log("Search patient id  for identifier ${header." + CamelConstants.IDENTIFIER_STRING + "}")
+                            .toD("fhir://search/searchByUrl?url=Patient?identifier=${header.CamelIdentifierString}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                            .log("Response Search patient id  for identifier ${body}")
+                            .process(exchange -> {
+                                if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                                    Bundle patientBundleResource = (Bundle) exchange.getIn().getBody();
+                                    Patient serverPatient = Optional.ofNullable(patientBundleResource.getEntry())
+                                                            .filter(entryList -> !entryList.isEmpty())
+                                                            .map(entryList -> entryList.get(0).getResource())
+                                                            .filter(resource -> resource instanceof Patient)
+                                                            .map(resource -> (Patient) resource)
+                                                            .orElse(null);
+
+                                    if( serverPatient == null) {
+                                        TokenParam  tokenParam = (TokenParam) exchange.getProperty(CamelConstants.IDENTIFIER_OBJECT);
+                                        Identifier identifier=  new Patient().addIdentifier();
+                                        identifier.setValue(tokenParam.getValue());
+                                        identifier.setSystem(tokenParam.getSystem());
+                                        Patient patient = new Patient().addIdentifier(identifier);
+                                        exchange.getIn().setBody(patient);
+                                    } else {
+                                        String serverPatientId = "Patient/" + serverPatient.getIdPart();
+                                        exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, serverPatient);
+                                        exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                                        exchange.getIn().setBody(serverPatient);
+                                    }
+                                }
+                            })
+                        .log("Response Search body  ${body}")
+
+                        .log("Search server patient id  for identifier ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                        .doCatch(ResourceNotFoundException.class)
+                            .throwException(ResourceNotFoundException.class, "${exception.message}")
+                        .endDoTry()
+                    .endChoice()
+                .end()
+
+                //If identifier not found; create dummy patient
+                .choice()
+                    .when(simple("${header.CamelFhirServerPatientId} == null && ${header.CamelIdentifierObject} != null"))
+                        .doTry()
+                            .log("create  patient id  for identifier ${header." + CamelConstants.IDENTIFIER_OBJECT + "}")
+                            .toD("fhir://create/resource?inBody=resource&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                            .process(exchange -> {
+                                //Response may not be resource. It is OutCome
+                                MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
+                                Patient patientResource = (Patient) response.getResource();
+                                String serverPatientId = patientResource.getId().split("/_history")[0];
                                 exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patientResource);
                                 exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
-                            }
-                        })
-                    .doCatch(ResourceNotFoundException.class)
-                        .throwException(ResourceNotFoundException.class, "${exception.message}")
-                    .endDoTry()
-                .endChoice()
-                //else if identifier
-                .when(header(CamelConstants.IDENTIFIER_OBJECT).isNotNull())
-                    .doTry()
-                        .log("Search patient id  for identifier ${header." + CamelConstants.IDENTIFIER_STRING + "}")
-                        .toD("fhir://search/searchByUrl?url=Patient?identifier=${header.CamelIdentifierString}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-                        .log("Response Search patient id  for identifier ${body}")
-                        .process(exchange -> {
-                            if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
-                                Bundle patientBundleResource = (Bundle) exchange.getIn().getBody();
-                                Patient serverPatient = Optional.ofNullable(patientBundleResource.getEntry())
-                                                        .filter(entryList -> !entryList.isEmpty())
-                                                        .map(entryList -> entryList.get(0).getResource())
-                                                        .filter(resource -> resource instanceof Patient)
-                                                        .map(resource -> (Patient) resource)
-                                                        .orElse(null);
+                                exchange.getIn().setHeader(CamelConstants.PATIENT_ID, serverPatientId);
+                            })
+                            .log("Created server patient id  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
 
-                                if( serverPatient == null) {
-                                    TokenParam  tokenParam = (TokenParam) exchange.getProperty(CamelConstants.IDENTIFIER_OBJECT);
-                                    Identifier identifier=  new Patient().addIdentifier();
-                                    identifier.setValue(tokenParam.getValue());
-                                    identifier.setSystem(tokenParam.getSystem());
-                                    Patient patient = new Patient().addIdentifier(identifier);
-                                    exchange.getIn().setBody(patient);
-                                } else {
-                                    String serverPatientId = "Patient/" + serverPatient.getIdPart();
-                                    exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, serverPatient);
-                                    exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
-                                    exchange.getIn().setBody(serverPatient);
-                                }
-                            }
-                        })
-                    .log("Response Search body  ${body}")
-
-                    .log("Search server patient id  for identifier ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
-                    .doCatch(ResourceNotFoundException.class)
-                        .throwException(ResourceNotFoundException.class, "${exception.message}")
-                    .endDoTry()
-                .endChoice()
-            .end()
-
-            //If identifier not found; create dummy patient
-            .choice()
-                .when(simple("${header.CamelFhirServerPatientId} == null && ${header.CamelIdentifierObject} != null"))
-                    .doTry()
-                        .log("create  patient id  for identifier ${header." + CamelConstants.IDENTIFIER_OBJECT + "}")
-                        .toD("fhir://create/resource?inBody=resource&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-                        .process(exchange -> {
-                            //Response may not be resource. It is OutCome
-                            MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
-                            Patient patientResource = (Patient) response.getResource();
-                            String serverPatientId = patientResource.getId().split("/_history")[0];
-                            exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patientResource);
-                            exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
-                            exchange.getIn().setHeader(CamelConstants.PATIENT_ID, serverPatientId);
-                        })
-                        .log("Created server patient id  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
-
-                    .doCatch(ResourceNotFoundException.class)
-                        .throwException(ResourceNotFoundException.class, "${exception.message}")
-                    .endDoTry()
-                .endChoice()
-                .when(header(CamelConstants.SERVER_PATIENT_ID).isNotNull())
-                    .log("Server PatientId  exists ${header.CamelFhirServerPatientId}")
-                .otherwise()
-                    .throwException(ResourceNotFoundException.class, "PatientId does not exist")
+                        .doCatch(ResourceNotFoundException.class)
+                            .throwException(ResourceNotFoundException.class, "${exception.message}")
+                        .endDoTry()
+                    .endChoice()
+                    .when(header(CamelConstants.SERVER_PATIENT_ID).isNotNull())
+                        .log("Server PatientId  exists ${header.CamelFhirServerPatientId}")
+                    .otherwise()
+                        .throwException(ResourceNotFoundException.class, "PatientId does not exist")
+                    .end()
                 .end()
-            .end()
 
-            .process(exchange -> {
-                //set back the input json as body
-                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
-                exchange.getIn().setBody(inputResource);
-            })
+                .process(exchange -> {
+                    //set back the input json as body
+                    String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                    exchange.getIn().setBody(inputResource);
+                })
             .log("FHIR PatientReferenceProcessor completed: input patient id: ${header." + CamelConstants.PATIENT_ID + "} input patient identifier:${header." + CamelConstants.IDENTIFIER_OBJECT + "}  and server patient id: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
    
         // Extract Patient Id from the FHIR Server response
@@ -246,9 +256,47 @@ public class FhirRouteBuilder extends RouteBuilder {
             // or Transaction reference
             // Extract or find the Patient ID from the resource
             .choice()
+                .when(header(CamelConstants.INPUT_RESOURCE_TYPE).isEqualTo("Bundle"))
+                    .to("direct:extractPatientIdFromBundleResponse")
+                .otherwise()
+                    .to("direct:extractPatientIdFromResourceResponse")
+                .end();
+
+        from ("direct:extractPatientIdFromBundleResponse")
+            .routeId("extractPatientIdFromBundleResponseRoute")
+
+            .choice()
+                .when(header(CamelConstants.SERVER_PATIENT_ID).isNull())
+                    .doTry()
+                        .process(exchange -> {
+                            String resource = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
+                            String serverPatientId = FhirUtils.getPatientIdFromResponse(resource);
+                            exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                        })
+                        .log("Read patient id  for ${header.CamelFhirServerPatientId}")
+                        .toD("fhir://read/resourceById?resourceClass=Patient&stringId=${header.CamelFhirServerPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                        .process(exchange -> {
+                            if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                                Patient patientResource = (Patient) exchange.getIn().getBody();
+                                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patientResource);
+                            }
+                        })
+                    .doCatch(ResourceNotFoundException.class)
+                        .throwException(ResourceNotFoundException.class, "${exception.message}")
+                    .endDoTry()
+
+                    .log("FHIR server Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                .endChoice()
+                .otherwise()
+                    .log("FHIR server Patient ID already set: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                .end();
+
+        from ("direct:extractPatientIdFromResourceResponse")
+            .routeId("extractPatientIdFromResourceResponseRoute")
+
+            .choice()
                 .when(header(CamelConstants.SERVER_PATIENT_ID).isNull())
                     .process(exchange -> {
-                        //May not be resource. It will be OutCome
                         MethodOutcome resource = (MethodOutcome) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
                         String serverPatientId = FhirUtils.getPatientIdFromOutCome(resource);
                         exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
@@ -257,7 +305,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                     .log("FHIR server Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
                 .otherwise()
                     .log("FHIR server Patient ID already set: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
-            .end();
+                .end();
 
         // Extract Reference Resource Ids from the FHIR Input Resource
         from("direct:mapInternalResourceProcessor")

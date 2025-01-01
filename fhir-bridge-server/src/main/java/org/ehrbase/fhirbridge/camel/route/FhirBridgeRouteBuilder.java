@@ -94,7 +94,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                 .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
                     .doTry()
                         .to("direct:extractAndCheckPatientIdExistsProcessor")
-                        .log("FHIR Patient ID ${header.CamelFhirPatientId}")
+                        .log("FHIR Patient ID  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
                     .doCatch(Exception.class)
                         .process(new FhirBridgeExceptionHandler())
                     // .endChoice()
@@ -125,7 +125,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
 
                 // Step 4: Extract Patient Id created in the FHIR server
                 .to("direct:extractPatientIdFromFhirResponseProcessor")
-                .log("FHIR Patient ID ${header.FHIRPatientId}")
+                .log("FHIR Patient ID ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
             .doCatch(Exception.class)
                 .log("direct:FHIRProcess catch exception")
                 .process(new FhirBridgeExceptionHandler())
