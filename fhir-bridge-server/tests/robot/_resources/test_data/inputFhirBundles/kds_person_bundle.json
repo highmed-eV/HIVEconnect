@@ -271,7 +271,7 @@
               }
             ],
             "organization": {
-              "reference": "Organization/5678",
+              "reference": "urn:uuid:f2201de3-7a9b-4ed6-b0b0-e4d840de2f0a",
               "display": "Organization"
             }
           }
@@ -422,7 +422,7 @@
         ],
         "performer": [
           {
-            "reference": "Organization/example-lab"
+            "reference": "urn:uuid:42a8d7bb-c440-439b-8377-262b24b4e4cd"
           }
         ]
       },
