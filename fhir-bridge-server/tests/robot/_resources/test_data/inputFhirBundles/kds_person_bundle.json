@@ -34,7 +34,6 @@
             "system": "http://fhir.de/sid/gkv/kvid-10",
             "value": "K123456789",
             "assigner": {
-              // "reference": "Organization/1234",
               "identifier": {
                 "type": {
                   "coding": [
@@ -247,7 +246,8 @@
                     "code": "C",
                     "display": "Emergency Contact"
                   }
-                ]
+                ],
+                "text": "Emergency Contact"
               }
             ],
             "name": {
@@ -277,7 +277,7 @@
           }
         ],
         "managingOrganization": {
-          "reference": "Organization/1234",
+          "reference": "urn:uuid:f2201de3-7a9b-4ed6-b0b0-e4d840de2f0a",
           "display": "managing Organization"
         }
       },
@@ -312,7 +312,8 @@
               "code": "resolved",
               "display": "Resolved"
             }
-          ]
+          ],
+          "text": "Resolved"
         },
         "verificationStatus": {
           "coding": [
@@ -321,7 +322,8 @@
               "code": "confirmed",
               "display": "Confirmed"
             }
-          ]
+          ],
+          "text": "Confirmed"
         },
         "category": [
           {
@@ -335,7 +337,6 @@
                 "system": "http://loinc.org",
                 "code": "79378-6",
                 "display": "Covid-19 SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) RNA panel"
-                //"display": "Cause of death"
               }
             ],
             "text": "Cause of death"
@@ -353,7 +354,7 @@
           "text": "Subarachnoid hemorrhage"
         },
         "subject": {
-          "reference": "Patient/{{patientId_fhir_engine}}"
+          "reference": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589d"
         },
         "recordedDate": "2024-08-24T00:00:00Z",
         "note": [
@@ -383,13 +384,9 @@
             "coding": [
               {
                 "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "survey"
+                "code": "survey",
+                "display": "Survey"
               }
-              // {
-              //     "system": "http://hl7.org/fhir/reference",
-              //     "version": "1",
-              //     "display": "Vital signs"
-              // }
             ],
             "text": "Vital signs"
           }
@@ -401,10 +398,11 @@
               "code": "67162-8",
               "display": "Vital signs"
             }
-          ]
+          ],
+          "text": "Vital signs"
         },
         "subject": {
-          "reference": "Patient/{{patientId_fhir_engine}}"
+          "reference": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589d"
         },
         "effectiveDateTime": "2024-08-21T14:30:00+00:00",
         "valueCodeableConcept": {
