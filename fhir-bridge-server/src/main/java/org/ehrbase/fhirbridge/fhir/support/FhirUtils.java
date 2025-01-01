@@ -2,11 +2,16 @@ package org.ehrbase.fhirbridge.fhir.support;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
+
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 
 public class FhirUtils {
 
@@ -29,7 +34,7 @@ public class FhirUtils {
         return null; // Return null if no patient ID is found
     }
 
-    public static JsonNode getPatientResource(String resourceJson) {
+    public static JsonNode getPatientInfoResource(String resourceJson) {
         //PatientReferenceProcessor
         try {
             // Parse the JSON
@@ -62,6 +67,49 @@ public class FhirUtils {
         return inputResourceId;
     }
 
+    public static String getPatientIdFromResponse(String responseString) {
+        JsonNode resource = null;
+        JsonNode rootNode = null;
+        try {
+            rootNode = objectMapper.readTree(responseString);
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        // Extract the location if it starts with "Patient/"
+        Optional<String> patientLocation = Optional.ofNullable(rootNode.get("entry"))
+                .map(entryNode -> entryNode.elements())  // Get the array of entry
+                .map(entryIterator -> {
+                    // Convert iterator to stream
+                    return StreamSupport.stream(((Iterable<JsonNode>) () -> entryIterator).spliterator(), false)
+                            .map(entry -> {
+                                JsonNode response = entry.path("response"); 
+                                String location = response.path("location").asText(null); 
+
+                                // Check if the location starts with "Patient/"
+                                if (location != null && location.startsWith("Patient/")) {
+                                    // Truncate the location till before "/_history"
+                                    int index = location.indexOf("/_history");
+                                    if (index != -1) {
+                                        location = location.substring(0, index); 
+                                    }
+                                    return location; 
+                                }
+                                return null;
+                            })
+                            .filter(location -> location != null)
+                            .findFirst(); 
+                })
+                .orElse(Optional.empty());
+                
+            if ( patientLocation.isPresent() ) {
+                return patientLocation.get();
+            } else
+            {
+                return null;
+            }
+    }
+
     public static JsonNode extractPatientFromResource(JsonNode resourceNode) {
         // If the resource itself is a Patient, return its ID
         if (resourceNode.has("resourceType") && "Patient".equals(resourceNode.get("resourceType").asText())) {
@@ -74,6 +122,8 @@ public class FhirUtils {
         // Determine the reference node(subject or individual) based on resource type
         if ("ResearchSubject".equals(resourceType)) {
             referenceNode = resourceNode.path("individual");
+        } else if ("Consent".equals(resourceType) || "Immunization".equals(resourceType)) {
+            referenceNode = resourceNode.path("patient");
         } else {
             // Look for the "subject" field within the resource
             referenceNode = resourceNode.path("subject");
@@ -96,7 +146,6 @@ public class FhirUtils {
                 return reference.split("/")[1];
             } else if (reference.startsWith("#")) {
                 // Internal contained reference
-                //TODO Check what needs to be done here
                 //The contained id will be created and an id will be 
                 //returned by the server after the resource is created
                 // Contained:
@@ -118,7 +167,13 @@ public class FhirUtils {
                 // ]
                 // }
 
-                // return reference.substring(1);
+                String referenceStr = reference.split("#")[0];
+                JsonNode resource = extractContainedResource(resourceNode, referenceStr);
+                if (resource != null) {
+                    return referenceStr;
+                }
+
+                return null;
 
             } else if (reference.startsWith("urn:uuid")) {
                 // Transaction reference
@@ -135,12 +190,15 @@ public class FhirUtils {
                 // "fullUrl": "urn:uuid:123e4567-e89b-12d3-a456-426614174000",
                 // "resource": {
                 //     "resourceType": "Patient",
+                //     "id": "example_patient",
 
-                // return reference.substring(1);
                 JsonNode resource = extractFullUrlResource(resourceNode, reference);
+                if (resource != null) {
+                    return resource.get("id").asText();
+                }
+                return null;
             } else {
                 // External reference (absolute URL)
-                //TODO Check what needs to be done here
                 // External/absolute url:
                 // {
                 // "subject": {
@@ -152,13 +210,8 @@ public class FhirUtils {
                 //maintain mapping between the patientid, ehrid record.
                 //corresponding compositionid
 
-                //taking external ref id to internalid(dummy patient).
-                //external id to dummy patient
-
-
-                // if (reference.contains("Patient")) {
-                //     return reference.substring(reference.lastIndexOf("/") + 1);
-                // }
+                //If FHIR server is not able to resolve the external ref, 404 is returned
+                return reference;
             }
         }
         return null;
@@ -249,6 +302,25 @@ public class FhirUtils {
             for (JsonNode entry : rootNode.get("entry")) {
                 if (entry.has("fullUrl") && entry.get("fullUrl").isTextual() && fullUrl.equals(entry.get("fullUrl").asText())) {
                     resource = entry.deepCopy();
+                }
+            }
+        }
+        return resource;
+    }
+
+    private static JsonNode extractContainedResource(JsonNode rootNode, String containedId) {
+        JsonNode resource = null;
+
+        // Directly target the `contained` array
+        if (rootNode.has("contained") && rootNode.get("contained").isArray()) {
+            for (JsonNode contained : rootNode.get("contained")) {
+                if (contained.has("resourceType") 
+                && contained.get("resourceType").isTextual() 
+                && "Patient".equals(contained.get("resourceType").asText())
+                && contained.has("id") 
+                && contained.get("id").isTextual() 
+                && containedId.equals(contained.get("id").asText())) {
+                    resource = contained.deepCopy();
                 }
             }
         }
