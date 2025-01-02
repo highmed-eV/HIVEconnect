@@ -25,7 +25,9 @@ public final class CamelConstants {
 
      public static final String COMPOSITION_ID = "CamelFhirBridgeCompositionId";
 
-    public static final String INPUT_RESOURCE = "CamelFhirBridgeIncomingResource";
+     public static final String INPUT_SYSTEM_ID = "CamelFhirBridgeInputSystemId";
+     
+     public static final String INPUT_RESOURCE = "CamelFhirBridgeIncomingResource";
     
     public static final String INPUT_RESOURCE_TYPE = "CamelFhirBridgeIncomingResourceType";
     
@@ -40,6 +42,8 @@ public final class CamelConstants {
     public static final String SERVER_PATIENT_RESOURCE = "CamelFhirServerPatientResource";
 
     public static final String PATIENT_ID = "CamelFhirPatientId";
+
+    public static final String PATIENT_ID_TYPE = "CamelFhirPatientIdType";
 
     public static final String SERVER_PATIENT_ID = "CamelFhirServerPatientId";
 

@@ -28,8 +28,15 @@ import java.util.UUID;
 public class PatientEhr {
 
     @Id
-    @Column(name = "PATIENT_ID")
-    private String patientId;
+    @Column(name = "INPUT_PATIENT_ID")
+    private String inputPatientId;
+
+
+    @Column(name = "INTERNAL_PATIENT_ID")
+    private String internalPatientId;
+
+    @Column(name = "SYSTEM_ID")
+    private String systemId;
 
     @NotNull
     @Column(name = "EHR_ID")
@@ -38,17 +45,38 @@ public class PatientEhr {
     public PatientEhr() {
     }
 
-    public PatientEhr(String patientId, UUID ehrId) {
-        this.patientId = patientId;
+    public PatientEhr(String inputPatientId, 
+                    String internalPatientId,
+                    String systemId,
+                    UUID ehrId) {
+        this.inputPatientId = inputPatientId;
+        this.internalPatientId = internalPatientId;
+        this.systemId = systemId;
         this.ehrId = ehrId;
     }
 
-    public String getPatientId() {
-        return patientId;
+    public String getInputPatientId() {
+        return inputPatientId;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
+    public void setInputPatientId(String inputPatientId) {
+        this.inputPatientId = inputPatientId;
+    }
+
+    public String getInternalPatientId() {
+        return internalPatientId;
+    }
+
+    public void setInternalPatientId(String internalPatientId) {
+        this.internalPatientId = internalPatientId;
+    }
+
+    public String getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
     }
 
     public UUID getEhrId() {
@@ -62,7 +90,9 @@ public class PatientEhr {
     @Override
     public String toString() {
         return "PatientEhr{" +
-                "patientId='" + patientId + '\'' +
+                "inputPatientId='" + inputPatientId + '\'' +
+                "internalPatientId='" + internalPatientId + '\'' +
+                "systemId='" + systemId + '\'' +
                 ", ehrId=" + ehrId +
                 '}';
     }
