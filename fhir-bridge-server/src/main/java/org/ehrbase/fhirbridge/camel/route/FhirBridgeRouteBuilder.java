@@ -3,14 +3,10 @@ package org.ehrbase.fhirbridge.camel.route;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 
-import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.config.security.Authenticator;
 import org.ehrbase.fhirbridge.core.PatientIdMapper;
@@ -122,10 +118,9 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .doTry()
                 // Step 3: Forward request to FHIR server
                 .to("direct:FHIRProcess")
-
                 // Step 4: Extract Patient Id created in the FHIR server
                 .to("direct:extractPatientIdFromFhirResponseProcessor")
-                .log("FHIR Patient ID ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+
             .doCatch(Exception.class)
                 .log("direct:FHIRProcess catch exception")
                 .process(new FhirBridgeExceptionHandler())
@@ -138,7 +133,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .doTry()
                 .to("direct:resourceReferenceProcessor")
             .doCatch(Exception.class)
-                .log("direct:OpenFHIRProcess catch exception")
+                .log("direct:resourceReferenceProcessor catch exception")
                 .process(new FhirBridgeExceptionHandler())
             .end()
 
@@ -166,7 +161,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
     
                         // .wireTap("direct:OpenEHRProcess")
                         .to("direct:OpenEHRProcess")
-                    .doCatch(ClientException.class)
+                    .doCatch(Exception.class)
                         .log("direct:OpenEHRProcess catch exception")
                         .process(new OpenEhrClientExceptionHandler())
                     .end()

@@ -38,9 +38,16 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
         from("direct:patientIdToEhrIdMapperProcess")
             //Get the mapped openEHRId if avaialbe else create new ehrId 
             .routeId("patientIdToEhrIdMapperProcess")
-            //if Patient resource create ehrid
-            .log("patientIdToEhrIdMapperProcess: calling EhrLookupProcessor")
-            .process(EhrLookupProcessor.BEAN_ID)
+
+            .doTry()
+                //if Patient resource create ehrid
+                .log("patientIdToEhrIdMapperProcess: calling EhrLookupProcessor")
+                .process(EhrLookupProcessor.BEAN_ID)
+            .doCatch(ClientException.class)
+                .log("patientIdToEhrIdMapperProcess catch exception")
+                .process(new OpenEhrClientExceptionHandler())
+            .endDoTry()
+
             .log("openEHR EHRId Mapper Process Route completed: ${header." + CompositionConstants.EHR_ID + "}");
     }
 }
