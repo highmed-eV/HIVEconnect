@@ -246,12 +246,40 @@ public class PatientUtils {
 
         //Ned to get the Patient ID from the Outcome
         // String inputResourceId = resource.getId().getResourceType() + "/" + resource.getId().getValue();
-        String serverPatientId = resource.getId().getIdPart();
+        String serverPatientId = resource.getId().getResourceType() + "/" + resource.getId().getIdPart();
 
         exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
         exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, (Patient)resource.getResource());
 
         return serverPatientId;
+    }
+
+    public  String getPatientIdFromPatientResource(Exchange exchange) {
+        String responseString = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+        String patientId = null;
+        try {
+            JsonNode rootNode = objectMapper.readTree(responseString);
+             // Parse the JSON string into a JsonNode
+            
+            // Get the "identifier" array
+            JsonNode identifierNode = rootNode.path("identifier");
+
+            // Access the first identifier object in the array (assuming it's the first one)
+            JsonNode firstIdentifier = identifierNode.isArray() && identifierNode.size() > 0 ? identifierNode.get(0) : null;
+
+            if (firstIdentifier != null) {
+                // Extract "system" and "value" from the first identifier
+                String system = firstIdentifier.path("system").asText();
+                String value = firstIdentifier.path("value").asText();
+                patientId = system + "|" + value;
+            }
+            exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return patientId;
     }
 
     public  String getPatientIdFromResponse(Exchange exchange) {

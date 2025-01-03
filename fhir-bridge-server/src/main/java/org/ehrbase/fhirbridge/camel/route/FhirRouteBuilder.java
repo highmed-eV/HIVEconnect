@@ -99,6 +99,16 @@ public class FhirRouteBuilder extends RouteBuilder {
                     .endDoTry()
                 .end()
                 .log("FHIR request processed by FHIR server ${body}");
+        
+        // Extract Patient Id from the FHIR Input Resource
+        from("direct:extractPatientIdFromPatientProcessor")
+            .routeId("extractPatientIdFromPatientProcessorRoute")
+            //Get the patientid from input resource(Bundle, Patient or any resource)
+            //find the patient id in the fhir server
+            
+            // Extract or find the Patient ID from the resource and get the server patient id from db
+            .bean(PatientUtils.class, "getPatientIdFromPatientResource")
+            .log("FHIR PatientId ${header." + CamelConstants.PATIENT_ID + "}" );
 
         // Extract Patient Id from the FHIR Input Resource
         from("direct:extractAndCheckPatientIdExistsProcessor")
