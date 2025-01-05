@@ -43,9 +43,25 @@ public class PatientUtils {
         if (resourceNode.has("resourceType") && "Patient".equals(resourceNode.get("resourceType").asText())) {
             //Patient resource
             //get PATIENT_ID and SERVER_PATIENT_ID
-            patientId =  resourceNode.path("id").asText();
-            serverPatientId = getServerPatientIdFromDb(exchange, patientId);
+            //TODO: Should this be id or identifier value??
+            // Get the "identifier" array
+            JsonNode identifierNode = resourceNode.path("identifier");
 
+            // Access the first identifier object in the array (assuming it's the first one)
+            JsonNode firstIdentifier = identifierNode.isArray() && identifierNode.size() > 0 ? identifierNode.get(0) : null;
+
+            if (firstIdentifier != null) {
+                // Extract "system" and "value" from the first identifier
+                String system = firstIdentifier.path("system").asText();
+                String value = firstIdentifier.path("value").asText();
+                patientId = system + "|" + value;
+            }
+            
+            serverPatientId = getServerPatientIdFromDb(exchange, patientId);
+            if (serverPatientId != null)  {
+                //This can be the case when Patient resource is part of the bundle and the patient is already created
+                throw new UnprocessableEntityException(resourceNode.path("resourceType") + " absolute reference: " + patientId + " already exists.Please provide relative reference: " + serverPatientId);
+            }
             //Set ids in exchange
             exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
             exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
@@ -152,7 +168,7 @@ public class PatientUtils {
                 //Internal Reference
                 // Relative reference to Patient resource
                 exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "RELATIVE_REFERENCE");
-                return reference.split("/")[1];
+                return reference;
             } else if (reference.startsWith("#")) {
                 // Internal contained reference
                 //The contained id will be created and an id will be 
@@ -272,6 +288,11 @@ public class PatientUtils {
                 String system = firstIdentifier.path("system").asText();
                 String value = firstIdentifier.path("value").asText();
                 patientId = system + "|" + value;
+            }
+            String serverPatientId = getServerPatientIdFromDb(exchange, patientId);
+            if (serverPatientId != null)  {
+                //This can be the case when Patient resource is part of the bundle and the patient is already created
+                throw new UnprocessableEntityException("Patient: " + patientId + " already exists");
             }
             exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
         } catch (JsonProcessingException e) {

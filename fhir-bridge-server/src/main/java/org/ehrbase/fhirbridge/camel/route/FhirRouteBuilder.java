@@ -5,8 +5,10 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
+import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
+import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.camel.ExistingResourceReferenceProcessor;
 import org.ehrbase.fhirbridge.fhir.camel.ResourceLookupProcessor;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
@@ -117,7 +119,14 @@ public class FhirRouteBuilder extends RouteBuilder {
             //find the patient id in the fhir server
             
             // Extract or find the Patient ID from the resource and get the server patient id from db
-            .bean(PatientUtils.class, "extractPatientIdOrIdentifier")
+            .doTry()
+            
+                .bean(PatientUtils.class, "extractPatientIdOrIdentifier")
+            .doCatch(ClientException.class)
+                .log("extractPatientIdOrIdentifier catch exception")
+                .process(new FhirBridgeExceptionHandler())
+            .end()
+
             .log("FHIR PatientId ${header." + CamelConstants.PATIENT_ID 
                     + "}, Server PatientId ${header." 
                     + CamelConstants.SERVER_PATIENT_ID 
