@@ -131,11 +131,12 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         } else if (result.size() > 1) {
             throw new ConversionException("Conflict: several EHR ids have the same patient id connected (subject.external_ref.id.value). Please check your EHR ids");
         } else {
-            //Medblocks: Check the patientid-ehrid mapping is correct in the db
-            //TODO: check if ehrid mapped to serverPatientId in db. Else throw error
             ehrId = result.get(0).value1();
-            PatientEhr patientEhr = Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndEhrId(serverPatientId, ehrId))
-                            .orElseThrow(() -> new ConversionException("Conflict: EHR ids and patient id do not match (subject.external_ref.id.value). Please check your input and pass the correct reference"));
+            
+            //Medblocks: Check the patientid-ehrid mapping is correct in the db
+            //TODO: check if ehrid mapped to serverPatientId in db. Else throw error ??
+            // PatientEhr patientEhr = Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndEhrId(serverPatientId, ehrId))
+            //                 .orElseThrow(() -> new ConversionException("Conflict: EHR ids and patient id do not match (subject.external_ref.id.value). Please check your input and pass the correct reference"));
             LOG.debug("PatientId found in EHR server" + patientId + " EHRId: " + ehrId);
         }
         return ehrId;

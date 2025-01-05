@@ -5,6 +5,8 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -77,6 +79,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                 })
             .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType}")
             .doTry()
+                .to("direct:ExtractPatientIdProcess")
                 .to("direct:FHIRToOpenEHRMappingProcess")
             .doCatch(UnprocessableEntityException.class)
                 .log("direct:FHIRToOpenEHRMappingProcess catch exception")
@@ -84,7 +87,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .end();
 
 
-        from("direct:FHIRToOpenEHRMappingProcess")
+        from("direct:ExtractPatientIdProcess")
             // Step 1: Extract Patient Id from the FHIR Input Resource
             .choice()
                 .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
@@ -93,18 +96,17 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                         .log("FHIR Patient ID  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
                     .doCatch(Exception.class)
                         .process(new FhirBridgeExceptionHandler())
-                    // .endChoice()
-                // .otherwise()
-                //     .doTry()
-                //         .to("direct:extractAndCheckPatientIdExistsProcessor")
-                //         .log("FHIR Patient ID ${exchangeProperty.FHIRPatientId}")
-                //     .doCatch(ResourceNotFoundException.class)
-                //        //PatientId not found
-                //        //Continue and create ehrid
-                //        .log("PatientId not  found in server. Create Fhir Patient resource")
-                //     .end()
-                .end()
-            .end()
+                    .endChoice()
+                .otherwise()
+                    .doTry()
+                        .to("direct:extractPatientIdFromPatientProcessor")
+                        .log("FHIR Patient ID  ${header." + CamelConstants.PATIENT_ID + "}")
+                    .doCatch(Exception.class)
+                        .process(new FhirBridgeExceptionHandler())
+                    .end()
+                .endChoice();
+
+        from("direct:FHIRToOpenEHRMappingProcess")
 
             // 2. Extract the input reference Resources from the input fhir bundle
             .doTry()
