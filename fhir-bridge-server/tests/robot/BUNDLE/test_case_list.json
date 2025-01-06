@@ -31,6 +31,12 @@
       "openEhrTemplateId": "KDS_Medikationseintrag_v1"
     },
     {
+      "testCaseName": "kdsperson",
+      "inputBundleFileName": "kds_person_bundle.json",
+      "expectedOpenEhrFileName": "kds_person_canonical.json",
+      "openEhrTemplateId": "KDS_Person"
+    },
+    {
       "testCaseName": "kdsprozedur",
       "inputBundleFileName": "kds_prozedur_bundle.json",
       "expectedOpenEhrFileName": "kds_prozedur_canonical.json",

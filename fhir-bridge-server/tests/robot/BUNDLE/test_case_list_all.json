@@ -46,7 +46,7 @@
       "testCaseName": "stationärerversorgungsfall",
       "inputBundleFileName": "stationarer_versorgungsfall_bundle.json",
       "expectedOpenEhrFileName": "stationarer_versorgungsfall_canonical.json",
-      "openEhrTemplateId": "StationÃ¤rer Versorgungsfall"
+      "openEhrTemplateId": "Stationärer Versorgungsfall"
     },
     {
       "testCaseName": "studienteilnahme",

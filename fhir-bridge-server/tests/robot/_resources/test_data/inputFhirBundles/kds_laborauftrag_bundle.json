@@ -63,10 +63,7 @@
           "text": "Blood Glucose Test"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "1"
-          }
+          "reference": "Patient/1"
         },
         "authoredOn": "2024-08-24",
         "performer": [
@@ -132,10 +129,7 @@
           "text": "Venous blood specimen"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "1"
-          }
+          "reference": "Patient/1"
         },
         "identifier": [
           {
