@@ -70,10 +70,7 @@
           "text": "Complete Blood Count"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
-          }
+          "reference": "Patient/1"
         },
         "encounter": {
           "reference": "Encounter/encounter-12345"
@@ -134,7 +131,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49"
+          "reference": "Patient/1"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
@@ -159,7 +156,8 @@
         "identifier": [
           {
             "assigner": {
-              "reference": "Organization/Charité"
+              "reference": "Organization/Charité",
+              "display": "example org"
             },
             "system": "https://www.charite.de/fhir/CodeSystem/lab-identifiers",
             "type": {
@@ -208,11 +206,7 @@
           "text": "Hemoglobin [Mass/volume] in Blood"
         },
         "subject": {
-          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49",
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
-          }
+          "reference": "Patient/1"
         },
         "effectiveDateTime": "2024-08-22T12:00:00+00:00",
         "issued": "2022-02-03T04:05:06Z",
@@ -293,10 +287,7 @@
           "text": "Venous blood specimen"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
+          "reference": "Patient/1"
         },
         "identifier": [
           {
@@ -308,7 +299,6 @@
         "collection": {
           "collectedDateTime": "2024-08-24T09:00:00Z",
           "collector": {
-            "reference": "Practitioner/123",
             "type": "Practitioner",
             "identifier": {
               "system": "http://hospital.org/practitioners",

@@ -64,7 +64,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         String inputResource = exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE, String.class);
         String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
         // map to store the corresponding inputResourceId  and internalResourceId
-        Map<String, String> resourceIdMap = new HashMap<>();
+        Map<String, String> resourceIdMap = new LinkedHashMap<>();
 
         JSONObject inputJsonObject = new JSONObject(inputResource);
         if (!"Bundle".equals(inputResourceType)) {
@@ -90,7 +90,18 @@ public class ProvideResourceResponseProcessor implements Processor {
                 for (int i = 0; i < entries.length(); i++) {
                     JSONObject resource = entries.getJSONObject(i).optJSONObject("resource");
                     if (resource != null) {
-                        String inputResourceId = resource.optString("resourceType") + "/" + resource.optString("id");
+                        String inputResourceId = null;
+                        if (resource.optString("resourceType").equals("Patient")) {
+                            if (resource.has("identifier") && resource.getJSONArray("identifier").length() > 0) {
+                                JSONObject firstIdentifier = resource.getJSONArray("identifier").getJSONObject(0);
+                                String system = firstIdentifier.getString("system");
+                                String value = firstIdentifier.getString("value");
+                                inputResourceId = system + "|" + value;
+                            }
+                        } else {
+                            inputResourceId = resource.optString("resourceType") + "/" + resource.optString("id");
+                        }
+                                 
                         // inputResourceIds.add(inputResourceId);
                         // Placeholder for internalResourceId
                         resourceIdMap.put(inputResourceId, null);
@@ -171,7 +182,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         return composition.getUid().toString();
     }
 
-    private String findInputResourceIdByIndex(Map<String, String> resourceIdMap, int index) {
+    private String  findInputResourceIdByIndex(Map<String, String> resourceIdMap, int index) {
         List<String> keys = new ArrayList<>(resourceIdMap.keySet());
         if (index < keys.size()) {
             return keys.get(index);

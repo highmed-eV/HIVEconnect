@@ -23,11 +23,11 @@ package org.ehrbase.fhirbridge.camel;
  */
 public final class CamelConstants {
 
-    public static final String MINIO_OBJECT = "CamelMinioObject";
+     public static final String COMPOSITION_ID = "CamelFhirBridgeCompositionId";
 
-    public static final String COMPOSITION_ID = "CamelFhirBridgeCompositionId";
-
-    public static final String INPUT_RESOURCE = "CamelFhirBridgeIncomingResource";
+     public static final String INPUT_SYSTEM_ID = "CamelFhirBridgeInputSystemId";
+     
+     public static final String INPUT_RESOURCE = "CamelFhirBridgeIncomingResource";
     
     public static final String INPUT_RESOURCE_TYPE = "CamelFhirBridgeIncomingResourceType";
     
@@ -43,13 +43,19 @@ public final class CamelConstants {
 
     public static final String PATIENT_ID = "CamelFhirPatientId";
 
+    public static final String PATIENT_ID_TYPE = "CamelFhirPatientIdType";
+
     public static final String SERVER_PATIENT_ID = "CamelFhirServerPatientId";
+
+    public static final String IDENTIFIER_OBJECT = "CamelIdentifierObject";
+
+    public static final String IDENTIFIER_STRING = "CamelIdentifierString";
 
     public static final String PROFILE = "CamelFhirBridgeProfile";
 
     public static final String RESOURCE_ID = "FhirBridgeResourceId";
 
-    public static final String INPUT_RESOURCE_IDS = "FhirBridgeResourceIds";
+    public static final String REFERENCE_INPUT_RESOURCE_IDS = "FhirBridgeReferenceInputResourceIds";
 
     public static final String INTERNAL_RESOURCE_IDS = "FhirServerResourceIds";
 

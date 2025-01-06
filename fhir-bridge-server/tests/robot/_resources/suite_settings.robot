@@ -27,6 +27,7 @@ Library     JSONLibrary
 Library     BuiltIn
 Library     DatabaseLibrary
 Library     ${EXECDIR}/robot/_resources/functions/json_normalizer.py
+Library     ${EXECDIR}/robot/_resources/functions/load_json_utf8.py
 
 Resource    ${EXECDIR}/robot/_resources/keywords/ehr.robot
 Resource    ${EXECDIR}/robot/_resources/keywords/fhirbridge.robot

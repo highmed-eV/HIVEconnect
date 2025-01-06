@@ -16,6 +16,8 @@
 
  package org.ehrbase.fhirbridge.fhir.camel;
 
+import ca.uhn.fhir.util.StringUtil;
+import com.apicatalog.jsonld.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +31,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * {@link org.apache.camel.Processor Processor} that retrieves the internalResourceId corresponding to the inputResourceId involved in the current
@@ -57,7 +64,6 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         ObjectMapper objectMapper = new ObjectMapper();
 
         // Fetch required properties from the exchange
-        List<String> inputResourceIds = exchange.getProperty(CamelConstants.INPUT_RESOURCE_IDS, List.class);
         List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
 
         // replace the ids in the existing fhir server resources
@@ -71,64 +77,59 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
 
         // Parse the input JSON
-        String bundleJson = exchange.getIn().getBody(String.class);
-        JsonNode rootNode = objectMapper.readTree(bundleJson);
+        String inputResourceBundle = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+        JsonNode rootNode = objectMapper.readTree(inputResourceBundle);
 
-        if (!rootNode.has("entry")) {
-            return; // No entries to process
+        if (!rootNode.has("entry") || !rootNode.has("resourceType") || !"Bundle".equals(rootNode.get("resourceType").asText())) {
+            return; // No valid entries or bundle to process
         }
-        if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
-            ArrayNode entryArray = (ArrayNode) rootNode.get("entry");
-            for (JsonNode entryNode : entryArray) {
-                String inputResourceId = entryNode.get("resource").get("resourceType").asText() + "/" + entryNode.get("resource").get("id").asText();
+        // Get the "entry" array
+        ArrayNode entryArray = (ArrayNode) rootNode.get("entry");
+        Set<String> processedIds = new HashSet<>();
 
-                // Check if the resource ID is in inputResourceIds
-                if (inputResourceIds != null && inputResourceIds.contains(inputResourceId)) {
-                    continue; // ID found, move to the next
-                }
-                // add the existing resource(s) in the input bundle if ID is not found
-                // i.e., reference resources are added.
-                if (existingResources != null && !existingResources.isEmpty()) {
-                    for (String existingResourceJson : existingResources) {
-                        // Parse existing resource JSON
-                        JsonNode newResourceNode = objectMapper.readTree(existingResourceJson);
-//
-                        // Create a new entry for the existing resource
-                        ObjectNode newEntryNode = objectMapper.createObjectNode();
-                        newEntryNode.put("fullUrl", newResourceNode.get("resourceType").asText() + "/" + newResourceNode.get("id").asText());
-                        newEntryNode.set("resource", newResourceNode);
-//                        newEntryNode.set("request", createPostRequestNode(newResourceNode.get("resourceType").asText(), objectMapper));
-
-                        // Add the new entry to the Bundle
-                        entryArray.add(newEntryNode);
-                    }
+        // Collect existing IDs from the input bundle
+        for (JsonNode entryNode : entryArray) {
+            String inputResourceId = entryNode.get("resource").get("resourceType").asText() +
+                    "/" + entryNode.get("resource").get("id").asText();
+            processedIds.add(inputResourceId);
+        }
+        // Add existing resources that are not already in the bundle
+        if (existingResources != null && !existingResources.isEmpty()) {
+            for (String existingResourceJson : existingResources) {
+                JsonNode newResourceNode = objectMapper.readTree(existingResourceJson);
+                String newResourceId = newResourceNode.get("resourceType").asText() +
+                        "/" + newResourceNode.get("id").asText();
+                if (!processedIds.contains(newResourceId)) {
+                    // Create a new entry for the existing resource
+                    ObjectNode newEntryNode = objectMapper.createObjectNode();
+                    newEntryNode.put("fullUrl", newResourceId);
+                    newEntryNode.set("resource", newResourceNode);
+                    entryArray.add(newEntryNode);
                 }
             }
-
         }
         // Update the bundle in the exchange
         String updatedBundleJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
         exchange.getIn().setBody(updatedBundleJson);
-
     }
 
     private List<String> mapToInputResourceId(List<String> existingResources, ObjectMapper objectMapper) throws JsonProcessingException {
         for (int i = 0; i < existingResources.size(); i++) {
             String resourceJson = existingResources.get(i);
-
-            // Parse the JSON
             JsonNode resourceNode = objectMapper.readTree(resourceJson);
-
             // Extract the ID from the resource
             if (resourceNode.has("resourceType") && resourceNode.has("id")) {
                 String resourceId = resourceNode.get("resourceType").asText() + "/" + resourceNode.get("id").asText();
 
                 // Fetch replacement IDs from the database
                 String dbInputResourceId = resourceCompositionRepository.getInputResourceIds(resourceId);
-
-                String newResourceId = dbInputResourceId; // Assuming one-to-one mapping
-                ((ObjectNode) resourceNode).put("id", newResourceId);
-
+                if(StringUtils.isNotBlank(dbInputResourceId)){
+                    Pattern pattern = Pattern.compile("([^/]+)/([^/]+)");
+                    Matcher matcher = pattern.matcher(dbInputResourceId);
+                    if (matcher.matches()) {
+                        ((ObjectNode) resourceNode).put("id", matcher.group(2));
+                    }
+                }
                 // Replace the original JSON string in the list with the updated one
                 existingResources.set(i, objectMapper.writeValueAsString(resourceNode));
 

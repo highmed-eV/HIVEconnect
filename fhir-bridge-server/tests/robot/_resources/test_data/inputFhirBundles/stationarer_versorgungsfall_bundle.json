@@ -4,7 +4,7 @@
   "type": "transaction",
   "entry": [
     {
-      "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee",
+      "fullUrl": "Encounter/example",
       "resource": {
         "resourceType": "Encounter",
         "id": "example",
@@ -99,11 +99,7 @@
           }
         ],
         "subject": {
-          "reference": "Patient/45082638",
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
-          }
+          "reference": "Patient/1"
         },
         "period": {
           "start": "2022-02-03T04:05:06Z",
@@ -112,7 +108,6 @@
         "diagnosis": [
           {
             "condition": {
-              "reference": "Condition/e2feeda9-4537-46a4-a882-e41e83a30223",
               "type": "Condition",
               "identifier": {
                 "type": {
@@ -151,7 +146,6 @@
             "rank": 1
           }
         ],
-
         "hospitalization": {
           "admitSource": {
             "coding": [
@@ -160,13 +154,13 @@
                 "code": "E",
                 "display": "Einweisung durch einen Arzt"
               }
-            ]
+            ],
+            "text": "Referral by a doctor"
           },
           "dischargeDisposition": {
             "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
             "extension": [
               {
-
                 "valueCoding": {
                   "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
                   "code": "1",
@@ -174,7 +168,6 @@
                 }
               },
               {
-
                 "valueCoding": {
                   "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
                   "code": "01",
@@ -273,12 +266,10 @@
           "reference": "Organization/example-lab",
           "display": "Organization"
         },
-
         "serviceType": {
-
           "coding": [
             {
-              "system":"http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert",
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel-erweitert",
               "code": "0100",
               "display": "Innere Medizin"
             },
@@ -342,6 +333,5 @@
         "url": "Location"
       }
     }
-
   ]
 }
