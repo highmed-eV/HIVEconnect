@@ -11,7 +11,6 @@ import java.util.Arrays;
 
 import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +40,8 @@ public class OpenFHIRAdapter {
             
             String openEhrJson = restTemplate.postForObject(openFhirUrl + "/openfhir/toopenehr", entity, String.class);
             logger.info("Received converted openEHR JSON.");
-            JSONObject openEhrJsonObj = new JSONObject(openEhrJson);
-            logger.info(">>>> " + openEhrJsonObj.toString(4));
+            // JSONObject openEhrJsonObj = new JSONObject(openEhrJson);
+            // logger.info(">>>> " + openEhrJsonObj.toString(4));
             
             return openEhrJson;
         } catch (Exception e) {

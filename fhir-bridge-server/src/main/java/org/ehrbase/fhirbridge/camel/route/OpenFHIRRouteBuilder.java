@@ -2,7 +2,6 @@ package org.ehrbase.fhirbridge.camel.route;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
-import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
 import org.springframework.stereotype.Component;
 
 @Component

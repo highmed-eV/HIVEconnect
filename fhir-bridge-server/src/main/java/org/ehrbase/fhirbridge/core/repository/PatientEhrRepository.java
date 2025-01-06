@@ -16,12 +16,15 @@
 
 package org.ehrbase.fhirbridge.core.repository;
 
-import org.ehrbase.fhirbridge.core.domain.PatientEhr;
-import org.hl7.fhir.r4.model.Patient;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 import java.util.UUID;
 
+import org.ehrbase.fhirbridge.core.domain.PatientEhr;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 public interface PatientEhrRepository extends JpaRepository<PatientEhr, String> {
+    PatientEhr findByInputPatientId(String inputPatientId);
+    
+    PatientEhr findByInternalPatientId(String internalPatientId);
+
+    PatientEhr findByInternalPatientIdAndEhrId(String serverPatientId, UUID ehrId);
 }

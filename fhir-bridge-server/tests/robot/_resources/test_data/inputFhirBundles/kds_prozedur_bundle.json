@@ -66,10 +66,7 @@
           "text": "Appendectomy"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
-          }
+          "reference": "Patient/1"
         },
         "performedDateTime": "2024-08-20T14:00:00Z",
         "bodySite": [
@@ -85,7 +82,7 @@
           }
         ],
         "encounter": {
-          "reference": "Encounter/688f8bd7-f1a9-426d-b27f-a7a249e1c55e"
+          "reference": "urn:uuid:688f8bd7-f1a9-426d-b27f-a7a249e1c55e"
         },
         "note": [
           {
@@ -131,7 +128,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/{{patientId_fhir-server}}"
+          "reference": "Patient/1"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",

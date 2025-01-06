@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,12 +84,14 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         Patient resource = (Patient) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE);
         // String patientId = getPatientId(exchange);
 
-        String patientIdStr = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
-        String patientId = extractPatientId(patientIdStr);
-        LOG.info("findById(patientId): " + patientId);
-        UUID ehrId = patientEhrRepository.findById(patientId)
-                .map(PatientEhr::getEhrId)
-                .orElseGet(() -> createOrGetPatientEhr(resource, patientId));
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.INPUT_SYSTEM_ID);
+        String patientId = (String) exchange.getIn().getHeader(CamelConstants.PATIENT_ID);
+        String serverPatientIdStr = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
+        String serverPatientId = extractPatientId(serverPatientIdStr);
+        LOG.info("findById(patientId): " + serverPatientId);
+        UUID ehrId = Optional.ofNullable(patientEhrRepository.findByInternalPatientId(serverPatientIdStr))  
+                    .map(PatientEhr::getEhrId) 
+                    .orElseGet(() -> createOrGetPatientEhr(resource, patientId, serverPatientId, systemId));
 
         exchange.getMessage().setHeader(CompositionConstants.EHR_ID, ehrId);
     }
@@ -103,33 +106,13 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         return patientIdStr;
     }
     
-    /**
-     * Gets the current patient ID.
-     *
-     * @param exchange the current exchange
-     * @return the patient ID
-     */
-    private String getPatientId(Exchange exchange) {
-        String resourceStr = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
-        String resourceType = FhirUtils.getResourceType(resourceStr);
-        if (resourceType == ResourceType.Patient.name()) {
-            Patient patientResource = (Patient) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE);
-            String patientId = patientResource.getId();
-            exchange.setProperty("FHIRPatientId", patientId);
-            return patientId;
-        } else {
-            return exchange.getIn().getHeader(CamelConstants.PATIENT_ID, String.class);
-            // return exchange.getIn().getHeader(CamelConstants.PATIENT_ID, IIdType.class);
-        }
-    }
-
-    /**
+   /**
      * Creates an EHR for the given patient ID.
      *
      * @param patientId the given patient ID
      * @return the EHR ID
      */
-    private UUID createOrGetPatientEhr(Patient patient, String patientId) { //SPAGHETTI
+    private UUID createOrGetPatientEhr(Patient patient, String patientId, String serverPatientId,String systemId) { //SPAGHETTI
         UUID ehrId;
         Identifier pseudonym = PatientUtils.getPseudonym(patient);
         Query<Record1<UUID>> query = Query.buildNativeQuery(
@@ -138,24 +121,27 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         if (result.size() == 0) {
             LOG.debug("PatientId not found in EHR server" + patientId + "Creating EHRId");
             ehrId = (UUID) createEhr(pseudonym.getValue());
-            PatientEhr patientEhr = new PatientEhr(patientId, ehrId);
+            PatientEhr patientEhr = new PatientEhr(patientId, serverPatientId, systemId, ehrId);
             patientEhrRepository.save(patientEhr);
-            LOG.debug("Created PatientEhr: patientId={}, ehrId={}", patientEhr.getPatientId(), patientEhr.getEhrId());
+            LOG.debug("Created PatientEhr: patientId={}, serverPatientId={}, ehrId={}", 
+                        patientEhr.getInputPatientId(), 
+                        patientEhr.getInternalPatientId(), 
+                        patientEhr.getEhrId());
+        
+        } else if (result.size() > 1) {
+            throw new ConversionException("Conflict: several EHR ids have the same patient id connected (subject.external_ref.id.value). Please check your EHR ids");
         } else {
-            ehrId = getAlreadyExistingEHR(result);
+            ehrId = result.get(0).value1();
+            
+            //Medblocks: Check the patientid-ehrid mapping is correct in the db
+            //TODO: check if ehrid mapped to serverPatientId in db. Else throw error ??
+            // PatientEhr patientEhr = Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndEhrId(serverPatientId, ehrId))
+            //                 .orElseThrow(() -> new ConversionException("Conflict: EHR ids and patient id do not match (subject.external_ref.id.value). Please check your input and pass the correct reference"));
             LOG.debug("PatientId found in EHR server" + patientId + " EHRId: " + ehrId);
         }
         return ehrId;
     }
 
-
-    private UUID getAlreadyExistingEHR(List<Record1<UUID>> result) {
-        if (result.size() > 1) {
-            throw new ConversionException("Conflict: several EHR ids have the same patient id connected (subject.external_ref.id.value). Please check your EHR ids");
-        }
-        //Medblocks: Check the patientid-ehrid mapping is correct in the db
-        return result.get(0).value1();
-    }
 
     private Object createEhr(String pseudonym) {
         PartySelf subject = new PartySelf(new PartyRef(new HierObjectId(pseudonym), "fhir-bridge", "PERSON"));

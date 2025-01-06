@@ -13,7 +13,7 @@
         "resourceType": "ServiceRequest",
         "id": "servicerequest-lab-id-1234",
         "meta": {
-          "source" : "Hospital-abc",
+          "source": "Hospital-abc",
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
           ]
@@ -63,13 +63,16 @@
           "text": "Blood Glucose Test"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
+          "reference": "Patient/1"
         },
         "authoredOn": "2024-08-24",
         "performer": [
+          {
+            "reference": "Organization/example-lab",
+            "display": "Example Laboratory"
+          }
+        ],
+        "requester": [
           {
             "reference": "Organization/example-lab",
             "display": "Example Laboratory"
@@ -126,10 +129,7 @@
           "text": "Venous blood specimen"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
+          "reference": "Patient/1"
         },
         "identifier": [
           {
@@ -141,7 +141,6 @@
         "collection": {
           "collectedDateTime": "2024-08-24T09:00:00Z",
           "collector": {
-            "reference": "Practitioner/example-practitioner",
             "display": "Dr. John Doe"
           }
         },
@@ -198,14 +197,13 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "/Patient?identifier=urn:ietf:rfc:4122|07f602e0-579e-4fe3-95af-381728bf0d49"
+          "reference": "Patient/1"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
           "end": "2024-08-21T09:30:00+01:00"
         }
-      }
-    ,
+      },
       "request": {
         "method": "POST",
         "url": "Encounter"

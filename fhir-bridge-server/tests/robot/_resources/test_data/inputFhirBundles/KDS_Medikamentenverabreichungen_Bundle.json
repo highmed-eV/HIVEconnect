@@ -27,26 +27,26 @@
                             "code": "inpatient",
                             "display": "Inpatient"
                         }
-                    ]
+                    ],
+                    "text": "Inpatient"
                 },
                 "medicationReference": {
-                    "reference": "Medication/5926880e-cb73-4afb-9259-e2e45b4677f1"
+                    "reference": "urn:uuid:5926880e-cb73-4afb-9259-e2e45b4677f1"
                 },
                 "subject": {
-                    "reference": "Patient/{{patientId_fhir-server}}",
+                    "reference": "Patient/1",
                     "identifier": {
                         "system": "urn:ietf:rfc:4122",
-                        "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
+                        "value": "1"
                     }
                 },
                 "context": {
-                    "reference": "Encounter/2145985c-5036-4500-9a1b-12bd96687072"
+                    "reference": "urn:uuid:2145985c-5036-4500-9a1b-12bd96687072"
                 },
                 "effectiveDateTime": "2024-08-20T14:30:00Z",
                 "performer": [
                     {
                         "actor": {
-                            // "reference": "Practitioner/example-practitioner",
                             "display": "Dr. John Smith"
                         }
                     }
@@ -59,7 +59,8 @@
                                 "code": "38341003",
                                 "display": "Hypertensive disorder, systemic arterial"
                             }
-                        ]
+                        ],
+                        "text": "Hypertensive disorder, systemic arterial"
                     }
                 ],
                 "dosage": {
@@ -76,20 +77,20 @@
                     },
                     "dose": {
                         "value": 250,
-                        "unit": "mg",
+                        "unit": "1",
                         "system": "http://unitsofmeasure.org",
                         "code": "mg"
                     },
                     "rateRatio": {
                         "numerator": {
                             "value": 250,
-                            "unit": "mg",
+                            "unit": "1",
                             "system": "http://unitsofmeasure.org",
                             "code": "mg"
                         },
                         "denominator": {
                             "value": 8,
-                            "unit": "h",
+                            "unit": "1",
                             "system": "http://unitsofmeasure.org",
                             "code": "h"
                         }
@@ -128,7 +129,8 @@
                             "code": "10225000",
                             "display": "Gastro-resistant tablet"
                         }
-                    ]
+                    ],
+                    "text": "tablet"
                 },
                 "ingredient": [
                     {
@@ -145,7 +147,7 @@
                                     "display": "Paracetamol"
                                 },
                                 {
-                                    "system": "urn:oid:2.16.840.1.113883.6.61",
+                                    "system": "http://terminology.hl7.org/CodeSystem/CAS",
                                     "code": "387517004",
                                     "display": "Paracetamol"
                                 },
@@ -154,13 +156,8 @@
                                     "code": "387517004",
                                     "display": "Paracetamol"
                                 }
-                                // {
-                                //     "system": "http://www.whocc.no/atc",
-                                //     "code": "N02BE01",
-                                //     "display": "Paracetamol"
-                                // }
                             ],
-                            "text": "Paracetamol"
+                            "text": "Active"
                         },
                         "strength": {
                             "numerator": {
@@ -174,10 +171,6 @@
                                 "unit": "h",
                                 "system": "http://unitsofmeasure.org",
                                 "code": "h"
-                                // "value": 1,
-                                // "unit": "tablet",
-                                // "system": "http://unitsofmeasure.org",
-                                // "code": "tablet"
                             }
                         }
                     }
@@ -216,7 +209,7 @@
                 ],
                 "status": "finished",
                 "subject": {
-                    "reference": "Patient/{{patientId_fhir-server}}"
+                    "reference": "Patient/1"
                 },
                 "period": {
                     "start": "2024-08-21T09:00:00+01:00",
@@ -252,7 +245,7 @@
                 ],
                 "partOf": [
                     {
-                        "reference": "MedicationAdministration/medicationAdministration-lab-id-1234",
+                        "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aed",
                         "display": "example-partOf-medication-administration"
                     }
                 ],
@@ -263,14 +256,14 @@
                             "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
                             "code": "inpatient",
                             "display": "Inpatient"
+                        },
+                        {
+                            "system": "http://ihe-d.de/CodeSystems/FallkontextBeiDokumentenerstellung",
+                            "code": "E200",
+                            "display": "stationärer Aufenthalt"
                         }
-                        //{
-                        //    "system": //"http://ihe-d.de/CodeSystems/FallkontextBeiDokumentenerstellung",
-                        //    "code": "Ambulant",
-                        //    "display": "Ambulant"
-                        //}
                     ],
-                    "text": "category"
+                    "text": "Inpatient"
                 },
                 "medicationCodeableConcept": {
                     "coding": [
@@ -289,11 +282,6 @@
                             "code": "N02BE01",
                             "display": "Paracetamol"
                         }
-                        // {
-                        //     "system": "http://snomed.info/sct",
-                        //     "code": "319775004",
-                        //     "display": "Aspirin 75 mg oral tablet"
-                        // }
                     ],
                     "text": "Aspirin 75 mg oral tablet"
                 },
@@ -304,12 +292,12 @@
                     }
                 },
                 "context": {
-                    "reference": "Encounter/2145985c-5036-4500-9a1b-12bd96687072"
+                    "reference": "urn:uuid:2145985c-5036-4500-9a1b-12bd96687072"
                 },
                 "effectiveDateTime": "2024-08-22T08:30:00Z",
                 "dateAsserted": "2024-08-21",
                 "informationSource": {
-                    "reference": "Practitioner/example-practitioner"
+                    "display": "practitioner information source"
                 },
                 "reasonCode": [
                     {
@@ -362,12 +350,8 @@
                                     "code": "26643006",
                                     "display": "Oral route"
                                 }
-                                //{
-                                //    "system": "http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration",
-                                //    "code": "PO",
-                                //    "display": "Swallow, oral"
-                                //}
-                            ]
+                            ],
+                            "text": "Oral"
                         },
                         "site": {
                             "coding": [
@@ -376,7 +360,8 @@
                                     "code": "368208006",
                                     "display": "Left upper arm structure"
                                 }
-                            ]
+                            ],
+                            "text": "site left upper arm"
                         },
                         "asNeededBoolean": true,
                         "doseAndRate": [
