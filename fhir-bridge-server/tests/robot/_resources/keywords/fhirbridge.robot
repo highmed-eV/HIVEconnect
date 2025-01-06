@@ -29,21 +29,70 @@ POST /Bundle with ehr reference
     [Arguments]         ${fhir_bundle_name}    ${fhir_bundle_file_name}
     # Set payload for the FHIR bundle
     ${payload}         Load JSON From File    ${DATA_SET_PATH_KDSFHIRBUNDLE}/${fhir_bundle_file_name}
-    Log To Console    \n\nFhir bundle API call for ${fhir_bundle_name}
+    Log To Console     \n\nFhir bundle API call for ${fhir_bundle_name}
 
-    ${patient_id_list}=  Get Value From Json    ${payload}    $..entry[0].resource.subject.reference
-    Run Keyword If    ${patient_id_list}    Set Suite Variable    ${patient_id}    ${patient_id_list}[0]
-        ...                ELSE    Run Keyword    Handle Subject Identifier    ${payload}
+#    ${patient_id_list}=  Get Value From Json    ${payload}    $..entry[0].resource.subject.reference
+#    Run Keyword If    ${patient_id_list}    Set Suite Variable    ${patient_id}    ${patient_id_list}[0]
+#        ...                ELSE    Run Keyword    Handle Subject Identifier    ${payload}
 
     # POST call to store the FHIR bundle
     ${resp}=    POST    ${BASE_URL}    body=${payload}
     Log To Console    \nResponse of the post call to store the FHIR bundle: ${resp}
 
+    # Extract patientId from the bundle.
+    # Extract subject reference
+    ${subject_ref_list}=    Get Value From Json    ${payload}    $..entry[*].resource.subject.reference
+    Run Keyword If          ${subject_ref_list}    Set Suite Variable    ${patient_id}    ${subject_ref_list}[0]
+        ...                 ELSE    Run Keyword    Handle Subject Identifier    ${payload}
+    Log To Console    \nPatientId normal reference: ${patient_id}
+
+    # Check if subject reference starts with 'urn:uuid'
+    Run Keyword If         '${patient_id}'.startswith('urn:uuid')    Handle Subject Reference    ${payload}    ${patient_id}
+    Log To Console    \nPatientId normal reference: ${patient_id}
+
 Handle Subject Identifier
     [Arguments]         ${payload}
-    ${patient_id_list}=    Get Value From Json    ${payload}    $..entry[0].resource.subject.identifier.value
-    ${patient_id}=    Get From List    ${patient_id_list}    0
-    Set Suite Variable    ${patient_id}    Patient/${patient_id}
+    ${patient_id_list}=     Get Value From Json    ${payload}    $..entry[*].resource.subject.identifier.value
+    ${patient_id}=          Get From List    ${patient_id_list}    0
+    Set Suite Variable      ${patient_id}    Patient/${patient_id}
+
+Handle Subject Reference
+    [Arguments]         ${payload}    ${subject_ref}
+    Log                 Processing subject reference: ${subject_ref}
+
+    # Extract matching patient entry resource
+    ${entries}=          Get Value From Json    ${payload}    $.entry[*]
+    ${matching_entry}=   Find Matching Entry    ${subject_ref}    ${entries}
+    ${resource}=         Get From Dictionary    ${matching_entry}    resource
+    Log To Console        Resource: ${resource}
+
+    # Extract patient identifier system and value
+    ${identifier_list}=    Get From Dictionary    ${resource}    identifier
+    ${first_identifier}=    Get From List    ${identifier_list}    0
+    ${PATIENT_PREFIX}    Get From Dictionary    ${first_identifier}    system
+    ${resource_id}=      Get From Dictionary    ${first_identifier}    value
+    Set Suite Variable   ${input_patient_id}    ${PATIENT_PREFIX}|${resource_id}
+    Log To Console       Input Patient Id: ${input_patient_id}
+
+    # Connect To Database to fetch internal_resource_id from fb_resource_composition table
+    Connect To Database    psycopg2    ${DB_NAME}    ${DB_USER}    ${DB_PASSWORD}    ${DB_HOST}    ${DB_PORT}
+    ${result}=   Query    SELECT internal_resource_id FROM public.fb_resource_composition WHERE input_resource_id = '${input_patient_id}'
+    Log To Console    int resource:${result}
+    ${result}=   Get From List    ${result}    0
+    ${internal_patient_id}=    Get from list    ${result}    0
+    Log To Console    \nInternal_resource_id fetched from fb_resource_composition table: ${internal_patient_id}
+    Disconnect From Database
+    Set Suite Variable   ${patient_id}          ${internal_patient_id}
+
+Find Matching Entry
+    [Arguments]         ${reference}    ${entries}
+    Log                 Finding entry matching fullUrl: ${reference}
+    FOR                 ${entry}    IN    @{entries}
+        ${full_url}=    Get From Dictionary    ${entry}    fullUrl
+        Run Keyword If  '${full_url}' == '${reference}'    Return From Keyword    ${entry}
+    END
+    Fail                No matching entry found for fullUrl: ${reference}
+
 
 validate response - 200
     [Documentation]     Validates response of POST to ${BASE_URL} endpoint
@@ -57,12 +106,12 @@ create openehr aql
 POST /BundleAQL with ehr reference
     [Arguments]         ${openehr_template}     ${openehr_canonical_file_name}
 
-    # Connect To Database   ${DB_URL}
+    # Connect To Database to fetch ehrId from fb_patient_ehr table
     Connect To Database    psycopg2    ${DB_NAME}    ${DB_USER}    ${DB_PASSWORD}    ${DB_HOST}    ${DB_PORT}
-    ${result}=   Query    SELECT ehr_id FROM public.fb_patient_ehr WHERE patient_id = '${patient_id}'
+    ${result}=   Query    SELECT ehr_id FROM public.fb_patient_ehr WHERE internal_patient_id = '${patient_id}'
     ${result}=   Get From List    ${result}    0
     ${ehr_id}=    Get from list    ${result}    0
-    Log To Console    \nehrId fetched from fb_patient_ehr db: ${ehr_id}
+    Log To Console    \nehrId fetched from fb_patient_ehr table: ${ehr_id}
     Disconnect From Database
 
     # Replace get_composition.json file name with the variable.

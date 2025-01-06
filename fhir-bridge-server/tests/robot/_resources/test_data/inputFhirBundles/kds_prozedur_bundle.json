@@ -66,10 +66,7 @@
           "text": "Appendectomy"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "1"
-          }
+          "reference": "Patient/1"
         },
         "performedDateTime": "2024-08-20T14:00:00Z",
         "bodySite": [
