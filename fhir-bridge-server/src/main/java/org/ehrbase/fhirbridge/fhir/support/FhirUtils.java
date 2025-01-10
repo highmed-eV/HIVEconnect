@@ -1,7 +1,9 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
+import ca.uhn.fhir.context.FhirContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -9,6 +11,8 @@ import java.util.regex.Pattern;
 public class FhirUtils {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final FhirContext FHIR_CONTEXT = FhirContext.forR4();
 
     public static String getResourceType(String resourceJson) {
         try {
@@ -26,8 +30,6 @@ public class FhirUtils {
 
         return null; // Return null if no patient ID is found
     }
-
-    
 
     public static @NotNull List<String> getResourceIds(String resourceJson) {
         try {
@@ -106,7 +108,9 @@ public class FhirUtils {
         return fullUrls;
     }
 
-    
+    public static String serializeOperationOutcome(IBaseOperationOutcome outcome) {
+        return FHIR_CONTEXT.newJsonParser().encodeResourceToString(outcome);
+    }
 
 //Old FB
 // import org.hl7.fhir.instance.model.api.IBaseResource;

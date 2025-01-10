@@ -1,23 +1,21 @@
 package org.ehrbase.fhirbridge.camel.route;
 
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-
+import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.config.security.Authenticator;
 import org.ehrbase.fhirbridge.core.PatientIdMapper;
 import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
+import org.ehrbase.fhirbridge.exception.OpenFHIRMappingExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 
 @Component
@@ -38,13 +36,27 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
 
         onException(Exception.class)
-            .handled(true)      
-            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
+            .handled(true)
+            .log("FhirBridgeRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
+            .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
             .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-            .setBody(exceptionMessage())
-            // .useOriginalBody()
-            .log("######### onException")
-            ;
+            .process(exchange -> {
+                Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+                if (exception instanceof BaseServerResponseException) {
+                    BaseServerResponseException baseException = (BaseServerResponseException) exception;
+                    if (baseException.getOperationOutcome() != null) {
+                        // Set body with serialized operation outcome if present
+                        exchange.getIn().setBody(FhirUtils.serializeOperationOutcome(baseException.getOperationOutcome()));
+                    } else {
+                        // If operation outcome is not present, set the exception message
+                        exchange.getIn().setBody(baseException.getMessage());
+                    }
+                } else {
+                    // If the exception is not of type BaseServerResponseException
+                    exchange.getIn().setBody(exception.getMessage());
+                }
+            })
+            .log("######### FhirBridgeRouteBuilder onException");
 
 
         // from("direct:processAuthentication")
@@ -81,9 +93,11 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .doTry()
                 .to("direct:ExtractPatientIdProcess")
                 .to("direct:FHIRToOpenEHRMappingProcess")
-            .doCatch(UnprocessableEntityException.class)
-                .log("direct:FHIRToOpenEHRMappingProcess catch exception")
+            .doCatch(ClientException.class)
                 .process(new OpenEhrClientExceptionHandler())
+            .doCatch(Exception.class)
+                .log("direct:FHIRToOpenEHRMappingProcess catch exception")
+                .process(new FhirBridgeExceptionHandler())
             .end();
 
 
@@ -112,7 +126,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .doTry()
                 .to("direct:mapInternalResourceProcessor")
             .doCatch(Exception.class)
-                .log("direct:OpenFHIRProcess catch exception")
+                .log("direct:mapInternalResourceProcessor catch exception")
                 .process(new FhirBridgeExceptionHandler())
             .end()
 
@@ -152,7 +166,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                         .to("direct:OpenFHIRProcess")
                     .doCatch(Exception.class)
                         .log("direct:OpenFHIRProcess catch exception")
-                        .process(new FhirBridgeExceptionHandler())
+                        .process(new OpenFHIRMappingExceptionHandler())
                     .end()
 
                     //Step 7: Process the EHR Input
@@ -163,7 +177,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
     
                         // .wireTap("direct:OpenEHRProcess")
                         .to("direct:OpenEHRProcess")
-                    .doCatch(Exception.class)
+                    .doCatch(ClientException.class)
                         .log("direct:OpenEHRProcess catch exception")
                         .process(new OpenEhrClientExceptionHandler())
                     .end()

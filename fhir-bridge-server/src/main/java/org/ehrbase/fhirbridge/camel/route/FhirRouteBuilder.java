@@ -1,32 +1,30 @@
 package org.ehrbase.fhirbridge.camel.route;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
-import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
-import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.camel.ExistingResourceReferenceProcessor;
 import org.ehrbase.fhirbridge.fhir.camel.ResourceLookupProcessor;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
 import org.ehrbase.fhirbridge.fhir.support.PatientUtils;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Resource;
 import org.springframework.stereotype.Component;
 
-import ca.uhn.fhir.rest.param.TokenParam;
-import ca.uhn.fhir.rest.api.MethodOutcome;
-import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Optional;
 
 @Component
 @SuppressWarnings("java:S1192")
@@ -36,13 +34,20 @@ public class FhirRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
 
         onException(BaseServerResponseException.class)
-        .handled(true)      
-        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
-        .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-        .setBody(exceptionMessage())
-        // .useOriginalBody()
-        .log("######### FhirRouteBuilder")
-        ;
+            .handled(true)
+            .log("FhirRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
+            .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
+            .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
+            .process(exchange -> {
+                BaseServerResponseException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, BaseServerResponseException.class);
+                if (exception != null && exception.getOperationOutcome() != null) {
+                    String serializedOutcome = FhirUtils.serializeOperationOutcome(exception.getOperationOutcome());
+                    exchange.getIn().setBody(serializedOutcome);
+                } else if (exception != null) {
+                    exchange.getIn().setBody(exception.getMessage());
+                }
+            })
+            .log("######### FhirRouteBuilder onException");
 
         // onException(ResourceNotFoundException.class)
         // .handled(true)      
@@ -107,9 +112,13 @@ public class FhirRouteBuilder extends RouteBuilder {
             .routeId("extractPatientIdFromPatientProcessorRoute")
             //Get the patientid from input resource(Bundle, Patient or any resource)
             //find the patient id in the fhir server
-            
-            // Extract or find the Patient ID from the resource and get the server patient id from db
-            .bean(PatientUtils.class, "getPatientIdFromPatientResource")
+            .doTry()
+                // Extract or find the Patient ID from the resource and get the server patient id from db
+                .bean(PatientUtils.class, "getPatientIdFromPatientResource")
+            .doCatch(Exception.class)
+                .log("direct:extractPatientIdFromPatientProcessor exception")
+                .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
             .log("FHIR PatientId ${header." + CamelConstants.PATIENT_ID + "}" );
 
         // Extract Patient Id from the FHIR Input Resource
@@ -120,9 +129,8 @@ public class FhirRouteBuilder extends RouteBuilder {
             
             // Extract or find the Patient ID from the resource and get the server patient id from db
             .doTry()
-            
                 .bean(PatientUtils.class, "extractPatientIdOrIdentifier")
-            .doCatch(ClientException.class)
+            .doCatch(Exception.class)
                 .log("extractPatientIdOrIdentifier catch exception")
                 .process(new FhirBridgeExceptionHandler())
             .end()
@@ -163,8 +171,8 @@ public class FhirRouteBuilder extends RouteBuilder {
                                 exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
                             }
                         })
-                    .doCatch(ResourceNotFoundException.class)
-                        .throwException(ResourceNotFoundException.class, "${exception.message}")
+                    .doCatch(Exception.class)
+                        .process(new FhirBridgeExceptionHandler())
                     .endDoTry()
                 .endChoice()
                 //else if identifier
@@ -235,8 +243,8 @@ public class FhirRouteBuilder extends RouteBuilder {
                         })
                         .log("Created server patient id  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
 
-                    .doCatch(ResourceNotFoundException.class)
-                        .throwException(ResourceNotFoundException.class, "${exception.message}")
+                    .doCatch(Exception.class)
+                        .process(new FhirBridgeExceptionHandler())
                     .endDoTry()
                 .endChoice()
                 .when(header(CamelConstants.SERVER_PATIENT_ID).isNotNull())
@@ -284,8 +292,8 @@ public class FhirRouteBuilder extends RouteBuilder {
                         exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patientResource);
                     }
                 })
-            .doCatch(ResourceNotFoundException.class)
-                .throwException(ResourceNotFoundException.class, "${exception.message}")
+            .doCatch(Exception.class)
+                .process(new FhirBridgeExceptionHandler())
             .endDoTry()
 
             .log("FHIR server Bundle Response Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
@@ -374,7 +382,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                             })
                         .doCatch(ResourceNotFoundException.class)
                             .log("Resource not found for resourceClass=${exchangeProperty.resourceClass}, stringId=${exchangeProperty.stringId}. Skipping...")
-                    .end() // End the split block
+                    .end()
             .end()
             .process(ExistingResourceReferenceProcessor.BEAN_ID)
             .log("Updated input resouce bundle with the referece resources");
