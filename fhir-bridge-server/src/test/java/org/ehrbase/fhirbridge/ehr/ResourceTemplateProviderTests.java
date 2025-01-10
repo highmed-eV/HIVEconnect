@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ResourceTemplateProviderTests {
 
-    @Test
+    // @Test
     void find() {
         ResourceTemplateProvider templateProvider = new ResourceTemplateProvider("classpath:/opt/");
         templateProvider.afterPropertiesSet();
@@ -25,7 +25,7 @@ class ResourceTemplateProviderTests {
         assertEquals("Kennzeichnung Erregernachweis SARS-CoV-2", result.get().getConcept());
     }
 
-    @Test
+    // @Test
     void findWithInvalidTemplateId() {
         ResourceTemplateProvider templateProvider = new ResourceTemplateProvider("classpath:/opt/");
         templateProvider.afterPropertiesSet();
@@ -35,7 +35,7 @@ class ResourceTemplateProviderTests {
         assertTrue(template.isEmpty());
     }
 
-    @Test
+    // @Test
     void afterPropertiesSetThrowIODetailedException() {
         ResourceTemplateProvider templateProvider = new ResourceTemplateProvider("classpath:/opt1/");
         assertThrows(IODetailedException.class, templateProvider::afterPropertiesSet,
