@@ -88,7 +88,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                         exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
                     }
                 })
-            .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType}")
+            .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType }")
             .to("direct:ExtractPatientIdProcess")
             .to("direct:FHIRToOpenEHRMappingProcess");
 
@@ -97,19 +97,12 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             // Step 1: Extract Patient Id from the FHIR Input Resource
             .choice()
                 .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
-                    .doTry()
-                        .to("direct:extractAndCheckPatientIdExistsProcessor")
-                        .log("FHIR Patient ID  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
-                    .doCatch(Exception.class)
-                        .process(new FhirBridgeExceptionHandler())
+                    .to("direct:extractAndCheckPatientIdExistsProcessor")
+                    .log("FHIR Patient ID  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
                     .endChoice()
                 .otherwise()
-                    .doTry()
-                        .to("direct:extractPatientIdFromPatientProcessor")
-                        .log("FHIR Patient ID  ${header." + CamelConstants.PATIENT_ID + "}")
-                    .doCatch(Exception.class)
-                        .process(new FhirBridgeExceptionHandler())
-                    .end()
+                    .to("direct:extractPatientIdFromPatientProcessor")
+                    .log("FHIR Patient ID  ${header." + CamelConstants.PATIENT_ID + "}")
                 .endChoice();
 
         from("direct:FHIRToOpenEHRMappingProcess")

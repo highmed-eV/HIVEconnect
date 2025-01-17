@@ -110,21 +110,11 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
     private void handleUnprocessableEntityException(UnprocessableEntityException ex) {
         var outcome = new OperationOutcome();
-        String baseMessage = originalMessage != null ? originalMessage : ex.getMessage();
-        String diagnostics = baseMessage.startsWith("FHIR Server Exception: Validation failed: ")
-                ? baseMessage
-                : "FHIR Server Exception: Validation failed: " + baseMessage;
-
-        if (originalMessage == null) {
-            originalMessage = baseMessage;
-        }
-
-
-        ValidationUtils.addError(outcome, diagnostics, "UnprocessableEntityHandler");
+        ValidationUtils.addError(outcome, "Validation failed: " + ex.getMessage(), "UnprocessableEntityExceptionHandler");
 
         LOG.warn("Validation failed: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new UnprocessableEntityException(diagnostics, outcome);
+            throw new UnprocessableEntityException("FHIR Server Exception: ", outcome);
         }
     }
 
