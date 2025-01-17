@@ -35,8 +35,6 @@ import org.springframework.util.Assert;
 public class FhirBridgeExceptionHandler  implements Processor {
     private static final Logger LOG = LoggerFactory.getLogger(FhirBridgeExceptionHandler.class);
 
-    private String originalMessage;
-
     @Override
     public void process(Exchange exchange) throws Exception {
         Exception ex = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
