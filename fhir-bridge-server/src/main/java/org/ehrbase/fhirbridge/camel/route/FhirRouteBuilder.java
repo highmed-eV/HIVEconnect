@@ -133,6 +133,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             .doCatch(Exception.class)
                 .log("extractPatientIdOrIdentifier catch exception")
                 .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
             .end()
 
             .log("FHIR PatientId ${header." + CamelConstants.PATIENT_ID 
@@ -295,7 +296,6 @@ public class FhirRouteBuilder extends RouteBuilder {
             .doCatch(Exception.class)
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
-
             .log("FHIR server Bundle Response Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
 
         from ("direct:extractPatientIdFromResourceResponse")
@@ -382,6 +382,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                             })
                         .doCatch(ResourceNotFoundException.class)
                             .log("Resource not found for resourceClass=${exchangeProperty.resourceClass}, stringId=${exchangeProperty.stringId}. Skipping...")
+                        .endDoTry()
                     .end()
             .end()
             .process(ExistingResourceReferenceProcessor.BEAN_ID)

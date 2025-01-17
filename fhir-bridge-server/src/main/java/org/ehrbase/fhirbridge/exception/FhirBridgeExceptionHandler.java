@@ -20,8 +20,6 @@ import ca.uhn.fhir.rest.server.exceptions.*;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.RuntimeCamelException;
-import org.ehrbase.client.exception.OptimisticLockException;
-import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.fhirbridge.fhir.validation.ValidationUtils;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.slf4j.Logger;
@@ -30,7 +28,7 @@ import org.springframework.util.Assert;
 
 /**
  * {@link org.apache.camel.Processor Processor} that transforms an exception
- * thrown by the {@link org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient OpenEhrClient} into the corresponding FHIR exception.
+ * thrown by the {@link org.ehrbase.fhirbridge.camel.route FhirBridgeRouteBuilder, FhirRouteBuilder} into the corresponding FHIR exception.
  *
  * @since 1.2.0
  */
@@ -110,7 +108,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
     private void handleUnprocessableEntityException(UnprocessableEntityException ex) {
         var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Validation failed: " + ex.getMessage(), "UnprocessableEntityHandler");
+        ValidationUtils.addError(outcome, "Validation failed: " + ex.getMessage(), "UnprocessableEntityExceptionHandler");
 
         LOG.warn("Validation failed: {}", ex.getMessage());
         if (outcome.hasIssue()) {

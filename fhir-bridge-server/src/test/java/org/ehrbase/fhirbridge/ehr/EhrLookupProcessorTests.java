@@ -1,0 +1,107 @@
+package org.ehrbase.fhirbridge.ehr;
+
+import com.nedap.archie.rm.ehr.EhrStatus;
+import org.apache.camel.Exchange;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.support.DefaultExchange;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
+import org.ehrbase.fhirbridge.core.domain.PatientEhr;
+import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
+import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
+import org.ehrbase.fhirbridge.openehr.openehrclient.AqlEndpoint;
+import org.ehrbase.fhirbridge.openehr.openehrclient.EhrEndpoint;
+import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.hl7.fhir.r4.model.Patient;
+import org.mockito.MockitoAnnotations;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+public class EhrLookupProcessorTests {
+
+    @Mock
+    private PatientEhrRepository patientEhrRepository;
+
+    @Mock
+    private OpenEhrClient openEhrClient;
+
+    @Mock
+    private AqlEndpoint aqlEndpoint;
+
+    @Mock
+    private EhrEndpoint ehrEndpoint;
+
+    private EhrLookupProcessor ehrLookupProcessor;
+
+    private Exchange exchange;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        ehrLookupProcessor = new EhrLookupProcessor(patientEhrRepository, openEhrClient);
+        exchange = createExchange(new Patient());
+    }
+
+    @Test
+    void processWithExistingEhrId() throws Exception {
+        UUID existingEhrId = UUID.randomUUID();
+        PatientEhr mockPatientEhr = new PatientEhr("http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123", "Patient/123", "system123", existingEhrId);
+        when(patientEhrRepository.findByInternalPatientId(anyString())).thenReturn(mockPatientEhr);
+
+        ehrLookupProcessor.process(exchange);
+
+        UUID ehrId = exchange.getMessage().getHeader(CompositionConstants.EHR_ID, UUID.class);
+        assertEquals(existingEhrId, ehrId);
+        verify(patientEhrRepository, times(1)).findByInternalPatientId(anyString());
+    }
+
+    @Test
+    void processWithNewEhrId() throws Exception {
+        when(patientEhrRepository.findByInternalPatientId(anyString())).thenReturn(null);
+
+        when(openEhrClient.aqlEndpoint()).thenReturn(aqlEndpoint);
+        when(openEhrClient.aqlEndpoint().execute(any())).thenReturn(List.of());
+        when(openEhrClient.ehrEndpoint()).thenReturn(ehrEndpoint);
+        when(ehrEndpoint.createEhr(any(EhrStatus.class))).thenReturn(UUID.randomUUID());
+
+        ehrLookupProcessor.process(exchange);
+
+        UUID ehrId = exchange.getMessage().getHeader(CompositionConstants.EHR_ID, UUID.class);
+        assertNotNull(ehrId);
+        verify(patientEhrRepository, times(1)).save(any(PatientEhr.class));
+    }
+
+    private Exchange createExchange(Patient patient) {
+        DefaultCamelContext camelContext = new DefaultCamelContext();
+        Exchange exchange = new DefaultExchange(camelContext);
+        patient.addIdentifier()
+                .setSystem("http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym")
+                .setValue("123");
+        exchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patient);
+        exchange.getMessage().setHeader(CamelConstants.INPUT_SYSTEM_ID, "system123");
+        exchange.getMessage().setHeader(CamelConstants.PATIENT_ID, "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123");
+        exchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_ID, "Patient/123");
+        return exchange;
+    }
+
+    @Test
+    void extractPatientId() {
+        String patientIdStr = "/fhir/Patient/1234";
+        String result = ehrLookupProcessor.extractPatientId(patientIdStr);
+        assertEquals("Patient/1234", result);
+    }
+
+    @Test
+    void extractPatientIdWithInvalidFormat() {
+        String patientIdStr = "Invalid/Patient/1234";
+        String result = ehrLookupProcessor.extractPatientId(patientIdStr);
+        assertEquals(patientIdStr, result);
+    }
+}

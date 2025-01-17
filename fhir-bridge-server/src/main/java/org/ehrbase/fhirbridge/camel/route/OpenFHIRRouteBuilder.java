@@ -2,6 +2,7 @@ package org.ehrbase.fhirbridge.camel.route;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.exception.OpenFHIRMappingExceptionHandler;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +14,12 @@ public class OpenFHIRRouteBuilder extends RouteBuilder {
         
         from("direct:OpenFHIRProcess")
             //Convert FHIR request JSON to openEHR format using openFHIR
-            .to("bean:fhirBridgeOpenFHIRAdapter?method=convertToOpenEHR")
+            .doTry()
+                .to("bean:fhirBridgeOpenFHIRAdapter?method=convertToOpenEHR")
+            .doCatch(RuntimeException.class)
+                .log("OpenFHIRProcess:fhirBridgeOpenFHIRAdapter catch exception")
+                .process(new OpenFHIRMappingExceptionHandler())
+            .end()
             .log("FHIR converted to openEHR format.")
 
             //Store the response in the Exchange
