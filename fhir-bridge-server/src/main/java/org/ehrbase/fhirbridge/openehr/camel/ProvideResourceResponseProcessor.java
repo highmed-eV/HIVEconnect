@@ -190,7 +190,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         return null;
     }
 
-    private void validateAndUpdateMap(Map<String, String> resourceIdMap, String inputResourceId, String internalResourceId) {
+    public void validateAndUpdateMap(Map<String, String> resourceIdMap, String inputResourceId, String internalResourceId) {
         if (inputResourceId == null || inputResourceId.isEmpty()) {
             throw new IllegalArgumentException("Invalid inputResourceId: " + inputResourceId);
         }

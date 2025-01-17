@@ -10,7 +10,6 @@ import org.ehrbase.fhirbridge.config.security.Authenticator;
 import org.ehrbase.fhirbridge.core.PatientIdMapper;
 import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
-import org.ehrbase.fhirbridge.exception.OpenFHIRMappingExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
 import org.slf4j.Logger;
@@ -90,15 +89,8 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                     }
                 })
             .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType}")
-            .doTry()
-                .to("direct:ExtractPatientIdProcess")
-                .to("direct:FHIRToOpenEHRMappingProcess")
-            .doCatch(ClientException.class)
-                .process(new OpenEhrClientExceptionHandler())
-            .doCatch(Exception.class)
-                .log("direct:FHIRToOpenEHRMappingProcess catch exception")
-                .process(new FhirBridgeExceptionHandler())
-            .end();
+            .to("direct:ExtractPatientIdProcess")
+            .to("direct:FHIRToOpenEHRMappingProcess");
 
 
         from("direct:ExtractPatientIdProcess")
@@ -128,6 +120,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .doCatch(Exception.class)
                 .log("direct:mapInternalResourceProcessor catch exception")
                 .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
             .end()
 
 
@@ -136,10 +129,10 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                 .to("direct:FHIRProcess")
                 // Step 4: Extract Patient Id created in the FHIR server
                 .to("direct:extractPatientIdFromFhirResponseProcessor")
-
             .doCatch(Exception.class)
                 .log("direct:FHIRProcess catch exception")
                 .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
             .end()
             // marshall to JSON for logging
             // .marshal().fhirJson("{{fhirVersion}}")
@@ -151,6 +144,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .doCatch(Exception.class)
                 .log("direct:resourceReferenceProcessor catch exception")
                 .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
             .end()
 
             .choice()
@@ -166,7 +160,8 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                         .to("direct:OpenFHIRProcess")
                     .doCatch(Exception.class)
                         .log("direct:OpenFHIRProcess catch exception")
-                        .process(new OpenFHIRMappingExceptionHandler())
+                        .process(new FhirBridgeExceptionHandler())
+                    .endDoTry()
                     .end()
 
                     //Step 7: Process the EHR Input
@@ -180,6 +175,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                     .doCatch(ClientException.class)
                         .log("direct:OpenEHRProcess catch exception")
                         .process(new OpenEhrClientExceptionHandler())
+                    .endDoTry()
                     .end()
 
                     //Step 8: Prepare the final output
