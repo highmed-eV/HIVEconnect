@@ -72,15 +72,13 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
         }
         exchange.setProperty(CamelConstants.INTERNAL_RESOURCE_IDS, internalResourceIds);
 
-
-//        String inputResource = exchange.getIn().getBody(String.class);
         String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
         String updatedResource = updatedInputBundle(inputResource);
         // Set the updated resource back into the exchange body
         exchange.getIn().setBody(updatedResource);
     }
 
-    public String updatedInputBundle(String inputResource) throws Exception {
+    private String updatedInputBundle(String inputResource) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(inputResource);
 

@@ -1,4 +1,4 @@
-package org.ehrbase.fhirbridge.ehr;
+package org.ehrbase.fhirbridge.ehr.camel;
 
 import com.nedap.archie.rm.ehr.EhrStatus;
 import org.apache.camel.Exchange;
@@ -12,18 +12,22 @@ import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
 import org.ehrbase.fhirbridge.openehr.openehrclient.AqlEndpoint;
 import org.ehrbase.fhirbridge.openehr.openehrclient.EhrEndpoint;
 import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.hl7.fhir.r4.model.Patient;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class EhrLookupProcessorTests {
 
     @Mock
@@ -38,13 +42,13 @@ public class EhrLookupProcessorTests {
     @Mock
     private EhrEndpoint ehrEndpoint;
 
+    @Mock
     private EhrLookupProcessor ehrLookupProcessor;
 
     private Exchange exchange;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         ehrLookupProcessor = new EhrLookupProcessor(patientEhrRepository, openEhrClient);
         exchange = createExchange(new Patient());
     }

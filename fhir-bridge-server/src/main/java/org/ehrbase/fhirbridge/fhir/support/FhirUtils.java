@@ -36,6 +36,7 @@ public class FhirUtils {
             // Parse the JSON
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(resourceJson);
+            List<String> extractedResourceIds = new ArrayList<>();
             Set<String> resultSet = new HashSet<>();
 
             List<String> fullUrlList = extractFullUrls(rootNode);
@@ -43,15 +44,16 @@ public class FhirUtils {
             if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
                 // Handle as a Bundle
                 // Collect all resource IDs from "reference" keys
-                List<String> extractedResourceIds = extractResourceIds(rootNode, fullUrlList);
-                if (!Objects.isNull(extractedResourceIds)) {
-                    // Collect all the uniques resource IDs
-                    resultSet.addAll(extractedResourceIds);
-                    // List of all the unique resource Ids in the input bundle or single resource
-                    return new ArrayList<>(resultSet);
-                }
+                extractedResourceIds = extractResourceIds(rootNode, fullUrlList);
             } else {
                 // Handle as a single resource
+                extractedResourceIds = extractResourceIds(rootNode, fullUrlList);
+            }
+            if (!Objects.isNull(extractedResourceIds)) {
+                // Collect all the uniques resource IDs
+                resultSet.addAll(extractedResourceIds);
+                // List of all the unique resource Ids in the input bundle or single resource
+                return new ArrayList<>(resultSet);
             }
         } catch (Exception e) {
             e.printStackTrace();

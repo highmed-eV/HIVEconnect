@@ -83,7 +83,8 @@ public class ProvideResourceResponseProcessor implements Processor {
             //Set response in exchange body
             exchange.getIn().setBody(responseJsonNode);
 
-        } else {
+        }
+        else {
             //get inputresourceIds
             JSONArray entries = inputJsonObject.optJSONArray("entry");
             if (entries != null) {
@@ -101,8 +102,6 @@ public class ProvideResourceResponseProcessor implements Processor {
                         } else {
                             inputResourceId = resource.optString("resourceType") + "/" + resource.optString("id");
                         }
-                                 
-                        // inputResourceIds.add(inputResourceId);
                         // Placeholder for internalResourceId
                         resourceIdMap.put(inputResourceId, null);
                     }
@@ -184,13 +183,13 @@ public class ProvideResourceResponseProcessor implements Processor {
 
     private String  findInputResourceIdByIndex(Map<String, String> resourceIdMap, int index) {
         List<String> keys = new ArrayList<>(resourceIdMap.keySet());
-        if (index < keys.size()) {
+        if (index >= 0 && index < keys.size()) {
             return keys.get(index);
         }
         return null;
     }
 
-    public void validateAndUpdateMap(Map<String, String> resourceIdMap, String inputResourceId, String internalResourceId) {
+    private void validateAndUpdateMap(Map<String, String> resourceIdMap, String inputResourceId, String internalResourceId) {
         if (inputResourceId == null || inputResourceId.isEmpty()) {
             throw new IllegalArgumentException("Invalid inputResourceId: " + inputResourceId);
         }

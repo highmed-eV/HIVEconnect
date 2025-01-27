@@ -45,6 +45,11 @@ public class ResourceComposition {
         this.inputResourceId = inputResourceId;
     }
 
+    public ResourceComposition(String inputResourceId, String internalResourceId) {
+        this.inputResourceId = inputResourceId;
+        this.internalResourceId = internalResourceId;
+    }
+
     public String getInputResourceId() {
         return inputResourceId;
     }
