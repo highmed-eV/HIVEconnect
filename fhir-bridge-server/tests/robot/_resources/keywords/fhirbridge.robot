@@ -1,7 +1,5 @@
 *** Keywords ***
 load test cases from json
-    # load json from test_case_list.json file
-    # ${json_data}=    Load JSON From File    ${TEST_CASE_LIST_FILE}
     # Load JSON from the test_case_list.json file using UTF-8 encoding
     ${json_data}=    Load Json Utf8    ${TEST_CASE_LIST_FILE}
     # get the json dictionary for all the tes cases test cases
@@ -147,35 +145,33 @@ POST /BundleAQL with ehr reference
     Set Suite Variable    ${response_aql_composition}   ${resp_composition}
     Set Suite Variable    ${response_template_id}   ${template_id}
 
-
-
 validate content response_aql_composition - 201
     [Arguments]         ${expected_openehr_file_name}
     Log To Console    \nIn openEHR AQL validate response for ${expected_openehr_file_name}
     # Load the expected JSON content
     ${expected_resp_composition}=    Load Json Utf8    ${EHR_COMPOSITION}/${expected_openehr_file_name}
-    # Log To Console    \nEXP Response composition:: ${expected_resp_composition}
+    # Log To Console    \nEXP Response composition: ${expected_resp_composition}
 
     ${expected_template_id}=  Get Value From Json    ${expected_resp_composition}    $..archetype_details.template_id.value
     Log To Console    Expected Template ID: ${expected_template_id}\n
 
-    Should Be Equal    ${expected_template_id}    ${response_template_id}
-    Log To Console    Both Template ID should be equal:
-    Log To Console    Expected Template ID: ${expected_template_id}
-    Log To Console    Response Template ID: ${response_template_id}
-
+#    Should Be Equal    ${expected_template_id}    ${response_template_id}
+#    Log To Console    Both Template ID should be equal:
+#    Log To Console    Expected Template ID: ${expected_template_id}
+#    Log To Console    Response Template ID: ${response_template_id}
 
     # TODO: For compairing whole json value of expected composition and the response composition
     # Normalize both the JSONs by ignoring value of "value" if "_type" == "DV_DATE_TIME"
-    # ${normalized_expected_json}=    Normalize Json    ${expected_resp_composition}
-    # ${normalized_response_json}=    Normalize Json    ${response_aql_composition}
+    # 'uid' fields entirely
+    ${normalized_expected_json}=    Normalize Json    ${expected_resp_composition}
+    ${normalized_response_json}=    Normalize Json    ${response_aql_composition}
 
     # Compare the normalized JSONs returned by the openEHR and the expected cannonical json
     # checking if both json have same sets of key and value pairs other then the ignored fields of comparison .
-    # Should Be Equal    ${expected_resp_composition}    ${response_aql_composition}
+    Should Be Equal    ${normalized_expected_json}    ${normalized_response_json}
 
-#Normalize Json
-#    [Arguments]    ${json_data}
-#    # get normalized json by calling the method normalize_json with ${json_data} in json_normalizer.py file
-#    ${normalized_json}=    Evaluate    json_normalizer.normalize_json(${json_data})    modules=json_normalizer
-#    RETURN    ${normalized_json}
+Normalize Json
+    [Arguments]    ${json_data}
+    # get normalized json by calling the method normalize_json with ${json_data} in json_normalizer.py file
+    ${normalized_json}=    Evaluate    json_normalizer.normalize_json(${json_data})    modules=json_normalizer
+    RETURN    ${normalized_json}

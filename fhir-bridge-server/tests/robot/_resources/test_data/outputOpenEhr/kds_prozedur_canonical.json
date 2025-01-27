@@ -1,336 +1,262 @@
 {
-  "_type" : "COMPOSITION",
-  "name" : {
-    "_type" : "DV_TEXT",
-    "value" : "KDS_Prozedur"
+  "uid": {
+    "_type": "OBJECT_VERSION_ID",
+    "value": "3357ca22-a1d6-4a16-84fd-d39a579f0c8f::local.ehrbase.org::1"
   },
-  "archetype_details" : {
-    "archetype_id" : {
-      "value" : "openEHR-EHR-COMPOSITION.report.v1"
-    },
-    "template_id" : {
-      "value" : "KDS_Prozedur"
-    },
-    "rm_version" : "1.0.4"
+  "name": {
+    "_type": "DV_TEXT",
+    "value": "KDS_Prozedur"
   },
-  "language" : {
-    "_type" : "CODE_PHRASE",
-    "terminology_id" : {
-      "_type" : "TERMINOLOGY_ID",
-      "value" : "ISO_639-1"
-    },
-    "code_string" : "en"
-  },
-  "territory" : {
-    "_type" : "CODE_PHRASE",
-    "terminology_id" : {
-      "_type" : "TERMINOLOGY_ID",
-      "value" : "ISO_3166-1"
-    },
-    "code_string" : "DE"
-  },
-  "category" : {
-    "_type" : "DV_CODED_TEXT",
-    "value" : "event",
-    "defining_code" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "openehr"
-      },
-      "code_string" : "433"
-    }
-  },
-  "composer" : {
-    "_type" : "PARTY_IDENTIFIED",
-    "name" : "Max Mustermann"
-  },
-  "context" : {
-    "_type" : "EVENT_CONTEXT",
-    "start_time" : {
-      "_type" : "DV_DATE_TIME",
-      "value" : "2022-02-03T04:05:06"
-    },
-    "end_time" : {
-      "_type" : "DV_DATE_TIME",
-      "value" : "2022-02-03T04:05:06"
-    },
-    "setting" : {
-      "_type" : "DV_CODED_TEXT",
-      "value" : "home",
-      "defining_code" : {
-        "_type" : "CODE_PHRASE",
-        "terminology_id" : {
-          "_type" : "TERMINOLOGY_ID",
-          "value" : "openehr"
-        },
-        "code_string" : "225"
-      }
-    },
-    "other_context" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "Tree"
-      },
-      "items" : [ {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Report ID"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Case identification"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.case_identification.v0"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Case identifier"
-          },
-          "value" : {
-            "_type" : "DV_TEXT",
-            "value" : "encounter-id-1245"
-          },
-          "archetype_node_id" : "at0001"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.case_identification.v0"
-      } ],
-      "archetype_node_id" : "at0001"
-    },
-    "health_care_facility" : {
-      "_type" : "PARTY_IDENTIFIED",
-      "name" : "DOE, John"
-    }
-  },
-  "content" : [ {
-    "_type" : "ACTION",
-    "name" : {
-      "_type" : "DV_TEXT",
-      "value" : "Procedure"
-    },
-    "archetype_details" : {
-      "archetype_id" : {
-        "value" : "openEHR-EHR-ACTION.procedure.v1"
-      },
-      "rm_version" : "1.0.4"
-    },
-    "language" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "ISO_639-1"
-      },
-      "code_string" : "en"
-    },
-    "encoding" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "IANA_character-sets"
-      },
-      "code_string" : "ISO-10646-UTF-1"
-    },
-    "workflow_id" : {
-      "_type" : "OBJECT_REF",
-      "namespace" : "unknown",
-      "type" : "ANY",
-      "id" : {
-        "_type" : "GENERIC_ID",
-        "value" : "827b8bf8-8d29-3cd2-893f-91aeb2fd7c69",
-        "scheme" : "scheme"
-      }
-    },
-    "subject" : {
-      "_type" : "PARTY_SELF"
-    },
-    "provider" : {
-      "_type" : "PARTY_SELF"
-    },
-    "guideline_id" : {
-      "_type" : "OBJECT_REF",
-      "namespace" : "unknown",
-      "type" : "ANY",
-      "id" : {
-        "_type" : "GENERIC_ID",
-        "value" : "e19fc24a-5e19-35f2-844d-0b0a899bce1e",
-        "scheme" : "scheme"
-      }
-    },
-    "time" : {
-      "_type" : "DV_DATE_TIME",
-      "value" : "2022-02-03T04:05:06"
-    },
-    "description" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "Tree"
-      },
-      "items" : [ {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Name der Prozedur"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Appendectomy",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://fhir.de/ValueSet/bfarm/ops"
-            },
-            "code_string" : "80146002"
-          }
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Freitextbeschreibung"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "Lorem ipsum"
-        },
-        "archetype_node_id" : "at0049"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Körperstelle"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Abdomen",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/body-site"
-            },
-            "code_string" : "818981001"
-          }
-        },
-        "archetype_node_id" : "at0063"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Seitenlokalisation"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "beiderseits",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
-            },
-            "code_string" : "B"
-          }
-        },
-        "archetype_node_id" : "at0063"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Kategorie der Prozedur"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Surgical procedure",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-category-sct"
-            },
-            "code_string" : "387713003"
-          }
-        },
-        "archetype_node_id" : "at0067"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Durchführungsabsicht"
-        },
-        "value" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "Therapeutic",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "//fhir.hl7.org//ValueSet/$expand?url=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/ValueSet/procedures-intend"
-            },
-            "code_string" : "262202000"
-          }
-        },
-        "archetype_node_id" : "at0014"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Comment"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "Procedure completed successfully with no complications."
-        },
-        "archetype_node_id" : "at0005"
-      } ],
-      "archetype_node_id" : "at0001"
-    },
-    "ism_transition" : {
-      "_type" : "ISM_TRANSITION",
-      "current_state" : {
-        "_type" : "DV_CODED_TEXT",
-        "value" : "completed",
-        "defining_code" : {
-          "_type" : "CODE_PHRASE",
-          "terminology_id" : {
-            "_type" : "TERMINOLOGY_ID",
-            "value" : "openehr"
-          },
-          "code_string" : "532"
+  "_type": "COMPOSITION",
+  "context": {
+    "_type": "EVENT_CONTEXT",
+    "setting": {
+      "_type": "DV_CODED_TEXT",
+      "value": "other care",
+      "defining_code": {
+        "_type": "CODE_PHRASE",
+        "code_string": "238",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "openehr"
         }
       }
     },
-    "instruction_details" : {
-      "_type" : "INSTRUCTION_DETAILS",
-      "instruction_id" : {
-        "_type" : "LOCATABLE_REF",
-        "namespace" : "unknown",
-        "type" : "INSTRUCTION",
-        "id" : {
-          "_type" : "HIER_OBJECT_ID",
-          "value" : "e8d44cdb-8a18-3a67-8a03-87f996af05bd"
-        },
-        "path" : ""
-      },
-      "activity_id" : "activities[at0001]"
+    "start_time": {
+      "_type": "DV_DATE_TIME",
+      "value": "2025-01-22T06:35:08.691+05:30"
     },
-    "archetype_node_id" : "openEHR-EHR-ACTION.procedure.v1"
-  } ],
-  "archetype_node_id" : "openEHR-EHR-COMPOSITION.report.v1"
+    "other_context": {
+      "name": {
+        "value": "Tree",
+        "_type": "DV_TEXT"
+      },
+      "archetype_node_id": "at0001",
+      "_type": "ITEM_TREE",
+      "items": [
+        {
+          "name": {
+            "value": "Case identification",
+            "_type": "DV_TEXT"
+          },
+          "archetype_node_id": "openEHR-EHR-CLUSTER.case_identification.v0",
+          "_type": "CLUSTER",
+          "items": [
+            {
+              "name": {
+                "value": "Case identifier",
+                "_type": "DV_TEXT"
+              },
+              "value": {
+                "_type": "DV_TEXT",
+                "value": "example-procedure"
+              },
+              "_type": "ELEMENT",
+              "archetype_node_id": "at0001"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "category": {
+    "_type": "DV_CODED_TEXT",
+    "value": "event",
+    "defining_code": {
+      "_type": "CODE_PHRASE",
+      "code_string": "433",
+      "terminology_id": {
+        "_type": "TERMINOLOGY_ID",
+        "value": "openehr"
+      }
+    }
+  },
+  "composer": {
+    "_type": "PARTY_SELF"
+  },
+  "language": {
+    "_type": "CODE_PHRASE",
+    "code_string": "en",
+    "terminology_id": {
+      "_type": "TERMINOLOGY_ID",
+      "value": "ISO_639-1"
+    }
+  },
+  "territory": {
+    "_type": "CODE_PHRASE",
+    "code_string": "DE",
+    "terminology_id": {
+      "_type": "TERMINOLOGY_ID",
+      "value": "ISO_3166-1"
+    }
+  },
+  "archetype_details": {
+    "_type": "ARCHETYPED",
+    "rm_version": "1.0.4",
+    "template_id": {
+      "_type": "TEMPLATE_ID",
+      "value": "KDS_Prozedur"
+    },
+    "archetype_id": {
+      "_type": "ARCHETYPE_ID",
+      "value": "openEHR-EHR-COMPOSITION.report.v1"
+    }
+  },
+  "archetype_node_id": "openEHR-EHR-COMPOSITION.report.v1",
+  "content": [
+    {
+      "name": {
+        "value": "Procedure",
+        "_type": "DV_TEXT"
+      },
+      "time": {
+        "value": "2024-08-20T19:30:00.000",
+        "_type": "DV_DATE_TIME"
+      },
+      "_type": "ACTION",
+      "subject": {
+        "_type": "PARTY_SELF"
+      },
+      "encoding": {
+        "_type": "CODE_PHRASE",
+        "code_string": "UTF-8",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "IANA_character-sets"
+        }
+      },
+      "language": {
+        "_type": "CODE_PHRASE",
+        "code_string": "en",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "ISO_639-1"
+        }
+      },
+      "ism_transition": {
+        "_type": "ISM_TRANSITION",
+        "current_state": {
+          "_type": "DV_CODED_TEXT",
+          "value": "completed",
+          "defining_code": {
+            "_type": "CODE_PHRASE",
+            "code_string": "532",
+            "terminology_id": {
+              "_type": "TERMINOLOGY_ID",
+              "value": "openehr"
+            }
+          }
+        }
+      },
+      "archetype_details": {
+        "rm_version": "1.0.4",
+        "archetype_id": {
+          "value": "openEHR-EHR-ACTION.procedure.v1"
+        }
+      },
+      "description": {
+        "name": {
+          "value": "Tree",
+          "_type": "DV_TEXT"
+        },
+        "archetype_node_id": "at0001",
+        "_type": "ITEM_TREE",
+        "items": [
+          {
+            "name": {
+              "value": "Name der Prozedur",
+              "_type": "DV_TEXT"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "5-470",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "code_string": "5-470",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "http://fhir.de/CodeSystem/bfarm/ops"
+                }
+              }
+            },
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0002"
+          },
+          {
+            "name": {
+              "value": "Comment",
+              "_type": "DV_TEXT"
+            },
+            "value": {
+              "_type": "DV_TEXT",
+              "value": "Procedure completed successfully with no complications."
+            },
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0005"
+          },
+          {
+            "name": {
+              "value": "Körperstelle",
+              "_type": "DV_TEXT"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Abdomen",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "code_string": "818981001",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "http://snomed.info/sct"
+                }
+              }
+            },
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0063"
+          },
+          {
+            "name": {
+              "value": "Seitenlokalisation",
+              "_type": "DV_TEXT"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "B",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "code_string": "B",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION"
+                }
+              }
+            },
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0063"
+          },
+          {
+            "name": {
+              "value": "Kategorie der Prozedur",
+              "_type": "DV_TEXT"
+            },
+            "value": {
+              "_type": "DV_CODED_TEXT",
+              "value": "Diagnostic procedure",
+              "defining_code": {
+                "_type": "CODE_PHRASE",
+                "code_string": "387713003",
+                "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "http://snomed.info/sct"
+                }
+              }
+            },
+            "_type": "ELEMENT",
+            "archetype_node_id": "at0067"
+          }
+        ]
+      },
+      "archetype_node_id": "openEHR-EHR-ACTION.procedure.v1"
+    }
+  ]
 }

@@ -28,7 +28,7 @@ public class PatientUtils {
 
     private  final ObjectMapper objectMapper = new ObjectMapper();
 
-    private PatientUtils(PatientEhrRepository patientEhrRepository) {
+    public PatientUtils(PatientEhrRepository patientEhrRepository) {
         this.patientEhrRepository = patientEhrRepository;
     }
 
@@ -133,7 +133,6 @@ public class PatientUtils {
         return null; // Return null if no patient ID is found
     }
 
-   
     public  JsonNode extractPatientFromResource(JsonNode resourceNode) {
         // If the resource itself is a Patient, return its ID
         if (resourceNode.has("resourceType") && "Patient".equals(resourceNode.get("resourceType").asText())) {
@@ -193,7 +192,7 @@ public class PatientUtils {
                 // }
 
                 exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
-                String referenceStr = reference.split("#")[0];
+                String referenceStr = reference.split("#")[1];
                 JsonNode resource = extractContainedResource(resourceNode, referenceStr);
                 if (resource != null) {
                     return referenceStr;
@@ -219,8 +218,8 @@ public class PatientUtils {
                 //     "id": "example_patient",
                 exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
                 JsonNode resource = extractFullUrlResource(resourceNode, reference);
-                if (resource != null) {
-                    return resource.get("id").asText();
+                if (resource != null) {String id = resource.path("id").asText();
+                    return resource.path("resource").path("id").asText();
                 }
                 return null;
             } else {
@@ -255,7 +254,6 @@ public class PatientUtils {
         
         return internalPatientId;
     }
-
 
     public  String getPatientIdFromOutCome(Exchange exchange) {
         MethodOutcome resource = (MethodOutcome) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);

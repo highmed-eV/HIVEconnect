@@ -1,9 +1,14 @@
 def normalize_json(json_data):
-    """Normalize the JSON data by removing 'value' fields for the "_type" : "DV_DATE_TIME"."""
+    """Normalize the JSON data by:
+   - Removing 'value' fields for '_type': 'DV_DATE_TIME'.
+   - Ignoring 'uid' fields entirely.
+   """
     if isinstance(json_data, dict):
         if json_data.get("_type") == "DV_DATE_TIME":
             if "value" in json_data:
                 json_data["value"] = None  # Set the value to None
+        if "uid" in json_data:
+            json_data["uid"] = None  # Set the uid to None or remove it for comparison
         for key, value in json_data.items():
             json_data[key] = normalize_json(value)
     elif isinstance(json_data, list):
