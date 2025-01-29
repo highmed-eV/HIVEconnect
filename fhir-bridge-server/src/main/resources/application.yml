@@ -117,11 +117,23 @@ management:
         auto-create-index:
 
 #Medblocks
+hapi:
+  fhir:
+    server:
+      path: /fhir
+    resource-providers: ConditionResourceProvider
+    rest:
+      server-name: fhir-bridge
+      server-version: 1.0.0
+      implementation-description: fhir-bridge
+      default-response-encoding: json
+      e-tag-support: enabled
+      default-pretty-print: true
 #fhir server
 fhir:
   server:
-     url: http://localhost:8088
-    # url: http://localhost:8088/fhir-bridge
+    #  url: http://localhost:8088
+    url: http://localhost:8088/fhir-bridge
 
 #openFhir
 openfhir:
@@ -135,8 +147,8 @@ openehr:
 
 
 #camel fhir
-# serverUrl: http://localhost:8088/fhir-bridge/fhir
-serverUrl: http://localhost:8088/fhir
+serverUrl: http://localhost:8088/fhir-bridge/fhir
+# serverUrl: http://localhost:8088/fhir
 fhirVersion: R4
 connectionTimeout: 20000
 socketTimeout: 20000

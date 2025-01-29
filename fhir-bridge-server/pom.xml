@@ -113,7 +113,10 @@
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-spring-boot-starter</artifactId>
 		</dependency>
-
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-fhir</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-servlet-starter</artifactId>
@@ -160,6 +163,11 @@
             </exclusions>
         </dependency>
 		<!-- Hapi -->
+			<dependency>
+				<groupId>ca.uhn.hapi.fhir</groupId>
+				<artifactId>hapi-fhir-base</artifactId>
+				<version>${hapi-fhir.version}</version>
+			</dependency>
             <dependency>
                 <groupId>ca.uhn.hapi.fhir</groupId>
                 <artifactId>hapi-fhir-server</artifactId>

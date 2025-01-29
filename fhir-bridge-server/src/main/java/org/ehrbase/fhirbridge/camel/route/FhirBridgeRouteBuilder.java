@@ -1,5 +1,6 @@
 package org.ehrbase.fhirbridge.camel.route;
 
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
@@ -12,6 +13,7 @@ import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
+import org.hl7.fhir.r4.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -77,8 +79,8 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
     
         // Route to process the FHIR request
         from("direct:FHIRBridgeProcess")
-            .marshal().json()
-            .convertBodyTo(String.class)
+            // .marshal().json()
+            // .convertBodyTo(String.class)
             .log("##########RFHIRIBridgeProcess")
             .process(exchange -> {
                     if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {

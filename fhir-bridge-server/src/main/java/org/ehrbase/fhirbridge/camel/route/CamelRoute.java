@@ -29,48 +29,25 @@ public class CamelRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        restConfiguration()
-        .contextPath(contextPath) 
-        .port(serverPort)
-        .apiContextPath("/api-doc")
-        .apiProperty("api.title", "Spring Boot Camel Postgres Rest API.")
-        .apiProperty("api.version", "1.0")
-        .apiProperty("cors", "true")
-        .apiContextRouteId("doc-api")
-        .component("servlet")
-        .bindingMode(RestBindingMode.json);
 
-        // Define REST API for handling FHIR requests
-        // from("fhir://transaction/withBundle?serverUrl=http://localhost:8888/fhir-bridge/&fhirVersion={{fhirVersion}}&startScheduler=false&sendEmptyMessageWhenIdle=true&bridgeErrorHandler=true")
-        // from("rest:post:fhir?consumes=application/json&produces=application/json")
-        // .to("direct:FHIRIBridgeProcess");
-
-        rest("/fhir")
-            .consumes(MediaType.APPLICATION_JSON_VALUE)
-            .produces(MediaType.APPLICATION_JSON_VALUE)
-            .post("/")
+            from("direct:CamelCreateRouteProcess")
+            .routeId("CamelCreateRouteProcessRoute")
+            // .onCompletion()
+            //     .process(ProvideResourceAuditHandler.BEAN_ID)
+            // .end()
             .to("direct:FHIRBridgeProcess");
-            
-            // @formatter:on
-            configurePatient();
+
+            from("direct:CamelSearchRouteProcess")
+                .routeId("CamelSearchRouteProcessRoute")
+                .log("##########CamelSearchRouteProcess");
+
+            from("direct:CamelReadRouteProcess")
+                .routeId("CamelReadRouteProcessRoute")
+                .log("##########CamelReadRouteProcess");
 
     }       
 
 
-    /**
-     * Configures available endpoints for {@link org.hl7.fhir.r4.model.Patient Patient} resource.
-     */
-    private void configurePatient() {
-        rest("/fhir/Patient")
-            .consumes(MediaType.APPLICATION_JSON_VALUE)
-            .produces(MediaType.APPLICATION_JSON_VALUE)
-            .post("/")
-            .outType(MethodOutcome.class)
-            .to("direct:FHIRBridgeProcess");
-
-        // from("patient-find:patientEndpoint?fhirContext=#fhirContext&lazyLoadBundles=true")
-        //         .process(ResourcePersistenceProcessor.BEAN_ID);
-    }
 
 // @formatter:on
 // capabilities
