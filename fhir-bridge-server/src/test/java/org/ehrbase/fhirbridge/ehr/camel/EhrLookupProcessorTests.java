@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class EhrLookupProcessorTests {
+class EhrLookupProcessorTests {
 
     @Mock
     private PatientEhrRepository patientEhrRepository;
@@ -84,15 +84,15 @@ public class EhrLookupProcessorTests {
 
     private Exchange createExchange(Patient patient) {
         DefaultCamelContext camelContext = new DefaultCamelContext();
-        Exchange exchange = new DefaultExchange(camelContext);
+        Exchange defaultExchange = new DefaultExchange(camelContext);
         patient.addIdentifier()
                 .setSystem("http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym")
                 .setValue("123");
-        exchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patient);
-        exchange.getMessage().setHeader(CamelConstants.INPUT_SYSTEM_ID, "system123");
-        exchange.getMessage().setHeader(CamelConstants.PATIENT_ID, "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123");
-        exchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_ID, "Patient/123");
-        return exchange;
+        defaultExchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patient);
+        defaultExchange.getMessage().setHeader(CamelConstants.INPUT_SYSTEM_ID, "system123");
+        defaultExchange.getMessage().setHeader(CamelConstants.PATIENT_ID, "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123");
+        defaultExchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_ID, "Patient/123");
+        return defaultExchange;
     }
 
     @Test

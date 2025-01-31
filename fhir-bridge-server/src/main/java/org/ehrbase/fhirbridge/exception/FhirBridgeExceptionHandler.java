@@ -34,6 +34,7 @@ import org.springframework.util.Assert;
  */
 public class FhirBridgeExceptionHandler  implements Processor {
     private static final Logger LOG = LoggerFactory.getLogger(FhirBridgeExceptionHandler.class);
+    public static final String FHIR_SERVER_EXCEPTION = "FHIR Server Exception: ";
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -45,40 +46,46 @@ public class FhirBridgeExceptionHandler  implements Processor {
         Assert.notNull(ex, "Exception must not be null");
         exchange.getIn().setBody(ex.getMessage());
 
-        if (ex instanceof ResourceNotFoundException) {
-            handleResourceNotFound((ResourceNotFoundException) ex);
-        } else if (ex instanceof UnprocessableEntityException) {
-            handleUnprocessableEntityException((UnprocessableEntityException) ex);
-        } else if (ex instanceof InvalidRequestException) {
-            handleInvalidRequestException((InvalidRequestException) ex);
-        } else if (ex instanceof ForbiddenOperationException) {
-            handleForbiddenOperationException((ForbiddenOperationException) ex);
-        } else if (ex instanceof MethodNotAllowedException) {
-            handleMethodNotAllowedException((MethodNotAllowedException) ex);
-        } else if (ex instanceof NotImplementedOperationException) {
-            handleNotImplementedOperationException((NotImplementedOperationException) ex);
-        } else if (ex instanceof NotModifiedException) {
-            handleNotModifiedException((NotModifiedException) ex);
-        } else if (ex instanceof PayloadTooLargeException) {
-            handlePayloadTooLargeException((PayloadTooLargeException) ex);
-        } else if (ex instanceof PreconditionFailedException) {
-            handlePreconditionFailedException((PreconditionFailedException) ex);
-        } else if (ex instanceof ResourceGoneException) {
-            handleResourceGoneException((ResourceGoneException) ex);
-        } else if (ex instanceof ResourceVersionConflictException) {
-            handleResourceVersionConflictException((ResourceVersionConflictException) ex);
-        } else if (ex instanceof UnclassifiedServerFailureException) {
-            handleUnclassifiedServerFailureException((UnclassifiedServerFailureException) ex);
-        } else if (ex instanceof AuthenticationException) {
-            handleAuthenticationException((AuthenticationException) ex);
-        } else if (ex instanceof BaseServerResponseException) {
-            handleBaseServerResponse((BaseServerResponseException) ex);
+        if (ex instanceof ResourceNotFoundException e) {
+            handleResourceNotFound(e);
+        } else if (ex instanceof UnprocessableEntityException e) {
+            handleUnprocessableEntityException(e);
+        } else if (ex instanceof InvalidRequestException e) {
+            handleInvalidRequestException(e);
+        } else if (ex instanceof ForbiddenOperationException e) {
+            handleForbiddenOperationException(e);
+        } else if (ex instanceof MethodNotAllowedException e) {
+            handleMethodNotAllowedException(e);
+        } else if (ex instanceof NotImplementedOperationException e) {
+            handleNotImplementedOperationException(e);
+        } else if (ex instanceof NotModifiedException e) {
+            handleNotModifiedException(e);
+        } else if (ex instanceof PayloadTooLargeException e) {
+            handlePayloadTooLargeException(e);
+        } else if (ex instanceof PreconditionFailedException e) {
+            handlePreconditionFailedException(e);
+        } else if (ex instanceof ResourceGoneException e) {
+            handleResourceGoneException(e);
+        } else if (ex instanceof ResourceVersionConflictException e) {
+            handleResourceVersionConflictException(e);
+        } else if (ex instanceof UnclassifiedServerFailureException e) {
+            handleUnclassifiedServerFailureException(e);
+        } else if (ex instanceof AuthenticationException e) {
+            handleAuthenticationException(e);
+        } else if (ex instanceof BaseServerResponseException e) {
+            handleBaseServerResponse(e);
         }
         handleException(ex);
     }
 
     private void handleException(Exception ex) {
-        throw new InternalErrorException("Error occurred while processing fhir bridge: " + ex.getMessage(), ex);
+        var outcome = new OperationOutcome();
+        ValidationUtils.addError(outcome, "Error occurred while processing fhir bridge: " + ex.getMessage(), "InternalErrorHandler");
+
+        LOG.warn("Error occurred while processing fhir bridge: {}", ex.getMessage());
+        if (outcome.hasIssue()) {
+            throw new InternalErrorException(FHIR_SERVER_EXCEPTION, outcome);
+        }
     }
 
     private void handleAuthenticationException(AuthenticationException ex) {
@@ -92,7 +99,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("FHIR server error: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new InternalErrorException("FHIR Server Exception: ", outcome);
+            throw new InternalErrorException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -102,7 +109,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Resource not found: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new ResourceNotFoundException("FHIR Server Exception: ", outcome);
+            throw new ResourceNotFoundException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -112,7 +119,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Validation failed: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new UnprocessableEntityException("FHIR Server Exception: ", outcome);
+            throw new UnprocessableEntityException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -122,7 +129,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Invalid request: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new InvalidRequestException("FHIR Server Exception: ", outcome);
+            throw new InvalidRequestException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -132,7 +139,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Forbidden operation: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new ForbiddenOperationException("FHIR Server Exception: ", outcome);
+            throw new ForbiddenOperationException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -142,7 +149,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Method not allowed: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new MethodNotAllowedException("FHIR Server Exception: ", outcome);
+            throw new MethodNotAllowedException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -152,7 +159,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Operation not implemented: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new NotImplementedOperationException("FHIR Server Exception: ", outcome);
+            throw new NotImplementedOperationException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -162,7 +169,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Resource not modified: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new NotModifiedException("FHIR Server Exception: ", outcome);
+            throw new NotModifiedException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -172,7 +179,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Payload too large: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new PayloadTooLargeException("FHIR Server Exception: ", outcome);
+            throw new PayloadTooLargeException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -182,7 +189,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Precondition failed: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new PreconditionFailedException("FHIR Server Exception: ", outcome);
+            throw new PreconditionFailedException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -192,7 +199,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Resource gone: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new ResourceGoneException("FHIR Server Exception: ", outcome);
+            throw new ResourceGoneException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -202,7 +209,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Resource version conflict: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new ResourceVersionConflictException("FHIR Server Exception: ", outcome);
+            throw new ResourceVersionConflictException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 
@@ -212,7 +219,7 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
         LOG.warn("Unclassified server failure: {}", ex.getMessage());
         if (outcome.hasIssue()) {
-            throw new InternalErrorException("FHIR Server Exception: ", outcome);
+            throw new InternalErrorException(FHIR_SERVER_EXCEPTION, outcome);
         }
     }
 }

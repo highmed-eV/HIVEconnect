@@ -44,19 +44,17 @@ class PatientUtilsTest {
 
     private ObjectMapper objectMapper;
 
-    private String resourceJson;
-
     @BeforeEach
     void setUp() {
         patientUtils = new PatientUtils(patientEhrRepository);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
         objectMapper = new ObjectMapper();
-        resourceJson = "{\"resourceType\":\"Patient\", \"identifier\":[{\"system\":\"system1\",\"value\":\"value1\"}]}";
     }
 
     @Test
     void extractPatientIdOrIdentifierWithPatientResource() {
+        String resourceJson = "{\"resourceType\":\"Patient\", \"identifier\":[{\"system\":\"system1\",\"value\":\"value1\"}]}";
         exchange.getIn().setBody(resourceJson);
         exchange.getIn().setHeader(CamelConstants.PATIENT_ID, "system1|value1");
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -146,7 +144,7 @@ class PatientUtilsTest {
         PatientEhr patientEhr = mock(PatientEhr.class);
         when(patientEhrRepository.findByInputPatientId(patientId)).thenReturn(patientEhr);
         when(patientEhr.getInternalPatientId()).thenReturn("internalId");
-        String serverPatientId = patientUtils.getServerPatientIdFromDb(exchange, patientId);
+        String serverPatientId = patientUtils.getServerPatientIdFromDb(patientId);
         assertEquals("internalId", serverPatientId);
     }
 
@@ -162,7 +160,7 @@ class PatientUtilsTest {
     }
 
     @Test
-    void getPatientIdFromPatientResource() throws Exception {
+    void getPatientIdFromPatientResource() {
         String responseString = "{\"identifier\":[{\"system\":\"system1\",\"value\":\"value1\"}]}";
         exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, responseString);
         when(patientEhrRepository.findByInputPatientId("system1|value1")).thenReturn(null);
@@ -171,7 +169,7 @@ class PatientUtilsTest {
     }
 
     @Test
-    void getPseudonymWithValidIdentifier() throws Exception {
+    void getPseudonymWithValidIdentifier(){
         Identifier identifier = new Identifier();
         identifier.setValue("8c4272e5-937c-4461-8df1-02b9df4cad23");
         Patient patient = new Patient();

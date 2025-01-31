@@ -68,7 +68,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
 
         // replace the ids in the existing fhir server resources
         // with the inputResourceIds corresponding to that in the db
-        // the mapping table : FB_RESOURCE_COMPOSITION
+        // according to the mapping table : FB_RESOURCE_COMPOSITION
         if (existingResources != null && !existingResources.isEmpty()) {
             existingResources = mapToInputResourceId(existingResources, objectMapper);
         }

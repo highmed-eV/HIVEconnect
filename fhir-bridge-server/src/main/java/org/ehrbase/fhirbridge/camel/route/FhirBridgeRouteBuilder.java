@@ -6,30 +6,24 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
-import org.ehrbase.fhirbridge.config.security.Authenticator;
-import org.ehrbase.fhirbridge.core.PatientIdMapper;
 import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class FhirBridgeRouteBuilder extends RouteBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(FhirBridgeRouteBuilder.class);
-
-    private PatientIdMapper patientIdMapper;
-    private final Authenticator authenticator;
-
-    public FhirBridgeRouteBuilder(PatientIdMapper patientIdMapper,
-                        Authenticator authenticator) {
-        this.patientIdMapper = patientIdMapper;
-        this.authenticator = authenticator;
-    }
+//    private PatientIdMapper patientIdMapper;
+//    private final Authenticator authenticator;
+//
+//    public FhirBridgeRouteBuilder(PatientIdMapper patientIdMapper,
+//                        Authenticator authenticator) {
+//        this.patientIdMapper = patientIdMapper;
+//        this.authenticator = authenticator;
+//    }
 
     @Override
     public void configure() throws Exception {
@@ -41,8 +35,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
             .process(exchange -> {
                 Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-                if (exception instanceof BaseServerResponseException) {
-                    BaseServerResponseException baseException = (BaseServerResponseException) exception;
+                if (exception instanceof BaseServerResponseException baseException) {
                     if (baseException.getOperationOutcome() != null) {
                         // Set body with serialized operation outcome if present
                         exchange.getIn().setBody(FhirUtils.serializeOperationOutcome(baseException.getOperationOutcome()));
@@ -83,7 +76,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .process(exchange -> {
                     if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
                         String inputResource = (String) exchange.getIn().getBody();
-                        String inputResourceType = (String) FhirUtils.getResourceType(inputResource);
+                        String inputResourceType = FhirUtils.getResourceType(inputResource);
                         exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
                         exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
                     }
@@ -107,7 +100,18 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
 
         from("direct:FHIRToOpenEHRMappingProcess")
 
-            // 2. Extract the input reference Resources from the input fhir bundle
+            // Step 2: Check if the input resource or input bundle resource consisting of same resources already exist
+            // If already exist : throw duplicate resource or bundle resource creation
+            .doTry()
+                .to("direct:checkDuplicateResource")
+            .doCatch(Exception.class)
+                .log("direct:checkDuplicateResource catch exception")
+                .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
+            .end()
+
+
+            // Step 3:  Extract and update the input reference Resources from the input fhir bundle
             .doTry()
                 .to("direct:mapInternalResourceProcessor")
             .doCatch(Exception.class)
@@ -118,9 +122,9 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
 
 
             .doTry()
-                // Step 3: Forward request to FHIR server
+                // Step 4: Forward request to FHIR server
                 .to("direct:FHIRProcess")
-                // Step 4: Extract Patient Id created in the FHIR server
+                // Step 5: Extract Patient Id created in the FHIR server
                 .to("direct:extractPatientIdFromFhirResponseProcessor")
             .doCatch(Exception.class)
                 .log("direct:FHIRProcess catch exception")
@@ -131,7 +135,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             // .marshal().fhirJson("{{fhirVersion}}")
             // .log("Inserting Patient: ${body}")
 
-            // Step 5: Add the extracted reference Resources to the input fhir bundle
+            // Step 6: Add the extracted reference Resources to the input fhir bundle
             .doTry()
                 .to("direct:resourceReferenceProcessor")
             .doCatch(Exception.class)
@@ -148,7 +152,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                     // Prepare the final output 
                     .process(ProvideResourceResponseProcessor.BEAN_ID)
                 .otherwise()
-                    //Step 6: Process the openFHIR Input
+                    //Step 7: Process the openFHIR Input
                     .doTry()
                         .to("direct:OpenFHIRProcess")
                     .doCatch(Exception.class)
@@ -157,7 +161,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                     .endDoTry()
                     .end()
 
-                    //Step 7: Process the EHR Input
+                    //Step 8: Process the EHR Input
                     .doTry()
                         //Get the mapped openEHRId if avaialbe else create new ehrId
                         .to("direct:patientIdToEhrIdMapperProcess")
@@ -171,7 +175,7 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                     .endDoTry()
                     .end()
 
-                    //Step 8: Prepare the final output
+                    //Step 9: Prepare the final output
                     .process(ProvideResourceResponseProcessor.BEAN_ID)
                 .end();
 

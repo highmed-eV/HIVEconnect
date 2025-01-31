@@ -42,21 +42,40 @@ class FhirUtilsTest {
     }
 
     @Test
-    void getResourceIdsBundleResource() throws Exception {
+    void getResourceIdsBundleReferenceResource() throws Exception {
         String bundleJson = "{\"resourceType\":\"Bundle\",\"entry\":[{\"fullUrl\":\"urn:uuid:123\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"123\",\"encounter\":{\"reference\":\"Encounter/6\"},\"organization\":{\"reference\":\"Organization/7\"}}},{\"fullUrl\":\"urn:uuid:456\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"456\",\"encounter\":{\"reference\":\"Encounter/6\"},\"organization\":{\"reference\":\"Organization/7\"}}}]}";
-        List<String> resourceIds = FhirUtils.getResourceIds(bundleJson);
+        List<String> resourceIds = FhirUtils.getReferenceResourceIds(bundleJson);
         assertNotNull(resourceIds);
         assertTrue(resourceIds.contains("Encounter/6"));
         assertTrue(resourceIds.contains("Organization/7"));
     }
 
     @Test
-    void getResourceIdsNonBundleResource() throws Exception {
+    void getResourceIdsNonBundleReferenceResource() throws Exception {
         String resourceJson = "{\"resourceType\":\"Patient\",\"id\":\"123\",\"generalPractitioner\":[{\"reference\":\"Practitioner/456\"}],\"managingOrganization\":{\"reference\":\"Organization/789\"}}";
-        List<String> resourceIds = FhirUtils.getResourceIds(resourceJson);
+        List<String> resourceIds = FhirUtils.getReferenceResourceIds(resourceJson);
         assertNotNull(resourceIds);
         assertTrue(resourceIds.contains("Practitioner/456"));
         assertTrue(resourceIds.contains("Organization/789"));
     }
+
+    @Test
+    void getInputResourceIdsFromBundle() throws Exception {
+        String bundleJson = "{\"resourceType\":\"Bundle\",\"entry\":[{\"resource\":{\"resourceType\":\"Patient\",\"id\":\"123\"}},{\"resource\":{\"resourceType\":\"Observation\",\"id\":\"456\"}}]}";
+        List<String> resourceIds = FhirUtils.getInputResourceIds(bundleJson);
+        assertNotNull(resourceIds);
+        assertEquals(2, resourceIds.size());
+        assertTrue(resourceIds.contains("Patient/123"));
+        assertTrue(resourceIds.contains("Observation/456"));
+    }
+
+//    @Test
+//    void getInputResourceIdsFromSingleResource() throws Exception {
+//        String resourceJson = "{\"resourceType\":\"Patient\",\"id\":\"789\"}";
+//        List<String> resourceIds = FhirUtils.getInputResourceIds(resourceJson);
+//        assertNotNull(resourceIds);
+//        assertEquals(1, resourceIds.size());
+//        assertTrue(resourceIds.contains("Patient/789"));
+//    }
 }
 
