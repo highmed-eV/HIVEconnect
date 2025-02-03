@@ -102,10 +102,10 @@
         </dependency>		
 		<!-- camel dependencies -->
 
-		<dependency>
+		<!-- <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-fhir-starter</artifactId>
-        </dependency>
+        </dependency> -->
 
 		<!-- camel dependencies -->
 
@@ -117,10 +117,10 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-fhir</artifactId>
         </dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-servlet-starter</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.apache.camel.springboot</groupId>

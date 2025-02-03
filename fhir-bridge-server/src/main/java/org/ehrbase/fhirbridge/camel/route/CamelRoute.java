@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 
 @Component
-public class CamelRoute extends RouteBuilder {
+public class CamelRoute extends AbstractRouteBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(CamelRoute.class);
 
@@ -22,6 +22,7 @@ public class CamelRoute extends RouteBuilder {
 
     public CamelRoute(@Value("${camel.servlet.mapping.contextPath}") String contextPath,
                         @Value("${server.port}") String serverPort) {
+        super();
         this.contextPath = contextPath;
         this.serverPort = serverPort;
     }

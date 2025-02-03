@@ -91,8 +91,10 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                     }
                 })
             .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType }")
-            .to("direct:ExtractPatientIdProcess")
-            .to("direct:FHIRToOpenEHRMappingProcess");
+            // .to("direct:ExtractPatientIdProcess")
+            // .to("direct:FHIRToOpenEHRMappingProcess")
+            .log("FHIRBridgeProcess body: ${body}");
+            
 
 
         from("direct:ExtractPatientIdProcess")

@@ -42,11 +42,14 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,17 +82,44 @@ public class BundleResourceProvider implements IResourceProvider  {
         // Call Camel route with the Bundle resource
         String processedBundle = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, String.class);
 
-        // Set the ID for the processed resource
-        String generatedId = "Bundle" + System.currentTimeMillis();
-        // processedBundle.setId(new IdType("Bundle", generatedId));
+        // System.out.println("processedBundle..." + processedBundle);
+        Bundle processedBundleResource = fhirContext.newJsonParser().parseResource(Bundle.class, processedBundle);
 
         // Return the MethodOutcome
-        MethodOutcome outcome = new MethodOutcome();
-        outcome.setCreated(true);
-        // outcome.setId(processedBundle.getIdElement());
-        // outcome.setResource(processedBundle);
+        MethodOutcome methodOutcome = new MethodOutcome();
+        methodOutcome.setCreated(true);
+        
+        // Store all created resource IDs
+        List<String> createdResourceIds = new ArrayList<>();
+        OperationOutcome finalOutcome = new OperationOutcome();
 
-        return outcome;
+        // Iterate over all entries in the Bundle
+        for (Bundle.BundleEntryComponent entry : processedBundleResource.getEntry()) {
+            if (entry.hasResponse() && entry.getResponse().hasLocation()) {
+                String resourceId = entry.getResponse().getLocation();
+                createdResourceIds.add(resourceId); // Collect all created resource IDs
+            }
+
+            // If there is an OperationOutcome, append its issues to the final outcome
+            if (entry.hasResponse() && entry.getResponse().hasOutcome()) {
+                if (entry.getResponse().getOutcome() instanceof OperationOutcome) {
+                    OperationOutcome outcome = (OperationOutcome) entry.getResponse().getOutcome();
+                    finalOutcome.getIssue().addAll(outcome.getIssue());
+                }
+            }
+        }
+
+        // Set the last created resource ID as the main ID in MethodOutcome
+        if (!createdResourceIds.isEmpty()) {
+            methodOutcome.setId(new IdType(createdResourceIds.get(createdResourceIds.size() - 1)));
+        }
+
+        // Attach the combined OperationOutcome
+        if (!finalOutcome.getIssue().isEmpty()) {
+            methodOutcome.setOperationOutcome(finalOutcome);
+        }
+
+        return methodOutcome;
     }
 
     @Search(type = Bundle.class)

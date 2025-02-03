@@ -151,7 +151,10 @@ public class ProvideResourceResponseProcessor implements Processor {
             mergedJson.setAll((ObjectNode) node2);
             mergedJson.setAll((ObjectNode) node3);
 
-            exchange.getIn().setBody(mergedJson);
+            exchange.getIn().setBody(exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME));
+            exchange.getMessage().setBody(exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME));
+            // LOG.info("ProvideResourceResponseProcessor mergedJson:" + exchange.getMessage().getBody());
+
 
         }
 
