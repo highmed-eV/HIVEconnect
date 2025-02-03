@@ -16,6 +16,7 @@
 //
 //import java.lang.reflect.Method;
 //import java.util.Optional;
+//import java.util.UUID;
 //
 //import static org.junit.jupiter.api.Assertions.*;
 //import static org.mockito.Mockito.*;
@@ -32,10 +33,21 @@
 //    @Mock
 //    private Folder mockFolder;
 //
+//    @Mock
+//    private DvText dvText;
+//
+//    private UUID ehrId;
+//
 //    @BeforeEach
 //    void setUp() throws Exception {
-//        Method findMethod = DefaultRestDirectoryEndpoint.class.getDeclaredMethod("find", String.class);
-//        findMethod.setAccessible(true);
+//        ehrId = UUID.randomUUID();
+//        folderDAO = new DefaultRestFolderDAO(directoryEndpoint, "path/to/folder");
+//
+//        // Common mock behavior
+//        when(dvText.getValue()).thenReturn("Test Folder");
+//        when(mockFolder.getName()).thenReturn(dvText);
+//
+//        when(directoryEndpoint.syncFromDb()).thenReturn(mockFolder);
 //    }
 //
 //    @Test
@@ -117,4 +129,3 @@
 //        assertEquals("No Id Element for class java.lang.Object", exception.getMessage());
 //    }
 //}
-//

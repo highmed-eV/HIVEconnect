@@ -1,8 +1,13 @@
 package org.ehrbase.fhirbridge.openehr.openehrclient;
 
-import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
-
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.support.identification.ObjectId;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
+import com.nedap.archie.rm.support.identification.UIDBasedId;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.ehrbase.client.annotations.Id;
+import org.ehrbase.client.exception.ClientException;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -12,17 +17,7 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.nedap.archie.rm.support.identification.ObjectId;
-import com.nedap.archie.rm.support.identification.ObjectVersionId;
-import com.nedap.archie.rm.support.identification.UIDBasedId;
-
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.ehrbase.client.annotations.Id;
-import org.ehrbase.client.exception.ClientException;
-// import org.ehrbase.client.flattener.Flattener;
-// import org.ehrbase.client.flattener.Unflattener;
-// import org.ehrbase.client.openehrclient.CompositionEndpoint;
-import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
 public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
   public static final String COMPOSITION_PATH = "/composition/";

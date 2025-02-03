@@ -46,10 +46,10 @@ public class DefaultExceptionHandler implements Processor, MessageSourceAware {
     public void process(Exchange exchange) {
         Exception ex = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
 
-        if (ex instanceof WrongStatusCodeException) {
-            handleWrongStatusCode((WrongStatusCodeException) ex);
-        } else if (ex instanceof ConversionException) {
-            handleConversionException((ConversionException) ex);
+        if (ex instanceof WrongStatusCodeException e) {
+            handleWrongStatusCode(e);
+        } else if (ex instanceof ConversionException e) {
+            handleConversionException(e);
         } else {
             handleException(ex);
         }

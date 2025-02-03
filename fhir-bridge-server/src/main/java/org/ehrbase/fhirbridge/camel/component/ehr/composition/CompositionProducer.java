@@ -58,7 +58,7 @@ public class CompositionProducer extends DefaultProducer {
         //if yes: post and return the mergedCompositions versionUid
         //else put and return the mergedCompositions versionUid
         Object mergedComposition = endpoint.getOpenEhrClient().compositionEndpoint(ehrId).mergeCompositionEntity(body);
-        exchange.getMessage().setHeader(CompositionConstants.VERSION_UID, ((Composition) mergedComposition));
+        exchange.getMessage().setHeader(CompositionConstants.VERSION_UID, (mergedComposition));
 
         exchange.getMessage().setBody(mergedComposition);
     }

@@ -16,9 +16,15 @@ class TestableDefaultRestClient extends DefaultRestClient {
 
     private final OpenEhrClientConfig config;
 
+//    public TestableDefaultRestClient(OpenEhrClientConfig config) {
+//        super(null);
+//        this.config = config;
+//    }
+
     public TestableDefaultRestClient(String baseUri) {
         super(null);
         this.config = new OpenEhrClientConfig(URI.create(baseUri));
+//        this(new OpenEhrClientConfig(URI.create(baseUri)));
     }
 
     @Override
@@ -42,13 +48,19 @@ class TestableDefaultRestClient extends DefaultRestClient {
     }
 
     @Override
+    protected HttpResponse internalPost(URI uri, Map<String, String> headers, String body, ContentType contentType, String accept) {
+        return super.internalPost(uri, headers, body, contentType, accept);
+    }
+
+    @Override
     public HttpResponse internalDelete(URI uri, Map<String, String> headers) {
         return super.internalDelete(uri, headers);
     }
 
     @Override
-    protected HttpResponse internalPost(URI uri, Map<String, String> headers, String body, ContentType contentType, String accept) {
-        return super.internalPost(uri, headers, body, contentType, accept);
+    protected HttpResponse internalGet(URI uri, Map<String, String> headers, String accept) {
+        return super.internalGet(uri, headers, accept);
     }
+
 }
 

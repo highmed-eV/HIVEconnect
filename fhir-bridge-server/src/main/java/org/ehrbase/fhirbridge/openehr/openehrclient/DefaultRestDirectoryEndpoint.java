@@ -1,6 +1,5 @@
 package org.ehrbase.fhirbridge.openehr.openehrclient;
 
-
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +28,7 @@ public class DefaultRestDirectoryEndpoint {
         syncFromDb();
     }
 
-    synchronized void syncFromDb() {
+    protected synchronized void syncFromDb() {
         if (root == null) {
             createRoot();
         }
@@ -41,7 +40,6 @@ public class DefaultRestDirectoryEndpoint {
         rootVersion = defaultRestClient.httpPut(resolve(""), root, rootVersion);
         syncFromDb();
     }
-
 
     synchronized Folder find(String path) {
         if (StringUtils.isBlank(path)) {
@@ -55,10 +53,12 @@ public class DefaultRestDirectoryEndpoint {
                 newFolder = new Folder();
                 newFolder.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
                 newFolder.setName(new DvText(folderName));
-                if (current.getFolders() == null) {
-                    current.setFolders(new ArrayList<>());
+                if (current != null) {
+                    if (current.getFolders() == null) {
+                        current.setFolders(new ArrayList<>());
+                    }
+                    current.addFolder(newFolder);
                 }
-                current.addFolder(newFolder);
             }
             current = newFolder;
         }

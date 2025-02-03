@@ -7,37 +7,26 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.datavalues.DvCodedText;
-
-import static org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient.OBJECT_MAPPER;
-
-import java.io.IOException;
-import java.net.URI;
-import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
-import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.record.RecordImp;
-import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+
+import java.io.IOException;
+import java.net.URI;
+import java.time.temporal.TemporalAccessor;
+import java.util.*;
+
+import static org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient.OBJECT_MAPPER;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
@@ -84,7 +73,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
       JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
       JsonArray rows = asJsonObject.get("rows").getAsJsonArray();
       for (JsonElement jresult : rows) {
-        RecordImp record = new RecordImp(query.fields());
+        RecordImp recordImp = new RecordImp(query.fields());
         int i = 0;
         for (AqlField<?> aqlField : query.fields()) {
           String valueAsString = ((JsonArray) jresult).get(i).toString();
@@ -106,10 +95,10 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             object = extractValue(valueAsString, aClass);
           }
 
-          record.putValue(i, object);
+          recordImp.putValue(i, object);
           i++;
         }
-        result.add((T) record);
+        result.add((T) recordImp);
       }
 
     } catch (IOException e) {

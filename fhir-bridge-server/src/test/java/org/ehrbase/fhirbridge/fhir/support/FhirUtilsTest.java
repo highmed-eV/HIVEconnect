@@ -2,7 +2,6 @@ package org.ehrbase.fhirbridge.fhir.support;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,10 +24,8 @@ class FhirUtilsTest {
     @Mock
     private FhirContext fhirContextMock;
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
     @Test
-    void getResourceTypeValidJson() throws Exception {
+    void getResourceTypeValidJson() {
         String resourceJson = "{\"resourceType\":\"Patient\"}";
         String resourceType = FhirUtils.getResourceType(resourceJson);
         assertEquals("Patient", resourceType);
@@ -42,7 +39,7 @@ class FhirUtilsTest {
     }
 
     @Test
-    void getResourceIdsBundleReferenceResource() throws Exception {
+    void getResourceIdsBundleReferenceResource() {
         String bundleJson = "{\"resourceType\":\"Bundle\",\"entry\":[{\"fullUrl\":\"urn:uuid:123\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"123\",\"encounter\":{\"reference\":\"Encounter/6\"},\"organization\":{\"reference\":\"Organization/7\"}}},{\"fullUrl\":\"urn:uuid:456\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"456\",\"encounter\":{\"reference\":\"Encounter/6\"},\"organization\":{\"reference\":\"Organization/7\"}}}]}";
         List<String> resourceIds = FhirUtils.getReferenceResourceIds(bundleJson);
         assertNotNull(resourceIds);
@@ -51,7 +48,7 @@ class FhirUtilsTest {
     }
 
     @Test
-    void getResourceIdsNonBundleReferenceResource() throws Exception {
+    void getResourceIdsNonBundleReferenceResource() {
         String resourceJson = "{\"resourceType\":\"Patient\",\"id\":\"123\",\"generalPractitioner\":[{\"reference\":\"Practitioner/456\"}],\"managingOrganization\":{\"reference\":\"Organization/789\"}}";
         List<String> resourceIds = FhirUtils.getReferenceResourceIds(resourceJson);
         assertNotNull(resourceIds);
@@ -60,7 +57,7 @@ class FhirUtilsTest {
     }
 
     @Test
-    void getInputResourceIdsFromBundle() throws Exception {
+    void getInputResourceIdsFromBundle() {
         String bundleJson = "{\"resourceType\":\"Bundle\",\"entry\":[{\"resource\":{\"resourceType\":\"Patient\",\"id\":\"123\"}},{\"resource\":{\"resourceType\":\"Observation\",\"id\":\"456\"}}]}";
         List<String> resourceIds = FhirUtils.getInputResourceIds(bundleJson);
         assertNotNull(resourceIds);
@@ -68,14 +65,5 @@ class FhirUtilsTest {
         assertTrue(resourceIds.contains("Patient/123"));
         assertTrue(resourceIds.contains("Observation/456"));
     }
-
-//    @Test
-//    void getInputResourceIdsFromSingleResource() throws Exception {
-//        String resourceJson = "{\"resourceType\":\"Patient\",\"id\":\"789\"}";
-//        List<String> resourceIds = FhirUtils.getInputResourceIds(resourceJson);
-//        assertNotNull(resourceIds);
-//        assertEquals(1, resourceIds.size());
-//        assertTrue(resourceIds.contains("Patient/789"));
-//    }
 }
 
