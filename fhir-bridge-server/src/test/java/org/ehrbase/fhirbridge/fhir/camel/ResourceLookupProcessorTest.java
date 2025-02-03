@@ -1,6 +1,5 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
@@ -32,14 +31,11 @@ class ResourceLookupProcessorTest {
     @Mock
     private Exchange exchange;
 
-    private ObjectMapper objectMapper;
-
     @BeforeEach
     void setUp() {
         resourceLookupProcessor = new ResourceLookupProcessor(resourceCompositionRepository);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
-        objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -57,7 +53,7 @@ class ResourceLookupProcessorTest {
 
         verify(resourceCompositionRepository, times(2)).findById("Encounter/6");
         verify(resourceCompositionRepository, times(2)).findById("Organization/7");
-        assertEquals(Arrays.asList("Encounter/106", "Organization/107"), exchange.getProperty(CamelConstants.INTERNAL_RESOURCE_IDS));
+        assertEquals(Arrays.asList("Encounter/106", "Organization/107"), exchange.getProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS));
 
         // Verify that the updated resource is set correctly
         String updatedResource = exchange.getIn().getBody(String.class);
@@ -81,7 +77,7 @@ class ResourceLookupProcessorTest {
         // Verify that the internalResourceIds list contains only valid ones
         verify(resourceCompositionRepository, times(2)).findById("Encounter/6");
         verify(resourceCompositionRepository, times(1)).findById("invalidResource");
-        assertEquals(Arrays.asList("Encounter/106"), exchange.getProperty(CamelConstants.INTERNAL_RESOURCE_IDS));
+        assertEquals(Arrays.asList("Encounter/106"), exchange.getProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS));
 
         // Verify that the updated resource is set correctly
         String updatedResource = exchange.getIn().getBody(String.class);

@@ -32,7 +32,7 @@ class DefaultRestAdminTemplateEndpointTest {
     }
 
     @Test
-    void deleteTemplateIdNotNullTest() throws Exception {
+    void deleteTemplateIdNotNullTest() {
         String templateId = "some-template-id";
         URI baseUri = testableDefaultRestClient.getConfig().getBaseUri();
         URI targetUri = baseUri.resolve(DefaultRestAdminTemplateEndpoint.ADMIN_TEMPLATE_PATH + templateId);

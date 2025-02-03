@@ -3,6 +3,7 @@ package org.ehrbase.fhirbridge.ehr.openehrclient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
+import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestAqlEndpoint;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -45,48 +48,51 @@ class DefaultRestAqlEndpointTest {
         defaultRestAqlEndpoint = new DefaultRestAqlEndpoint(testableDefaultRestClient);
     }
 
-//    @Test
+    @Test
     void executeTest() throws IOException {
-        String mockAqlQuery = "SELECT * FROM Observation";
-        String mockResponseJson = "{\"rows\":[[\"2023-01-01\", \"123.45\"]]}";
+        String mockAqlQuery = "SELECT e/ehr_id FROM EHR e";
+        String mockResponseJson = "{\"rows\":[[\"123e4567-e89b-12d3-a456-426614174000\"],[\"987e6543-e21b-32d3-b456-426614174111\"]]}";
+        when(query.buildAql()).thenReturn(mockAqlQuery);
+
+        AqlField<Object>[] mockFields = new AqlField[1];
+        AqlField<Object> mockEhrIdField = mock(AqlField.class);
+        when(mockEhrIdField.getValueClass()).thenReturn((Class) String.class);
+        mockFields[0] = mockEhrIdField;
+        when(query.fields()).thenReturn(mockFields);
+
+        URI baseUri = testableDefaultRestClient.getConfig().getBaseUri();
+        URI targetUri = baseUri.resolve(DefaultRestAqlEndpoint.AQL_PATH);
+        doReturn(httpResponse).when(testableDefaultRestClient).internalPost(eq(targetUri), isNull(), any(), any(), any());
+        when(httpResponse.getEntity()).thenReturn(mock(HttpEntity.class));
+        when(httpResponse.getEntity().getContent()).thenReturn(new ByteArrayInputStream(mockResponseJson.getBytes()));
+
+        List<Record> result = defaultRestAqlEndpoint.execute(query);
+        verify(testableDefaultRestClient).internalPost(eq(targetUri), isNull(), any(), any(), any());
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("123e4567-e89b-12d3-a456-426614174000", result.get(0).value(0));
+        assertEquals("987e6543-e21b-32d3-b456-426614174111", result.get(1).value(0));
+    }
+
+    @Test
+    void executeRawTest() throws IOException {
+        String mockAqlQuery = "SELECT e/ehr_id FROM EHR e";
+        String mockResponseJson = "{\"rows\":[[\"123e4567-e89b-12d3-a456-426614174000\"],[\"987e6543-e21b-32d3-b456-426614174111\"]]}";
         when(query.buildAql()).thenReturn(mockAqlQuery);
 
         URI baseUri = testableDefaultRestClient.getConfig().getBaseUri();
         URI targetUri = baseUri.resolve(DefaultRestAqlEndpoint.AQL_PATH);
-//        when(testableDefaultRestClient.internalPost(eq(targetUri), isNull(), any(), any(), any())).thenReturn(httpResponse);
-        doReturn(httpResponse).when(testableDefaultRestClient).internalPost(eq(targetUri), isNull(), any(), any(), any());
+        doReturn(httpResponse).when(testableDefaultRestClient).internalPost(eq(targetUri), any(), any(), any(), any());
         when(httpResponse.getEntity()).thenReturn(mock(HttpEntity.class));
         when(httpResponse.getEntity().getContent()).thenReturn(new ByteArrayInputStream(mockResponseJson.getBytes()));
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(200);
 
-
-        List<Record> result = defaultRestAqlEndpoint.execute(query);
-        verify(testableDefaultRestClient).internalPost(eq(targetUri), isNull(), any(), any(), any());
-        assert result.size() == 1;
-        assert result.get(0).value(0).equals("2023-01-01");
-        assert result.get(0).value(1).equals("123.45");
-    }
-
-//    @Test
-    void executeRawTest() throws IOException {
-        // Arrange
-        String mockAqlQuery = "SELECT * FROM Observation";
-        String mockResponseJson = "{\"rows\":[[\"2023-01-01\", \"123.45\"]]}";
-
-        // Mock the HTTP response
-        when(testableDefaultRestClient.internalPost(any(), any(), any(), any(), any())).thenReturn(httpResponse);
-        when(httpResponse.getEntity()).thenReturn(mock(HttpEntity.class));
-        when(httpResponse.getEntity().getContent()).thenReturn(new ByteArrayInputStream(mockResponseJson.getBytes()));
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(200);
-
-        // Act
         QueryResponseData responseData = defaultRestAqlEndpoint.executeRaw(query);
 
-        // Assert
-        verify(testableDefaultRestClient).internalPost(any(), any(), any(), any(), any());
-        assert responseData != null;
-        assert responseData.getRows().size() == 1;
+        verify(testableDefaultRestClient).internalPost(eq(targetUri), any(), any(), any(), any());
+        assertNotNull(responseData);
+        assertEquals(2, responseData.getRows().size());
+        assertEquals("123e4567-e89b-12d3-a456-426614174000", responseData.getRows().get(0).get(0));
+        assertEquals("987e6543-e21b-32d3-b456-426614174111", responseData.getRows().get(1).get(0));
+
     }
 }

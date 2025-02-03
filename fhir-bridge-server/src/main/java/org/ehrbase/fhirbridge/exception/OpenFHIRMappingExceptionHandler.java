@@ -2,9 +2,6 @@ package org.ehrbase.fhirbridge.exception;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.ehrbase.fhirbridge.camel.processor.OpenEhrMappingExceptionHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -14,8 +11,6 @@ import org.springframework.util.Assert;
  * @since 1.2.0
  */
 public class OpenFHIRMappingExceptionHandler implements Processor {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenEhrMappingExceptionHandler.class);
 
     @Override
     public void process(Exchange exchange) {

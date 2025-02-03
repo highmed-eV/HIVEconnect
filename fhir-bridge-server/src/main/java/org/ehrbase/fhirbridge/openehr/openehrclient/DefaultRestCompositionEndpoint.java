@@ -34,7 +34,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
     this.ehrId = ehrId;
   }
 
-  static Optional<VersionUid> extractVersionUid(Object entity) {
+  public static Optional<VersionUid> extractVersionUid(Object entity) {
     return Arrays.stream(FieldUtils.getAllFields(entity.getClass()))
         .filter(f -> f.isAnnotationPresent(Id.class))
         .findAny()

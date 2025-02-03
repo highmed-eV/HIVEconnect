@@ -33,7 +33,7 @@ class DefaultRestAdminEhrEndpointTest {
     }
 
     @Test
-    void deleteEhrIdNotNullTest() throws Exception {
+    void deleteEhrIdNotNullTest() {
         UUID ehrId = UUID.randomUUID();
         URI baseUri = testableDefaultRestClient.getConfig().getBaseUri();
         URI targetUri = baseUri.resolve(DefaultRestAdminEhrEndpoint.ADMIN_EHR_PATH + ehrId);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- package org.ehrbase.fhirbridge.fhir.camel;
+package org.ehrbase.fhirbridge.fhir.camel;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,14 +42,12 @@ import java.util.regex.Pattern;
  * @since 1.2.0
  */
 @Component(ResourceLookupProcessor.BEAN_ID)
-@SuppressWarnings("java:S6212")
 public class ResourceLookupProcessor implements FhirRequestProcessor {
 
     public static final String BEAN_ID = "resourceLookupProcessor";
 
     private static final Logger LOG = LoggerFactory.getLogger(ResourceLookupProcessor.class);
 
-    @Autowired
     private final ResourceCompositionRepository resourceCompositionRepository;
 
     public ResourceLookupProcessor(ResourceCompositionRepository resourceCompositionRepository) {
@@ -61,6 +59,7 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
         List<String > inputResourceIds = exchange.getProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS, List.class);
         List<String> internalResourceIds = new ArrayList<>();
 
+        // fetch the internalResourceIds corresponding to the inputResourceIds from db
         for (String inputResourceId : inputResourceIds){
             Optional<String> optionalInternalResourceId = resourceCompositionRepository.findById(inputResourceId)
                     .map(ResourceComposition::getInternalResourceId);
@@ -70,33 +69,44 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
                 internalResourceIds.add(internalResourceId);
             }
         }
-        exchange.setProperty(CamelConstants.INTERNAL_RESOURCE_IDS, internalResourceIds);
+        exchange.setProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS, internalResourceIds);
 
         String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
-        String updatedResource = updatedInputBundle(inputResource);
+        // update the input resource bundle reference with internalResourceIds
+        String updatedResource = updateInputResource(inputResource);
         // Set the updated resource back into the exchange body
         exchange.getIn().setBody(updatedResource);
     }
 
-    private String updatedInputBundle(String inputResource) throws Exception {
+    private String updateInputResource(String inputResource) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(inputResource);
 
         if (rootNode != null || rootNode.isObject()) {
-            // Extract the "entry" array from the bundle
-            JsonNode entryArray = rootNode.path("entry");
-            if (entryArray.isArray()) {
-                // Update all references in the "entry" array
-                for (JsonNode entry : entryArray) {
-                    JsonNode resourceNode = entry.path("resource");
-                    if (resourceNode.isObject()) {
-                        updateReferences(resourceNode);
-                    }
-                }
+            // if resourceType is Bundle
+            if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
+                updateBundleReferences(rootNode);
+            } else {
+                // for individual resource
+                updateReferences(rootNode);
             }
         }
         // Return the updated JSON as a string
         return objectMapper.writeValueAsString(rootNode);
+    }
+
+    private void updateBundleReferences(JsonNode rootNode) {
+        // Extract the "entry" array from the bundle
+        JsonNode entryArray = rootNode.path("entry");
+        if (entryArray.isArray()) {
+            // Update all references in the "entry" array
+            for (JsonNode entry : entryArray) {
+                JsonNode resourceNode = entry.path("resource");
+                if (resourceNode.isObject()) {
+                    updateReferences(resourceNode);
+                }
+            }
+        }
     }
 
     private void updateReferences(JsonNode resourceNode) {
@@ -107,18 +117,7 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
             JsonNode childNode = resourceNode.get(fieldName);
 
             if ("reference".equals(fieldName) && childNode.isTextual()) {
-                String inputResourceId = childNode.asText();
-                if (Pattern.matches(regex, inputResourceId)) {
-                    {
-                        Optional<String> dbInternalResourceId = resourceCompositionRepository.findById(inputResourceId)
-                                .map(ResourceComposition::getInternalResourceId);
-
-                        if (dbInternalResourceId.isPresent() && resourceNode instanceof ObjectNode) {
-                            ((ObjectNode) resourceNode).put(fieldName, dbInternalResourceId.get());
-                        }
-                        break;
-                    }
-                }
+                if (processReferenceField(resourceNode, childNode, regex, fieldName)) break;
             } else if (childNode.isObject()) {
                 // Recursively update references in child objects
                 updateReferences(childNode);
@@ -129,5 +128,21 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
                 }
             }
         }
+    }
+
+    private boolean processReferenceField(JsonNode resourceNode, JsonNode childNode, String regex, String fieldName) {
+        String inputResourceId = childNode.asText();
+        if (Pattern.matches(regex, inputResourceId)) {
+            {
+                Optional<String> dbInternalResourceId = resourceCompositionRepository.findById(inputResourceId)
+                        .map(ResourceComposition::getInternalResourceId);
+
+                if (dbInternalResourceId.isPresent() && resourceNode instanceof ObjectNode) {
+                    ((ObjectNode) resourceNode).put(fieldName, dbInternalResourceId.get());
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }
