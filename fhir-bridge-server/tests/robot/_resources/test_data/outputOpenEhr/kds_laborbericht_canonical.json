@@ -1,621 +1,342 @@
 {
-  "_type" : "COMPOSITION",
-  "name" : {
-    "_type" : "DV_TEXT",
-    "value" : "Laborbericht"
+  "uid": {
+    "_type": "OBJECT_VERSION_ID",
+    "value": "95a025e4-1367-4f7c-94b2-df3ac8a773fa::local.ehrbase.org::1"
   },
-  "archetype_details" : {
-    "archetype_id" : {
-      "value" : "openEHR-EHR-COMPOSITION.report-result.v1"
-    },
-    "template_id" : {
-      "value" : "KDS_Laborbericht"
-    },
-    "rm_version" : "1.0.4"
+  "name": {
+    "_type": "DV_TEXT",
+    "value": "Laborbericht"
   },
-  "language" : {
-    "_type" : "CODE_PHRASE",
-    "terminology_id" : {
-      "_type" : "TERMINOLOGY_ID",
-      "value" : "ISO_639-1"
+  "_type": "COMPOSITION",
+  "context": {
+    "_type": "EVENT_CONTEXT",
+    "setting": {
+      "_type": "DV_CODED_TEXT",
+      "value": "other care",
+      "defining_code": {
+        "_type": "CODE_PHRASE",
+        "code_string": "238",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "openehr"
+        }
+      }
     },
-    "code_string" : "en"
-  },
-  "territory" : {
-    "_type" : "CODE_PHRASE",
-    "terminology_id" : {
-      "_type" : "TERMINOLOGY_ID",
-      "value" : "ISO_3166-1"
-    },
-    "code_string" : "DE"
-  },
-  "category" : {
-    "_type" : "DV_CODED_TEXT",
-    "value" : "event",
-    "defining_code" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "openehr"
-      },
-      "code_string" : "433"
+    "start_time": {
+      "_type": "DV_DATE_TIME",
+      "value": "2025-01-22T06:25:42.626+05:30"
     }
   },
-  "composer" : {
-    "_type" : "PARTY_IDENTIFIED",
-    "name" : "Max Mustermann"
-  },
-  "context" : {
-    "_type" : "EVENT_CONTEXT",
-    "start_time" : {
-      "_type" : "DV_DATE_TIME",
-      "value" : "2022-02-03T04:05:06"
-    },
-    "end_time" : {
-      "_type" : "DV_DATE_TIME",
-      "value" : "2022-02-03T04:05:06"
-    },
-    "setting" : {
-      "_type" : "DV_CODED_TEXT",
-      "value" : "home",
-      "defining_code" : {
-        "_type" : "CODE_PHRASE",
-        "terminology_id" : {
-          "_type" : "TERMINOLOGY_ID",
-          "value" : "openehr"
-        },
-        "code_string" : "225"
+  "category": {
+    "_type": "DV_CODED_TEXT",
+    "value": "event",
+    "defining_code": {
+      "_type": "CODE_PHRASE",
+      "code_string": "433",
+      "terminology_id": {
+        "_type": "TERMINOLOGY_ID",
+        "value": "openehr"
       }
-    },
-    "other_context" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "Tree"
-      },
-      "items" : [ {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Bericht ID"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "FILL-12345"
-        },
-        "archetype_node_id" : "at0002"
-      }, {
-        "_type" : "ELEMENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Status"
-        },
-        "value" : {
-          "_type" : "DV_TEXT",
-          "value" : "final"
-        },
-        "archetype_node_id" : "at0005"
-      }, {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Case identification"
-        },
-        "archetype_details" : {
-          "archetype_id" : {
-            "value" : "openEHR-EHR-CLUSTER.case_identification.v0"
-          },
-          "rm_version" : "1.0.4"
-        },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Case identifier"
-          },
-          "value" : {
-            "_type" : "DV_TEXT",
-            "value" : "encounter-id-1245"
-          },
-          "archetype_node_id" : "at0001"
-        } ],
-        "archetype_node_id" : "openEHR-EHR-CLUSTER.case_identification.v0"
-      } ],
-      "archetype_node_id" : "at0001"
-    },
-    "health_care_facility" : {
-      "_type" : "PARTY_IDENTIFIED",
-      "name" : "DOE, John"
     }
   },
-  "content" : [ {
-    "_type" : "OBSERVATION",
-    "name" : {
-      "_type" : "DV_TEXT",
-      "value" : "Laborbefund"
+  "composer": {
+    "_type": "PARTY_SELF"
+  },
+  "language": {
+    "_type": "CODE_PHRASE",
+    "code_string": "en",
+    "terminology_id": {
+      "_type": "TERMINOLOGY_ID",
+      "value": "ISO_639-1"
+    }
+  },
+  "territory": {
+    "_type": "CODE_PHRASE",
+    "code_string": "DE",
+    "terminology_id": {
+      "_type": "TERMINOLOGY_ID",
+      "value": "ISO_3166-1"
+    }
+  },
+  "archetype_details": {
+    "_type": "ARCHETYPED",
+    "rm_version": "1.0.4",
+    "template_id": {
+      "_type": "TEMPLATE_ID",
+      "value": "KDS_Laborbericht"
     },
-    "archetype_details" : {
-      "archetype_id" : {
-        "value" : "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+    "archetype_id": {
+      "_type": "ARCHETYPE_ID",
+      "value": "openEHR-EHR-COMPOSITION.report-result.v1"
+    }
+  },
+  "archetype_node_id": "openEHR-EHR-COMPOSITION.report-result.v1",
+  "content": [
+    {
+      "name": {
+        "value": "Laborbefund",
+        "_type": "DV_TEXT"
       },
-      "rm_version" : "1.0.4"
-    },
-    "language" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "ISO_639-1"
+      "_type": "OBSERVATION",
+      "subject": {
+        "_type": "PARTY_SELF"
       },
-      "code_string" : "en"
-    },
-    "encoding" : {
-      "_type" : "CODE_PHRASE",
-      "terminology_id" : {
-        "_type" : "TERMINOLOGY_ID",
-        "value" : "IANA_character-sets"
+      "encoding": {
+        "_type": "CODE_PHRASE",
+        "code_string": "UTF-8",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "IANA_character-sets"
+        }
       },
-      "code_string" : "ISO-10646-UTF-1"
-    },
-    "workflow_id" : {
-      "_type" : "OBJECT_REF",
-      "namespace" : "unknown",
-      "type" : "ANY",
-      "id" : {
-        "_type" : "GENERIC_ID",
-        "value" : "a31cd070-b217-3d53-bed7-ff3126975351",
-        "scheme" : "scheme"
-      }
-    },
-    "subject" : {
-      "_type" : "PARTY_SELF"
-    },
-    "provider" : {
-      "_type" : "PARTY_SELF"
-    },
-    "protocol" : {
-      "_type" : "ITEM_TREE",
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "Tree"
+      "language": {
+        "_type": "CODE_PHRASE",
+        "code_string": "en",
+        "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "ISO_639-1"
+        }
       },
-      "items" : [ {
-        "_type" : "CLUSTER",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Test request details"
+      "data": {
+        "name": {
+          "value": "Event Series",
+          "_type": "DV_TEXT"
         },
-        "items" : [ {
-          "_type" : "ELEMENT",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Identifikation der Laboranforderung"
-          },
-          "value" : {
-            "_type" : "DV_IDENTIFIER",
-            "id" : "123456-0_KH"
-          },
-          "archetype_node_id" : "at0063"
-        } ],
-        "archetype_node_id" : "at0094"
-      } ],
-      "archetype_node_id" : "at0004"
-    },
-    "guideline_id" : {
-      "_type" : "OBJECT_REF",
-      "namespace" : "unknown",
-      "type" : "ANY",
-      "id" : {
-        "_type" : "GENERIC_ID",
-        "value" : "2378b4d4-79b1-3bc3-ab7e-b56971e78d4f",
-        "scheme" : "scheme"
-      }
-    },
-    "data" : {
-      "name" : {
-        "_type" : "DV_TEXT",
-        "value" : "Event Series"
-      },
-      "origin" : {
-        "_type" : "DV_DATE_TIME",
-        "value" : "2022-02-03T04:05:06"
-      },
-      "period" : {
-        "_type" : "DV_DURATION",
-        "value" : "PT0S"
-      },
-      "duration" : {
-        "_type" : "DV_DURATION",
-        "value" : "PT0S"
-      },
-      "events" : [ {
-        "_type" : "INTERVAL_EVENT",
-        "name" : {
-          "_type" : "DV_TEXT",
-          "value" : "Any event"
+        "origin": {
+          "value": "2024-08-22T14:00:00.000",
+          "_type": "DV_DATE_TIME"
         },
-        "time" : {
-          "_type" : "DV_DATE_TIME",
-          "value" : "2022-02-03T04:05:06"
-        },
-        "data" : {
-          "_type" : "ITEM_TREE",
-          "name" : {
-            "_type" : "DV_TEXT",
-            "value" : "Tree"
-          },
-          "items" : [ {
-            "_type" : "ELEMENT",
-            "name" : {
-              "_type" : "DV_TEXT",
-              "value" : "Labortest-Kategorie"
+        "events": [
+          {
+            "name": {
+              "value": "Any event",
+              "_type": "DV_TEXT"
             },
-            "value" : {
-              "_type" : "DV_CODED_TEXT",
-              "value" : "Laboratory studies (set)",
-              "defining_code" : {
-                "_type" : "CODE_PHRASE",
-                "terminology_id" : {
-                  "_type" : "TERMINOLOGY_ID",
-                  "value" : "LOINC"
+            "time": {
+              "value": "2024-08-22T14:00:00.000",
+              "_type": "DV_DATE_TIME"
+            },
+            "_type": "POINT_EVENT",
+            "data": {
+              "name": {
+                "value": "Tree",
+                "_type": "DV_TEXT"
+              },
+              "archetype_node_id": "at0003",
+              "_type": "ITEM_TREE",
+              "items": [
+                {
+                  "name": {
+                    "value": "Labortest-Kategorie",
+                    "_type": "DV_TEXT"
+                  },
+                  "value": {
+                    "_type": "DV_CODED_TEXT",
+                    "value": "laboratory",
+                    "defining_code": {
+                      "_type": "CODE_PHRASE",
+                      "code_string": "26436-6",
+                      "terminology_id": {
+                        "_type": "TERMINOLOGY_ID",
+                        "value": "http://loinc.org"
+                      }
+                    }
+                  },
+                  "_type": "ELEMENT",
+                  "archetype_node_id": "at0005"
                 },
-                "code_string" : "26436-6"
-              }
-            },
-            "archetype_node_id" : "at0005"
-          }, {
-            "_type" : "CLUSTER",
-            "name" : {
-              "_type" : "DV_TEXT",
-              "value" : "Probenmaterial"
-            },
-            "archetype_details" : {
-              "archetype_id" : {
-                "value" : "openEHR-EHR-CLUSTER.specimen.v1"
-              },
-              "rm_version" : "1.0.4"
-            },
-            "items" : [ {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Specimen type"
-              },
-              "value" : {
-                "_type" : "DV_CODED_TEXT",
-                "value" : "Venous blood specimen",
-                "defining_code" : {
-                  "_type" : "CODE_PHRASE",
-                  "terminology_id" : {
-                    "_type" : "TERMINOLOGY_ID",
-                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v2-0487"
+                {
+                  "name": {
+                    "value": "Conclusion",
+                    "_type": "DV_TEXT"
                   },
-                  "code_string" : "122555007"
-                }
-              },
-              "archetype_node_id" : "at0029"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Specimen description"
-              },
-              "value" : {
-                "_type" : "DV_CODED_TEXT",
-                "value" : "Venous blood specimen",
-                "defining_code" : {
-                  "_type" : "CODE_PHRASE",
-                  "terminology_id" : {
-                    "_type" : "TERMINOLOGY_ID",
-                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v2-0493"
+                  "value": {
+                    "_type": "DV_TEXT",
+                    "value": "Normal blood count"
                   },
-                  "code_string" : "122555007"
-                }
-              },
-              "archetype_node_id" : "at0097"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Laboratory specimen identifier"
-              },
-              "value" : {
-                "_type" : "DV_IDENTIFIER",
-                "id" : "SP-987654"
-              },
-              "archetype_node_id" : "at0001"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "External identifier"
-              },
-              "value" : {
-                "_type" : "DV_IDENTIFIER",
-                "id" : "dev/null"
-              },
-              "archetype_node_id" : "at0088"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Date/time received"
-              },
-              "value" : {
-                "_type" : "DV_DATE_TIME",
-                "value" : "2022-02-03T04:05:06"
-              },
-              "archetype_node_id" : "at0034"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Sampling context"
-              },
-              "value" : {
-                "_type" : "DV_TEXT",
-                "value" : "Lorem ipsum"
-              },
-              "archetype_node_id" : "at0008"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Collection method"
-              },
-              "value" : {
-                "_type" : "DV_TEXT",
-                "value" : "Aspiration - action"
-              },
-              "archetype_node_id" : "at0007"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Körperstelle"
-              },
-              "value" : {
-                "_type" : "DV_TEXT",
-                "value" : "Arm"
-              },
-              "archetype_node_id" : "at0087"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Collection date/time"
-              },
-              "value" : {
-                "_type" : "DV_DATE_TIME",
-                "value" : "2022-02-03T04:05:06"
-              },
-              "archetype_node_id" : "at0015"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Specimen collector identifier"
-              },
-              "value" : {
-                "_type" : "DV_IDENTIFIER",
-                "id" : "1234567"
-              },
-              "archetype_node_id" : "at0070"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Parent specimen identifier"
-              },
-              "value" : {
-                "_type" : "DV_IDENTIFIER",
-                "id" : "dev/null"
-              },
-              "archetype_node_id" : "at0003"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Adequacy for testing"
-              },
-              "value" : {
-                "_type" : "DV_CODED_TEXT",
-                "value" : "Not mapped",
-                "defining_code" : {
-                  "_type" : "CODE_PHRASE",
-                  "terminology_id" : {
-                    "_type" : "TERMINOLOGY_ID",
-                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/specimen-status"
+                  "_type": "ELEMENT",
+                  "archetype_node_id": "at0057"
+                },
+                {
+                  "name": {
+                    "value": "Probenmaterial",
+                    "_type": "DV_TEXT"
                   },
-                  "code_string" : "42"
-                }
-              },
-              "archetype_node_id" : "at0041"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Comment"
-              },
-              "value" : {
-                "_type" : "DV_TEXT",
-                "value" : "Sample collected in the morning."
-              },
-              "archetype_node_id" : "at0045"
-            } ],
-            "archetype_node_id" : "openEHR-EHR-CLUSTER.specimen.v1"
-          },  {
-            "_type" : "CLUSTER",
-            "name" : {
-              "_type" : "DV_TEXT",
-              "value" : "Pro Laboranalyt"
-            },
-            "archetype_details" : {
-              "archetype_id" : {
-                "value" : "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
-              },
-              "rm_version" : "1.0.4"
-            },
-            "items" : [ {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Analyte name"
-              },
-              "value" : {
-                "_type" : "DV_CODED_TEXT",
-                "value" : "Hemoglobin [Mass/volume] in Blood",
-                "defining_code" : {
-                  "_type" : "CODE_PHRASE",
-                  "terminology_id" : {
-                    "_type" : "TERMINOLOGY_ID",
-                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/uv/ips/ValueSet/results-laboratory-observations-uv-ips"
+                  "archetype_node_id": "openEHR-EHR-CLUSTER.specimen.v1",
+                  "_type": "CLUSTER",
+                  "items": [
+                    {
+                      "name": {
+                        "value": "Laboratory specimen identifier",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "id": "SP-987654",
+                        "_type": "DV_IDENTIFIER"
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0001"
+                    },
+                    {
+                      "name": {
+                        "value": "Collection method",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "_type": "DV_TEXT",
+                        "value": "Aspiration"
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0007"
+                    },
+                    {
+                      "name": {
+                        "value": "Collection date/time",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "_type": "DV_DATE_TIME",
+                        "value": "2024-08-24T14:30:00.000"
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0015"
+                    },
+                    {
+                      "name": {
+                        "value": "Specimen type",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "_type": "DV_CODED_TEXT",
+                        "value": "Venous blood specimen",
+                        "defining_code": {
+                          "_type": "CODE_PHRASE",
+                          "code_string": "122555007",
+                          "terminology_id": {
+                            "_type": "TERMINOLOGY_ID",
+                            "value": "http://snomed.info/sct"
+                          }
+                        }
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0029"
+                    },
+                    {
+                      "name": {
+                        "value": "Comment",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "_type": "DV_TEXT",
+                        "value": "Sample collected in the morning."
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0045"
+                    },
+                    {
+                      "name": {
+                        "value": "Specimen collector identifier",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "id": "1234567",
+                        "_type": "DV_IDENTIFIER"
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0070"
+                    },
+                    {
+                      "name": {
+                        "value": "Körperstelle",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "_type": "DV_TEXT",
+                        "value": "Right arm"
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0087"
+                    }
+                  ]
+                },
+                {
+                  "name": {
+                    "value": "Pro Laboranalyt",
+                    "_type": "DV_TEXT"
                   },
-                  "code_string" : "718-7"
+                  "archetype_node_id": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1",
+                  "_type": "CLUSTER",
+                  "items": [
+                    {
+                      "name": {
+                        "value": "Messwert",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "_type": "DV_QUANTITY",
+                        "units": "g/dL",
+                        "magnitude": 7.4
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0001"
+                    },
+                    {
+                      "name": {
+                        "value": "Result status",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "_type": "DV_CODED_TEXT",
+                        "value": "final",
+                        "defining_code": {
+                          "_type": "CODE_PHRASE",
+                          "code_string": "final",
+                          "terminology_id": {
+                            "_type": "TERMINOLOGY_ID",
+                            "value": "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/diagnostic-report-status"
+                          }
+                        }
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0005"
+                    },
+                    {
+                      "name": {
+                        "value": "Analyte name",
+                        "_type": "DV_TEXT"
+                      },
+                      "value": {
+                        "_type": "DV_CODED_TEXT",
+                        "value": "Hemoglobin [Mass/volume] in Blood",
+                        "defining_code": {
+                          "_type": "CODE_PHRASE",
+                          "code_string": "718-7",
+                          "terminology_id": {
+                            "_type": "TERMINOLOGY_ID",
+                            "value": "http://loinc.org"
+                          }
+                        }
+                      },
+                      "_type": "ELEMENT",
+                      "archetype_node_id": "at0024"
+                    }
+                  ]
                 }
-              },
-              "archetype_node_id" : "at0024"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Messwert"
-              },
-              "value" : {
-                "_type" : "DV_QUANTITY",
-                "units" : "g/dL",
-                "magnitude" : 7.4
-              },
-              "archetype_node_id" : "at0001"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Interpretation"
-              },
-              "value" : {
-                "_type" : "DV_CODED_TEXT",
-                "value" : "High",
-                "defining_code" : {
-                  "_type" : "CODE_PHRASE",
-                  "terminology_id" : {
-                    "_type" : "TERMINOLOGY_ID",
-                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/observation-interpretation"
-                  },
-                  "code_string" : "H"
-                }
-              },
-              "archetype_node_id" : "at0004"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Test method"
-              },
-              "value" : {
-                "_type" : "DV_TEXT",
-                "value" : "Blood test"
-              },
-              "archetype_node_id" : "at0028"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Validation time"
-              },
-              "value" : {
-                "_type" : "DV_DATE_TIME",
-                "value" : "2022-02-03T04:05:06"
-              },
-              "archetype_node_id" : "at0025"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Result status"
-              },
-              "value" : {
-                "_type" : "DV_CODED_TEXT",
-                "value" : "Final",
-                "defining_code" : {
-                  "_type" : "CODE_PHRASE",
-                  "terminology_id" : {
-                    "_type" : "TERMINOLOGY_ID",
-                    "value" : "//fhir.hl7.org//ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/observation-status"
-                  },
-                  "code_string" : "final"
-                }
-              },
-              "archetype_node_id" : "at0005"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Result status time"
-              },
-              "value" : {
-                "_type" : "DV_DATE_TIME",
-                "value" : "2022-02-03T04:05:06"
-              },
-              "archetype_node_id" : "at0006"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Probe ID"
-              },
-              "value" : {
-                "_type" : "DV_IDENTIFIER",
-                "id" : "SP-987654"
-              },
-              "archetype_node_id" : "at0026"
-            }, {
-              "_type" : "ELEMENT",
-              "name" : {
-                "_type" : "DV_TEXT",
-                "value" : "Comment"
-              },
-              "value" : {
-                "_type" : "DV_TEXT",
-                "value" : "The observation result is within normal range, but further review may be needed."
-              },
-              "archetype_node_id" : "at0003"
-            } ],
-            "archetype_node_id" : "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
-          }, {
-            "_type" : "ELEMENT",
-            "name" : {
-              "_type" : "DV_TEXT",
-              "value" : "Conclusion"
+              ]
             },
-            "value" : {
-              "_type" : "DV_TEXT",
-              "value" : "Normal blood count"
-            },
-            "archetype_node_id" : "at0057"
-          } ],
-          "archetype_node_id" : "at0003"
-        },
-        "width" : {
-          "_type" : "DV_DURATION",
-          "value" : "PT42H"
-        },
-        "math_function" : {
-          "_type" : "DV_CODED_TEXT",
-          "value" : "minimum",
-          "defining_code" : {
-            "_type" : "CODE_PHRASE",
-            "terminology_id" : {
-              "_type" : "TERMINOLOGY_ID",
-              "value" : "openehr"
-            },
-            "code_string" : "145"
+            "archetype_node_id": "at0002"
           }
-        },
-        "archetype_node_id" : "at0002"
-      } ],
-      "archetype_node_id" : "at0001"
-    },
-    "archetype_node_id" : "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
-  } ],
-  "archetype_node_id" : "openEHR-EHR-COMPOSITION.report-result.v1"
+        ],
+        "_type": "HISTORY",
+        "archetype_node_id": "at0001"
+      },
+      "archetype_details": {
+        "rm_version": "1.0.4",
+        "archetype_id": {
+          "value": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+        }
+      },
+      "archetype_node_id": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
+    }
+  ]
 }

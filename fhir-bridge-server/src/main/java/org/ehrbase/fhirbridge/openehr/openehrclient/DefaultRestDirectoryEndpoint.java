@@ -23,7 +23,7 @@ public class DefaultRestDirectoryEndpoint {
     private Folder root;
 
 
-    DefaultRestDirectoryEndpoint(DefaultRestClient defaultRestClient, UUID ehrId) {
+    public DefaultRestDirectoryEndpoint(DefaultRestClient defaultRestClient, UUID ehrId) {
         this.defaultRestClient = defaultRestClient;
         this.ehrId = ehrId;
         syncFromDb();

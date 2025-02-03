@@ -16,12 +16,6 @@
 
  package org.ehrbase.fhirbridge.openehr.camel;
 
-import ca.uhn.fhir.jpa.api.dao.IFhirResourceDao;
-import org.ehrbase.fhirbridge.camel.CamelConstants;
-import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
-import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
-
-import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.generic.PartySelf;
@@ -30,19 +24,16 @@ import com.nedap.archie.rm.support.identification.PartyRef;
 import org.apache.camel.Exchange;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record1;
-import org.ehrbase.fhirbridge.fhir.support.PatientUtils;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
+import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.ehrbase.fhirbridge.core.domain.PatientEhr;
 import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
 import org.ehrbase.fhirbridge.exception.ConversionException;
-import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
+import org.ehrbase.fhirbridge.fhir.support.PatientUtils;
 import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
-// import org.ehrbase.openehr.sdk.generator.commons.aql.query.Query;
-// import org.ehrbase.openehr.sdk.generator.commons.aql.record.Record1;
-import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -82,13 +73,11 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
     @Override
     public void process(Exchange exchange) throws Exception {
         Patient resource = (Patient) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE);
-        // String patientId = getPatientId(exchange);
 
         String systemId = (String) exchange.getIn().getHeader(CamelConstants.INPUT_SYSTEM_ID);
         String patientId = (String) exchange.getIn().getHeader(CamelConstants.PATIENT_ID);
         String serverPatientIdStr = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
         String serverPatientId = extractPatientId(serverPatientIdStr);
-        LOG.info("findById(patientId): " + serverPatientId);
         UUID ehrId = Optional.ofNullable(patientEhrRepository.findByInternalPatientId(serverPatientIdStr))  
                     .map(PatientEhr::getEhrId) 
                     .orElseGet(() -> createOrGetPatientEhr(resource, patientId, serverPatientId, systemId));
@@ -118,8 +107,8 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         Query<Record1<UUID>> query = Query.buildNativeQuery(
                 "SELECT e/ehr_id/value from EHR e WHERE e/ehr_status/subject/external_ref/id/value = '" + pseudonym.getValue() + "'", UUID.class);
         List<Record1<UUID>> result = openEhrClient.aqlEndpoint().execute(query);
-        if (result.size() == 0) {
-            LOG.debug("PatientId not found in EHR server" + patientId + "Creating EHRId");
+        if (result.isEmpty()) {
+            LOG.debug("PatientId not found in EHR server: {} Creating EHRId", patientId);
             ehrId = (UUID) createEhr(pseudonym.getValue());
             PatientEhr patientEhr = new PatientEhr(patientId, serverPatientId, systemId, ehrId);
             patientEhrRepository.save(patientEhr);
@@ -134,10 +123,10 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
             ehrId = result.get(0).value1();
             
             //Medblocks: Check the patientid-ehrid mapping is correct in the db
-            //TODO: check if ehrid mapped to serverPatientId in db. Else throw error ??
+            // TODO: check if ehrid mapped to serverPatientId in db. Else throw error ??
             // PatientEhr patientEhr = Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndEhrId(serverPatientId, ehrId))
             //                 .orElseThrow(() -> new ConversionException("Conflict: EHR ids and patient id do not match (subject.external_ref.id.value). Please check your input and pass the correct reference"));
-            LOG.debug("PatientId found in EHR server" + patientId + " EHRId: " + ehrId);
+            LOG.debug("PatientId found in EHR server: {} EHRId: {}", patientId, ehrId);
         }
         return ehrId;
     }

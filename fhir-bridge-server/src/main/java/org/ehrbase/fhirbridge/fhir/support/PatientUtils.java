@@ -24,11 +24,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class PatientUtils {
 
+    public static final String RESOURCE_TYPE = "resourceType";
+    public static final String IDENTIFIER = "identifier";
+    public static final String SYSTEM = "system";
+    public static final String VALUE = "value";
+    public static final String PATIENT = "Patient";
+    public static final String ENTRY = "entry";
+    public static final String FULL_URL = "fullUrl";
+    public static final String CONTAINED = "contained";
     private PatientEhrRepository patientEhrRepository;
 
     private  final ObjectMapper objectMapper = new ObjectMapper();
 
-    private PatientUtils(PatientEhrRepository patientEhrRepository) {
+    public PatientUtils(PatientEhrRepository patientEhrRepository) {
         this.patientEhrRepository = patientEhrRepository;
     }
 
@@ -40,27 +48,27 @@ public class PatientUtils {
 
         String patientId = null;
         String serverPatientId = null;
-        if (resourceNode.has("resourceType") && "Patient".equals(resourceNode.get("resourceType").asText())) {
+        if (resourceNode.has(RESOURCE_TYPE) && PATIENT.equals(resourceNode.get(RESOURCE_TYPE).asText())) {
             //Patient resource
             //get PATIENT_ID and SERVER_PATIENT_ID
             //TODO: Should this be id or identifier value??
             // Get the "identifier" array
-            JsonNode identifierNode = resourceNode.path("identifier");
+            JsonNode identifierNode = resourceNode.path(IDENTIFIER);
 
             // Access the first identifier object in the array (assuming it's the first one)
             JsonNode firstIdentifier = identifierNode.isArray() && identifierNode.size() > 0 ? identifierNode.get(0) : null;
 
             if (firstIdentifier != null) {
                 // Extract "system" and "value" from the first identifier
-                String system = firstIdentifier.path("system").asText();
-                String value = firstIdentifier.path("value").asText();
+                String system = firstIdentifier.path(SYSTEM).asText();
+                String value = firstIdentifier.path(VALUE).asText();
                 patientId = system + "|" + value;
             }
             
-            serverPatientId = getServerPatientIdFromDb(exchange, patientId);
+            serverPatientId = getServerPatientIdFromDb(patientId);
             if (serverPatientId != null)  {
                 //This can be the case when Patient resource is part of the bundle and the patient is already created
-                throw new UnprocessableEntityException(resourceNode.path("resourceType") + " absolute reference: " + patientId + " already exists.Please provide relative reference: " + serverPatientId);
+                throw new UnprocessableEntityException(resourceNode.path(RESOURCE_TYPE) + " absolute reference: " + patientId + " already exists.Please provide relative reference: " + serverPatientId);
             }
             //Set ids in exchange
             exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
@@ -79,21 +87,21 @@ public class PatientUtils {
                 
                 //get PATIENT_ID and SERVER_PATIENT_ID
                 patientId = extractPatientIdFromReference(exchange, resourceNode, reference);
-                serverPatientId = getServerPatientIdFromDb(exchange, patientId);
+                serverPatientId = getServerPatientIdFromDb(patientId);
 
                 //Set ids in exchange
                 exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
                 exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
                                 
-            } else if (resourceNode.has("identifier")) {
+            } else if (resourceNode.has(IDENTIFIER)) {
                 //get the Identifier systema nd value
-                String system =  resourceNode.path("identifier").path("system").asText();
-                String value =  resourceNode.path("identifier").path("value").asText();
+                String system =  resourceNode.path(IDENTIFIER).path(SYSTEM).asText();
+                String value =  resourceNode.path(IDENTIFIER).path(VALUE).asText();
                 
                 //TODO: Adding identifier as well in the PatientEhr repository
                 //get PATIENT_ID and SERVER_PATIENT_ID
                 patientId = system + "|" + value;
-                serverPatientId = getServerPatientIdFromDb(exchange, patientId);
+                serverPatientId = getServerPatientIdFromDb(patientId);
                 
                 //Set in exchange
                 //Set ids in exchange
@@ -107,20 +115,23 @@ public class PatientUtils {
         }
     }
 
-    public  JsonNode getPatientInfoResource(String resourceJson) {
+    public JsonNode getPatientInfoResource(String resourceJson) {
         //PatientReferenceProcessor
         try {
             // Parse the JSON
             JsonNode rootNode = objectMapper.readTree(resourceJson);
 
             // Check if the resource is a Bundle
-            if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
+            if (rootNode.has(RESOURCE_TYPE) && "Bundle".equals(rootNode.get(RESOURCE_TYPE).asText())) {
                 // Handle as a Bundle
-                JsonNode entryArray = rootNode.path("entry");
+                JsonNode entryArray = rootNode.path(ENTRY);
                 for (JsonNode entryNode : entryArray) {
                     // Get the resource in each entry
                     JsonNode resourceNode = entryNode.path("resource");
-                    return extractPatientFromResource(resourceNode);
+                    JsonNode patientInfo = extractPatientFromResource(resourceNode);
+                    if (patientInfo != null) {
+                        return patientInfo;
+                    }
                 }
             } else {
                 // Handle as a single resource
@@ -133,15 +144,14 @@ public class PatientUtils {
         return null; // Return null if no patient ID is found
     }
 
-   
-    public  JsonNode extractPatientFromResource(JsonNode resourceNode) {
+    public JsonNode extractPatientFromResource(JsonNode resourceNode) {
         // If the resource itself is a Patient, return its ID
-        if (resourceNode.has("resourceType") && "Patient".equals(resourceNode.get("resourceType").asText())) {
+        if (resourceNode.has(RESOURCE_TYPE) && PATIENT.equals(resourceNode.get(RESOURCE_TYPE).asText())) {
             return resourceNode;
         }
 
         JsonNode referenceNode;
-        String resourceType = resourceNode.path("resourceType").asText();
+        String resourceType = resourceNode.path(RESOURCE_TYPE).asText();
         // patient(Consent, Immunization) individual(ResearchSubject)
         // Determine the reference node(subject or individual) based on resource type
         if ("ResearchSubject".equals(resourceType)) {
@@ -157,7 +167,7 @@ public class PatientUtils {
                 return referenceNode;
             
         } else {
-            throw new UnprocessableEntityException(resourceNode.path("resourceType") + " should be linked to a subject/patient");
+            throw new UnprocessableEntityException(resourceNode.path(RESOURCE_TYPE) + " should be linked to a subject/patient");
         }
 
     }
@@ -193,7 +203,7 @@ public class PatientUtils {
                 // }
 
                 exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
-                String referenceStr = reference.split("#")[0];
+                String referenceStr = reference.split("#")[1];
                 JsonNode resource = extractContainedResource(resourceNode, referenceStr);
                 if (resource != null) {
                     return referenceStr;
@@ -220,7 +230,7 @@ public class PatientUtils {
                 exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
                 JsonNode resource = extractFullUrlResource(resourceNode, reference);
                 if (resource != null) {
-                    return resource.get("id").asText();
+                    return resource.path("resource").path("id").asText();
                 }
                 return null;
             } else {
@@ -244,7 +254,7 @@ public class PatientUtils {
         return null;
     }
 
-    public  String getServerPatientIdFromDb(Exchange exchange, String patientId) {
+    public  String getServerPatientIdFromDb(String patientId) {
 
         //get the internalPatientId from db
         String internalPatientId = Optional.ofNullable(patientEhrRepository.findByInputPatientId(patientId))  
@@ -255,7 +265,6 @@ public class PatientUtils {
         
         return internalPatientId;
     }
-
 
     public  String getPatientIdFromOutCome(Exchange exchange) {
         MethodOutcome resource = (MethodOutcome) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
@@ -278,18 +287,18 @@ public class PatientUtils {
              // Parse the JSON string into a JsonNode
             
             // Get the "identifier" array
-            JsonNode identifierNode = rootNode.path("identifier");
+            JsonNode identifierNode = rootNode.path(IDENTIFIER);
 
             // Access the first identifier object in the array (assuming it's the first one)
             JsonNode firstIdentifier = identifierNode.isArray() && identifierNode.size() > 0 ? identifierNode.get(0) : null;
 
             if (firstIdentifier != null) {
                 // Extract "system" and "value" from the first identifier
-                String system = firstIdentifier.path("system").asText();
-                String value = firstIdentifier.path("value").asText();
+                String system = firstIdentifier.path(SYSTEM).asText();
+                String value = firstIdentifier.path(VALUE).asText();
                 patientId = system + "|" + value;
             }
-            String serverPatientId = getServerPatientIdFromDb(exchange, patientId);
+            String serverPatientId = getServerPatientIdFromDb(patientId);
             if (serverPatientId != null)  {
                 //This can be the case when Patient resource is part of the bundle and the patient is already created
                 throw new UnprocessableEntityException("Patient: " + patientId + " already exists");
@@ -315,7 +324,7 @@ public class PatientUtils {
             e.printStackTrace();
         }
         // Extract the location if it starts with "Patient/"
-        Optional<String> patientLocation = Optional.ofNullable(rootNode.get("entry"))
+        Optional<String> patientLocation = Optional.ofNullable(rootNode.get(ENTRY))
                 .map(entryNode -> entryNode.elements())  // Get the array of entry
                 .map(entryIterator -> {
                     // Convert iterator to stream
@@ -359,9 +368,9 @@ public class PatientUtils {
         JsonNode resource = null;
 
         // Directly target the `entry` array
-        if (rootNode.has("entry") && rootNode.get("entry").isArray()) {
-            for (JsonNode entry : rootNode.get("entry")) {
-                if (entry.has("fullUrl") && entry.get("fullUrl").isTextual() && fullUrl.equals(entry.get("fullUrl").asText())) {
+        if (rootNode.has(ENTRY) && rootNode.get(ENTRY).isArray()) {
+            for (JsonNode entry : rootNode.get(ENTRY)) {
+                if (entry.has(FULL_URL) && entry.get(FULL_URL).isTextual() && fullUrl.equals(entry.get(FULL_URL).asText())) {
                     resource = entry.deepCopy();
                 }
             }
@@ -373,11 +382,11 @@ public class PatientUtils {
         JsonNode resource = null;
 
         // Directly target the `contained` array
-        if (rootNode.has("contained") && rootNode.get("contained").isArray()) {
-            for (JsonNode contained : rootNode.get("contained")) {
-                if (contained.has("resourceType") 
-                && contained.get("resourceType").isTextual() 
-                && "Patient".equals(contained.get("resourceType").asText())
+        if (rootNode.has(CONTAINED) && rootNode.get(CONTAINED).isArray()) {
+            for (JsonNode contained : rootNode.get(CONTAINED)) {
+                if (contained.has(RESOURCE_TYPE)
+                && contained.get(RESOURCE_TYPE).isTextual()
+                && PATIENT.equals(contained.get(RESOURCE_TYPE).asText())
                 && contained.has("id") 
                 && contained.get("id").isTextual() 
                 && containedId.equals(contained.get("id").asText())) {

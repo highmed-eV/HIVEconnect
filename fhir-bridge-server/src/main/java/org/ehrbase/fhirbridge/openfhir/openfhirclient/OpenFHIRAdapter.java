@@ -36,12 +36,10 @@ public class OpenFHIRAdapter {
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity <String> entity = new HttpEntity<String>(inputResource, headers);
+            HttpEntity <String> entity = new HttpEntity<>(inputResource, headers);
             
             String openEhrJson = restTemplate.postForObject(openFhirUrl + "/openfhir/toopenehr", entity, String.class);
             logger.info("Received converted openEHR JSON.");
-            // JSONObject openEhrJsonObj = new JSONObject(openEhrJson);
-            // logger.info(">>>> " + openEhrJsonObj.toString(4));
             
             return openEhrJson;
         } catch (Exception e) {
