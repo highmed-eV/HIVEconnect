@@ -26,7 +26,7 @@ public abstract class AbstractSetupIT {
 
     public static final String PATIENT_ID_TOKEN = "\\{\\{patientId\\}\\}";
 
-    public static String PATIENT_ID;
+    public static String patientId;
 
     protected final FhirContext context;
 
@@ -52,10 +52,10 @@ public abstract class AbstractSetupIT {
                 new ResourceTemplateProvider("classpath:/opt/*.opt"),
                 httpClient);
 
-        PATIENT_ID = UUID.randomUUID().toString();
+        patientId = UUID.randomUUID().toString();
 
         EhrStatus ehrStatus = new EhrStatus();
-        ehrStatus.setSubject(new PartySelf(new PartyRef(new HierObjectId(PATIENT_ID), "demographic", "PERSON")));
+        ehrStatus.setSubject(new PartySelf(new PartyRef(new HierObjectId(patientId), "demographic", "PERSON")));
         ehrStatus.setArchetypeNodeId("openEHR-EHR-EHR_STATUS.generic.v1");
         ehrStatus.setName(new DvText("Integration tests status"));
         ehrStatus.setModifiable(true);

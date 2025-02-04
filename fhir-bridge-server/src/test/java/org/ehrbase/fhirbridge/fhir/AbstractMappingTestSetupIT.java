@@ -38,7 +38,7 @@ public abstract class AbstractMappingTestSetupIT extends AbstractSetupIT {
 
     protected void create(String path) throws IOException {
         String resource = testFileLoader.loadResourceToString(path);
-        MethodOutcome outcome = client.create().resource(resource.replaceAll(PATIENT_ID_TOKEN, PATIENT_ID)).execute();
+        MethodOutcome outcome = client.create().resource(resource.replaceAll(PATIENT_ID_TOKEN, patientId)).execute();
 
         assertNotNull(outcome.getId());
         assertEquals(true, outcome.getCreated());

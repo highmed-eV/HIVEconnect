@@ -14,14 +14,8 @@ import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record1;
 import org.ehrbase.client.exception.ClientException;
-// import org.ehrbase.client.openehrclient.FolderDAO;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,7 +62,7 @@ public class DefaultRestFolderDAO implements FolderDAO {
 
     @Override
     public FolderDAO getSubFolder(String path) {
-        DefaultRestFolderDAO folderDAO = new DefaultRestFolderDAO(directoryEndpoint, Stream.of(this.path, path).filter(s -> StringUtils.isNotBlank(s)).collect(Collectors.joining("//")));
+        DefaultRestFolderDAO folderDAO = new DefaultRestFolderDAO(directoryEndpoint, Stream.of(this.path, path).filter(StringUtils::isNotBlank).collect(Collectors.joining("//")));
         folderDAO.sync();
         return folderDAO;
     }
@@ -103,7 +97,7 @@ public class DefaultRestFolderDAO implements FolderDAO {
 
         List<Record1<T>> execute = directoryEndpoint.getDefaultRestClient().aqlEndpoint().execute(query);
 
-        return execute.stream().map(Record1::value1).collect(Collectors.toList());
+        return execute.stream().map(Record1::value1).toList();
     }
 
     void sync() {

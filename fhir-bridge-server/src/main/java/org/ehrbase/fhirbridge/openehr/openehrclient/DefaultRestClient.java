@@ -21,12 +21,6 @@ import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
-import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.WeakHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -40,13 +34,16 @@ import org.apache.http.util.EntityUtils;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
-// import org.ehrbase.client.flattener.DefaultValuesProvider;
-// import org.ehrbase.client.openehrclient.*;
-// import org.ehrbase.client.templateprovider.ClientTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.mapper.RmObjectJsonDeSerializer;
-import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.WeakHashMap;
 
 public class DefaultRestClient implements OpenEhrClient {
 
@@ -123,8 +120,7 @@ public class DefaultRestClient implements OpenEhrClient {
             ContentType.APPLICATION_JSON,
             ContentType.APPLICATION_JSON.getMimeType());
     Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
-    VersionUid versionUid = eTag == null ? null: buildVersionUidFromETag(eTag);
-    return versionUid;
+    return eTag == null ? null: buildVersionUidFromETag(eTag);
   }
 
   private VersionUid buildVersionUidFromETag(Header eTag) {
