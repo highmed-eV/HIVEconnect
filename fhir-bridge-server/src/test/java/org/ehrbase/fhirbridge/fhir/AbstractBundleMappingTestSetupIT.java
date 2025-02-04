@@ -16,7 +16,7 @@ public abstract class AbstractBundleMappingTestSetupIT extends AbstractMappingTe
     @Override
     protected void create(String path) throws IOException {
         String resource = testFileLoader.loadResourceToString(path);
-        String outcome = client.transaction().withBundle(resource.replaceAll(PATIENT_ID_TOKEN, PATIENT_ID)).execute();
+        String outcome = client.transaction().withBundle(resource.replaceAll(PATIENT_ID_TOKEN, patientId)).execute();
         String fileEnding = path.substring(path.length() - 4);
         IParser parser;
         if (fileEnding.equals(".xml")) {

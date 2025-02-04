@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
     public static final String DEFINITION_TEMPLATE_ADL_1_4_PATH = "rest/openehr/v1/definition/template/adl1.4/";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DefaultRestClient defaultRestClient;
 
@@ -81,7 +80,6 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
             return new TemplatesResponseData(templateResponseData);
         } catch (URISyntaxException | IOException e) {
-            logger.error(e.getMessage(), e);
             throw new ClientException(e.getMessage(), e);
         }
     }
