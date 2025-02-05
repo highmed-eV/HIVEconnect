@@ -21,23 +21,19 @@ import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.server.interceptor.auth.AuthorizationInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.auth.IAuthRule;
 import ca.uhn.fhir.rest.server.interceptor.auth.RuleBuilder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.UrlType;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This interceptor changes the behavior of a @{@link ca.uhn.fhir.rest.server.RestfulServer}
@@ -76,7 +72,7 @@ public class SmartOnFhirAuthorizationInterceptor extends AuthorizationIntercepto
       List<String> scopes = Arrays.asList(jwt.getClaimAsString(SCOPE_CLAIM).split(" "));
       if (scopes.contains(SOF_SCOPE)) {
         List<String> systemScopes =
-            scopes.stream().filter(s -> s.startsWith(SYSTEM_SCOPE)).collect(Collectors.toList());
+            scopes.stream().filter(s -> s.startsWith(SYSTEM_SCOPE)).toList();
         if (CollectionUtils.isNotEmpty(systemScopes)) {
           systemScopes.forEach(systemScope -> rules.addAll(buildSmartSystemRules(systemScope)));
           rules.addAll(

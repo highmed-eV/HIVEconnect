@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Component(CompositionLookupProcessor.BEAN_ID)
 public class CompositionLookupProcessor implements FhirRequestProcessor {
+
     public static final String BEAN_ID = "compositionLookupProcessor";
 
     private final ResourceCompositionRepository resourceCompositionRepository;

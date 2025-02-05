@@ -2,7 +2,6 @@ package org.ehrbase.fhirbridge.ehr.openehrclient;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
@@ -32,9 +31,6 @@ class DefaultRestAqlEndpointTest {
 
     @Mock
     private HttpResponse httpResponse;
-
-    @Mock
-    private StatusLine statusLine;
 
     @Mock
     private Query<Record> query;
@@ -74,25 +70,24 @@ class DefaultRestAqlEndpointTest {
         assertEquals("987e6543-e21b-32d3-b456-426614174111", result.get(1).value(0));
     }
 
-//    @Test
-//    void executeRawTest() throws IOException {
-//        String mockAqlQuery = "SELECT e/ehr_id FROM EHR e";
-//        String mockResponseJson = "{\"rows\":[[\"123e4567-e89b-12d3-a456-426614174000\"],[\"987e6543-e21b-32d3-b456-426614174111\"]]}";
-//        when(query.buildAql()).thenReturn(mockAqlQuery);
-//
-//        URI baseUri = testableDefaultRestClient.getConfig().getBaseUri();
-//        URI targetUri = baseUri.resolve(DefaultRestAqlEndpoint.AQL_PATH);
-//        doReturn(httpResponse).when(testableDefaultRestClient).internalPost(eq(targetUri), any(), any(), any(), any());
-//        when(httpResponse.getEntity()).thenReturn(mock(HttpEntity.class));
-//        when(httpResponse.getEntity().getContent()).thenReturn(new ByteArrayInputStream(mockResponseJson.getBytes()));
-//
-//        QueryResponseData responseData = defaultRestAqlEndpoint.executeRaw(query);
-//
-//        verify(testableDefaultRestClient).internalPost(eq(targetUri), any(), any(), any(), any());
-//        assertNotNull(responseData);
-//        assertEquals(2, responseData.getRows().size());
-//        assertEquals("123e4567-e89b-12d3-a456-426614174000", responseData.getRows().get(0).get(0));
-//        assertEquals("987e6543-e21b-32d3-b456-426614174111", responseData.getRows().get(1).get(0));
-//
-//    }
+    @Test
+    void executeRawTest() throws IOException {
+        String mockAqlQuery = "SELECT e/ehr_id FROM EHR e";
+        String mockResponseJson = "{\"rows\":[[\"123e4567-e89b-12d3-a456-426614174000\"],[\"987e6543-e21b-32d3-b456-426614174111\"]]}";
+        when(query.buildAql()).thenReturn(mockAqlQuery);
+
+        URI baseUri = testableDefaultRestClient.getConfig().getBaseUri();
+        URI targetUri = baseUri.resolve(DefaultRestAqlEndpoint.AQL_PATH);
+        doReturn(httpResponse).when(testableDefaultRestClient).internalPost(eq(targetUri), any(), any(), any(), any());
+        when(httpResponse.getEntity()).thenReturn(mock(HttpEntity.class));
+        when(httpResponse.getEntity().getContent()).thenReturn(new ByteArrayInputStream(mockResponseJson.getBytes()));
+
+        QueryResponseData responseData = defaultRestAqlEndpoint.executeRaw(query);
+
+        verify(testableDefaultRestClient).internalPost(eq(targetUri), any(), any(), any(), any());
+        assertNotNull(responseData);
+        assertEquals(2, responseData.getRows().size());
+        assertEquals("123e4567-e89b-12d3-a456-426614174000", responseData.getRows().get(0).get(0));
+        assertEquals("987e6543-e21b-32d3-b456-426614174111", responseData.getRows().get(1).get(0));
+    }
 }

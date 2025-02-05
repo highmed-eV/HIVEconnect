@@ -1,7 +1,5 @@
 package org.ehrbase.fhirbridge.camel.route;
 
-import java.util.UUID;
-
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.client.exception.ClientException;
@@ -22,7 +20,6 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
             //Commit the openEHR composition to the openEHR server
             .process(exchange -> {
                 String openEhrJson = exchange.getIn().getBody(String.class);
-                UUID ehrId = exchange.getIn().getHeader(CompositionConstants.EHR_ID, UUID.class); // Retrieve EHRId from exchange header
                 Composition composition = new CanonicalJson().unmarshal(openEhrJson, Composition.class);
                 exchange.getIn().setBody(composition);
             })

@@ -4,10 +4,9 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -17,9 +16,9 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Component
 public class PatientUtils {
@@ -315,13 +314,13 @@ public class PatientUtils {
     public  String getPatientIdFromResponse(Exchange exchange) {
         String responseString = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
 
-        JsonNode resource = null;
         JsonNode rootNode = null;
         try {
             rootNode = objectMapper.readTree(responseString);
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return null;
         }
         // Extract the location if it starts with "Patient/"
         Optional<String> patientLocation = Optional.ofNullable(rootNode.get(ENTRY))
@@ -344,7 +343,7 @@ public class PatientUtils {
                                 }
                                 return null;
                             })
-                            .filter(location -> location != null)
+                            .filter(Objects::nonNull)
                             .findFirst(); 
                 })
                 .orElse(Optional.empty());
