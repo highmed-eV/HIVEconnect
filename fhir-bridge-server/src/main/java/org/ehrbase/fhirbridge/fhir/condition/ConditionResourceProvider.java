@@ -82,17 +82,7 @@ public class ConditionResourceProvider implements IResourceProvider  {
         String inputResource = fhirContext.newJsonParser().encodeResourceToString(condition);
 
         // Call Camel route with the Condition resource
-        String processedCondition = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, String.class);
-
-        // Set the ID for the processed resource
-        String generatedId = "Condition" + System.currentTimeMillis();
-        // processedCondition.setId(new IdType("Condition", generatedId));
-
-        // Return the MethodOutcome
-        MethodOutcome outcome = new MethodOutcome();
-        outcome.setCreated(true);
-        // outcome.setId(processedCondition.getIdElement());
-        // outcome.setResource(processedCondition);
+        MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", condition, MethodOutcome.class);
 
         return outcome;
     }

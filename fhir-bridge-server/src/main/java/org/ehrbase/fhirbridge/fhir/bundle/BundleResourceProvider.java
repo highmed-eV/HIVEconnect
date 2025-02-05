@@ -39,12 +39,14 @@ import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.camel.CamelExecutionException;
 import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.Bundle;
@@ -79,48 +81,36 @@ public class BundleResourceProvider implements IResourceProvider  {
         FhirContext fhirContext = FhirContext.forR4();
         String inputResource = fhirContext.newJsonParser().encodeResourceToString(bundle);
    
+        try {
         // Call Camel route with the Bundle resource
-        String processedBundle = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, String.class);
+            MethodOutcome methodOutcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
+            return methodOutcome;
+        } catch (CamelExecutionException ex) {
+            // Extract the Root Cause
+            Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+            String errorMessage = "FHIR Server Error: " + cause.getMessage();
 
-        // System.out.println("processedBundle..." + processedBundle);
-        Bundle processedBundleResource = fhirContext.newJsonParser().parseResource(Bundle.class, processedBundle);
+            // Log the Error
+            System.err.println("@@@" + errorMessage);
 
-        // Return the MethodOutcome
-        MethodOutcome methodOutcome = new MethodOutcome();
-        methodOutcome.setCreated(true);
-        
-        // Store all created resource IDs
-        List<String> createdResourceIds = new ArrayList<>();
-        OperationOutcome finalOutcome = new OperationOutcome();
-
-        // Iterate over all entries in the Bundle
-        for (Bundle.BundleEntryComponent entry : processedBundleResource.getEntry()) {
-            if (entry.hasResponse() && entry.getResponse().hasLocation()) {
-                String resourceId = entry.getResponse().getLocation();
-                createdResourceIds.add(resourceId); // Collect all created resource IDs
-            }
-
-            // If there is an OperationOutcome, append its issues to the final outcome
-            if (entry.hasResponse() && entry.getResponse().hasOutcome()) {
-                if (entry.getResponse().getOutcome() instanceof OperationOutcome) {
-                    OperationOutcome outcome = (OperationOutcome) entry.getResponse().getOutcome();
-                    finalOutcome.getIssue().addAll(outcome.getIssue());
-                }
-            }
+            // Convert to a FHIR OperationOutcome
+            OperationOutcome operationOutcome = createOperationOutcome(errorMessage);
+            throw new InternalErrorException(errorMessage, operationOutcome);
         }
-
-        // Set the last created resource ID as the main ID in MethodOutcome
-        if (!createdResourceIds.isEmpty()) {
-            methodOutcome.setId(new IdType(createdResourceIds.get(createdResourceIds.size() - 1)));
-        }
-
-        // Attach the combined OperationOutcome
-        if (!finalOutcome.getIssue().isEmpty()) {
-            methodOutcome.setOperationOutcome(finalOutcome);
-        }
-
-        return methodOutcome;
     }
+
+
+    private OperationOutcome createOperationOutcome(String message) {
+        OperationOutcome outcome = new OperationOutcome();
+        outcome.addIssue()
+                .setSeverity(OperationOutcome.IssueSeverity.ERROR)
+                .setCode(OperationOutcome.IssueType.EXCEPTION)
+                .setDiagnostics(message)
+                .setDetails(new org.hl7.fhir.r4.model.CodeableConcept()
+                        .setText("Internal Server Error during Condition creation"));
+        return outcome;
+    }
+
 
     @Search(type = Bundle.class)
     public Bundle searchBundle(@OptionalParam(name = IAnyResource.SP_RES_ID) TokenAndListParam id,

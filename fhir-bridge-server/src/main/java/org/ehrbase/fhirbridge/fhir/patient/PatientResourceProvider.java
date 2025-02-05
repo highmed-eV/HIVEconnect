@@ -78,17 +78,7 @@ public class PatientResourceProvider implements IResourceProvider  {
         String inputResource = fhirContext.newJsonParser().encodeResourceToString(patient);
 
         // Call Camel route with the Patient resource
-        String processedPatient = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, String.class);
-
-        // Set the ID for the processed resource
-        String generatedId = "Patient" + System.currentTimeMillis();
-        // processedPatient.setId(new IdType("Patient", generatedId));
-
-        // Return the MethodOutcome
-        MethodOutcome outcome = new MethodOutcome();
-        outcome.setCreated(true);
-        // outcome.setId(processedPatient.getIdElement());
-        // outcome.setResource(processedPatient);
+        MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
 
         return outcome;
     }
