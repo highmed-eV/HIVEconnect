@@ -41,24 +41,6 @@ public class CamelRoute extends AbstractRouteBuilder {
                 .log("##########CamelReadRouteProcess");
 
     }       
-
-
-
-// @formatter:on
-// capabilities
-// create
-// delete
-// history
-// load-page
-// meta
-// operation
-// patch
-// read
-// search
-// transaction
-// update
-// validate
-
 }
 
 // fhir:apiName/methodName
