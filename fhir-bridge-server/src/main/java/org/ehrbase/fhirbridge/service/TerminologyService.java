@@ -28,7 +28,7 @@ public class TerminologyService {
                 .withParameters(in)
                 .execute();
 
-        ParametersParameterComponent display = (ParametersParameterComponent) out.getParameter("display");
+        ParametersParameterComponent display = out.getParameter("display");
         if (display == null) {
             throw new TerminologyServiceException("Cannot find display for coding: system=" + system + ", code=" + code);
         }

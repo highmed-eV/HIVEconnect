@@ -3,9 +3,12 @@ package org.ehrbase.fhirbridge.fhir.support;
 import ca.uhn.fhir.context.FhirContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.camel.Exchange;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FhirUtils {

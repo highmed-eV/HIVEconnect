@@ -16,7 +16,6 @@
 
  package org.ehrbase.fhirbridge.fhir.camel;
 
-import ca.uhn.fhir.util.StringUtil;
 import com.apicatalog.jsonld.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,11 +26,8 @@ import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +46,8 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
 
     public static final String BEAN_ID = "existingResourceReferenceProcessor";
 
-    private static final Logger LOG = LoggerFactory.getLogger(ExistingResourceReferenceProcessor.class);
+    public static final String RESOURCE_TYPE = "resourceType";
+    public static final String RESOURCE = "resource";
 
     private final ResourceCompositionRepository resourceCompositionRepository;
 
@@ -70,7 +67,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         // with the inputResourceIds corresponding to that in the db
         // according to the mapping table : FB_RESOURCE_COMPOSITION
         if (existingResources != null && !existingResources.isEmpty()) {
-            existingResources = mapToInputResourceId(existingResources, objectMapper);
+            mapToInputResourceId(existingResources, objectMapper);
         }
 
         // Update the Exchange property with the modified list
@@ -80,7 +77,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         String inputResourceBundle = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
         JsonNode rootNode = objectMapper.readTree(inputResourceBundle);
 
-        if (!rootNode.has("entry") || !rootNode.has("resourceType") || !"Bundle".equals(rootNode.get("resourceType").asText())) {
+        if (!rootNode.has("entry") || !rootNode.has(RESOURCE_TYPE) || !"Bundle".equals(rootNode.get(RESOURCE_TYPE).asText())) {
             return; // No valid entries or bundle to process
         }
         // Get the "entry" array
@@ -89,21 +86,21 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
 
         // Collect existing IDs from the input bundle
         for (JsonNode entryNode : entryArray) {
-            String inputResourceId = entryNode.get("resource").get("resourceType").asText() +
-                    "/" + entryNode.get("resource").get("id").asText();
+            String inputResourceId = entryNode.get(RESOURCE).get(RESOURCE_TYPE).asText() +
+                    "/" + entryNode.get(RESOURCE).get("id").asText();
             processedIds.add(inputResourceId);
         }
         // Add existing resources that are not already in the bundle
         if (existingResources != null && !existingResources.isEmpty()) {
             for (String existingResourceJson : existingResources) {
                 JsonNode newResourceNode = objectMapper.readTree(existingResourceJson);
-                String newResourceId = newResourceNode.get("resourceType").asText() +
+                String newResourceId = newResourceNode.get(RESOURCE_TYPE).asText() +
                         "/" + newResourceNode.get("id").asText();
                 if (!processedIds.contains(newResourceId)) {
                     // Create a new entry for the existing resource
                     ObjectNode newEntryNode = objectMapper.createObjectNode();
                     newEntryNode.put("fullUrl", newResourceId);
-                    newEntryNode.set("resource", newResourceNode);
+                    newEntryNode.set(RESOURCE, newResourceNode);
                     entryArray.add(newEntryNode);
                 }
             }
@@ -118,8 +115,8 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
             String resourceJson = existingResources.get(i);
             JsonNode resourceNode = objectMapper.readTree(resourceJson);
             // Extract the ID from the resource
-            if (resourceNode.has("resourceType") && resourceNode.has("id")) {
-                String resourceId = resourceNode.get("resourceType").asText() + "/" + resourceNode.get("id").asText();
+            if (resourceNode.has(RESOURCE_TYPE) && resourceNode.has("id")) {
+                String resourceId = resourceNode.get(RESOURCE_TYPE).asText() + "/" + resourceNode.get("id").asText();
 
                 // Fetch replacement IDs from the database
                 String dbInputResourceId = resourceCompositionRepository.getInputResourceIds(resourceId);
@@ -136,12 +133,5 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
             }
         }
         return existingResources;
-    }
-
-    private ObjectNode createPostRequestNode(String resourceType, ObjectMapper objectMapper) {
-        ObjectNode requestNode = objectMapper.createObjectNode();
-        requestNode.put("method", "POST");
-        requestNode.put("url", resourceType);
-        return requestNode;
     }
 }

@@ -131,9 +131,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     Optional<VersionUid> versionUid = Optional.ofNullable(composition.getUid()).map(ObjectId::toString).map(VersionUid::new);
 
-    VersionUid newVersionUid = internalMerge(composition, versionUid.orElse(null));
-
-    return newVersionUid;
+    return internalMerge(composition, versionUid.orElse(null));
   }
 
   @Override

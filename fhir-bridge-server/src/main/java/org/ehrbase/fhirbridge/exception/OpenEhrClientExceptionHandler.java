@@ -16,7 +16,6 @@
 
 package org.ehrbase.fhirbridge.exception;
 
-import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
@@ -24,7 +23,6 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
-import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.springframework.util.Assert;
 
 /**
@@ -41,10 +39,10 @@ public class OpenEhrClientExceptionHandler implements Processor {
         Assert.notNull(ex, "Exception must not be null");
         exchange.getIn().setBody(ex.getMessage());
 
-        if (ex instanceof WrongStatusCodeException) {
-            handleWrongStatusCode((WrongStatusCodeException) ex);
-        } else if (ex instanceof OptimisticLockException) {
-            handleOptimisticLock((OptimisticLockException) ex);
+        if (ex instanceof WrongStatusCodeException e) {
+            handleWrongStatusCode(e);
+        } else if (ex instanceof OptimisticLockException e) {
+            handleOptimisticLock(e);
         }
         handleException(ex);
     }

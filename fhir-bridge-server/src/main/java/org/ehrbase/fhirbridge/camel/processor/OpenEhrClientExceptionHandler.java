@@ -38,10 +38,10 @@ public class OpenEhrClientExceptionHandler implements Processor {
         Exception ex = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
         Assert.notNull(ex, "Exception must not be null");
 
-        if (ex instanceof WrongStatusCodeException) {
-            handleWrongStatusCode((WrongStatusCodeException) ex);
-        } else if (ex instanceof OptimisticLockException) {
-            handleOptimisticLock((OptimisticLockException) ex);
+        if (ex instanceof WrongStatusCodeException e) {
+            handleWrongStatusCode(e);
+        } else if (ex instanceof OptimisticLockException e) {
+            handleOptimisticLock(e);
         }
         handleException(ex);
     }
