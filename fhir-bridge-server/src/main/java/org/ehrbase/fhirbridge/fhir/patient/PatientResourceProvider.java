@@ -30,26 +30,20 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.Constants;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
-import ca.uhn.fhir.rest.api.server.IBundleProvider;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.param.DateRangeParam;
-import ca.uhn.fhir.rest.param.QuantityAndListParam;
-import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-
-import java.io.Serializable;
-
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import org.apache.camel.CamelExecutionException;
+import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.ResourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -77,10 +71,19 @@ public class PatientResourceProvider implements IResourceProvider  {
         FhirContext fhirContext = FhirContext.forR4();
         String inputResource = fhirContext.newJsonParser().encodeResourceToString(patient);
 
-        // Call Camel route with the Patient resource
-        MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
-
-        return outcome;
+        try {
+            // Call Camel route with the Patient resource
+            MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
+            return outcome;
+        } catch (CamelExecutionException exception) {
+            Exchange exchange = exception.getExchange();
+            if (exchange.isFailed()) {
+                BaseServerResponseException baseException = exchange.getException(BaseServerResponseException.class);
+                throw (baseException != null) ? baseException : new InternalErrorException("Unexpected server error", exchange.getException());
+            } else {
+                throw new InternalErrorException("Unexpected internal server error", exchange.getException());
+            }
+        }
     }
 
     @Search(type = Patient.class)

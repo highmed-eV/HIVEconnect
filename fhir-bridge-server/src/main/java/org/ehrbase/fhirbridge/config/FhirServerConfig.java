@@ -7,11 +7,7 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import jakarta.servlet.ServletException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +50,7 @@ public class FhirServerConfig extends RestfulServer {
         setResourceProviders(this.resourceProviders);
         setServerAddressStrategy(new HardcodedServerAddressStrategy(serverPath));
 
-        registerInterceptor(new ExceptionHandler());
+        // registerInterceptor(new ExceptionHandler());
         registerInterceptor(new HttpInterceptor());
 
         //registerInterceptor(new OpenApiInterceptor());

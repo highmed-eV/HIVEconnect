@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -16,7 +19,8 @@ public class FhirUtils {
     public static final String RESOURCE_TYPE = "resourceType";
     public static final String ENTRY = "entry";
     public static final String FULL_URL = "fullUrl";
-
+    private static final Logger LOG = LoggerFactory.getLogger(FhirUtils.class);
+    
     private FhirUtils() {
         // Private constructor to prevent instantiation
     }

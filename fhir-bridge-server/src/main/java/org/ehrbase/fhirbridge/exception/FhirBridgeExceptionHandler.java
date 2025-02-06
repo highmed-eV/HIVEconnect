@@ -79,28 +79,17 @@ public class FhirBridgeExceptionHandler  implements Processor {
     }
 
     private void handleException(Exception ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Error occurred while processing fhir bridge: " + ex.getMessage(), "InternalErrorHandler");
-
-        LOG.warn("Error occurred while processing fhir bridge: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new InternalErrorException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage =  "Internal Error occurred while processing FHIR Bridge: " + ex.getMessage();;
+        throw new InternalErrorException(errorMessage);        
     }
 
     private void handleAuthenticationException(AuthenticationException ex) {
-        throw new AuthenticationException("FHIR Server Exception: Authentication failed:", ex);
+        throw new AuthenticationException("FHIR Bridge Server Exception: Authentication failed:", ex);
     }
 
     private void handleBaseServerResponse(BaseServerResponseException ex) {
-        LOG.error("FHIR server error ({}): {}", ex.getStatusCode(), ex.getMessage());
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "FHIR server error: " + ex.getMessage(), "BaseServerResponseHandler");
-
-        LOG.warn("FHIR server error: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new InternalErrorException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "FHIR Bridge server error: " + ex.getMessage();
+        throw new InternalErrorException(errorMessage);
     }
 
     private void handleResourceNotFound(ResourceNotFoundException ex) {

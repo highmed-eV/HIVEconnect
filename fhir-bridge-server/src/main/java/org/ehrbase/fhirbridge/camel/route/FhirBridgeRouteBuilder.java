@@ -1,8 +1,5 @@
 package org.ehrbase.fhirbridge.camel.route;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
-import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.client.exception.ClientException;
@@ -11,9 +8,6 @@ import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
-import org.hl7.fhir.r4.model.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 
@@ -32,27 +26,27 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        onException(Exception.class)
-            .handled(true)
-            .log("FhirBridgeRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
-            .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
-            .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-            .process(exchange -> {
-                Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-                if (exception instanceof BaseServerResponseException baseException) {
-                    if (baseException.getOperationOutcome() != null) {
-                        // Set body with serialized operation outcome if present
-                        exchange.getIn().setBody(FhirUtils.serializeOperationOutcome(baseException.getOperationOutcome()));
-                    } else {
-                        // If operation outcome is not present, set the exception message
-                        exchange.getIn().setBody(baseException.getMessage());
-                    }
-                } else {
-                    // If the exception is not of type BaseServerResponseException
-                    exchange.getIn().setBody(exception.getMessage());
-                }
-            })
-            .log("######### FhirBridgeRouteBuilder onException");
+        // onException(Exception.class)
+        //     .handled(false)
+        //     .log("FhirBridgeRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
+        //     .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
+        //     .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
+        //     .process(exchange -> {
+        //         Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+        //         if (exception instanceof BaseServerResponseException baseException) {
+        //             if (baseException.getOperationOutcome() != null) {
+        //                 // Set body with serialized operation outcome if present
+        //                 exchange.getIn().setBody(FhirUtils.serializeOperationOutcome(baseException.getOperationOutcome()));
+        //             } else {
+        //                 // If operation outcome is not present, set the exception message
+        //                 exchange.getIn().setBody(baseException.getMessage());
+        //             }
+        //         } else {
+        //             // If the exception is not of type BaseServerResponseException
+        //             exchange.getIn().setBody(exception.getMessage());
+        //         }
+        //     })
+        //     .log("######### FhirBridgeRouteBuilder onException");
 
 
         // from("direct:processAuthentication")
