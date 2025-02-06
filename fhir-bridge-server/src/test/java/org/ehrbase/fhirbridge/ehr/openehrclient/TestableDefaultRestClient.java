@@ -42,6 +42,10 @@ class TestableDefaultRestClient extends DefaultRestClient {
         return config;
     }
 
+    public TemplateProvider getTemplateProvider() {
+        return templateProvider;
+    }
+
     @Override
     public VersionUid httpPost(URI uri, RMObject body) {
         return super.httpPost(uri, body);
@@ -70,10 +74,6 @@ class TestableDefaultRestClient extends DefaultRestClient {
     @Override
     protected HttpResponse internalGet(URI uri, Map<String, String> headers, String accept) {
         return super.internalGet(uri, headers, accept);
-    }
-
-    public TemplateProvider getTemplateProvider() {
-        return templateProvider;
     }
 }
 

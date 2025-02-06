@@ -2,6 +2,7 @@ package org.ehrbase.fhirbridge.fhir.support;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +35,12 @@ class FhirUtilsTest {
     @Test
     void getResourceTypeInvalidJson() {
         String invalidJson = "invalid";
-        String resourceType = FhirUtils.getResourceType(invalidJson);
-        assertNull(resourceType);
+
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> {
+            FhirUtils.getResourceType(invalidJson);
+        });
+
+        assertEquals("Unable to process the resource JSON and failed to extract resource type", exception.getMessage());
     }
 
     @Test

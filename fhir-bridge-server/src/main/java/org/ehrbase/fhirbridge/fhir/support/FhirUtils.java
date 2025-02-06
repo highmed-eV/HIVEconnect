@@ -1,17 +1,15 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.camel.Exchange;
-import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FhirUtils {
@@ -39,7 +37,8 @@ public class FhirUtils {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");
+
         }
 
         return null; // Return null if no patient ID is found
@@ -65,7 +64,7 @@ public class FhirUtils {
                 return new ArrayList<>(resultSet);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract reference resource IDs");
         }
 
         return Collections.emptyList(); // Return an empty list if no resource ID is found
@@ -152,7 +151,7 @@ public class FhirUtils {
                 return new ArrayList<>(inputResourceIds);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource IDs from the provided JSON");
         }
 
         return Collections.emptyList(); // Return an empty list if no resource ID is found
