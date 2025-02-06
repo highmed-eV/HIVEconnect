@@ -43,7 +43,6 @@ public class OpenFHIRAdapter {
             
             return openEhrJson;
         } catch (Exception e) {
-            logger.error("Error while converting FHIR to openEHR.", e);
             throw new RuntimeException("Error in FHIR to openEHR conversion", e);
         }
     }

@@ -32,7 +32,6 @@ public class OpenFHIRAdapterConfiguration {
 
     @Bean(name = "fhirBridgeOpenFHIRAdapter")
     public OpenFHIRAdapter openFHIRAdapter() {
-        OpenFHIRAdapter openFHIRAdapter = new OpenFHIRAdapter(restTemplate);
-        return openFHIRAdapter;
+        return new OpenFHIRAdapter(restTemplate);
     }
 }

@@ -7,6 +7,7 @@ import org.apache.http.entity.ContentType;
 import org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient;
 import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.fhirbridge.openehr.openehrclient.VersionUid;
+import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
 import java.net.URI;
 import java.util.Map;
@@ -16,15 +17,24 @@ class TestableDefaultRestClient extends DefaultRestClient {
 
     private final OpenEhrClientConfig config;
 
+    private final TemplateProvider templateProvider;
+
 //    public TestableDefaultRestClient(OpenEhrClientConfig config) {
 //        super(null);
 //        this.config = config;
 //    }
 
     public TestableDefaultRestClient(String baseUri) {
+//        super(null);
+//        this.config = new OpenEhrClientConfig(URI.create(baseUri));
+////        this(new OpenEhrClientConfig(URI.create(baseUri)));
+        this(baseUri, null);
+    }
+
+    public TestableDefaultRestClient(String baseUri, TemplateProvider templateProvider) {
         super(null);
         this.config = new OpenEhrClientConfig(URI.create(baseUri));
-//        this(new OpenEhrClientConfig(URI.create(baseUri)));
+        this.templateProvider = templateProvider;
     }
 
     @Override
@@ -62,5 +72,8 @@ class TestableDefaultRestClient extends DefaultRestClient {
         return super.internalGet(uri, headers, accept);
     }
 
+    public TemplateProvider getTemplateProvider() {
+        return templateProvider;
+    }
 }
 

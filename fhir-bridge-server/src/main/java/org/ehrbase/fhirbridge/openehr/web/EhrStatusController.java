@@ -18,7 +18,7 @@ public class EhrStatusController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> process() throws InterruptedException {
+    public ResponseEntity<Void> process() {
         ehrStatusService.updateEhrStatus();
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

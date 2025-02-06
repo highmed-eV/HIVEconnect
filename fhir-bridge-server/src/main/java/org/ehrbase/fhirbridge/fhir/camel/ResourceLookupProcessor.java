@@ -16,6 +16,7 @@
 
 package org.ehrbase.fhirbridge.fhir.camel;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -24,9 +25,6 @@ import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -45,8 +43,6 @@ import java.util.regex.Pattern;
 public class ResourceLookupProcessor implements FhirRequestProcessor {
 
     public static final String BEAN_ID = "resourceLookupProcessor";
-
-    private static final Logger LOG = LoggerFactory.getLogger(ResourceLookupProcessor.class);
 
     private final ResourceCompositionRepository resourceCompositionRepository;
 
@@ -78,11 +74,11 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
         exchange.getIn().setBody(updatedResource);
     }
 
-    private String updateInputResource(String inputResource) throws Exception {
+    private String updateInputResource(String inputResource) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(inputResource);
 
-        if (rootNode != null || rootNode.isObject()) {
+        if (rootNode != null && rootNode.isObject()) {
             // if resourceType is Bundle
             if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
                 updateBundleReferences(rootNode);
@@ -133,15 +129,13 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
     private boolean processReferenceField(JsonNode resourceNode, JsonNode childNode, String regex, String fieldName) {
         String inputResourceId = childNode.asText();
         if (Pattern.matches(regex, inputResourceId)) {
-            {
-                Optional<String> dbInternalResourceId = resourceCompositionRepository.findById(inputResourceId)
-                        .map(ResourceComposition::getInternalResourceId);
+            Optional<String> dbInternalResourceId = resourceCompositionRepository.findById(inputResourceId)
+                    .map(ResourceComposition::getInternalResourceId);
 
-                if (dbInternalResourceId.isPresent() && resourceNode instanceof ObjectNode) {
-                    ((ObjectNode) resourceNode).put(fieldName, dbInternalResourceId.get());
-                }
-                return true;
+            if (dbInternalResourceId.isPresent() && resourceNode instanceof ObjectNode objectNode) {
+                objectNode.put(fieldName, dbInternalResourceId.get());
             }
+            return true;
         }
         return false;
     }
