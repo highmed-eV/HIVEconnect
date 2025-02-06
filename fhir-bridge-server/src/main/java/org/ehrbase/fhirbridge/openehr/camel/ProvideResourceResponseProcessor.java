@@ -29,6 +29,8 @@ import org.apache.camel.Processor;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,12 +70,12 @@ public class ProvideResourceResponseProcessor implements Processor {
         // map to store the corresponding inputResourceId  and internalResourceId
         Map<String, String> resourceIdMap = new LinkedHashMap<>();
 
-        JSONObject inputJsonObject = new JSONObject(inputResource);
         if (!"Bundle".equals(inputResourceType)) {
             processSingleResource(exchange);
         }
         else 
         {
+            JSONObject inputJsonObject = new JSONObject(inputResource);
             processBundle(exchange, inputJsonObject, resourceIdMap);
         }
 
@@ -85,18 +87,9 @@ public class ProvideResourceResponseProcessor implements Processor {
     private void processSingleResource(Exchange exchange) throws JsonProcessingException {
         //if not bundle take fhir response as MethodOutcome
         MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
-        //TODO: serialize of Methodoutcome resulting in infinite loop
-        //Hence not using JSONObject. And serializing only outcome.getResource()
-        // JSONObject jsonObject = new JSONObject(outcome);
-        FhirContext fhirContext = FhirContext.forR4();
-        IParser parser = fhirContext.newJsonParser();
-        String responseJsonString = parser.encodeResourceToString(outcome.getResource());
-        ObjectMapper objectMapper = new ObjectMapper();
-        //TODO: check take it as JsonObject
-        JsonNode responseJsonNode = objectMapper.readTree(responseJsonString);
-
+       
         //Set response in exchange body
-        exchange.getIn().setBody(responseJsonNode);
+        exchange.getIn().setBody(outcome);
     }
 
     private void processBundle(Exchange exchange, JSONObject inputJsonObject, Map<String, String> resourceIdMap) throws JsonProcessingException {
@@ -118,8 +111,18 @@ public class ProvideResourceResponseProcessor implements Processor {
             }
         }
 
-        // merge all the response from FHIR_SERVER_OUTCOME, OPEN_FHIR_SERVER_OUTCOME and OPEN_EHR_SERVER_OUTCOME
-        mergeResponses(exchange);
+        //Set response in exchange body
+        MethodOutcome methodOutcome = new MethodOutcome();
+        String processedBundle = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
+
+        FhirContext fhirContext = FhirContext.forR4();
+        Bundle processedBundleResource = fhirContext.newJsonParser().parseResource(Bundle.class, processedBundle);
+
+        // Set the MethodOutcome
+        methodOutcome.setCreated(true);
+        methodOutcome.setResource(processedBundleResource);
+        exchange.getMessage().setBody(methodOutcome);
+
     }
 
     private static void extractResourceIds(Map<String, String> resourceIdMap, JSONArray entries) {
@@ -157,24 +160,6 @@ public class ProvideResourceResponseProcessor implements Processor {
                 }
             }
         }
-    }
-
-    private static void mergeResponses(Exchange exchange) throws JsonProcessingException {
-        //Set response in exchange body
-        //move new ObjectMapper() to util
-        ObjectMapper objectMapper = new ObjectMapper();
-        // Parse JSON strings into JsonNode objects
-        JsonNode node1 = objectMapper.readTree((String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME));
-        JsonNode node2 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME));
-        JsonNode node3 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME));
-
-        // Merge JsonNode objects into a single ObjectNode
-        ObjectNode mergedJson = objectMapper.createObjectNode();
-        mergedJson.setAll((ObjectNode) node1);
-        mergedJson.setAll((ObjectNode) node2);
-        mergedJson.setAll((ObjectNode) node3);
-
-        exchange.getIn().setBody(mergedJson);
     }
 
     private void updateResourceCompositions(Map<String, String> resourceIdMap, Composition composition) {

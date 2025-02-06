@@ -48,8 +48,8 @@ public class DefaultExceptionHandler implements Processor, MessageSourceAware {
 
         if (ex instanceof WrongStatusCodeException e) {
             handleWrongStatusCode(e);
-        } else if (ex instanceof ConversionException e) {
-            handleConversionException(e);
+        // } else if (ex instanceof ConversionException e) { //Chanyas
+        //     handleConversionException(e);
         } else {
             handleException(ex);
         }

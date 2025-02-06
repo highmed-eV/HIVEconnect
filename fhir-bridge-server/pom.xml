@@ -102,10 +102,10 @@
         </dependency>		
 		<!-- camel dependencies -->
 
-		<dependency>
+		<!-- <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-fhir-starter</artifactId>
-        </dependency>
+        </dependency> -->
 
 		<!-- camel dependencies -->
 
@@ -113,11 +113,14 @@
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-spring-boot-starter</artifactId>
 		</dependency>
-
-		<dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-fhir</artifactId>
+        </dependency>
+		<!-- <dependency>
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-servlet-starter</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.apache.camel.springboot</groupId>
@@ -160,6 +163,11 @@
             </exclusions>
         </dependency>
 		<!-- Hapi -->
+			<dependency>
+				<groupId>ca.uhn.hapi.fhir</groupId>
+				<artifactId>hapi-fhir-base</artifactId>
+				<version>${hapi-fhir.version}</version>
+			</dependency>
             <dependency>
                 <groupId>ca.uhn.hapi.fhir</groupId>
                 <artifactId>hapi-fhir-server</artifactId>
@@ -170,6 +178,12 @@
                 <artifactId>hapi-fhir-structures-r4</artifactId>
                 <version>${hapi-fhir.version}</version>
             </dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>2.17.2</version>
+				<!-- <scope>runtime</scope> -->
+			</dependency>			
             <dependency>
                 <groupId>ca.uhn.hapi.fhir</groupId>
                 <artifactId>hapi-fhir-validation</artifactId>

@@ -30,30 +30,24 @@ public class FhirRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        onException(BaseServerResponseException.class)
-            .handled(true)
-            .log("FhirRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
-            .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
-            .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-            .process(exchange -> {
-                BaseServerResponseException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, BaseServerResponseException.class);
-                if (exception != null && exception.getOperationOutcome() != null) {
-                    String serializedOutcome = FhirUtils.serializeOperationOutcome(exception.getOperationOutcome());
-                    exchange.getIn().setBody(serializedOutcome);
-                } else if (exception != null) {
-                    exchange.getIn().setBody(exception.getMessage());
-                }
-            })
-            .log("######### FhirRouteBuilder onException");
-
-        // onException(ResourceNotFoundException.class)
-        // .handled(true)      
-        // .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(404))
-        // .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-        // .setBody(exceptionMessage())
-        // // .useOriginalBody()
-        // .log("######### FhirRouteBuilder")
-        // ;
+        // onException(BaseServerResponseException.class)
+        //     .handled(true)
+        //     .log("FhirRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
+        //     .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
+        //     .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
+        //     .process(exchange -> {
+        //         BaseServerResponseException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, BaseServerResponseException.class);
+        //         if (exception != null && exception.getOperationOutcome() != null) {
+        //             // String serializedOutcome = FhirUtils.serializeOperationOutcome(exception.getOperationOutcome());
+        //             MethodOutcome methodOutcome = new MethodOutcome();
+        //             methodOutcome.setCreated(true);
+        //             methodOutcome.setOperationOutcome(exception.getOperationOutcome());
+        //             exchange.getIn().setBody(methodOutcome);
+        //         } else if (exception != null) {
+        //             exchange.getIn().setBody(exception.getMessage());
+        //         }
+        //     })
+        //     .log("######### FhirRouteBuilder onException");
 
         from("direct:FHIRProcess")
             // Forward request to FHIR server

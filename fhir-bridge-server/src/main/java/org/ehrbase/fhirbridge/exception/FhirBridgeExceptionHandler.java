@@ -34,7 +34,6 @@ import org.springframework.util.Assert;
  */
 public class FhirBridgeExceptionHandler  implements Processor {
     private static final Logger LOG = LoggerFactory.getLogger(FhirBridgeExceptionHandler.class);
-    public static final String FHIR_SERVER_EXCEPTION = "FHIR Server Exception: ";
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -79,147 +78,76 @@ public class FhirBridgeExceptionHandler  implements Processor {
     }
 
     private void handleException(Exception ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Error occurred while processing fhir bridge: " + ex.getMessage(), "InternalErrorHandler");
-
-        LOG.warn("Error occurred while processing fhir bridge: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new InternalErrorException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage =  "Internal Error occurred while processing FHIR Bridge: " + ex.getMessage();;
+        throw new InternalErrorException(errorMessage);        
     }
 
     private void handleAuthenticationException(AuthenticationException ex) {
-        throw new AuthenticationException("FHIR Server Exception: Authentication failed:", ex);
+        throw new AuthenticationException("FHIR Bridge Server Exception: Authentication failed:", ex);
     }
 
     private void handleBaseServerResponse(BaseServerResponseException ex) {
-        LOG.error("FHIR server error ({}): {}", ex.getStatusCode(), ex.getMessage());
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "FHIR server error: " + ex.getMessage(), "BaseServerResponseHandler");
-
-        LOG.warn("FHIR server error: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new InternalErrorException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "FHIR Bridge server error: " + ex.getMessage();
+        throw new InternalErrorException(errorMessage);
     }
 
     private void handleResourceNotFound(ResourceNotFoundException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Resource not found: " + ex.getMessage(), "ResourceNotFoundHandler");
-
-        LOG.warn("Resource not found: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new ResourceNotFoundException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "Resource not found: " + ex.getMessage();
+        throw new ResourceNotFoundException(errorMessage);
     }
 
     private void handleUnprocessableEntityException(UnprocessableEntityException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Validation failed: " + ex.getMessage(), "UnprocessableEntityExceptionHandler");
-
-        LOG.warn("Validation failed: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new UnprocessableEntityException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "Validation failed: " + ex.getMessage();
+        throw new UnprocessableEntityException(errorMessage);
     }
 
     private void handleInvalidRequestException(InvalidRequestException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Invalid request: " + ex.getMessage(), "InvalidRequestHandler");
-
-        LOG.warn("Invalid request: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new InvalidRequestException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage =  "Invalid request: " + ex.getMessage();
+        throw new InvalidRequestException(errorMessage);
     }
 
     private void handleForbiddenOperationException(ForbiddenOperationException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Forbidden operation: " + ex.getMessage(), "ForbiddenOperationHandler");
-
-        LOG.warn("Forbidden operation: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new ForbiddenOperationException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "Forbidden operation: " + ex.getMessage();
+        throw new ForbiddenOperationException(errorMessage);
     }
 
     private void handleMethodNotAllowedException(MethodNotAllowedException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Method not allowed: " + ex.getMessage(), "MethodNotAllowedHandler");
-
-        LOG.warn("Method not allowed: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new MethodNotAllowedException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage =  "Method not allowed: " + ex.getMessage();
+        throw new MethodNotAllowedException(errorMessage);
     }
 
     private void handleNotImplementedOperationException(NotImplementedOperationException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Operation not implemented: " + ex.getMessage(), "NotImplementedOperationHandler");
-
-        LOG.warn("Operation not implemented: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new NotImplementedOperationException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage =  "Operation not implemented: " + ex.getMessage();
+        throw new NotImplementedOperationException(errorMessage);
     }
 
     private void handleNotModifiedException(NotModifiedException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Resource not modified: " + ex.getMessage(), "NotModifiedHandler");
-
-        LOG.warn("Resource not modified: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new NotModifiedException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage =   "Resource not modified: " + ex.getMessage();
+        throw new NotModifiedException(errorMessage);
     }
 
     private void handlePayloadTooLargeException(PayloadTooLargeException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Payload too large: " + ex.getMessage(), "PayloadTooLargeHandler");
-
-        LOG.warn("Payload too large: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new PayloadTooLargeException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "Payload too large: " + ex.getMessage();
+        throw new PayloadTooLargeException(errorMessage);
     }
 
     private void handlePreconditionFailedException(PreconditionFailedException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Precondition failed: " + ex.getMessage(), "PreconditionFailedHandler");
-
-        LOG.warn("Precondition failed: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new PreconditionFailedException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "Precondition failed: " + ex.getMessage();
+        throw new PreconditionFailedException(errorMessage);
     }
 
     private void handleResourceGoneException(ResourceGoneException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Resource gone: " + ex.getMessage(), "ResourceGoneHandler");
-
-        LOG.warn("Resource gone: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new ResourceGoneException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "Resource gone: " + ex.getMessage();
+        throw new ResourceGoneException(errorMessage);
     }
 
     private void handleResourceVersionConflictException(ResourceVersionConflictException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Resource version conflict: " + ex.getMessage(), "ResourceVersionConflictHandler");
-
-        LOG.warn("Resource version conflict: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new ResourceVersionConflictException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "Resource version conflict: " + ex.getMessage();
+        throw new ResourceVersionConflictException(errorMessage);
     }
 
     private void handleUnclassifiedServerFailureException(UnclassifiedServerFailureException ex) {
-        var outcome = new OperationOutcome();
-        ValidationUtils.addError(outcome, "Invalid request: " + ex.getMessage(), "UnclassifiedServerFailureHandler");
-
-        LOG.warn("Unclassified server failure: {}", ex.getMessage());
-        if (outcome.hasIssue()) {
-            throw new InternalErrorException(FHIR_SERVER_EXCEPTION, outcome);
-        }
+        String errorMessage = "Invalid request: " + ex.getMessage();
+        throw new InternalErrorException(errorMessage);
     }
 }
