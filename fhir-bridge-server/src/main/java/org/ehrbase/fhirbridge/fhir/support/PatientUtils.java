@@ -137,7 +137,7 @@ public class PatientUtils {
                 return extractPatientFromResource(rootNode);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract patient information from the provided JSON.");
         }
 
         return null; // Return null if no patient ID is found
@@ -273,7 +273,7 @@ public class PatientUtils {
         String serverPatientId = resource.getId().getResourceType() + "/" + resource.getId().getIdPart();
 
         exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
-        exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, (Patient)resource.getResource());
+        exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, resource.getResource());
 
         return serverPatientId;
     }
@@ -305,7 +305,7 @@ public class PatientUtils {
             exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new UnprocessableEntityException("Unable to process the provided Patient resource JSON");
         }
 
         return patientId;
