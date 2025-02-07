@@ -17,12 +17,7 @@
 package org.ehrbase.fhirbridge.openehr.camel;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nedap.archie.rm.composition.Composition;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -30,7 +25,6 @@ import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.OperationOutcome;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,7 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link Processor} that stores the link between the FHIR resource and the openEHR composition.
@@ -84,7 +81,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         updateResourceCompositions(resourceIdMap, composition);
     }
 
-    private void processSingleResource(Exchange exchange) throws JsonProcessingException {
+    private void processSingleResource(Exchange exchange) {
         //if not bundle take fhir response as MethodOutcome
         MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
        
@@ -92,7 +89,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         exchange.getIn().setBody(outcome);
     }
 
-    private void processBundle(Exchange exchange, JSONObject inputJsonObject, Map<String, String> resourceIdMap) throws JsonProcessingException {
+    private void processBundle(Exchange exchange, JSONObject inputJsonObject, Map<String, String> resourceIdMap) {
         //get inputresourceIds
         JSONArray entries = inputJsonObject.optJSONArray("entry");
         if (entries != null) {
