@@ -12,6 +12,7 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.apache.camel.support.DefaultMessage;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.config.DebugProperties;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
@@ -42,10 +43,15 @@ class ProvideResourceResponseProcessorTest {
     @Mock
     private Exchange exchange;
 
+//    private String mappingOutputDirectory = "dummy/path/to/mappings";
+
+    @Mock
+    DebugProperties debugProperties;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        provideResourceResponseProcessor = new ProvideResourceResponseProcessor(resourceCompositionRepository);
+        provideResourceResponseProcessor = spy(new ProvideResourceResponseProcessor(resourceCompositionRepository, debugProperties));
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
     }

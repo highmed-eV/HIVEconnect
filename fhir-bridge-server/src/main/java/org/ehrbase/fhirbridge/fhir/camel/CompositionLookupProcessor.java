@@ -7,9 +7,10 @@ import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component(CompositionLookupProcessor.BEAN_ID)
 public class CompositionLookupProcessor implements FhirRequestProcessor {
@@ -25,7 +26,8 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
     @Override
     public void process(Exchange exchange) throws Exception {
         List<String > inputResourceIds = exchange.getProperty(CamelConstants.INPUT_RESOURCE_IDS, List.class);
-        List<String> compositionIds = new ArrayList<>();
+        Set<String> compositionIds = new HashSet<>();
+        boolean hasNewResource = false;
 
         // fetch the compositionIds corresponding to the inputResourceIds from db
         for (String inputResourceId : inputResourceIds){
@@ -33,14 +35,17 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
                     .map(ResourceComposition::getCompositionId);
 
             if (optionalCompositionId.isPresent()) {
-                String compositionId = optionalCompositionId.get();
-                compositionIds.add(compositionId);
+                // Existing resource with a compositionId
+                compositionIds.add(optionalCompositionId.get());
+            } else {
+                // New resource (compositionId not found in db)
+                hasNewResource = true;
             }
         }
 
         // Check if all compositionIds are the same
-        if (compositionIds.size() > 1 && compositionIds.stream().distinct().count() == 1) {
-            throw new IllegalArgumentException ("The input resource or input bundle contains resources that already exist");
+        if (compositionIds.size() == 1 && !compositionIds.isEmpty() && !hasNewResource) {
+            throw new IllegalArgumentException ("The input resource or input bundle contains resource(s) that already exist in the database. No new resources detected.");
         }
     }
 }

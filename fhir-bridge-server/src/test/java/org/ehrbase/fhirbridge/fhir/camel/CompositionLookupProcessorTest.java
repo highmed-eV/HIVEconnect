@@ -77,24 +77,46 @@ class CompositionLookupProcessorTest {
             compositionLookupProcessor.process(exchange);
         });
 
-        assertEquals("The input resource or input bundle contains resources that already exist", exception.getMessage());
+        assertEquals("The input resource or input bundle contains resource(s) that already exist in the database. No new resources detected.", exception.getMessage());
     }
 
     @Test
-    void processWithInvalidResourceIds() throws Exception {
-        List<String> inputResourceIds = Arrays.asList("Encounter/6", "invalidResource");
+    void processWithSingleCompositionIdShouldThrowException() throws Exception {
+        List<String> inputResourceIds = List.of("Encounter/6");
         exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
 
         ResourceComposition resource1 = new ResourceComposition("Encounter/6", null);
         setCompositionId(resource1, "07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1");
 
         when(resourceCompositionRepository.findById("Encounter/6")).thenReturn(Optional.of(resource1));
-        when(resourceCompositionRepository.findById("invalidResource")).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            compositionLookupProcessor.process(exchange);
+        });
+
+        assertEquals("The input resource or input bundle contains resource(s) that already exist in the database. No new resources detected.", exception.getMessage());
+    }
+
+    @Test
+    void processWithNewResourceShouldNotThrowException() throws Exception {
+        List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7", "NewResource/8");
+        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+
+        ResourceComposition resource1 = new ResourceComposition("Encounter/6", null);
+        ResourceComposition resource2 = new ResourceComposition("Organization/7", null);
+        ResourceComposition resource3 = new ResourceComposition("NewResource/8", null); // New resource without composition ID
+
+        setCompositionId(resource1, "07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1");
+        setCompositionId(resource2, "07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1");
+
+        when(resourceCompositionRepository.findById("Encounter/6")).thenReturn(Optional.of(resource1));
+        when(resourceCompositionRepository.findById("Organization/7")).thenReturn(Optional.of(resource2));
+        when(resourceCompositionRepository.findById("NewResource/8")).thenReturn(Optional.empty()); // New resource
 
         compositionLookupProcessor.process(exchange);
-
         verify(resourceCompositionRepository, times(1)).findById("Encounter/6");
-        verify(resourceCompositionRepository, times(1)).findById("invalidResource");
+        verify(resourceCompositionRepository, times(1)).findById("Organization/7");
+        verify(resourceCompositionRepository, times(1)).findById("NewResource/8");
     }
 }
 

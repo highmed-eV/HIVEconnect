@@ -155,8 +155,9 @@ class PatientUtilsTest {
         when(mockIdType.getResourceType()).thenReturn("Patient");
         when(mockIdType.getIdPart()).thenReturn("123");
         exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, methodOutcome);
-        String patientId = patientUtils.getPatientIdFromOutCome(exchange);
-        assertEquals("Patient/123", patientId);
+        patientUtils.getPatientIdFromOutCome(exchange);
+        assertEquals("Patient/123", exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
+        assertEquals(methodOutcome.getResource(), exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
     }
 
     @Test
@@ -164,8 +165,8 @@ class PatientUtilsTest {
         String responseString = "{\"identifier\":[{\"system\":\"system1\",\"value\":\"value1\"}]}";
         exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, responseString);
         when(patientEhrRepository.findByInputPatientId("system1|value1")).thenReturn(null);
-        String patientId = patientUtils.getPatientIdFromPatientResource(exchange);
-        assertEquals("system1|value1", patientId);
+        patientUtils.getPatientIdFromPatientResource(exchange);
+        assertEquals("system1|value1", exchange.getIn().getHeader(CamelConstants.PATIENT_ID));
     }
 
     @Test

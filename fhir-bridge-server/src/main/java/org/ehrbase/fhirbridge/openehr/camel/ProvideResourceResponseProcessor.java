@@ -22,6 +22,7 @@ import com.nedap.archie.rm.composition.Composition;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.config.DebugProperties;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.hl7.fhir.r4.model.Bundle;
@@ -30,8 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,8 +56,12 @@ public class ProvideResourceResponseProcessor implements Processor {
 
     private final ResourceCompositionRepository resourceCompositionRepository;
 
-    public ProvideResourceResponseProcessor(ResourceCompositionRepository resourceCompositionRepository) {
+    DebugProperties debugProperties;
+
+    @Autowired
+    public ProvideResourceResponseProcessor(ResourceCompositionRepository resourceCompositionRepository, DebugProperties debugProperties) {
         this.resourceCompositionRepository = resourceCompositionRepository;
+        this.debugProperties = debugProperties;
     }
 
     @Override
@@ -89,7 +96,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         exchange.getIn().setBody(outcome);
     }
 
-    private void processBundle(Exchange exchange, JSONObject inputJsonObject, Map<String, String> resourceIdMap) {
+    private void processBundle(Exchange exchange, JSONObject inputJsonObject, Map<String, String> resourceIdMap) throws IOException {
         //get inputresourceIds
         JSONArray entries = inputJsonObject.optJSONArray("entry");
         if (entries != null) {
@@ -108,6 +115,9 @@ public class ProvideResourceResponseProcessor implements Processor {
             }
         }
 
+        // merge and store the responses from FHIR_SERVER_OUTCOME, OPEN_FHIR_SERVER_OUTCOME and OPEN_EHR_SERVER_OUTCOME
+        debugProperties.saveMergedServerResponses(exchange);
+
         //Set response in exchange body
         MethodOutcome methodOutcome = new MethodOutcome();
         String processedBundle = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
@@ -119,7 +129,6 @@ public class ProvideResourceResponseProcessor implements Processor {
         methodOutcome.setCreated(true);
         methodOutcome.setResource(processedBundleResource);
         exchange.getMessage().setBody(methodOutcome);
-
     }
 
     private static void extractResourceIds(Map<String, String> resourceIdMap, JSONArray entries) {
