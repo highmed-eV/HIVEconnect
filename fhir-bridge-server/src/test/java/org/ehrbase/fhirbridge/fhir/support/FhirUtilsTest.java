@@ -70,5 +70,16 @@ class FhirUtilsTest {
         assertTrue(resourceIds.contains("Patient/123"));
         assertTrue(resourceIds.contains("Observation/456"));
     }
+
+    @Test
+    void getInputResourceIdsFromSingleResource() {
+        String resourceJson = "{\"resourceType\":\"Patient\",\"id\":\"789\"}";
+        List<String> resourceIds = FhirUtils.getInputResourceIds(resourceJson);
+
+        assertNotNull(resourceIds);
+        assertEquals(1, resourceIds.size());
+        assertTrue(resourceIds.contains("Patient/789"));
+    }
+
 }
 

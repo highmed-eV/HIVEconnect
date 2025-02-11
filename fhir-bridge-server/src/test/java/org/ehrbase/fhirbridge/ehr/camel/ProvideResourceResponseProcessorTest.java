@@ -12,9 +12,12 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.apache.camel.support.DefaultMessage;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.config.DebugProperties;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -40,36 +43,54 @@ class ProvideResourceResponseProcessorTest {
     @Mock
     private Exchange exchange;
 
+//    private String mappingOutputDirectory = "dummy/path/to/mappings";
+
+    @Mock
+    DebugProperties debugProperties;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        provideResourceResponseProcessor = new ProvideResourceResponseProcessor(resourceCompositionRepository);
+        provideResourceResponseProcessor = spy(new ProvideResourceResponseProcessor(resourceCompositionRepository, debugProperties));
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
     }
 
     @Test
-    void processWithNonBundleResource() throws Exception {
+    void processWithSingleResource() throws Exception {
         Message message = new DefaultMessage(exchange.getContext());
         message.setHeader(CamelConstants.INPUT_RESOURCE_TYPE, "Patient");
         message.setHeader(CamelConstants.INPUT_RESOURCE, "{\"resourceType\":\"Patient\"}");
-
         MethodOutcome outcome = new MethodOutcome();
-        outcome.setResource(FhirContext.forR4().newJsonParser().parseResource("{\"resourceType\":\"Patient\",\"id\":\"123\"}"));
+        outcome.setResource(FhirContext.forR4().newJsonParser().parseResource(
+                "{\"resourceType\":\"Patient\",\"id\":\"123\"}"
+        ));
         exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, outcome);
         exchange.setIn(message);
+        Composition composition = new Composition();
+        exchange.getIn().setBody(composition);
 
         when(resourceCompositionRepository.findById(anyString())).thenReturn(Optional.empty());
 
         provideResourceResponseProcessor.process(exchange);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode response = objectMapper.readTree(exchange.getIn().getBody(String.class));
-        assertNotNull(response);
-        assertEquals("Patient", response.get("resourceType").asText());
-        assertEquals("123", response.get("id").asText());
+        // Verify the response
+        MethodOutcome responseOutcome = exchange.getIn().getBody(MethodOutcome.class);
+        assertNotNull(responseOutcome);
+        assertNotNull(responseOutcome.getResource());
+
+        // Extract the actual resource from MethodOutcome
+        IBaseResource resource = responseOutcome.getResource();
+        assertTrue(resource instanceof Patient);
+
+        Patient patient = (Patient) resource;
+        assertEquals("Patient", patient.fhirType());
+        assertEquals("123", patient.getIdElement().getIdPart());
+
+        // Ensure `updateResourceCompositions` is NOT called
         verify(resourceCompositionRepository, never()).save(any());
     }
+
 
     @Test
     void processWithBundleResource() throws Exception {
@@ -120,7 +141,7 @@ class ProvideResourceResponseProcessorTest {
     }
 
     @Test
-    void testFindInputResourceIdByIndex() throws Exception {
+    void findInputResourceIdByIndex() throws Exception {
         LinkedHashMap<String, String> resourceIdMap = new LinkedHashMap<>();
         resourceIdMap.put("Condition/21", null);
         resourceIdMap.put("Condition/22", null);

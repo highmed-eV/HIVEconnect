@@ -86,9 +86,12 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
 
         // Collect existing IDs from the input bundle
         for (JsonNode entryNode : entryArray) {
-            String inputResourceId = entryNode.get(RESOURCE).get(RESOURCE_TYPE).asText() +
-                    "/" + entryNode.get(RESOURCE).get("id").asText();
-            processedIds.add(inputResourceId);
+            JsonNode resource = entryNode.path(RESOURCE);
+            if (resource.has(RESOURCE_TYPE) && resource.has("id")) {
+                String inputResourceId = resource.get(RESOURCE_TYPE).asText() +
+                        "/" + resource.get("id").asText();
+                processedIds.add(inputResourceId);
+            }
         }
         // Add existing resources that are not already in the bundle
         if (existingResources != null && !existingResources.isEmpty()) {

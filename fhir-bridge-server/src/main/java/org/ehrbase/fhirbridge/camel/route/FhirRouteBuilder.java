@@ -2,9 +2,7 @@ package org.ehrbase.fhirbridge.camel.route;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.TokenParam;
-import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
-import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -303,8 +301,9 @@ public class FhirRouteBuilder extends RouteBuilder {
             // 4. Replace the reference inputResourceId(s) with the reference internalResourceId(s)
             // in the input fhir bundle
             .choice()
-                .when(exchangeProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS).isNotNull())
-                    .log("Reference Resource IDs: ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "}")
+//                .when(exchangeProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS).isNotNull())
+                .when(simple("${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + ".size()} > 0"))
+                .log("Reference Resource IDs: ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "}")
                     .process(ResourceLookupProcessor.BEAN_ID)
             .end()
             .log("FHIR INTERNAL RESOURCE ID(s) : ${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + "}")
@@ -316,7 +315,9 @@ public class FhirRouteBuilder extends RouteBuilder {
             // 1. Fetch the resources for the internalResourceId(s) is/are in the server.
             // 2. Add the resources in the input fhir bundle.
             .choice()
-                .when(exchangeProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS).isNotNull())
+//                .when(exchangeProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS).isNotNull())
+                .when(simple("${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + ".size()} > 0"))
+
                     .log("Property " + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + " is present.")
                     // Process the list of internal resource IDs
                     .process(exchange -> {
@@ -370,7 +371,9 @@ public class FhirRouteBuilder extends RouteBuilder {
                 // and get the compositionId(s) for corresponding inputResourceId(s).
                 // 3. If all compositionId(s) is/are same throw duplicate bundle resource exception.
                 .choice()
-                    .when(exchangeProperty(CamelConstants.INPUT_RESOURCE_IDS).isNotNull())
+//                    .when(exchangeProperty(CamelConstants.INPUT_RESOURCE_IDS).isNotNull())
+                    .when(simple("${exchangeProperty." + CamelConstants.INPUT_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.INPUT_RESOURCE_IDS + ".size()} > 0"))
+
                         .log("Input Resource IDs: ${header." + CamelConstants.INPUT_RESOURCE_IDS + "}")
                         .doTry()
                             .process(CompositionLookupProcessor.BEAN_ID)

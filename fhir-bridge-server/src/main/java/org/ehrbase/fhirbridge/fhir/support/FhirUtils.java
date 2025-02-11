@@ -144,6 +144,11 @@ public class FhirUtils {
                     extractFromBundle(rootNode, inputResourceIds);
                 } else {
                     // Handle as a single resource
+                    if (rootNode.has(RESOURCE_TYPE) && rootNode.has("id")) {
+                        String resourceType = rootNode.get(RESOURCE_TYPE).asText();
+                        String id = rootNode.get("id").asText();
+                        inputResourceIds.add(resourceType + "/" + id);
+                    }
                 }
             }
             if (!inputResourceIds.isEmpty()) {

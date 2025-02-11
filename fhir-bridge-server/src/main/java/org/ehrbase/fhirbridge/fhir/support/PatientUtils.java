@@ -253,7 +253,7 @@ public class PatientUtils {
         return null;
     }
 
-    public  String getServerPatientIdFromDb(String patientId) {
+    public String getServerPatientIdFromDb(String patientId) {
 
         //get the internalPatientId from db
         String internalPatientId = Optional.ofNullable(patientEhrRepository.findByInputPatientId(patientId))  
@@ -265,7 +265,7 @@ public class PatientUtils {
         return internalPatientId;
     }
 
-    public  String getPatientIdFromOutCome(Exchange exchange) {
+    public void getPatientIdFromOutCome(Exchange exchange) {
         MethodOutcome resource = (MethodOutcome) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
 
         //Ned to get the Patient ID from the Outcome
@@ -274,11 +274,9 @@ public class PatientUtils {
 
         exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
         exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, resource.getResource());
-
-        return serverPatientId;
     }
 
-    public  String getPatientIdFromPatientResource(Exchange exchange) {
+    public void getPatientIdFromPatientResource(Exchange exchange) {
         String responseString = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
         String patientId = null;
         try {
@@ -307,11 +305,9 @@ public class PatientUtils {
             // TODO Auto-generated catch block
             throw new UnprocessableEntityException("Unable to process the provided Patient resource JSON");
         }
-
-        return patientId;
     }
 
-    public  String getPatientIdFromResponse(Exchange exchange) {
+    public void getPatientIdFromResponse(Exchange exchange) {
         String responseString = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
 
         JsonNode rootNode = null;
@@ -320,7 +316,7 @@ public class PatientUtils {
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            return null;
+            return;
         }
         // Extract the location if it starts with "Patient/"
         Optional<String> patientLocation = Optional.ofNullable(rootNode.get(ENTRY))
@@ -351,9 +347,6 @@ public class PatientUtils {
             if (patientLocation.isPresent()) {
                 String  serverPatientId = patientLocation.get();
                 exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
-                return serverPatientId;
-            } else {
-                return null;
             }
     }
 
@@ -363,7 +356,7 @@ public class PatientUtils {
                 .orElseThrow(() -> new InvalidRequestException("Patient must have an identifier"));
     }
 
-    private  JsonNode extractFullUrlResource(JsonNode rootNode, String fullUrl) {
+    private JsonNode extractFullUrlResource(JsonNode rootNode, String fullUrl) {
         JsonNode resource = null;
 
         // Directly target the `entry` array
@@ -377,7 +370,7 @@ public class PatientUtils {
         return resource;
     }
 
-    private  JsonNode extractContainedResource(JsonNode rootNode, String containedId) {
+    private JsonNode extractContainedResource(JsonNode rootNode, String containedId) {
         JsonNode resource = null;
 
         // Directly target the `contained` array
