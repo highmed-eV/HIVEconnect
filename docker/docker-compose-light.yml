@@ -51,7 +51,7 @@ services:
     networks:
       - ehrbase-network
     volumes:
-      - ./fhir-bridge-server/src/main/resources/application.yml:/etc/hapi-fhir/hapi-fhir-config.yaml
+      - ./fhir-bridge/src/main/resources/application.yml:/etc/hapi-fhir/hapi-fhir-config.yaml
     environment:
 #      HAPI_FHIR_VALIDATION_REQUESTS_ENABLED: 'true'
       HAPI_FHIR_SERVER_VALIDATION_FLAG_FAIL_ON_SEVERITY: error
