@@ -41,6 +41,11 @@ public class DebugProperties {
     }
 
     public void saveMergedServerResponses(Exchange exchange) throws IOException {
+
+        if (!enabled) {
+            return;
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
 
         // Parse JSON strings into JsonNode objects
