@@ -1,0 +1,248 @@
+{
+    "uid": {
+        "_type": "OBJECT_VERSION_ID",
+        "value": "3087bf54-176b-4dda-ba07-73fee2a50a8a::local.ehrbase.org::1"
+    },
+    "name": {
+        "_type": "DV_TEXT",
+        "value": "Medikamentenliste_v1"
+    },
+    "_type": "COMPOSITION",
+    "context": {
+        "_type": "EVENT_CONTEXT",
+        "setting": {
+            "_type": "DV_CODED_TEXT",
+            "value": "other care",
+            "defining_code": {
+                "_type": "CODE_PHRASE",
+                "code_string": "238",
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "openehr"
+                }
+            }
+        },
+        "start_time": {
+            "_type": "DV_DATE_TIME",
+            "value": "2025-01-21T11:01:25.611+05:30"
+        }
+    },
+    "category": {
+        "_type": "DV_CODED_TEXT",
+        "value": "event",
+        "defining_code": {
+            "_type": "CODE_PHRASE",
+            "code_string": "433",
+            "terminology_id": {
+                "_type": "TERMINOLOGY_ID",
+                "value": "openehr"
+            }
+        }
+    },
+    "composer": {
+        "_type": "PARTY_SELF"
+    },
+    "language": {
+        "_type": "CODE_PHRASE",
+        "code_string": "de",
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_639-1"
+        }
+    },
+    "territory": {
+        "_type": "CODE_PHRASE",
+        "code_string": "DE",
+        "terminology_id": {
+            "_type": "TERMINOLOGY_ID",
+            "value": "ISO_3166-1"
+        }
+    },
+    "archetype_details": {
+        "_type": "ARCHETYPED",
+        "rm_version": "1.0.4",
+        "template_id": {
+            "_type": "TEMPLATE_ID",
+            "value": "KDS_Medikationseintrag_v1"
+        },
+        "archetype_id": {
+            "_type": "ARCHETYPE_ID",
+            "value": "openEHR-EHR-COMPOSITION.medication_list.v1"
+        }
+    },
+    "archetype_node_id": "openEHR-EHR-COMPOSITION.medication_list.v1",
+    "content": [
+        {
+            "name": {
+                "value": "Medikationseintrag",
+                "_type": "DV_TEXT"
+            },
+            "_type": "OBSERVATION",
+            "subject": {
+                "_type": "PARTY_SELF"
+            },
+            "encoding": {
+                "_type": "CODE_PHRASE",
+                "code_string": "UTF-8",
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "IANA_character-sets"
+                }
+            },
+            "language": {
+                "_type": "CODE_PHRASE",
+                "code_string": "de",
+                "terminology_id": {
+                    "_type": "TERMINOLOGY_ID",
+                    "value": "ISO_639-1"
+                }
+            },
+            "data": {
+                "name": {
+                    "value": "History",
+                    "_type": "DV_TEXT"
+                },
+                "origin": {
+                    "value": "2025-01-21T11:01:25.6111108+05:30",
+                    "_type": "DV_DATE_TIME"
+                },
+                "events": [
+                    {
+                        "name": {
+                            "value": "Beliebiges Ereignis",
+                            "_type": "DV_TEXT"
+                        },
+                        "time": {
+                            "value": "2025-01-21T11:01:25.6111108+05:30",
+                            "_type": "DV_DATE_TIME"
+                        },
+                        "_type": "POINT_EVENT",
+                        "data": {
+                            "name": {
+                                "value": "Tree",
+                                "_type": "DV_TEXT"
+                            },
+                            "archetype_node_id": "at0003",
+                            "_type": "ITEM_TREE",
+                            "items": [
+                                {
+                                    "name": {
+                                        "value": "Startzeitpunkt Einnahme",
+                                        "_type": "DV_TEXT"
+                                    },
+                                    "value": {
+                                        "_type": "DV_DATE_TIME",
+                                        "value": "2024-07-15T00:00:00.000"
+                                    },
+                                    "_type": "ELEMENT",
+                                    "archetype_node_id": "at0019"
+                                },
+                                {
+                                    "name": {
+                                        "value": "Endzeitpunkt Einnahme",
+                                        "_type": "DV_TEXT"
+                                    },
+                                    "value": {
+                                        "_type": "DV_DATE_TIME",
+                                        "value": "2024-08-01T00:00:00.000"
+                                    },
+                                    "_type": "ELEMENT",
+                                    "archetype_node_id": "at0021"
+                                },
+                                {
+                                    "name": {
+                                        "value": "Beschreibung",
+                                        "_type": "DV_TEXT"
+                                    },
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "Patient reports high temperature."
+                                    },
+                                    "_type": "ELEMENT",
+                                    "archetype_node_id": "at0032"
+                                },
+                                {
+                                    "name": {
+                                        "value": "Dosierung",
+                                        "_type": "DV_TEXT"
+                                    },
+                                    "value": {
+                                        "_type": "DV_TEXT",
+                                        "value": "1 tablet daily"
+                                    },
+                                    "_type": "ELEMENT",
+                                    "archetype_node_id": "at0033"
+                                },
+                                {
+                                    "name": {
+                                        "value": "Arzneimittel",
+                                        "_type": "DV_TEXT"
+                                    },
+                                    "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2",
+                                    "_type": "CLUSTER",
+                                    "items": [
+                                        {
+                                            "name": {
+                                                "value": "Darreichungsform",
+                                                "_type": "DV_TEXT"
+                                            },
+                                            "value": {
+                                                "_type": "DV_CODED_TEXT",
+                                                "value": "Tablet",
+                                                "defining_code": {
+                                                    "_type": "CODE_PHRASE",
+                                                    "code_string": "10219000",
+                                                    "terminology_id": {
+                                                        "_type": "TERMINOLOGY_ID",
+                                                        "value": "http://standardterms.edqm.eu"
+                                                    }
+                                                }
+                                            },
+                                            "_type": "ELEMENT",
+                                            "archetype_node_id": "at0071"
+                                        },
+                                        {
+                                            "name": {
+                                                "value": "Wirkstärke (Konzentration)",
+                                                "_type": "DV_TEXT"
+                                            },
+                                            "value": {
+                                                "_type": "DV_QUANTITY",
+                                                "units": "mg",
+                                                "magnitude": 100.0
+                                            },
+                                            "_type": "ELEMENT",
+                                            "archetype_node_id": "at0115"
+                                        },
+                                        {
+                                            "name": {
+                                                "value": "Arzneimittel-Name",
+                                                "_type": "DV_TEXT"
+                                            },
+                                            "value": {
+                                                "_type": "DV_TEXT",
+                                                "value": "naproxen tablet"
+                                            },
+                                            "_type": "ELEMENT",
+                                            "archetype_node_id": "at0132"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "archetype_node_id": "at0002"
+                    }
+                ],
+                "_type": "HISTORY",
+                "archetype_node_id": "at0001"
+            },
+            "archetype_details": {
+                "rm_version": "1.0.4",
+                "archetype_id": {
+                    "value": "openEHR-EHR-OBSERVATION.medication_statement.v0"
+                }
+            },
+            "archetype_node_id": "openEHR-EHR-OBSERVATION.medication_statement.v0"
+        }
+    ]
+}
