@@ -42,17 +42,22 @@ class ResourceLookupProcessorTest {
     void processWithValidReferenceResourceIds() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7");
         exchange.setProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS, inputResourceIds);
-        ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106");
-        ResourceComposition resource2 = new ResourceComposition("Organization/7", "Organization/107");
-        when(resourceCompositionRepository.findById("Encounter/6")).thenReturn(Optional.of(resource1));
-        when(resourceCompositionRepository.findById("Organization/7")).thenReturn(Optional.of(resource2));
+        ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106", null, null);
+        ResourceComposition resource2 = new ResourceComposition("Organization/7", "Organization/107", null, null);
+        when(resourceCompositionRepository.findInternalResourceIdsByInputResourceIds(inputResourceIds))
+                .thenReturn(Arrays.asList("Encounter/106", "Organization/107"));
+        when(resourceCompositionRepository.findByInputResourceId("Encounter/6")).thenReturn(Optional.of(resource1));
+        when(resourceCompositionRepository.findByInputResourceId("Organization/7")).thenReturn(Optional.of(resource2));
+
         String inputResource = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Condition/6\", \"resource\": { \"resourceType\": \"Condition\", \"id\": \"6\", \"encounter\": { \"reference\": \"Encounter/6\" }, \"organization\": { \"reference\": \"Organization/7\" } } } ] }";
         exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
 
         resourceLookupProcessor.process(exchange);
 
-        verify(resourceCompositionRepository, times(2)).findById("Encounter/6");
-        verify(resourceCompositionRepository, times(2)).findById("Organization/7");
+        verify(resourceCompositionRepository, times(1)).findInternalResourceIdsByInputResourceIds(inputResourceIds);
+        verify(resourceCompositionRepository, times(1)).findByInputResourceId("Encounter/6");
+        verify(resourceCompositionRepository, times(1)).findByInputResourceId("Organization/7");
+
         assertEquals(Arrays.asList("Encounter/106", "Organization/107"), exchange.getProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS));
 
         // Verify that the updated resource is set correctly
@@ -66,17 +71,21 @@ class ResourceLookupProcessorTest {
     void processWithInvalidReferenceResourceIds() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "invalidResource");
         exchange.setProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS, inputResourceIds);
-        ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106");
-        when(resourceCompositionRepository.findById("Encounter/6")).thenReturn(Optional.of(resource1));
-        when(resourceCompositionRepository.findById("invalidResource")).thenReturn(Optional.empty());
+        ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106", null, null);
+
+        when(resourceCompositionRepository.findInternalResourceIdsByInputResourceIds(inputResourceIds))
+                .thenReturn(Arrays.asList("Encounter/106"));
+        when(resourceCompositionRepository.findByInputResourceId("Encounter/6")).thenReturn(Optional.of(resource1));
+
         String inputResource = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Condition/6\", \"resource\": { \"resourceType\": \"Condition\", \"id\": \"6\", \"encounter\": { \"reference\": \"Encounter/6\" }, \"organization\": { \"reference\": \"invalidResource\" } } } ] }";
         exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
 
         resourceLookupProcessor.process(exchange);
 
         // Verify that the internalResourceIds list contains only valid ones
-        verify(resourceCompositionRepository, times(2)).findById("Encounter/6");
-        verify(resourceCompositionRepository, times(1)).findById("invalidResource");
+        verify(resourceCompositionRepository, times(1)).findInternalResourceIdsByInputResourceIds(inputResourceIds);
+        verify(resourceCompositionRepository, times(1)).findByInputResourceId("Encounter/6");
+
         assertEquals(Arrays.asList("Encounter/106"), exchange.getProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS));
 
         // Verify that the updated resource is set correctly
