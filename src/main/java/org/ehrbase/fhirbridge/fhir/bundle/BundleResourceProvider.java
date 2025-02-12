@@ -27,6 +27,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.Constants;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
@@ -88,14 +89,19 @@ public class BundleResourceProvider implements IResourceProvider  {
     }
 
 
-    private OperationOutcome createOperationOutcome(String message) {
-        OperationOutcome outcome = new OperationOutcome();
-        outcome.addIssue()
-                .setSeverity(OperationOutcome.IssueSeverity.ERROR)
-                .setCode(OperationOutcome.IssueType.EXCEPTION)
-                .setDiagnostics(message)
-                .setDetails(new org.hl7.fhir.r4.model.CodeableConcept()
-                        .setText("Internal Server Error during Condition creation"));
+    @Update
+    public MethodOutcome update(@IdParam IdType bundleId,
+                                @ResourceParam Bundle bundle,
+                                RequestDetails requestDetails,
+                                HttpServletRequest request,
+                                HttpServletResponse response) {
+        System.out.println("Executing 'Update Bundle' transaction using 'update' operation...");
+        
+        // Add logic to process and update the bundle
+        
+        MethodOutcome outcome = new MethodOutcome();
+        outcome.setId(bundleId);
+        outcome.setResource(bundle);
         return outcome;
     }
 
