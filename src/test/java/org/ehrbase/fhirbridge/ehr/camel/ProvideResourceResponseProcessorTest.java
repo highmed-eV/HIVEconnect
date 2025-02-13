@@ -43,8 +43,6 @@ class ProvideResourceResponseProcessorTest {
     @Mock
     private Exchange exchange;
 
-//    private String mappingOutputDirectory = "dummy/path/to/mappings";
-
     @Mock
     DebugProperties debugProperties;
 
@@ -70,7 +68,7 @@ class ProvideResourceResponseProcessorTest {
         Composition composition = new Composition();
         exchange.getIn().setBody(composition);
 
-        when(resourceCompositionRepository.findById(anyString())).thenReturn(Optional.empty());
+        when(resourceCompositionRepository.findByInputResourceIdAndCompositionId(anyString(), anyString())).thenReturn(Optional.empty());
 
         provideResourceResponseProcessor.process(exchange);
 
@@ -119,7 +117,7 @@ class ProvideResourceResponseProcessorTest {
         assertNotNull(node2, "Parsed JsonNode for OPEN_FHIR_SERVER_OUTCOME should not be null");
         assertNotNull(node3, "Parsed JsonNode for OPEN_EHR_SERVER_OUTCOME should not be null");
 
-        when(resourceCompositionRepository.findById(anyString())).thenReturn(Optional.empty());
+        when(resourceCompositionRepository.findByInputResourceIdAndCompositionId(anyString(), anyString())).thenReturn(Optional.empty());
 
         provideResourceResponseProcessor.process(exchange);
 

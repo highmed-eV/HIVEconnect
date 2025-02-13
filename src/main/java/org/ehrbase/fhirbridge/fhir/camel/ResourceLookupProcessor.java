@@ -27,7 +27,6 @@ import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -53,25 +52,24 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
     @Override
     public void process(Exchange exchange) throws Exception {
         List<String > inputResourceIds = exchange.getProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS, List.class);
-        List<String> internalResourceIds = new ArrayList<>();
+        if (inputResourceIds == null || inputResourceIds.isEmpty()) {
+            return;
+        }
 
         // fetch the internalResourceIds corresponding to the inputResourceIds from db
-        for (String inputResourceId : inputResourceIds){
-            Optional<String> optionalInternalResourceId = resourceCompositionRepository.findById(inputResourceId)
-                    .map(ResourceComposition::getInternalResourceId);
+        List<String> internalResourceIds = resourceCompositionRepository.findInternalResourceIdsByInputResourceIds(inputResourceIds);
 
-            if (optionalInternalResourceId.isPresent()) {
-                String internalResourceId = optionalInternalResourceId.get();
-                internalResourceIds.add(internalResourceId);
-            }
+        if (!internalResourceIds.isEmpty()) {
+            exchange.setProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS, internalResourceIds);
         }
-        exchange.setProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS, internalResourceIds);
 
         String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
-        // update the input resource bundle reference with internalResourceIds
-        String updatedResource = updateInputResource(inputResource);
-        // Set the updated resource back into the exchange body
-        exchange.getIn().setBody(updatedResource);
+        if (inputResource != null) {
+            // update the input resource bundle reference with internalResourceIds
+            String updatedResource = updateInputResource(inputResource);
+            // Set the updated resource back into the exchange body
+            exchange.getIn().setBody(updatedResource);
+        }
     }
 
     private String updateInputResource(String inputResource) throws JsonProcessingException {
@@ -129,7 +127,7 @@ public class ResourceLookupProcessor implements FhirRequestProcessor {
     private boolean processReferenceField(JsonNode resourceNode, JsonNode childNode, String regex, String fieldName) {
         String inputResourceId = childNode.asText();
         if (Pattern.matches(regex, inputResourceId)) {
-            Optional<String> dbInternalResourceId = resourceCompositionRepository.findById(inputResourceId)
+            Optional<String> dbInternalResourceId = resourceCompositionRepository.findByInputResourceId(inputResourceId)
                     .map(ResourceComposition::getInternalResourceId);
 
             if (dbInternalResourceId.isPresent() && resourceNode instanceof ObjectNode objectNode) {
