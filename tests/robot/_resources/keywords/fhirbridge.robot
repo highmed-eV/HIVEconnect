@@ -15,7 +15,7 @@ create and validate fhir bundle
     [Arguments]    ${testCaseName}    ${inputBundleFileName}    ${expectedOpenEhrFileName}    ${openEhrTemplateId}
     ehr.create new ehr    000_ehr_status.json
     fhirbridge.create fhir bundle    ${testCaseName}    ${inputBundleFileName}
-    fhirbridge.validate response - 200
+    fhirbridge.validate response - 201
     fhirbridge.create openehr aql    ${openEhrTemplateId}    ${expectedOpenEhrFileName}
     fhirbridge.validate content response_aql_composition - 201    ${expectedOpenEhrFileName}
 
@@ -92,10 +92,10 @@ Find Matching Entry
     Fail                No matching entry found for fullUrl: ${reference}
 
 
-validate response - 200
+validate response - 201
     [Documentation]     Validates response of POST to ${BASE_URL} endpoint
-    Integer    response status    200
-    Log To Console    \nIn Fhir bundle validate response is 200
+    Integer    response status    201
+    Log To Console    \nIn Fhir bundle validate response is 201 Created
 
 create openehr aql
     [Arguments]         ${openehr_template}     ${openehr_canonical_file_name}
