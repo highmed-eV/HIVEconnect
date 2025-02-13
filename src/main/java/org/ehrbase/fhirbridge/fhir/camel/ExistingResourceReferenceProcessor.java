@@ -26,6 +26,7 @@ import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -77,39 +78,17 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         String inputResourceBundle = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
         JsonNode rootNode = objectMapper.readTree(inputResourceBundle);
 
-        if (!rootNode.has("entry") || !rootNode.has(RESOURCE_TYPE) || !"Bundle".equals(rootNode.get(RESOURCE_TYPE).asText())) {
+        if (!isValidBundle(rootNode)) {
             return; // No valid entries or bundle to process
         }
         // Get the "entry" array
         ArrayNode entryArray = (ArrayNode) rootNode.get("entry");
-        Set<String> processedIds = new HashSet<>();
-
         // Collect existing IDs from the input bundle
-        for (JsonNode entryNode : entryArray) {
-            JsonNode resource = entryNode.path(RESOURCE);
-            if (resource.has(RESOURCE_TYPE) && resource.has("id")) {
-                String inputResourceId = resource.get(RESOURCE_TYPE).asText() +
-                        "/" + resource.get("id").asText();
-                processedIds.add(inputResourceId);
-            }
-        }
+        Set<String> processedIds = getProcessedIds(entryArray);
+
         // Add existing resources that are not already in the bundle
-        if (existingResources != null && !existingResources.isEmpty()) {
-            for (String existingResourceJson : existingResources) {
-                JsonNode newResourceNode = objectMapper.readTree(existingResourceJson);
-                if (newResourceNode.has(RESOURCE_TYPE) && newResourceNode.has("id")) {
-                    String newResourceId = newResourceNode.get(RESOURCE_TYPE).asText() +
-                            "/" + newResourceNode.get("id").asText();
-                    if (!processedIds.contains(newResourceId)) {
-                        // Create a new entry for the existing resource
-                        ObjectNode newEntryNode = objectMapper.createObjectNode();
-                        newEntryNode.put("fullUrl", newResourceId);
-                        newEntryNode.set(RESOURCE, newResourceNode);
-                        entryArray.add(newEntryNode);
-                    }
-                }
-            }
-        }
+        addExistingResources(existingResources, objectMapper, processedIds, entryArray);
+
         // Update the bundle in the exchange
         String updatedBundleJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
         exchange.getIn().setBody(updatedBundleJson);
@@ -139,4 +118,43 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         }
         return existingResources;
     }
+
+    private boolean isValidBundle(JsonNode rootNode) {
+        return rootNode.has("entry") && rootNode.has(RESOURCE_TYPE) && "Bundle".equals(rootNode.get(RESOURCE_TYPE).asText());
+    }
+
+    private @NotNull Set<String> getProcessedIds(ArrayNode entryArray) {
+        Set<String> processedIds = new HashSet<>();
+
+        for (JsonNode entryNode : entryArray) {
+            JsonNode resource = entryNode.path(RESOURCE);
+            if (resource.has(RESOURCE_TYPE) && resource.has("id")) {
+                String inputResourceId = resource.get(RESOURCE_TYPE).asText() +
+                        "/" + resource.get("id").asText();
+                processedIds.add(inputResourceId);
+            }
+        }
+        return processedIds;
+    }
+
+    private void addExistingResources(List<String> existingResources, ObjectMapper objectMapper, Set<String> processedIds, ArrayNode entryArray) throws JsonProcessingException {
+        if (existingResources != null && !existingResources.isEmpty()) {
+            for (String existingResourceJson : existingResources) {
+                JsonNode newResourceNode = objectMapper.readTree(existingResourceJson);
+                if (newResourceNode.has(RESOURCE_TYPE) && newResourceNode.has("id")) {
+                    String newResourceId = newResourceNode.get(RESOURCE_TYPE).asText() +
+                            "/" + newResourceNode.get("id").asText();
+                    if (!processedIds.contains(newResourceId)) {
+                        // Create a new entry for the existing resource
+                        ObjectNode newEntryNode = objectMapper.createObjectNode();
+                        newEntryNode.put("fullUrl", newResourceId);
+                        newEntryNode.set(RESOURCE, newResourceNode);
+                        entryArray.add(newEntryNode);
+                    }
+                }
+            }
+        }
+    }
+
+
 }
