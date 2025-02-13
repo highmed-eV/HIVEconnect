@@ -172,9 +172,10 @@ public class ProvideResourceResponseProcessor implements Processor {
         for (Map.Entry<String, String> entry : resourceIdMap.entrySet()) {
             String inputResourceId = entry.getKey();
             String internalResourceId = entry.getValue();
+            String compositionId = getCompositionId(composition);
 
-            ResourceComposition resourceComposition = resourceCompositionRepository.findById(inputResourceId)
-                    .orElse(new ResourceComposition(inputResourceId));
+            ResourceComposition resourceComposition = resourceCompositionRepository.findByInputResourceIdAndCompositionId(inputResourceId, compositionId)
+                    .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, null));
 
             resourceComposition.setCompositionId(getCompositionId(composition));
             resourceComposition.setInternalResourceId(internalResourceId);

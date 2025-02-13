@@ -97,14 +97,16 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         if (existingResources != null && !existingResources.isEmpty()) {
             for (String existingResourceJson : existingResources) {
                 JsonNode newResourceNode = objectMapper.readTree(existingResourceJson);
-                String newResourceId = newResourceNode.get(RESOURCE_TYPE).asText() +
-                        "/" + newResourceNode.get("id").asText();
-                if (!processedIds.contains(newResourceId)) {
-                    // Create a new entry for the existing resource
-                    ObjectNode newEntryNode = objectMapper.createObjectNode();
-                    newEntryNode.put("fullUrl", newResourceId);
-                    newEntryNode.set(RESOURCE, newResourceNode);
-                    entryArray.add(newEntryNode);
+                if (newResourceNode.has(RESOURCE_TYPE) && newResourceNode.has("id")) {
+                    String newResourceId = newResourceNode.get(RESOURCE_TYPE).asText() +
+                            "/" + newResourceNode.get("id").asText();
+                    if (!processedIds.contains(newResourceId)) {
+                        // Create a new entry for the existing resource
+                        ObjectNode newEntryNode = objectMapper.createObjectNode();
+                        newEntryNode.put("fullUrl", newResourceId);
+                        newEntryNode.set(RESOURCE, newResourceNode);
+                        entryArray.add(newEntryNode);
+                    }
                 }
             }
         }
@@ -122,17 +124,17 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
                 String resourceId = resourceNode.get(RESOURCE_TYPE).asText() + "/" + resourceNode.get("id").asText();
 
                 // Fetch replacement IDs from the database
-                String dbInputResourceId = resourceCompositionRepository.getInputResourceIds(resourceId);
+                String dbInputResourceId = resourceCompositionRepository.findInternalResourceIdByInputResourceId(resourceId);
+
                 if(StringUtils.isNotBlank(dbInputResourceId)){
-                    Pattern pattern = Pattern.compile("([^/]+)/([^/]+)");
-                    Matcher matcher = pattern.matcher(dbInputResourceId);
+                    Matcher matcher = Pattern.compile("([^/]+)/([^/]+)").matcher(dbInputResourceId);
+
                     if (matcher.matches()) {
                         ((ObjectNode) resourceNode).put("id", matcher.group(2));
+                        // Replace the original JSON string in the list with the updated one
+                        existingResources.set(i, objectMapper.writeValueAsString(resourceNode));
                     }
                 }
-                // Replace the original JSON string in the list with the updated one
-                existingResources.set(i, objectMapper.writeValueAsString(resourceNode));
-
             }
         }
         return existingResources;

@@ -1,10 +1,6 @@
 package org.ehrbase.fhirbridge.camel.route;
 
-import ca.uhn.fhir.rest.api.MethodOutcome;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 

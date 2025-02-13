@@ -1,33 +1,10 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.CanonicalType;
-import org.hl7.fhir.r4.model.Composition;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.Consent;
-import org.hl7.fhir.r4.model.DiagnosticReport;
-import org.hl7.fhir.r4.model.DocumentReference;
-import org.hl7.fhir.r4.model.Encounter;
-import org.hl7.fhir.r4.model.Immunization;
-import org.hl7.fhir.r4.model.MedicationStatement;
-import org.hl7.fhir.r4.model.Observation;
-import org.hl7.fhir.r4.model.PrimitiveType;
-import org.hl7.fhir.r4.model.Procedure;
-import org.hl7.fhir.r4.model.QuestionnaireResponse;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.ResourceType;
-import org.hl7.fhir.r4.model.Specimen;
-import org.hl7.fhir.r4.model.ResearchSubject;
-import org.hl7.fhir.r4.model.ServiceRequest;
-import org.hl7.fhir.r4.model.MedicationAdministration;
-import org.hl7.fhir.r4.model.ListResource;
+import org.hl7.fhir.r4.model.*;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("java:S6212")
@@ -135,14 +112,19 @@ public class Resources {
                 break;
             case Composition:
                 ((Composition) resource).setSubject(subject);
+                break;
             case ResearchSubject:
                 ((ResearchSubject) resource).setIndividual(subject);
+                break;
             case ServiceRequest:
                 ((ServiceRequest) resource).setSubject(subject);
+                break;
             case MedicationAdministration:
                 ((MedicationAdministration) resource).setSubject(subject);
+                break;
             case List:
                 ((ListResource) resource).setSubject(subject);
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
         }
@@ -152,10 +134,8 @@ public class Resources {
         return resource.getMeta().getProfile()
                 .stream()
                 .map(CanonicalType::getValue)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
-
-    
 
     private static Optional<Reference> getSubject(Condition condition) {
         return condition.hasSubject() ? Optional.of(condition.getSubject()) : Optional.empty();

@@ -13,7 +13,7 @@ import java.io.IOException;
 public class ExceptionHandler  {
 
     @Hook(Pointcut.SERVER_HANDLE_EXCEPTION)
-    public boolean handleException(RequestDetails requestDetails, BaseServerResponseException exception, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public boolean handleException(RequestDetails requestDetails, BaseServerResponseException exception, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(exception.getStatusCode());
         response.setContentType("text/plain");
         response.getWriter().append(exception.getMessage());

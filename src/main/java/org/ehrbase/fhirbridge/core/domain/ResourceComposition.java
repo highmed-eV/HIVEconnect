@@ -16,23 +16,25 @@
 
 package org.ehrbase.fhirbridge.core.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "FB_RESOURCE_COMPOSITION")
+@Table(name = "FB_RESOURCE_COMPOSITION", uniqueConstraints = @UniqueConstraint(columnNames = {"INPUT_RESOURCE_ID", "COMPOSITION_ID"}))
 public class ResourceComposition {
 
     @Id
-    @Column(name = "INPUT_RESOURCE_ID")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "resource_composition_id_generator")
+    @SequenceGenerator(name = "resource_composition_id_generator", sequenceName = "resource_composition_id_seq", allocationSize = 1)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "INPUT_RESOURCE_ID", nullable = false)
     private String inputResourceId;
 
     @Column(name = "INTERNAL_RESOURCE_ID")
     private String internalResourceId;
 
-    @Column(name = "COMPOSITION_ID")
+    @Column(name = "COMPOSITION_ID", nullable = false)
     private String compositionId;
 
     @Column(name = "SYSTEM_ID")
@@ -45,9 +47,11 @@ public class ResourceComposition {
         this.inputResourceId = inputResourceId;
     }
 
-    public ResourceComposition(String inputResourceId, String internalResourceId) {
+    public ResourceComposition(String inputResourceId, String internalResourceId, String compositionId, String systemId) {
         this.inputResourceId = inputResourceId;
         this.internalResourceId = internalResourceId;
+        this.compositionId = compositionId;
+        this.systemId = systemId;
     }
 
     public String getInputResourceId() {
@@ -85,7 +89,8 @@ public class ResourceComposition {
     @Override
     public String toString() {
         return "ResourceComposition{" +
-                "inputResourceId='" + inputResourceId + '\'' +
+                "id=" + id + '\'' +
+                ", inputResourceId='" + inputResourceId + '\'' +
                 ", internalResourceId='" + internalResourceId + '\'' +
                 ", compositionId='" + compositionId + '\'' +
                 ", systemId='" + systemId + '\'' +
