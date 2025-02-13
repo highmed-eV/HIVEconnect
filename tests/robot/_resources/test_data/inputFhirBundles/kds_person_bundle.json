@@ -32,7 +32,7 @@
               "text": "versichertenId_GKV"
             },
             "system": "http://fhir.de/sid/gkv/kvid-10",
-            "value": "K987654333",
+            "value": "K987654334",
             "assigner": {
               "identifier": {
                 "type": {
