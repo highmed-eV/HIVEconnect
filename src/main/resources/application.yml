@@ -1,0 +1,172 @@
+# @formatter:off
+################################################################################
+#   FHIR Bridge Properties                                                     #
+################################################################################
+fhir-bridge:
+  debug:
+    enabled: true
+    mapping-output-directory: ${java.io.tmpdir}/mappings
+  cors:
+    allowed-headers: '*'
+    allowed-methods: '*'
+    allowed-origins: '*'
+  mode: openehr
+  fhir:
+    validation:
+      terminology:
+        mode: none
+  openehr:
+    url: http://localhost:8080/ehrbase/
+    security:
+      type: basic
+      user:
+        name: myuser
+        password: myPassword432
+  #Medblocks Auth basic no working
+  security:
+    type: BASIC
+    user:
+      name: fhirbridge-user
+      password: myPassword1234
+
+
+################################################################################
+#   Spring Boot Properties                                                     #
+################################################################################
+spring:
+  application:
+    name: FHIR Bridge
+  batch:
+    job:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true      # Upgrade HAPI FHIR
+    allow-circular-references: true             # Upgrade HAPI FHIR
+  cache:
+    cache-names: templateCache
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fhir-bridge
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    #      ddl-auto: none
+    #      ddl-auto: create
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    # properties:
+    #   hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect #org.hibernate.dialect.H2Dialect
+    #   hibernate.search.enabled: true
+    #   hibernate.search.backend.type: lucene
+    #   hibernate.search.backend.analysis.configurer: ca.uhn.fhir.jpa.search.HapiLuceneAnalysisConfigurer
+    #   hibernate.search.backend.directory.type: local-filesystem
+    #   hibernate.search.backend.directory.root: ${java.io.tmpdir}/fhir-bridge/lucenefiles
+    #   hibernate.search.backend.lucene_version: lucene_current
+  liquibase:
+    database-change-log-table: DATABASE_CHANGELOG
+    database-change-log-lock-table: DATABASE_CHANGELOG_LOCK
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  messages:
+    basename: messages/messages
+    use-code-as-default-message: true
+
+  #Medblocks
+  flyway:
+    enabled: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration, org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
+
+server:
+  port: 8888
+  servlet:
+    context-path: /fhir-bridge
+
+logging:
+  file:
+    name: ./logs/fhir-bridge.log
+  logback:
+    rollingpolicy:
+      max-history: 30
+      max-file-size: 100MB
+  level:
+    ca.uhn.fhir: WARN
+    com.zaxxer.hikari: WARN
+    liquibase: INFO
+    org.apache.camel: DEBUG
+    # org.ehrbase.client: WARN
+    org.ehrbase.fhirbridge: DEBUG
+    org.hibernate: INFO
+    org.openehealth.ipf: ERROR
+    org.quartz: WARN
+    org.springframework: WARN
+    org.springframework.boot: INFO
+
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: '*'
+        allowed-methods: '*'
+        allowed-headers: '*'
+      exposure:
+        include: env, health, info, liquibase, logfile, loggers, prometheus
+  metrics:
+    export:
+      elastic:
+        auto-create-index:
+
+#Medblocks
+hapi:
+  fhir:
+    server:
+      path: /fhir
+    resource-providers: ConditionResourceProvider
+    rest:
+      server-name: fhir-bridge
+      server-version: 1.0.0
+      implementation-description: fhir-bridge
+      default-response-encoding: json
+      e-tag-support: enabled
+      default-pretty-print: true
+#fhir server
+fhir:
+  server:
+    url: http://localhost:8088
+    # url: http://localhost:8088/fhir-bridge
+
+#openFhir
+openfhir:
+  server:
+    url: http://localhost:8090
+
+#openEHR
+openehr:
+  server:
+    url: http://localhost:8080/ehrbase/rest/openehr
+
+
+#camel fhir
+#serverUrl: http://localhost:8088/fhir-bridge/fhir
+serverUrl: http://localhost:8088/fhir
+fhirVersion: R4
+connectionTimeout: 20000
+socketTimeout: 20000
+camel:
+  servlet:
+    mapping:
+      contextPath: /*
+
+################################################################################
+# Open eHealth Integration Platform Properties                                 #
+################################################################################
+ipf:
+  atna:
+    audit-enabled: false
+  fhir:
+    fhir-version: r4
+
+demographics:
+  patient:
+    url: https://demographics-service.ctr.dev.num-codex.de/fhir/Patient/
