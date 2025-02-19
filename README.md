@@ -35,7 +35,7 @@ $ mvn clean install -DskipITs=false
 cd docker
 docker-compose -f docker-compose-light.yml up
 ```
-
+Note: Ensure that the OPENFHIR application is up and running before starting
 ### Run the application
 
 ```bash
@@ -54,9 +54,11 @@ $ docker build -f docker/Dockerfile -t fhir-bridge:latest .
 Note: Ensure all containers are created using same network
 ```bash
 $ docker run --network=docker_ehrbase-network -p 8888:8888 -e \
-                  "FHIR_BRIDGE_OPENEHR_URL=http://{ehrbase-coontainer-name}:8080/ehrbase/" \
-                  -e "SPRING_DATASOURCE_URL=jdbc:postgresql://{database-container-name}:5432/fbridge" \
+                  "FHIR_BRIDGE_OPENEHR_URL=http://{ehrbase-coontainer-name or host}:8080/ehrbase/" \
+                  -e "SPRING_DATASOURCE_URL=jdbc:postgresql://{database-container-name or host}:5432/fbridge" \
                   -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" \
+                  -e "FHIR_SERVER_URL=http://{hapi-fhir-server-coontainer-name or host}:8088" \
+                  -e "OPENFHIR_SERVER_URL=http://{openfhir-container-name or host}:8090" \
                   --name=fhir-bridge fhir-bridge:latest
 ```
 
