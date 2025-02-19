@@ -47,21 +47,17 @@ $ java -jar fhir-bridge-1.0.0-SNAPSHOT.jar
 ### Build the Docker image
 
 ```
-$ mvn clean spring-boot:build-image
+$ docker build -f docker/Dockerfile -t fhir-bridge:latest . 
 ```
 
 ### Start a Docker container
-
+Note: Ensure all containers are created using same network
 ```bash
-$ docker run -p 8888:8888 -e "FHIR_BRIDGE_EHRBASE_BASE_URL=http://172.17.0.1:8080/ehrbase/rest/openehr/v1/" \
-             --name=fhir-bridge ehrbase/fhir-bridge
-```
-
-### Setup a full environment using Docker Compose
-
-```bash
-$ cd docker
-$ docker-compose -f docker-compose-full.yml up
+$ docker run --network=docker_ehrbase-network -p 8888:8888 -e \
+                  "FHIR_BRIDGE_OPENEHR_URL=http://{ehrbase-coontainer-name}:8080/ehrbase/" \
+                  -e "SPRING_DATASOURCE_URL=jdbc:postgresql://{database-container-name}:5432/fbridge" \
+                  -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" \
+                  --name=fhir-bridge fhir-bridge:latest
 ```
 
 ## License
