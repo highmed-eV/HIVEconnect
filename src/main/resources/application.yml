@@ -22,7 +22,6 @@ fhir-bridge:
       user:
         name: myuser
         password: myPassword432
-  #Medblocks Auth basic no working
   security:
     type: BASIC
     user:
@@ -52,18 +51,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    #      ddl-auto: none
-    #      ddl-auto: create
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    # properties:
-    #   hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect #org.hibernate.dialect.H2Dialect
-    #   hibernate.search.enabled: true
-    #   hibernate.search.backend.type: lucene
-    #   hibernate.search.backend.analysis.configurer: ca.uhn.fhir.jpa.search.HapiLuceneAnalysisConfigurer
-    #   hibernate.search.backend.directory.type: local-filesystem
-    #   hibernate.search.backend.directory.root: ${java.io.tmpdir}/fhir-bridge/lucenefiles
-    #   hibernate.search.backend.lucene_version: lucene_current
   liquibase:
     database-change-log-table: DATABASE_CHANGELOG
     database-change-log-lock-table: DATABASE_CHANGELOG_LOCK
@@ -130,25 +119,14 @@ hapi:
       default-response-encoding: json
       e-tag-support: enabled
       default-pretty-print: true
-#fhir server
-fhir:
-  server:
-    url: http://localhost:8088
-    # url: http://localhost:8088/fhir-bridge
 
 #openFhir
 openfhir:
   server:
     url: http://localhost:8090
 
-#openEHR
-openehr:
-  server:
-    url: http://localhost:8080/ehrbase/rest/openehr
-
 
 #camel fhir
-#serverUrl: http://localhost:8088/fhir-bridge/fhir
 serverUrl: http://localhost:8088/fhir
 fhirVersion: R4
 connectionTimeout: 20000
