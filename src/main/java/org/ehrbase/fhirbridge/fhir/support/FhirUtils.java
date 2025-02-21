@@ -2,8 +2,13 @@ package org.ehrbase.fhirbridge.fhir.support;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.camel.Exchange;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -11,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 
 public class FhirUtils {
 
@@ -19,6 +25,7 @@ public class FhirUtils {
     private static final FhirContext FHIR_CONTEXT = FhirContext.forR4();
     public static final String RESOURCE_TYPE = "resourceType";
     public static final String ENTRY = "entry";
+    public static final String REQUEST = "request";
     public static final String FULL_URL = "fullUrl";
     private static final Logger LOG = LoggerFactory.getLogger(FhirUtils.class);
     
@@ -172,6 +179,29 @@ public class FhirUtils {
                 inputResourceIds.add(resourceType + "/" + id);
             }
         }
+    }
+
+    public static void extractRequestTypeFromFromBundle(Exchange exchange) {
+        String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+        try{
+            JsonNode rootNode = objectMapper.readTree(inputResource);
+            
+            var methods = StreamSupport.stream(rootNode.spliterator(), false)
+                            .map(node -> {
+                                JsonNode requests = node.path("request");
+                                return requests.has("method") ? requests.get("method").asText() : null;
+                            })
+                            .distinct()
+                            .toList();
+            
+            if (methods.contains(null) || methods.size() > 1) {
+                throw new IllegalArgumentException("Inconsistent or invalid request methods detected");
+            }
+            exchange.getIn().setHeader(CamelConstants.INPUT_OPERATION_TYPE, methods.get(0));
+        
+        } catch (JsonProcessingException e) {
+            throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");
+        }   
     }
 }
 

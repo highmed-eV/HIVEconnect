@@ -3,6 +3,8 @@ package org.ehrbase.fhirbridge.camel.route;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -28,24 +30,6 @@ public class FhirRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        // onException(BaseServerResponseException.class)
-        //     .handled(true)
-        //     .log("FhirRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
-        //     .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
-        //     .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-        //     .process(exchange -> {
-        //         BaseServerResponseException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, BaseServerResponseException.class);
-        //         if (exception != null && exception.getOperationOutcome() != null) {
-        //             // String serializedOutcome = FhirUtils.serializeOperationOutcome(exception.getOperationOutcome());
-        //             MethodOutcome methodOutcome = new MethodOutcome();
-        //             methodOutcome.setCreated(true);
-        //             methodOutcome.setOperationOutcome(exception.getOperationOutcome());
-        //             exchange.getIn().setBody(methodOutcome);
-        //         } else if (exception != null) {
-        //             exchange.getIn().setBody(exception.getMessage());
-        //         }
-        //     })
-        //     .log("######### FhirRouteBuilder onException");
 
         from("direct:FHIRProcess")
             // Forward request to FHIR server
@@ -54,6 +38,10 @@ public class FhirRouteBuilder extends RouteBuilder {
                         // if body.type == "transaction"
                         // create Transaction bundle in our FHIR server
                         .log("Transaction FHIR request. Starting process...")
+                        //verify the request is either POST or PUT for all the resources within the bundle
+                        .process(exchange -> {
+                            FhirUtils.extractRequestTypeFromFromBundle(exchange);
+                        })
                         .doTry()
                             .to("fhir://transaction/withBundle?inBody=stringBundle&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                             //Store the response in the Exchange
@@ -73,13 +61,13 @@ public class FhirRouteBuilder extends RouteBuilder {
                         .endDoTry()
 
                     .endChoice()
-                .otherwise()
-                    // else create Resource in our FHIR server
-                    .log("Resource FHIR request. Starting process...")
+                    .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'POST'"))
                     .doTry()
                         .to("fhir://create/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                         //Store the response in the Exchange
                         .process(exchange -> {
+                            exchange.getIn().setHeader(CamelConstants.INPUT_OPERATION_TYPE, "POST");
+
                             //Response may not be resource. It is OutCome
                             MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
                             exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
@@ -93,6 +81,31 @@ public class FhirRouteBuilder extends RouteBuilder {
                         .log("direct:FHIRProcess fhir://create catch exception")
                         .process(new FhirBridgeExceptionHandler())
                     .endDoTry()
+                    .endChoice()
+                    .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'PUT'"))
+                    .doTry()
+                        .to("fhir://update/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                        //Store the response in the Exchange
+                        .process(exchange -> {
+                            exchange.getIn().setHeader(CamelConstants.INPUT_OPERATION_TYPE, "PUT");
+
+                            //Response may not be resource. It is OutCome
+                            MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
+                            exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
+
+                            //set back the input json as body
+                            String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                            exchange.getIn().setBody(inputResource);
+                                        
+                        })
+                    .doCatch(Exception.class)
+                        .log("direct:FHIRProcess fhir://update catch exception")
+                        .process(new FhirBridgeExceptionHandler())
+                    .endDoTry()
+                    .endChoice()
+                .otherwise()
+                    // else create Resource in our FHIR server
+                    .log("Unsupported operation...")
                 .end()
                 .log("FHIR request processed by FHIR server ${body}");
         
