@@ -14,58 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class FhirBridgeRouteBuilder extends RouteBuilder {
 
-//    private PatientIdMapper patientIdMapper;
-//    private final Authenticator authenticator;
-//
-//    public FhirBridgeRouteBuilder(PatientIdMapper patientIdMapper,
-//                        Authenticator authenticator) {
-//        this.patientIdMapper = patientIdMapper;
-//        this.authenticator = authenticator;
-//    }
-
     @Override
     public void configure() throws Exception {
 
-        // onException(Exception.class)
-        //     .handled(false)
-        //     .log("FhirBridgeRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
-        //     .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
-        //     .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-        //     .process(exchange -> {
-        //         Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-        //         if (exception instanceof BaseServerResponseException baseException) {
-        //             if (baseException.getOperationOutcome() != null) {
-        //                 // Set body with serialized operation outcome if present
-        //                 exchange.getIn().setBody(FhirUtils.serializeOperationOutcome(baseException.getOperationOutcome()));
-        //             } else {
-        //                 // If operation outcome is not present, set the exception message
-        //                 exchange.getIn().setBody(baseException.getMessage());
-        //             }
-        //         } else {
-        //             // If the exception is not of type BaseServerResponseException
-        //             exchange.getIn().setBody(exception.getMessage());
-        //         }
-        //     })
-        //     .log("######### FhirBridgeRouteBuilder onException");
-
-
-        // from("direct:processAuthentication")
-        //     .log("######### in processAuthentication")
-        //     .process(exchange -> {
-        //         String authHeader = exchange.getIn().getHeader("Authorization", String.class);
-        //         if (!authenticator.authenticate(authHeader, null)) {
-        //             throw new SecurityException("Unauthorized");
-        //         }
-        //         String body = exchange.getIn().getBody(String.class);
-        //         // set back the request body
-        //         exchange.getMessage().setBody(body);
-        //     })
-        //     .doTry()
-        //         .to("direct:FHIRIBridgeProcess")
-        //     .doCatch(Exception.class)
-        //         .log("direct:FHIRIBridgeProcess catch exception")
-        //         .process(new OpenEhrClientExceptionHandler());
-    
         // Route to process the FHIR request
         from("direct:FHIRBridgeProcess")
             .doTry()
@@ -104,7 +55,6 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                 .endChoice();
 
         from("direct:FHIRToOpenEHRMappingProcess")
-
             // Step 2: Check if the input resource or input bundle resource consisting of same resources already exist
             // If already exist : throw duplicate resource or bundle resource creation
             .doTry()
@@ -136,9 +86,6 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
             .end()
-            // marshall to JSON for logging
-            // .marshal().fhirJson("{{fhirVersion}}")
-            // .log("Inserting Patient: ${body}")
 
             // Step 6: Add the extracted reference Resources to the input fhir bundle
             .doTry()
@@ -183,6 +130,5 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                     //Step 9: Prepare the final output
                     .process(ProvideResourceResponseProcessor.BEAN_ID)
                 .end();
-
         }
 }

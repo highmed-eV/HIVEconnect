@@ -85,7 +85,7 @@ public class ProvideResourceResponseProcessor implements Processor {
 
         // Update database with resourceIdMap of inputResourceId  and internalResourceId
         // with compositionId
-        updateResourceCompositions(inputResourceType, resourceIdMap, composition);
+        updateResourceCompositions(exchange, inputResourceType, resourceIdMap, composition);
     }
 
     private void processSingleResource(Exchange exchange) {
@@ -168,17 +168,21 @@ public class ProvideResourceResponseProcessor implements Processor {
         }
     }
 
-    private void updateResourceCompositions(String inputResourceType, Map<String, String> resourceIdMap, Composition composition) {
+    private void updateResourceCompositions(Exchange exchange, String inputResourceType, Map<String, String> resourceIdMap, Composition composition) {
         for (Map.Entry<String, String> entry : resourceIdMap.entrySet()) {
             String inputResourceId = entry.getKey();
             String internalResourceId = entry.getValue();
+            String compositionId = getCompositionId(composition);
             ResourceComposition resourceComposition = null;
+
             if ("POST".equals(inputResourceType)){
-                resourceComposition = resourceCompositionRepository.findById(inputResourceId)
-                        .orElse(new ResourceComposition(inputResourceId));
+                resourceComposition = resourceCompositionRepository.findByInputResourceId(inputResourceId)
+                        .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, null));
             } else {
-                resourceComposition = resourceCompositionRepository.findByInternalResourceId(internalResourceId)
-                        .orElse(new ResourceComposition(inputResourceId));
+                //PUT
+                compositionId = (String) exchange.getMessage().getHeader(CamelConstants.COMPOSITION_ID);
+                resourceComposition = resourceCompositionRepository.findByInternalResourceIdAndCompositionId(inputResourceId, compositionId)
+                        .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, null));
             }
             resourceComposition.setCompositionId(getCompositionId(composition));
             resourceComposition.setInternalResourceId(internalResourceId);

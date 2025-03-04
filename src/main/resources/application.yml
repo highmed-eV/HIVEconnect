@@ -55,6 +55,7 @@ spring:
     #      ddl-auto: none
     #      ddl-auto: create
     open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     # properties:
     #   hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect #org.hibernate.dialect.H2Dialect
     #   hibernate.search.enabled: true

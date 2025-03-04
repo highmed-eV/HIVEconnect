@@ -35,6 +35,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
                 }
 
                 //CompositionConverter
+                //TODO: Add composition context data(Composer, feeder audit, languate, territory)
                 exchange.getIn().setBody(composition);
             })
             .doTry()
@@ -48,7 +49,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
 
         from("direct:patientIdToEhrIdMapperProcess")
             //Get the mapped openEHRId if avaialbe else create new ehrId 
-            .routeId("patientIdToEhrIdMapperProcess")
+            .routeId("patientIdToEhrIdMapperProcessRoute")
 
             .doTry()
                 //if Patient resource create ehrid

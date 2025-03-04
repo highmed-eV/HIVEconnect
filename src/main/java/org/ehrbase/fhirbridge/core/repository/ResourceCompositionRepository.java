@@ -25,11 +25,36 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface ResourceCompositionRepository extends JpaRepository<ResourceComposition, String> {
 
     @Query("SELECT rc.inputResourceId FROM ResourceComposition rc WHERE rc.internalResourceId = :internalResourceId")
-    String getInputResourceIds(@Param("internalResourceId") String internalResourceId);
+    String findInternalResourceIdByInputResourceId(@Param("internalResourceId") String internalResourceId);
+
+    @Query("SELECT rc.internalResourceId FROM ResourceComposition rc WHERE rc.inputResourceId IN :inputResourceIds")
+    List<String> findInternalResourceIdsByInputResourceIds(@Param("inputResourceIds") List<String> inputResourceIds);
+
+    @Query("SELECT rc FROM ResourceComposition rc WHERE rc.inputResourceId = :inputResourceId ORDER BY rc.id DESC LIMIT 1")
+    Optional<ResourceComposition> findByInputResourceId(@Param("inputResourceId") String inputResourceId);
+
+    Optional<ResourceComposition> findByInputResourceIdAndCompositionId(String inputResourceId, String compositionId);
+
+    Optional<ResourceComposition> findByInternalResourceIdAndCompositionId(String internalResourceId, String compositionId);
+
+    @Query("SELECT rc.compositionId FROM ResourceComposition rc WHERE rc.inputResourceId = :inputResourceId")
+    List<String> findCompositionIdsByInputResourceId(@Param("inputResourceId") String inputResourceId);
+
+    @Query("SELECT rc.compositionId FROM ResourceComposition rc WHERE rc.internalResourceId = :internalResourceId")
+    List<String> findCompositionIdsByInternalResourceId(@Param("internalResourceId") String internalResourceId);
+
+    @Query("SELECT rc.inputResourceId FROM ResourceComposition rc WHERE rc.compositionId = :compositionId")
+    List<String> findInputResourcesByCompositionId(@Param("compositionId") String compositionId);
+
+    @Query("SELECT rc.internalResourceId FROM ResourceComposition rc WHERE rc.compositionId = :compositionId")
+    List<String> findInternalResourcesByCompositionId(@Param("compositionId") String compositionId);
 
     Optional<ResourceComposition> findByInternalResourceId(String internalResourceId);
 
