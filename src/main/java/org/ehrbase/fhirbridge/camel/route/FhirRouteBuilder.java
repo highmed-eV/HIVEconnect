@@ -3,6 +3,7 @@ package org.ehrbase.fhirbridge.camel.route;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -27,25 +28,6 @@ public class FhirRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-
-        // onException(BaseServerResponseException.class)
-        //     .handled(true)
-        //     .log("FhirRouteBuilder Exception caught: ${exception.class} - ${exception.message}")
-        //     .setHeader(Exchange.HTTP_RESPONSE_CODE, simple("${exception.statusCode}"))
-        //     .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-        //     .process(exchange -> {
-        //         BaseServerResponseException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, BaseServerResponseException.class);
-        //         if (exception != null && exception.getOperationOutcome() != null) {
-        //             // String serializedOutcome = FhirUtils.serializeOperationOutcome(exception.getOperationOutcome());
-        //             MethodOutcome methodOutcome = new MethodOutcome();
-        //             methodOutcome.setCreated(true);
-        //             methodOutcome.setOperationOutcome(exception.getOperationOutcome());
-        //             exchange.getIn().setBody(methodOutcome);
-        //         } else if (exception != null) {
-        //             exchange.getIn().setBody(exception.getMessage());
-        //         }
-        //     })
-        //     .log("######### FhirRouteBuilder onException");
 
         from("direct:FHIRProcess")
             // Forward request to FHIR server
@@ -73,13 +55,13 @@ public class FhirRouteBuilder extends RouteBuilder {
                         .endDoTry()
 
                     .endChoice()
-                .otherwise()
-                    // else create Resource in our FHIR server
-                    .log("Resource FHIR request. Starting process...")
+                    .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'POST'"))
                     .doTry()
                         .to("fhir://create/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                         //Store the response in the Exchange
                         .process(exchange -> {
+                            exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, "POST");
+
                             //Response may not be resource. It is OutCome
                             MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
                             exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
@@ -90,9 +72,35 @@ public class FhirRouteBuilder extends RouteBuilder {
                                         
                         })
                     .doCatch(Exception.class)
-                        .log("direct:FHIRProcess fhir://create catch exception")
+                        .log("direct:FHIRProcess  exception during fhir create")
                         .process(new FhirBridgeExceptionHandler())
                     .endDoTry()
+                    .endChoice()
+                    .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'PUT'"))
+                    .doTry()
+                        // String matchUrl = requestDetails.getConditionalUrl(RestOperationTypeEnum.UPDATE);
+                        .to("fhir://update/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                        //Store the response in the Exchange
+                        .process(exchange -> {
+                            exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, "PUT");
+
+                            //Response may not be resource. It is OutCome
+                            MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
+                            exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
+
+                            //set back the input json as body
+                            String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                            exchange.getIn().setBody(inputResource);
+                                        
+                        })
+                    .doCatch(Exception.class)
+                        .log("direct:FHIRProcess exception during fhir update")
+                        .process(new FhirBridgeExceptionHandler())
+                    .endDoTry()
+                    .endChoice()
+                .otherwise()
+                    // else create Resource in our FHIR server
+                    .log("Unsupported operation...")
                 .end()
                 .log("FHIR request processed by FHIR server ${body}");
         
@@ -110,7 +118,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             .endDoTry()
             .log("FHIR PatientId ${header." + CamelConstants.PATIENT_ID + "}" );
 
-        // Extract Patient Id from the FHIR Input Resource
+        // Check Patient Id exists
         from("direct:extractAndCheckPatientIdExistsProcessor")
             .routeId("extractAndCheckPatientIdExistsProcessorRoute")
             //Get the patientid from input resource(Bundle, Patient or any resource)
@@ -146,7 +154,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             // External reference (absolute URL) : add to the mapper table as is
                 
             // If patient is found in server (PatientResourceFromServer) store this patientId 
-            // as serverPatientId in excahnge so that it can be added to fhi-patient-id to ehr-id mapp table
+            // as serverPatientId in exchange so that it can be added to fhi-patient-id to ehr-id map table
             //else it has to be created after the resource is created in the server.
             .choice()
                 .when(header(CamelConstants.PATIENT_ID_TYPE).isEqualTo("RELATIVE_REFERENCE"))
@@ -301,7 +309,6 @@ public class FhirRouteBuilder extends RouteBuilder {
             // 4. Replace the reference inputResourceId(s) with the reference internalResourceId(s)
             // in the input fhir bundle
             .choice()
-//                .when(exchangeProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS).isNotNull())
                 .when(simple("${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + ".size()} > 0"))
                 .log("Reference Resource IDs: ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "}")
                     .process(ResourceLookupProcessor.BEAN_ID)
@@ -315,7 +322,6 @@ public class FhirRouteBuilder extends RouteBuilder {
             // 1. Fetch the resources for the internalResourceId(s) is/are in the server.
             // 2. Add the resources in the input fhir bundle.
             .choice()
-//                .when(exchangeProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS).isNotNull())
                 .when(simple("${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + ".size()} > 0"))
 
                     .log("Property " + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + " is present.")
@@ -358,7 +364,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             .log("Updated input resouce bundle with the referece resources");
 
         from("direct:checkDuplicateResource")
-                .routeId("CheckDuplicateResource")
+                .routeId("CheckDuplicateResourceRoute")
 
                 // 1. Retrieve the list of all input resource ids
                 .process(exchange -> {
@@ -369,9 +375,9 @@ public class FhirRouteBuilder extends RouteBuilder {
                 .log("FHIR Input Resource ID(s) : ${header." + CamelConstants.INPUT_RESOURCE_IDS + "}")
                 // 2. Check the mapping table : FB_RESOURCE_COMPOSITION
                 // and get the compositionId(s) for corresponding inputResourceId(s).
-                // 3. If all compositionId(s) is/are same throw duplicate bundle resource exception.
+                // 3. If all compositionId(s) is/are same and operation is POST
+                //     throw duplicate bundle resource exception.
                 .choice()
-//                    .when(exchangeProperty(CamelConstants.INPUT_RESOURCE_IDS).isNotNull())
                     .when(simple("${exchangeProperty." + CamelConstants.INPUT_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.INPUT_RESOURCE_IDS + ".size()} > 0"))
 
                         .log("Input Resource IDs: ${header." + CamelConstants.INPUT_RESOURCE_IDS + "}")

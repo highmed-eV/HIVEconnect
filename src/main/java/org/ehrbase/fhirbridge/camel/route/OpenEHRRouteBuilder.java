@@ -1,8 +1,14 @@
 package org.ehrbase.fhirbridge.camel.route;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
+import com.nedap.archie.rm.support.identification.UIDBasedId;
+
+import java.util.Optional;
+
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
 import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
@@ -21,6 +27,15 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
             .process(exchange -> {
                 String openEhrJson = exchange.getIn().getBody(String.class);
                 Composition composition = new CanonicalJson().unmarshal(openEhrJson, Composition.class);
+                //set the compositionId if the method is put
+                if("PUT".equals(exchange.getIn().getHeader(CamelConstants.INPUT_HTTP_METHOD))){
+                    String compositionId = (String) exchange.getMessage().getHeader(CamelConstants.COMPOSITION_ID);
+                    Optional.ofNullable(compositionId)
+                        .ifPresent(id -> composition.setUid(new ObjectVersionId(id)));
+                }
+
+                //CompositionConverter
+                //TODO: Add composition context data(Composer, feeder audit, languate, territory)
                 exchange.getIn().setBody(composition);
             })
             .doTry()
@@ -34,7 +49,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
 
         from("direct:patientIdToEhrIdMapperProcess")
             //Get the mapped openEHRId if avaialbe else create new ehrId 
-            .routeId("patientIdToEhrIdMapperProcess")
+            .routeId("patientIdToEhrIdMapperProcessRoute")
 
             .doTry()
                 //if Patient resource create ehrid

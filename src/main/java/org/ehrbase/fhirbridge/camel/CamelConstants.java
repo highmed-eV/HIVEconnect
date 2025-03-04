@@ -27,6 +27,8 @@ public final class CamelConstants {
 
      public static final String INPUT_SYSTEM_ID = "CamelFhirBridgeInputSystemId";
      
+     public static final String INPUT_HTTP_METHOD = "CamelFhirBridgeIncomingHttpMethod";
+
      public static final String INPUT_RESOURCE = "CamelFhirBridgeIncomingResource";
     
     public static final String INPUT_RESOURCE_TYPE = "CamelFhirBridgeIncomingResourceType";

@@ -53,6 +53,7 @@ class CompositionLookupProcessorTest {
     void processWithSameCompositionIdsShouldThrowException() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7");
         exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+        exchange.setProperty(CamelConstants.INPUT_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));
@@ -76,6 +77,7 @@ class CompositionLookupProcessorTest {
     void processWithSingleCompositionIdShouldThrowException() throws Exception {
         List<String> inputResourceIds = List.of("Encounter/6");
         exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+        exchange.setProperty(CamelConstants.INPUT_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));
