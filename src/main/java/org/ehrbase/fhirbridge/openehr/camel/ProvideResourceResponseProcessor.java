@@ -85,7 +85,7 @@ public class ProvideResourceResponseProcessor implements Processor {
 
         // Update database with resourceIdMap of inputResourceId  and internalResourceId
         // with compositionId
-        updateResourceCompositions(resourceIdMap, composition);
+        updateResourceCompositions(inputResourceType, resourceIdMap, composition);
     }
 
     private void processSingleResource(Exchange exchange) {
@@ -168,14 +168,18 @@ public class ProvideResourceResponseProcessor implements Processor {
         }
     }
 
-    private void updateResourceCompositions(Map<String, String> resourceIdMap, Composition composition) {
+    private void updateResourceCompositions(String inputResourceType, Map<String, String> resourceIdMap, Composition composition) {
         for (Map.Entry<String, String> entry : resourceIdMap.entrySet()) {
             String inputResourceId = entry.getKey();
             String internalResourceId = entry.getValue();
-
-            ResourceComposition resourceComposition = resourceCompositionRepository.findById(inputResourceId)
-                    .orElse(new ResourceComposition(inputResourceId));
-
+            ResourceComposition resourceComposition = null;
+            if ("POST".equals(inputResourceType)){
+                resourceComposition = resourceCompositionRepository.findById(inputResourceId)
+                        .orElse(new ResourceComposition(inputResourceId));
+            } else {
+                resourceComposition = resourceCompositionRepository.findByInternalResourceId(internalResourceId)
+                        .orElse(new ResourceComposition(inputResourceId));
+            }
             resourceComposition.setCompositionId(getCompositionId(composition));
             resourceComposition.setInternalResourceId(internalResourceId);
 

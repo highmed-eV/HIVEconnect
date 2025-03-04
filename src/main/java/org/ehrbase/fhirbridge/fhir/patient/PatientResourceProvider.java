@@ -41,6 +41,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.IdType;
@@ -73,7 +74,7 @@ public class PatientResourceProvider implements IResourceProvider  {
 
         try {
             // Call Camel route with the Patient resource
-            MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
+            MethodOutcome outcome  = producerTemplate.requestBodyAndHeader("direct:CamelCreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
             return outcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -160,7 +161,7 @@ public class PatientResourceProvider implements IResourceProvider  {
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBody("direct:CamelSearchRouteProcess", requestDetails, Patient.class);
+        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:CamelSearchRouteProcess", requestDetails,  Exchange.HTTP_METHOD, "GET", Patient.class);
 
         return processedPatient;
     }
@@ -169,7 +170,7 @@ public class PatientResourceProvider implements IResourceProvider  {
     public Patient readPatient(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
         // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBody("direct:CamelCreateRouteProcessRoute", requestDetails, Patient.class);
+        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:CamelCreateRouteProcessRoute", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
 
         return processedPatient;
     }    

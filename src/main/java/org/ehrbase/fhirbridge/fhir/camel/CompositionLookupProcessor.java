@@ -27,16 +27,19 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
     public void process(Exchange exchange) throws Exception {
         List<String > inputResourceIds = exchange.getProperty(CamelConstants.INPUT_RESOURCE_IDS, List.class);
         Set<String> compositionIds = new HashSet<>();
+        String compositionId = null;
         boolean hasNewResource = false;
 
         // fetch the compositionIds corresponding to the inputResourceIds from db
         for (String inputResourceId : inputResourceIds){
             Optional<String> optionalCompositionId = resourceCompositionRepository.findById(inputResourceId)
-                    .map(ResourceComposition::getCompositionId);
-
+                    .map(ResourceComposition::getCompositionId)
+                    .or(() -> resourceCompositionRepository.findByInternalResourceId(inputResourceId)
+                        .map(ResourceComposition::getCompositionId));
             if (optionalCompositionId.isPresent()) {
                 // Existing resource with a compositionId
                 compositionIds.add(optionalCompositionId.get());
+                compositionId = optionalCompositionId.get();
             } else {
                 // New resource (compositionId not found in db)
                 hasNewResource = true;
@@ -45,7 +48,13 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
 
         // Check if all compositionIds are the same
         if (compositionIds.size() == 1 && !compositionIds.isEmpty() && !hasNewResource) {
-            throw new IllegalArgumentException ("The input resource or input bundle contains resource(s) that already exist in the database. No new resources detected.");
+            String operation = (String) exchange.getMessage().getHeader(CamelConstants.INPUT_HTTP_METHOD);
+            if ("POST".equals(operation)) {
+                throw new IllegalArgumentException ("The input resource or input bundle contains resource(s) that already exist in the database. No new resources detected.");
+            } else {
+                exchange.getMessage().setHeader(CamelConstants.COMPOSITION_ID, compositionId);
+            }
         }
+
     }
 }

@@ -1,7 +1,10 @@
 package org.ehrbase.fhirbridge.camel.route;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
+
+import java.util.Optional;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.client.exception.ClientException;
@@ -25,10 +28,13 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
                 String openEhrJson = exchange.getIn().getBody(String.class);
                 Composition composition = new CanonicalJson().unmarshal(openEhrJson, Composition.class);
                 //set the compositionId if the method is put
-                if(exchange.getIn().getHeader(CamelConstants.INPUT_OPERATION_TYPE) == "PUT"){
-                    // UIDBasedId compId = new UIDBasedId("compositionId");
-                    composition.setUid(null);
+                if("PUT".equals(exchange.getIn().getHeader(CamelConstants.INPUT_HTTP_METHOD))){
+                    String compositionId = (String) exchange.getMessage().getHeader(CamelConstants.COMPOSITION_ID);
+                    Optional.ofNullable(compositionId)
+                        .ifPresent(id -> composition.setUid(new ObjectVersionId(id)));
                 }
+
+                //CompositionConverter
                 exchange.getIn().setBody(composition);
             })
             .doTry()

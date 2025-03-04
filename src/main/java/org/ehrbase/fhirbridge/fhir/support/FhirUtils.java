@@ -181,24 +181,30 @@ public class FhirUtils {
         }
     }
 
-    public static void extractRequestTypeFromFromBundle(Exchange exchange) {
+    public static void extractInputMethod(Exchange exchange) {
         String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+        String inputResourceType =  (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
+
         try{
             JsonNode rootNode = objectMapper.readTree(inputResource);
-            
-            var methods = StreamSupport.stream(rootNode.spliterator(), false)
-                            .map(node -> {
-                                JsonNode requests = node.path("request");
-                                return requests.has("method") ? requests.get("method").asText() : null;
-                            })
-                            .distinct()
-                            .toList();
-            
-            if (methods.contains(null) || methods.size() > 1) {
-                throw new IllegalArgumentException("Inconsistent or invalid request methods detected");
+            if ("Bundle".equals(inputResourceType)) {
+                JsonNode entryode = rootNode.get("entry");
+                
+                var methods = StreamSupport.stream(entryode.spliterator(), false)
+                                .map(node -> {
+                                    JsonNode requests = node.get("request");
+                                    return requests.has("method") ? requests.get("method").asText() : null;
+                                })
+                                .distinct()
+                                .toList();
+                
+                if (methods.contains(null) || methods.size() > 1) {
+                    throw new IllegalArgumentException("Inconsistent or invalid request http methods detected");
+                }
+                exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, methods.get(0));
+            } else {
+                exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, exchange.getProperty(Exchange.HTTP_METHOD, String.class));
             }
-            exchange.getIn().setHeader(CamelConstants.INPUT_OPERATION_TYPE, methods.get(0));
-        
         } catch (JsonProcessingException e) {
             throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");
         }   

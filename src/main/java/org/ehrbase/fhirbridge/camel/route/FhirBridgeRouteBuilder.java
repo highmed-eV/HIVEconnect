@@ -68,17 +68,22 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
     
         // Route to process the FHIR request
         from("direct:FHIRBridgeProcess")
-            // .marshal().json()
-            // .convertBodyTo(String.class)
-            .log("##########RFHIRIBridgeProcess")
-            .process(exchange -> {
-                    if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
-                        String inputResource = (String) exchange.getIn().getBody();
-                        String inputResourceType = FhirUtils.getResourceType(inputResource);
-                        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
-                        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
-                    }
-                })
+            .doTry()
+                .process(exchange -> {
+                        if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                            String inputResource = (String) exchange.getIn().getBody();
+                            String inputResourceType = FhirUtils.getResourceType(inputResource);
+                            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
+                            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
+                            //extract and verify the request is either POST or PUT
+                            //In case of Bundle all the  resources should have the same request http method
+                            FhirUtils.extractInputMethod(exchange);
+                        }
+                    })
+            .doCatch(Exception.class)
+                .log("direct:FHIRBridgeProcess catch exception")
+                .process(new FhirBridgeExceptionHandler())
+            .end()
             .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType }")
             .to("direct:ExtractPatientIdProcess")
             .to("direct:FHIRToOpenEHRMappingProcess")
