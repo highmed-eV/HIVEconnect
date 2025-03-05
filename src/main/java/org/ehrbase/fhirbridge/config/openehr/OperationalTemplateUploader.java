@@ -17,9 +17,13 @@
 package org.ehrbase.fhirbridge.config.openehr;
 
 import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -34,10 +38,13 @@ public class OperationalTemplateUploader {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final OpenEhrClient openEhrClient;
 
+    private final OpenFHIRAdapter openFHIRAdapter;
+
     private final DefaultTemplateProvider templateProvider;
 
-    public OperationalTemplateUploader(OpenEhrClient openEhrClient, DefaultTemplateProvider templateProvider) {
+    public OperationalTemplateUploader(OpenEhrClient openEhrClient, OpenFHIRAdapter openFHIRAdapter, DefaultTemplateProvider templateProvider) {
         this.openEhrClient = openEhrClient;
+        this.openFHIRAdapter = openFHIRAdapter;
         this.templateProvider = templateProvider;
     }
 
@@ -49,7 +56,12 @@ public class OperationalTemplateUploader {
             var template = openEhrClient.templateEndpoint().findTemplate(templateId);
             if (template.isEmpty()) {
                 openEhrClient.templateEndpoint().ensureExistence(templateId);
-                log.info("Uploaded template: {}", templateId);
+                log.info("Uploaded template to openEHR: {}", templateId);
+            }
+            Optional<OPERATIONALTEMPLATE> opt = templateProvider.find(templateId);
+            if (!opt.isEmpty()) {
+                openFHIRAdapter.ensureExistence(templateId, opt.get());
+                log.info("Uploaded template to openFHIR: {}", templateId);
             }
         }
     }
