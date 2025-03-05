@@ -94,14 +94,14 @@ logging:
     ca.uhn.fhir: WARN
     com.zaxxer.hikari: WARN
     liquibase: INFO
-    org.apache.camel: DEBUG
+    org.apache.camel: WARN
     # org.ehrbase.client: WARN
     org.ehrbase.fhirbridge: DEBUG
-    org.hibernate: INFO
+    org.hibernate: WARN
     org.openehealth.ipf: ERROR
     org.quartz: WARN
     org.springframework: WARN
-    org.springframework.boot: INFO
+    org.springframework.boot: WARN
 
 management:
   endpoints:

@@ -57,12 +57,16 @@ public class OpenFHIRAdapter {
     public String ensureExistence(String templateId, OPERATIONALTEMPLATE operationaltemplate) {
 
         //check if template exists
+        Boolean isExists = false;
         try {
-            //TODO: openFHIR is throwing excption in case of not found scenario(404)
+            //TODO: Bug in openEHR:  openFHIR is throwing excption in case of not found scenario(404)
             // catch the excption and continue for now
             ResponseEntity<String> getEntity = restTemplate.getForEntity(openFhirUrl + "/opt", String.class);
             if (getEntity.getStatusCode().value() == HttpStatus.OK.value()  ){
                 logger.debug("Template exists in openFHIR: {}", templateId);
+                isExists = true;
+                //TODO: Bug in openEHR: PUT is throwing exception if the id already exists.
+                //Hence returning for now, without update.
                 return getEntity.getBody();
             }
         } catch (Exception e) {
@@ -75,11 +79,18 @@ public class OpenFHIRAdapter {
             XmlOptions opts = new XmlOptions();
             opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
  
+            String response = null;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.TEXT_PLAIN);
             HttpEntity <String> entity = new HttpEntity<>(operationaltemplate.xmlText(opts), headers);
-            
-            String response = restTemplate.postForObject(openFhirUrl + "/opt", entity, String.class);
+            if (isExists) {
+                //update
+                restTemplate.put(openFhirUrl + "/opt/" + templateId, entity);
+                response = "Updated template successfully: " + templateId ;
+            } else {
+                //create
+                response = restTemplate.postForObject(openFhirUrl + "/opt", entity, String.class);
+            }
             return response;
         } catch (Exception e) {
             throw new RuntimeException("Error in upload template: {}", e);
