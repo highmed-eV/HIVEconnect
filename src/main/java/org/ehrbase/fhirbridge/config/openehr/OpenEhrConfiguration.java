@@ -25,6 +25,7 @@ import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
 import org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient;
 import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
 import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
 import org.ehrbase.fhirbridge.security.oauth2.AccessTokenService;
 import org.ehrbase.fhirbridge.security.oauth2.TokenAuthenticationInterceptor;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
@@ -87,8 +88,9 @@ public class OpenEhrConfiguration {
 
     @Bean
     public OperationalTemplateUploader operationalTemplateInitializer(OpenEhrClient openEhrClient,
+                                                                      OpenFHIRAdapter openFHIRAdapter,
                                                                       DefaultTemplateProvider templateProvider) {
-        return new OperationalTemplateUploader(openEhrClient, templateProvider);
+        return new OperationalTemplateUploader(openEhrClient, openFHIRAdapter, templateProvider);
     }
 
     @Bean(name = "openEhrHttpClient")
