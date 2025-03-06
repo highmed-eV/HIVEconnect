@@ -181,13 +181,15 @@ public class FhirUtils {
         }
     }
 
-    public static void extractInputMethod(Exchange exchange) {
-        String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
-        String inputResourceType =  (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
-
+    public static void extractInputParameters(Exchange exchange) {
+        String inputResource = (String) exchange.getIn().getBody();
+        String inputResourceType = getResourceType(inputResource);
+        String method = null;
         try{
             JsonNode rootNode = objectMapper.readTree(inputResource);
             if ("Bundle".equals(inputResourceType)) {
+                //extract and verify the request is either POST or PUT
+                //In case of Bundle all the  resources should have the same request http method
                 JsonNode entryode = rootNode.get("entry");
                 
                 var methods = StreamSupport.stream(entryode.spliterator(), false)
@@ -201,10 +203,25 @@ public class FhirUtils {
                 if (methods.contains(null) || methods.size() > 1) {
                     throw new IllegalArgumentException("Inconsistent or invalid request http methods detected");
                 }
-                exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, methods.get(0));
+                method = methods.get(0);
             } else {
-                exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, exchange.getProperty(Exchange.HTTP_METHOD, String.class));
+                method = exchange.getProperty(Exchange.HTTP_METHOD, String.class);
             }
+
+            //Get source
+            String metaSource = Optional.ofNullable(rootNode)
+                            .map(resource -> resource.path("meta").path("source").asText())
+                            .filter(source -> !source.isEmpty())
+                            .orElse(null);
+            
+            //set input parameters in excahnge
+            if (metaSource != null) {
+                exchange.getIn().setHeader(CamelConstants.INPUT_SOURCE, metaSource);
+            }
+            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
+            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
+            exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, method);
+    
         } catch (JsonProcessingException e) {
             throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");
         }   

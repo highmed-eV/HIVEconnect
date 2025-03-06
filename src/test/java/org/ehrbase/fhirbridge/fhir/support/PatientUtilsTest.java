@@ -149,13 +149,13 @@ class PatientUtilsTest {
     }
 
     @Test
-    void getPatientIdFromOutCome() {
+    void getPatientIdAndResourceIdFromOutCome() {
         IIdType mockIdType = mock(IIdType.class);
         when(methodOutcome.getId()).thenReturn(mockIdType);
         when(mockIdType.getResourceType()).thenReturn("Patient");
         when(mockIdType.getIdPart()).thenReturn("123");
         exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, methodOutcome);
-        patientUtils.getPatientIdFromOutCome(exchange);
+        patientUtils.getPatientIdAndResourceIdFromOutCome(exchange);
         assertEquals("Patient/123", exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
         assertEquals(methodOutcome.getResource(), exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
     }

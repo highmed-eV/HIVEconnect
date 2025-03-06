@@ -104,6 +104,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                 .end()
                 .log("FHIR request processed by FHIR server ${body}");
         
+        // Extract: 
         // Extract Patient Id from the FHIR Input Resource
         from("direct:extractPatientIdFromPatientProcessor")
             .routeId("extractPatientIdFromPatientProcessorRoute")
@@ -118,6 +119,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             .endDoTry()
             .log("FHIR PatientId ${header." + CamelConstants.PATIENT_ID + "}" );
 
+        //Extract    
         // Check Patient Id exists
         from("direct:extractAndCheckPatientIdExistsProcessor")
             .routeId("extractAndCheckPatientIdExistsProcessorRoute")
@@ -143,7 +145,8 @@ public class FhirRouteBuilder extends RouteBuilder {
             .choice()
             .when(header(CamelConstants.SERVER_PATIENT_ID).isNull())
                 .to("direct:checkPatientIdExistsProcessor");
-            
+        
+        //Extract    
         from ("direct:checkPatientIdExistsProcessor")
             .routeId("checkPatientIdExistsProcessorRoute")
             
@@ -249,49 +252,12 @@ public class FhirRouteBuilder extends RouteBuilder {
                 exchange.getIn().setBody(inputResource);
             })
             .log("FHIR PatientReferenceProcessor completed: input patient id: ${header." + CamelConstants.PATIENT_ID + "} input patient identifier:${header." + CamelConstants.IDENTIFIER_OBJECT + "}  and server patient id: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
-   
-        // Extract Patient Id from the FHIR Server response
-        from("direct:extractPatientIdFromFhirResponseProcessor")
-            .routeId("extractPatientIdFromFhirResponseProcessorRoute")
-            // (From FhirUtils)
-            // if Internal contained reference
-            // or Transaction reference
-            // Extract or find the Patient ID from the resource
-            .choice()
-                .when(header(CamelConstants.SERVER_PATIENT_ID).isNotNull())
-                    .log("FHIR server Patient ID already set: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
-                .otherwise()
-                    .choice()
-                        .when(header(CamelConstants.INPUT_RESOURCE_TYPE).isEqualTo("Bundle"))
-                            .to("direct:extractPatientIdFromBundleResponse")
-                        .otherwise()
-                            .to("direct:extractPatientIdFromResourceResponse")
-                        .endChoice()
-                .endChoice();
 
-        from ("direct:extractPatientIdFromBundleResponse")
-            .routeId("extractPatientIdFromBundleResponseRoute")
-
-            .doTry()
-                .bean(PatientUtils.class, "getPatientIdFromResponse")
-                
-                .log("Read patient id  for ${header.CamelFhirServerPatientId}")
-                .toD("fhir://read/resourceById?resourceClass=Patient&stringId=${header.CamelFhirServerPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-                .process(ServerPatientResourceProcessor.BEAN_ID)
-            .doCatch(Exception.class)
-                .process(new FhirBridgeExceptionHandler())
-            .endDoTry()
-            .log("FHIR server Bundle Response Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
-
-        from ("direct:extractPatientIdFromResourceResponse")
-            .routeId("extractPatientIdFromResourceResponseRoute")
-            .bean(PatientUtils.class, "getPatientIdFromOutCome")
-            .log("FHIR server Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
-
+        //Validate and Enrich
         // Extract Reference Resource Ids from the FHIR Input Resource
         // and update the Input  with Reference Internal Resource Ids
-        from("direct:mapInternalResourceProcessor")
-            .routeId("MapInternalResourceProcessor")
+        from("direct:mapReferencedInternalResourceProcessor")
+            .routeId("MapReferencedInternalResourceProcessor")
 
             // 1. Extract or find the Reference Resource ID(s) from the resource
             // 2. Check if the reference resource Id(s) already exist in the bundle or not.
@@ -311,14 +277,53 @@ public class FhirRouteBuilder extends RouteBuilder {
             .choice()
                 .when(simple("${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + ".size()} > 0"))
                 .log("Reference Resource IDs: ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "}")
-                    .process(ResourceLookupProcessor.BEAN_ID)
+                    .process(ReferencedResourceLookupProcessor.BEAN_ID)
             .end()
             .log("FHIR INTERNAL RESOURCE ID(s) : ${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + "}")
             .log("Updated input resouce bundle with the internalResourceIds");
 
+        //Validate and Enrich
+        // Extract Patient Id from the FHIR Server response
+        from("direct:extractPatientIdFromFhirResponseProcessor")
+            .routeId("extractPatientIdFromFhirResponseProcessorRoute")
+            // (From FhirUtils)
+            // if Internal contained reference
+            // or Transaction reference
+            // Extract or find the Patient ID from the resource
+            .choice()
+                .when(header(CamelConstants.INPUT_RESOURCE_TYPE).isEqualTo("Bundle"))
+                    .to("direct:extractPatientIdAndResourceIdFromBundleResponse")
+            .otherwise()
+                    .to("direct:extractPatientIdAndResourceIdFromResourceResponse")
+            .endChoice()
+            .end();
+
+        //Validate and Enrich
+        from ("direct:extractPatientIdAndResourceIdFromBundleResponse")
+            .routeId("extractPatientIdAndResourceIdFromBundleResponseRoute")
+
+            .doTry()
+                .bean(PatientUtils.class, "getPatientIdAndResourceIdFromResponse")
+                
+                .log("Read patient id  for ${header.CamelFhirServerPatientId}")
+                .toD("fhir://read/resourceById?resourceClass=Patient&stringId=${header.CamelFhirServerPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                .process(ServerPatientResourceProcessor.BEAN_ID)
+            .doCatch(Exception.class)
+                .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
+            .log("FHIR server Bundle Response Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
+
+        //Validate and Enrich
+        from ("direct:extractPatientIdAndResourceIdFromResourceResponse")
+            .routeId("extractPatientIdAndResourceIdFromResourceResponseRoute")
+            .bean(PatientUtils.class, "getPatientIdAndResourceIdFromOutCome")
+            .log("FHIR server Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
+
+
+        //Validate and Enrich
         // Add the extracted Reference Resource Ids as resource in the FHIR Input Bundle Resource
-        from("direct:resourceReferenceProcessor")
-            .routeId("ResourceReferenceProcessorRoute")
+        from("direct:referencedResourceProcessor")
+            .routeId("ReferencedResourceProcessorRoute")
             // 1. Fetch the resources for the internalResourceId(s) is/are in the server.
             // 2. Add the resources in the input fhir bundle.
             .choice()
@@ -363,6 +368,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             .process(ExistingResourceReferenceProcessor.BEAN_ID)
             .log("Updated input resouce bundle with the referece resources");
 
+        //Validate and Enrich
         from("direct:checkDuplicateResource")
                 .routeId("CheckDuplicateResourceRoute")
 

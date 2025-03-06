@@ -265,15 +265,26 @@ public class PatientUtils {
         return internalPatientId;
     }
 
-    public void getPatientIdFromOutCome(Exchange exchange) {
+    public void getPatientIdAndResourceIdFromOutCome(Exchange exchange) {
+        String serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
         MethodOutcome resource = (MethodOutcome) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
+        String resourceType = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
+        
+        //Get the Resource ID from the Outcome
+        String serverResourceId = resource.getId().getResourceType() + "/" + resource.getId().getIdPart();
+        exchange.getIn().setHeader(CamelConstants.SERVER_RESOURCE_ID, serverResourceId);
 
-        //Ned to get the Patient ID from the Outcome
-        // String inputResourceId = resource.getId().getResourceType() + "/" + resource.getId().getValue();
-        String serverPatientId = resource.getId().getResourceType() + "/" + resource.getId().getIdPart();
-
-        exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
-        exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, resource.getResource());
+        //get patient id if not present
+        if (serverPatientId == null) {
+            if ("Patient".equals(resourceType)) {
+                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverResourceId);
+                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, resource.getResource());
+            } else {
+                // get the subject reference 
+                serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.PATIENT_ID);
+                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+            }
+        }
     }
 
     public void getPatientIdFromPatientResource(Exchange exchange) {
@@ -307,7 +318,8 @@ public class PatientUtils {
         }
     }
 
-    public void getPatientIdFromResponse(Exchange exchange) {
+    public void getPatientIdAndResourceIdFromResponse(Exchange exchange) {
+        String serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
         String responseString = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
 
         JsonNode rootNode = null;
@@ -318,6 +330,23 @@ public class PatientUtils {
             e.printStackTrace();
             return;
         }
+
+        //Get the first Resource id from the response
+        //TODO: check if we need to add all the resourceids in the feeder audit
+        Optional<String> serverResourceId = Optional.ofNullable(rootNode.get(ENTRY))
+                            .map(entryNode -> entryNode.elements().next())
+                            .map(firstEntry -> firstEntry.path("response").path("location").asText()); 
+        
+        serverResourceId.ifPresent( id ->
+            exchange.getIn().setHeader(CamelConstants.SERVER_RESOURCE_ID, id)
+        );
+
+        if (serverPatientId != null){
+            //patient id already found. so return
+            return;
+        }
+
+        //Get Patient Id from response
         // Extract the location if it starts with "Patient/"
         Optional<String> patientLocation = Optional.ofNullable(rootNode.get(ENTRY))
                 .map(entryNode -> entryNode.elements())  // Get the array of entry
@@ -345,7 +374,7 @@ public class PatientUtils {
                 .orElse(Optional.empty());
                 
             if (patientLocation.isPresent()) {
-                String  serverPatientId = patientLocation.get();
+                serverPatientId = patientLocation.get();
                 exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
             }
     }

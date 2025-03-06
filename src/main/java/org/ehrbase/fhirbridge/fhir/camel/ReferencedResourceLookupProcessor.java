@@ -38,14 +38,14 @@ import java.util.regex.Pattern;
  *
  * @since 1.2.0
  */
-@Component(ResourceLookupProcessor.BEAN_ID)
-public class ResourceLookupProcessor implements FhirRequestProcessor {
+@Component(ReferencedResourceLookupProcessor.BEAN_ID)
+public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
 
     public static final String BEAN_ID = "resourceLookupProcessor";
 
     private final ResourceCompositionRepository resourceCompositionRepository;
 
-    public ResourceLookupProcessor(ResourceCompositionRepository resourceCompositionRepository) {
+    public ReferencedResourceLookupProcessor(ResourceCompositionRepository resourceCompositionRepository) {
         this.resourceCompositionRepository = resourceCompositionRepository;
     }
 

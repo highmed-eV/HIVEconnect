@@ -17,45 +17,59 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        // Route to process the FHIR request
-        from("direct:FHIRBridgeProcess")
+        // Route to perform the ETL for the FHIR request
+        from("direct:FHIRBridgeETLProcess")
+        //Perform ETL
+            .to("direct:ExtractProcess")
+            .to("direct:ValidateAndEnrichProcess")
+            //Skip Transform and load in case of Patient resource
+            .choice()
+                .when(simple("${header.CamelFhirBridgeIncomingResourceType} == 'Patient'"))
+                    .doTry()
+                        //Get the mapped openEHRId if available else create new ehrId
+                        .to("direct:patientIdToEhrIdMapperProcess")
+                    .doCatch(Exception.class)
+                        .log("direct:FHIRBridgeETLProcess catch exception")
+                        .process(new FhirBridgeExceptionHandler())
+                    .endDoTry()
+                .endChoice()
+            .otherwise()
+                .to("direct:TransformProcess")
+                .to("direct:LoadProcess")
+            .end()
+            // Prepare the final output 
+            .to("direct:OutputProcess")
+            .log("FHIRBridgeETLProcess body: ${body}");
+
+        //Extract
+        from("direct:ExtractProcess")
             .doTry()
                 .process(exchange -> {
-                        if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
-                            String inputResource = (String) exchange.getIn().getBody();
-                            String inputResourceType = FhirUtils.getResourceType(inputResource);
-                            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
-                            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
-                            //extract and verify the request is either POST or PUT
-                            //In case of Bundle all the  resources should have the same request http method
-                            FhirUtils.extractInputMethod(exchange);
+                    if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                            FhirUtils.extractInputParameters(exchange);
                         }
                     })
             .doCatch(Exception.class)
-                .log("direct:FHIRBridgeProcess catch exception")
+                .log("direct:FHIRBridgeETLProcess catch exception")
                 .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
             .end()
             .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType }")
-            .to("direct:ExtractPatientIdProcess")
-            .to("direct:FHIRToOpenEHRMappingProcess")
-            .log("FHIRBridgeProcess body: ${body}");
             
-
-
-        from("direct:ExtractPatientIdProcess")
             // Step 1: Extract Patient Id from the FHIR Input Resource
             .choice()
                 .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
                     .to("direct:extractAndCheckPatientIdExistsProcessor")
                     .log("FHIR Patient ID  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
-                    .endChoice()
-                .otherwise()
-                    .to("direct:extractPatientIdFromPatientProcessor")
-                    .log("FHIR Patient ID  ${header." + CamelConstants.PATIENT_ID + "}")
-                .endChoice();
+                .endChoice()
+            .otherwise()
+                .to("direct:extractPatientIdFromPatientProcessor")
+                .log("FHIR Patient ID  ${header." + CamelConstants.PATIENT_ID + "}")
+            .end();
 
-        from("direct:FHIRToOpenEHRMappingProcess")
-            // Step 2: Check if the input resource or input bundle resource consisting of same resources already exist
+        //Validate and Enrich
+        from("direct:ValidateAndEnrichProcess")
+            // Step 2: Validate: Check if the input resource or input bundle resource consisting of same resources already exist
             // If already exist : throw duplicate resource or bundle resource creation
             .doTry()
                 .to("direct:checkDuplicateResource")
@@ -65,16 +79,14 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
             .endDoTry()
             .end()
 
-
-            // Step 3:  Extract and update the input reference Resources from the input fhir bundle
+            // Step 3:  Enrich: Extract and update the input reference Resources from the input fhir bundle
             .doTry()
-                .to("direct:mapInternalResourceProcessor")
+                .to("direct:mapReferencedInternalResourceProcessor")
             .doCatch(Exception.class)
-                .log("direct:mapInternalResourceProcessor catch exception")
+                .log("direct:mapReferencedInternalResourceProcessor catch exception")
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
             .end()
-
 
             .doTry()
                 // Step 4: Forward request to FHIR server
@@ -89,46 +101,40 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
 
             // Step 6: Add the extracted reference Resources to the input fhir bundle
             .doTry()
-                .to("direct:resourceReferenceProcessor")
+                .to("direct:referencedResourceProcessor")
             .doCatch(Exception.class)
-                .log("direct:resourceReferenceProcessor catch exception")
+                .log("direct:referencedResourceProcessor catch exception")
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
-            .end()
+            .end();
 
-            .choice()
-                .when(simple("${header.CamelFhirBridgeIncomingResourceType} == 'Patient'"))
-                    //Get the mapped openEHRId if available else create new ehrId
-                    .to("direct:patientIdToEhrIdMapperProcess")
-                    .log("Patient ID mapped to EHR ID: ${header.CamelEhrCompositionEhrId}")
-                    // Prepare the final output 
-                    .process(ProvideResourceResponseProcessor.BEAN_ID)
-                .otherwise()
-                    //Step 7: Process the openFHIR Input
-                    .doTry()
-                        .to("direct:OpenFHIRProcess")
-                    .doCatch(Exception.class)
-                        .log("direct:OpenFHIRProcess catch exception")
-                        .process(new FhirBridgeExceptionHandler())
-                    .endDoTry()
-                    .end()
+        //Transform
+        from("direct:TransformProcess")
+            //Step 7: Process the openFHIR Input
+            .doTry()
+                .to("direct:OpenFHIRProcess")
+            .doCatch(Exception.class)
+                .log("direct:OpenFHIRProcess catch exception")
+                .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
+            .end();
 
-                    //Step 8: Process the EHR Input
-                    .doTry()
-                        //Get the mapped openEHRId if avaialbe else create new ehrId
-                        .to("direct:patientIdToEhrIdMapperProcess")
-                        .log("Patient ID mapped to EHR ID: ${header.CamelEhrCompositionEhrId}")
-    
-                        // .wireTap("direct:OpenEHRProcess")
-                        .to("direct:OpenEHRProcess")
-                    .doCatch(ClientException.class)
-                        .log("direct:OpenEHRProcess catch exception")
-                        .process(new OpenEhrClientExceptionHandler())
-                    .endDoTry()
-                    .end()
+        //Load
+        from("direct:LoadProcess")
+            //Step 8: Process the EHR Input
+            .doTry()
+                //Get the mapped openEHRId if avaialbe else create new ehrId
+                .to("direct:patientIdToEhrIdMapperProcess")
+                // .wireTap("direct:OpenEHRProcess")
+                .to("direct:OpenEHRProcess")
+            .doCatch(ClientException.class)
+                .log("direct:OpenEHRProcess catch exception")
+                .process(new OpenEhrClientExceptionHandler())
+            .endDoTry()
+            .end();
 
-                    //Step 9: Prepare the final output
-                    .process(ProvideResourceResponseProcessor.BEAN_ID)
-                .end();
+        from("direct:OutputProcess")
+            //Step 9: Prepare the final output
+            .process(ProvideResourceResponseProcessor.BEAN_ID);
         }
 }
