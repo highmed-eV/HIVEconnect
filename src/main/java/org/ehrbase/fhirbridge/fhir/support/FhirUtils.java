@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class FhirUtils {
@@ -187,7 +188,9 @@ public class FhirUtils {
         String method = null;
         try{
             JsonNode rootNode = objectMapper.readTree(inputResource);
+            List<String> profiles = null;
             if ("Bundle".equals(inputResourceType)) {
+                
                 //extract and verify the request is either POST or PUT
                 //In case of Bundle all the  resources should have the same request http method
                 JsonNode entryode = rootNode.get("entry");
@@ -204,8 +207,30 @@ public class FhirUtils {
                     throw new IllegalArgumentException("Inconsistent or invalid request http methods detected");
                 }
                 method = methods.get(0);
+
+                //extract profiles
+                profiles = StreamSupport.stream(entryode.spliterator(), false)
+                                    .map(node -> node.path("resource").path("meta")) 
+                                    .filter(metaNode -> metaNode.has("profile")) 
+                                    .flatMap(metaNode -> StreamSupport.stream(metaNode.path("profile").spliterator(), false)) 
+                                    .map(JsonNode::asText) 
+                                    .distinct() 
+                                    .collect(Collectors.toList()); 
+                
             } else {
+                //extract method
                 method = exchange.getProperty(Exchange.HTTP_METHOD, String.class);
+
+                //extract profile
+                JsonNode profileNode = rootNode.path("meta").path("profile");
+                // Convert the JsonNode array to a List<String>
+                profiles =  StreamSupport.stream(profileNode.spliterator(), false)
+                        .map(JsonNode::asText) // Convert each JsonNode to a String
+                        .collect(Collectors.toList());
+            }
+
+            if (profiles.contains(null) || profiles.size() == 0) {
+                throw new IllegalArgumentException("Meta profile not provided in the resource");
             }
 
             //Get source
@@ -221,6 +246,7 @@ public class FhirUtils {
             exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
             exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
             exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, method);
+            exchange.getIn().setHeader(CamelConstants.INPUT_PROFILE, profiles);
     
         } catch (JsonProcessingException e) {
             throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");

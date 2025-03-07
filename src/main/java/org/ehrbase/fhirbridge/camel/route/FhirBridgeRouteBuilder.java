@@ -69,7 +69,16 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
 
         //Validate and Enrich
         from("direct:ValidateAndEnrichProcess")
-            // Step 2: Validate: Check if the input resource or input bundle resource consisting of same resources already exist
+            // Step 2: Validate: 
+            //Check the incoming profile is supported by openFHIR
+            .doTry()
+                .to("direct:ValidateOpenFHIRProfilesProcess")
+            .doCatch(Exception.class)
+                .log("direct:ValidateOpenFHIRProfilesProcess catch exception")
+                .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
+
+            //Check if the input resource or input bundle resource consisting of same resources already exist
             // If already exist : throw duplicate resource or bundle resource creation
             .doTry()
                 .to("direct:checkDuplicateResource")
