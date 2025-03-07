@@ -27,6 +27,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
                 .to("ehr-composition:compositionProducer?operation=mergeCanonicalCompositionEntity")
             .doCatch(ClientException.class)
                 .log("composition:compositionProducer catch exception")
+                .to("direct:deleteResources")
                 .process(new OpenEhrClientExceptionHandler())
             .endDoTry()
             .log("Successfully committed composition to openEHR server with EHR ID: ${header." + CompositionConstants.EHR_ID + "}");

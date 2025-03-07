@@ -383,6 +383,35 @@ public class FhirRouteBuilder extends RouteBuilder {
                         .endDoTry()
                 .endChoice()
                 .log("CheckDuplicateResource: No duplicate resources found in the input resource or input bundle");
+
+        from("direct:deleteResources")
+                .process(exchange -> {
+                    // Get the list of resource URLs from the Exchange property
+                    List<String> resourceUrls = exchange.getProperty(CamelConstants.INPUT_RESOURCE_IDS, List.class);
+
+                    // Set the body with the list of resource URLs for processing
+                    exchange.getIn().setBody(resourceUrls);
+                })
+                .split(body())  // Iterate over each resource URL
+                .doTry()
+                    .process(exchange -> {
+                        // Extract resource type and ID from the URL
+                        String resourceUrl = exchange.getIn().getBody(String.class);
+                        String[] parts = resourceUrl.split("/");
+
+                        if (parts.length == 2) {
+                            exchange.getIn().setHeader("type", parts[0]);       // Resource Type (e.g., "Patient")
+                            exchange.getIn().setHeader("stringId", parts[1]);  // Resource ID (e.g., "123")
+                        } else {
+                            throw new IllegalArgumentException("Invalid FHIR resource URL: " + resourceUrl);
+                        }
+                    })
+                    .toD("fhir://delete/resourceById?serverUrl={{serverUrl}}&type=${header.type}&stringId=${header.stringId}")
+                    .log("Deleted FHIR resource: ${header.type}/${header.stringId}")
+                .doCatch(Exception.class)
+                    .log("Failed to delete FHIR resource: ${header.type}/${header.stringId} - Exception: ${exception.message}")
+                    .process(new FhirBridgeExceptionHandler())
+                .end();
     }
 }
 
