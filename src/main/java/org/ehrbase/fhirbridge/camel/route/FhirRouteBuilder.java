@@ -121,7 +121,7 @@ public class FhirRouteBuilder extends RouteBuilder {
 
         //Extract    
         // Check Patient Id exists
-        from("direct:extractAndCheckPatientIdExistsProcessor")
+        from("direct:extractAndValidatePatientIdExistsProcessor")
             .routeId("extractAndCheckPatientIdExistsProcessorRoute")
             //Get the patientid from input resource(Bundle, Patient or any resource)
             //find the patient id in the fhir server

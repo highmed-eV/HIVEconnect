@@ -12,12 +12,12 @@ public class OpenFHIRRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        from("direct:ValidateOpenFHIRProfilesProcess")
+        from("direct:validateOpenFHIRProfilesProcess")
         //Validate the incoming profile is supported by openFHIR
         .doTry()
             .to("bean:fhirBridgeOpenFHIRAdapter?method=checkProfileSupported")
         .doCatch(RuntimeException.class)
-            .log("ValidateOpenFHIRProfilesProcess: catch exception")
+            .log("validateOpenFHIRProfilesProcess: catch exception")
             .process(new OpenFHIRMappingExceptionHandler())
         .end();
 

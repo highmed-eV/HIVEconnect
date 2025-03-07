@@ -54,29 +54,29 @@ public class FhirBridgeRouteBuilder extends RouteBuilder {
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
             .end()
-            .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType }")
+            .log("FHIR Resource Type ${header.CamelFhirBridgeIncomingResourceType }");
             
-            // Step 1: Extract Patient Id from the FHIR Input Resource
+
+        //Validate and Enrich
+        from("direct:ValidateAndEnrichProcess")
             .choice()
                 .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
-                    .to("direct:extractAndCheckPatientIdExistsProcessor")
-                    .log("FHIR Patient ID  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                    .doTry()
+                        // Step 1: Extract Patient Id from the FHIR Input Resource
+                        .to("direct:extractAndValidatePatientIdExistsProcessor")
+                        .log("FHIR Patient ID  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                        // Step 2: Validate: 
+                        //Check the incoming profile is supported by openFHIR
+                        .to("direct:validateOpenFHIRProfilesProcess")
+                    .doCatch(Exception.class)
+                        .log("direct:ValidateAndEnrichProcess catch exception")
+                        .process(new FhirBridgeExceptionHandler())
+                    .endDoTry()
                 .endChoice()
             .otherwise()
                 .to("direct:extractPatientIdFromPatientProcessor")
                 .log("FHIR Patient ID  ${header." + CamelConstants.PATIENT_ID + "}")
-            .end();
-
-        //Validate and Enrich
-        from("direct:ValidateAndEnrichProcess")
-            // Step 2: Validate: 
-            //Check the incoming profile is supported by openFHIR
-            .doTry()
-                .to("direct:ValidateOpenFHIRProfilesProcess")
-            .doCatch(Exception.class)
-                .log("direct:ValidateOpenFHIRProfilesProcess catch exception")
-                .process(new FhirBridgeExceptionHandler())
-            .endDoTry()
+            .end()
 
             //Check if the input resource or input bundle resource consisting of same resources already exist
             // If already exist : throw duplicate resource or bundle resource creation
