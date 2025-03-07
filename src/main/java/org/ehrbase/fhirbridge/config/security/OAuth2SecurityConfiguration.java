@@ -39,9 +39,18 @@ public class OAuth2SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(requests -> requests.anyRequest().authenticated());
-        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
-        return http.build();
+        return http
+                .authorizeHttpRequests(auth -> 
+                    auth.anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt())
+                .headers(headers -> headers
+                    .frameOptions().deny()
+                    .xssProtection().disable()
+                    .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
+                )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/fhir/**"))
+                .build();
     }
 
     @Bean
