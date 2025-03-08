@@ -1,4 +1,4 @@
-package org.ehrbase.fhirbridge.camel.route;
+package org.ehrbase.fhirbridge.openfhir.camel;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -17,7 +17,7 @@ public class OpenFHIRRouteBuilder extends RouteBuilder {
         .doTry()
             .to("bean:fhirBridgeOpenFHIRAdapter?method=checkProfileSupported")
         .doCatch(RuntimeException.class)
-            .log("validateOpenFHIRProfilesProcess: catch exception")
+            .log("validateOpenFHIRProfilesProcess: exception")
             .process(new OpenFHIRMappingExceptionHandler())
         .end();
 
@@ -26,7 +26,7 @@ public class OpenFHIRRouteBuilder extends RouteBuilder {
             .doTry()
                 .to("bean:fhirBridgeOpenFHIRAdapter?method=convertToOpenEHR")
             .doCatch(RuntimeException.class)
-                .log("OpenFHIRProcess:fhirBridgeOpenFHIRAdapter catch exception")
+                .log("OpenFHIRProcess:fhirBridgeOpenFHIRAdapter exception")
                 .process(new OpenFHIRMappingExceptionHandler())
             .end()
             .log("FHIR converted to openEHR format.")

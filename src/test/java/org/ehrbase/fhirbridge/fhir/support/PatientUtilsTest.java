@@ -31,17 +31,10 @@ class PatientUtilsTest {
     private PatientEhrRepository patientEhrRepository;
 
     @Mock
-    private Exchange exchange;
-
-    @Mock
-    private Message inMessage;
-
-    @Mock
     private MethodOutcome methodOutcome;
 
-    @Mock
+    private Exchange exchange;
     private PatientUtils patientUtils;
-
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -149,15 +142,51 @@ class PatientUtilsTest {
     }
 
     @Test
-    void getPatientIdAndResourceIdFromOutCome() {
+    void getPatientIdAndResourceIdFromOutCome_WhenPatientResource() {
+        // Create mocks
         IIdType mockIdType = mock(IIdType.class);
+        Patient mockPatient = mock(Patient.class);
+        
+        // Setup method outcome expectations
         when(methodOutcome.getId()).thenReturn(mockIdType);
+        when(methodOutcome.getResource()).thenReturn(mockPatient);
         when(mockIdType.getResourceType()).thenReturn("Patient");
         when(mockIdType.getIdPart()).thenReturn("123");
+
+        // Setup exchange
         exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, methodOutcome);
+        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, "Patient");
+        
+        // Execute the method under test
         patientUtils.getPatientIdAndResourceIdFromOutCome(exchange);
+        
+        // Verify results
+        assertEquals("Patient/123", exchange.getIn().getHeader(CamelConstants.SERVER_RESOURCE_ID));
         assertEquals("Patient/123", exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
-        assertEquals(methodOutcome.getResource(), exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
+        assertEquals(mockPatient, exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
+    }
+
+    @Test
+    void getPatientIdAndResourceIdFromOutCome_WhenNonPatientResource() {
+        // Create mocks
+        IIdType mockIdType = mock(IIdType.class);
+        
+        // Setup method outcome expectations
+        when(methodOutcome.getId()).thenReturn(mockIdType);
+        when(mockIdType.getResourceType()).thenReturn("Observation");
+        when(mockIdType.getIdPart()).thenReturn("456");
+
+        // Setup exchange
+        exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, methodOutcome);
+        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, "Observation");
+        exchange.getIn().setHeader(CamelConstants.PATIENT_ID, "Patient/789");
+        
+        // Execute the method under test
+        patientUtils.getPatientIdAndResourceIdFromOutCome(exchange);
+        
+        // Verify results
+        assertEquals("Observation/456", exchange.getIn().getHeader(CamelConstants.SERVER_RESOURCE_ID));
+        assertEquals("Patient/789", exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
     }
 
     @Test
