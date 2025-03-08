@@ -86,7 +86,7 @@ public class BundleResourceProvider implements IResourceProvider  {
         
         try {
             // Call Camel route with the Bundle resource
-            methodOutcome = producerTemplate.requestBodyAndHeader("direct:CamelCreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
+            methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
             return methodOutcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -113,7 +113,7 @@ public class BundleResourceProvider implements IResourceProvider  {
         MethodOutcome methodOutcome = null;
         try {
             // Call Camel route with the Bundle resource
-            methodOutcome = producerTemplate.requestBodyAndHeader("direct:CamelCreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "PUT", MethodOutcome.class);
+            methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "PUT", MethodOutcome.class);
             return methodOutcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -202,7 +202,7 @@ public class BundleResourceProvider implements IResourceProvider  {
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Bundle resource
-        Bundle processedBundle = producerTemplate.requestBody("direct:CamelSearchRouteProcess", requestDetails, Bundle.class);
+        Bundle processedBundle = producerTemplate.requestBody("direct:SearchRouteProcess", requestDetails, Bundle.class);
 
         return processedBundle;
     }
@@ -211,7 +211,7 @@ public class BundleResourceProvider implements IResourceProvider  {
     public Bundle readBundle(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
         // Call Camel route with the Bundle resource
-        Bundle processedBundle = producerTemplate.requestBody("direct:CamelCreateRouteProcessRoute", requestDetails, Bundle.class);
+        Bundle processedBundle = producerTemplate.requestBody("direct:CreateRouteProcessRoute", requestDetails, Bundle.class);
 
         return processedBundle;
     }    

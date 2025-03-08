@@ -17,9 +17,15 @@
 package org.ehrbase.fhirbridge.core.domain;
 
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
 
 @Entity
 @Table(name = "FB_RESOURCE_COMPOSITION", uniqueConstraints = @UniqueConstraint(columnNames = {"INPUT_RESOURCE_ID", "COMPOSITION_ID"}))
+@EntityListeners(AuditingEntityListener.class)
 public class ResourceComposition {
 
     @Id
@@ -39,6 +45,14 @@ public class ResourceComposition {
 
     @Column(name = "SYSTEM_ID")
     private String systemId;
+
+    @Column(name = "CREATED_DATE_TIME", nullable = false, updatable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @CreatedDate
+    private ZonedDateTime createdDateTime;
+
+    @Column(name = "UPDATED_DATE_TIME", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @LastModifiedDate
+    private ZonedDateTime updatedDateTime;
 
     public ResourceComposition() {
     }
@@ -86,6 +100,14 @@ public class ResourceComposition {
         this.systemId = systemId;
     }
 
+    public ZonedDateTime getCreatedDateTime() {
+        return createdDateTime;
+    }
+
+    public ZonedDateTime getUpdatedDateTime() {
+        return updatedDateTime;
+    }
+
     @Override
     public String toString() {
         return "ResourceComposition{" +
@@ -94,6 +116,8 @@ public class ResourceComposition {
                 ", internalResourceId='" + internalResourceId + '\'' +
                 ", compositionId='" + compositionId + '\'' +
                 ", systemId='" + systemId + '\'' +
+                ", createdDateTime='" + createdDateTime + '\'' +
+                ", updatedDateTime='" + updatedDateTime + '\'' +
                 '}';
     }
 }

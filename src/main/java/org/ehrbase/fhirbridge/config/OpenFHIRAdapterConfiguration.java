@@ -16,6 +16,7 @@
 
 package org.ehrbase.fhirbridge.config;
 
+import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
 import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,14 +25,16 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @SuppressWarnings("java:S6212")
 public class OpenFHIRAdapterConfiguration {
-
     private final RestTemplate restTemplate;
-    public OpenFHIRAdapterConfiguration(RestTemplate restTemplate) {
+    private final DefaultTemplateProvider templateProvider;
+
+    public OpenFHIRAdapterConfiguration(RestTemplate restTemplate, DefaultTemplateProvider templateProvider) {
         this.restTemplate = restTemplate;
+        this.templateProvider = templateProvider;
     }
 
     @Bean(name = "fhirBridgeOpenFHIRAdapter")
     public OpenFHIRAdapter openFHIRAdapter() {
-        return new OpenFHIRAdapter(restTemplate);
+        return new OpenFHIRAdapter(restTemplate, templateProvider);
     }
 }

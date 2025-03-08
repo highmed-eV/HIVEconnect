@@ -125,6 +125,12 @@
             <column name="EHR_ID" type="varchar(36)">
                 <constraints nullable="false" unique="true"/>
             </column>
+            <column name="CREATED_DATE_TIME" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UPDATED_DATE_TIME" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <renameTable oldTableName="FB_RESOURCE_MAP" newTableName="FB_RESOURCE_COMPOSITION"/>

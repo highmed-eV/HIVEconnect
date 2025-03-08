@@ -83,7 +83,7 @@ public class OpenEhrConfiguration {
 
     @Bean
     public DefaultTemplateProvider templateProvider(CacheManager cacheManager) {
-        return new DefaultTemplateProvider(cacheManager.getCache("templateCache"));
+        return new DefaultTemplateProvider(cacheManager);
     }
 
     @Bean

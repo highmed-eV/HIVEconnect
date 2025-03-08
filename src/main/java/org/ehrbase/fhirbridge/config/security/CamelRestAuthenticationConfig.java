@@ -4,9 +4,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 public class CamelRestAuthenticationConfig {
+
+    private final SecurityProperties properties;
+
+    public CamelRestAuthenticationConfig(SecurityProperties properties) {
+        this.properties = properties;
+    }
 
     @Bean
     @ConditionalOnProperty(name = "fhir-bridge.security.type", havingValue = "none")
@@ -18,7 +23,8 @@ public class CamelRestAuthenticationConfig {
     @ConditionalOnProperty(name = "fhir-bridge.security.type", havingValue = "basic")
     public Authenticator basicAuthAuthenticator() {
         return (username, password) -> 
-            "user".equals(username) && "pass".equals(password);
+            properties.getUser().getName().equals(username) && 
+            properties.getUser().getPassword().equals(password);
     }
 
     @Bean

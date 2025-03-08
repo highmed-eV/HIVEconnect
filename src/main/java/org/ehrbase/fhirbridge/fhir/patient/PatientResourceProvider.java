@@ -74,7 +74,7 @@ public class PatientResourceProvider implements IResourceProvider  {
 
         try {
             // Call Camel route with the Patient resource
-            MethodOutcome outcome  = producerTemplate.requestBodyAndHeader("direct:CamelCreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
+            MethodOutcome outcome  = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
             return outcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -161,7 +161,7 @@ public class PatientResourceProvider implements IResourceProvider  {
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:CamelSearchRouteProcess", requestDetails,  Exchange.HTTP_METHOD, "GET", Patient.class);
+        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:SearchRouteProcess", requestDetails,  Exchange.HTTP_METHOD, "GET", Patient.class);
 
         return processedPatient;
     }
@@ -170,7 +170,7 @@ public class PatientResourceProvider implements IResourceProvider  {
     public Patient readPatient(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
         // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:CamelCreateRouteProcessRoute", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
+        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:ReadRouteProcess", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
 
         return processedPatient;
     }    

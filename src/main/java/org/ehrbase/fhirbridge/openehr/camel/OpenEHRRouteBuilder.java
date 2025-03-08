@@ -1,4 +1,4 @@
-package org.ehrbase.fhirbridge.camel.route;
+package org.ehrbase.fhirbridge.openehr.camel;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
@@ -9,8 +9,6 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
-import org.ehrbase.fhirbridge.openehr.camel.CompositionContextProcessor;
-import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +39,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
             .doTry()
                 .to("ehr-composition:compositionProducer?operation=mergeCanonicalCompositionEntity")
             .doCatch(ClientException.class)
-                .log("composition:compositionProducer catch exception")
+                .log("composition:compositionProducer exception")
                 .to("direct:deleteResources")
                 .process(new OpenEhrClientExceptionHandler())
             .endDoTry()
@@ -54,10 +52,10 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
 
             .doTry()
                 //if Patient resource create ehrid
-                .log("patientIdToEhrIdMapperProcess: calling EhrLookupProcessor")
+                .log("Calling EhrLookupProcessor")
                 .process(EhrLookupProcessor.BEAN_ID)
             .doCatch(ClientException.class)
-                .log("patientIdToEhrIdMapperProcess catch exception")
+                .log("EhrLookupProcessor exception")
                 .process(new OpenEhrClientExceptionHandler())
             .endDoTry()
             .log("Patient ID mapped to EHR ID: ${header.CamelEhrCompositionEhrId}");
