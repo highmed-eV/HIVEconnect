@@ -26,7 +26,7 @@ public class CamelRoute extends AbstractRouteBuilder {
             // .onCompletion()
             //     .process(ProvideResourceAuditHandler.BEAN_ID)
             // .end()
-            .to("direct:FHIRBridgeProcess");
+            .to("direct:FHIRBridgeETLProcess");
 
             from("direct:CamelSearchRouteProcess")
                 .routeId("CamelSearchRouteProcessRoute")

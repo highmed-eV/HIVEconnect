@@ -2,8 +2,6 @@ package org.ehrbase.fhirbridge.camel.route;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
-import com.nedap.archie.rm.support.identification.UIDBasedId;
-
 import java.util.Optional;
 
 import org.apache.camel.builder.RouteBuilder;
@@ -11,6 +9,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
+import org.ehrbase.fhirbridge.openehr.camel.CompositionContextProcessor;
 import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.springframework.stereotype.Component;
@@ -33,11 +32,12 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
                     Optional.ofNullable(compositionId)
                         .ifPresent(id -> composition.setUid(new ObjectVersionId(id)));
                 }
-
-                //CompositionConverter
-                //TODO: Add composition context data(Composer, feeder audit, languate, territory)
                 exchange.getIn().setBody(composition);
             })
+
+            //populate conext meta data information(Composer, feeder audit, languate, territory) in the composition
+            .process(CompositionContextProcessor.BEAN_ID)
+
             .doTry()
                 .to("ehr-composition:compositionProducer?operation=mergeCanonicalCompositionEntity")
             .doCatch(ClientException.class)
@@ -60,8 +60,7 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
                 .log("patientIdToEhrIdMapperProcess catch exception")
                 .process(new OpenEhrClientExceptionHandler())
             .endDoTry()
-
-            .log("openEHR EHRId Mapper Process Route completed: ${header." + CompositionConstants.EHR_ID + "}");
+            .log("Patient ID mapped to EHR ID: ${header.CamelEhrCompositionEhrId}");
     }
 }
 

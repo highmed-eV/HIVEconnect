@@ -29,10 +29,14 @@ public final class CamelConstants {
      
      public static final String INPUT_HTTP_METHOD = "CamelFhirBridgeIncomingHttpMethod";
 
+     public static final String INPUT_PROFILE = "CamelFhirBridgeIncomingProfile";
+
      public static final String INPUT_RESOURCE = "CamelFhirBridgeIncomingResource";
     
     public static final String INPUT_RESOURCE_TYPE = "CamelFhirBridgeIncomingResourceType";
     
+    public static final String INPUT_SOURCE = "CamelFhirBridgeIncomingSource";
+
     public static final String FHIR_SERVER_OUTCOME = "CamelFhirServerOutcome";
 
     public static final String OPEN_FHIR_SERVER_OUTCOME = "CamelOpenFhirServerOutcome";
@@ -42,6 +46,8 @@ public final class CamelConstants {
     public static final String OUTCOME = "CamelFhirBridgeOutcome";
 
     public static final String SERVER_PATIENT_RESOURCE = "CamelFhirServerPatientResource";
+
+    public static final String SERVER_RESOURCE_ID = "CamelFhirServerResourceId";
 
     public static final String PATIENT_ID = "CamelFhirPatientId";
 

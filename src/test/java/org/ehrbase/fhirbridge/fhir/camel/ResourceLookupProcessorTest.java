@@ -26,14 +26,14 @@ class ResourceLookupProcessorTest {
     private ResourceCompositionRepository resourceCompositionRepository;
 
     @Mock
-    private ResourceLookupProcessor resourceLookupProcessor;
+    private ReferencedResourceLookupProcessor resourceLookupProcessor;
 
     @Mock
     private Exchange exchange;
 
     @BeforeEach
     void setUp() {
-        resourceLookupProcessor = new ResourceLookupProcessor(resourceCompositionRepository);
+        resourceLookupProcessor = new ReferencedResourceLookupProcessor(resourceCompositionRepository);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
     }

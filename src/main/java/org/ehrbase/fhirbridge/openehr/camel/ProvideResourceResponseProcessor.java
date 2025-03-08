@@ -75,7 +75,12 @@ public class ProvideResourceResponseProcessor implements Processor {
         Map<String, String> resourceIdMap = new LinkedHashMap<>();
 
         if (!"Bundle".equals(inputResourceType)) {
-            processSingleResource(exchange);
+            if ("Patient".equals(inputResourceType)) {
+                processPatientResource(exchange);
+            } else {
+                JSONObject inputJsonObject = new JSONObject(inputResource);
+                processSingleResource(exchange, inputJsonObject, resourceIdMap);
+            }
         }
         else 
         {
@@ -88,10 +93,22 @@ public class ProvideResourceResponseProcessor implements Processor {
         updateResourceCompositions(exchange, inputResourceType, resourceIdMap, composition);
     }
 
-    private void processSingleResource(Exchange exchange) {
+    private void processPatientResource(Exchange exchange) {
         //if not bundle take fhir response as MethodOutcome
         MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
        
+        //Set response in exchange body
+        exchange.getIn().setBody(outcome);
+    }
+
+    private void processSingleResource(Exchange exchange, JSONObject inputJsonObject, Map<String, String> resourceIdMap) throws IOException {
+        //if not bundle take fhir response as MethodOutcome
+        MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
+       
+        String inputResourceId = inputJsonObject.getString("id");
+        String internalResourceId = outcome.getId().getValue();
+        resourceIdMap.put(inputResourceId, internalResourceId);
+
         //Set response in exchange body
         exchange.getIn().setBody(outcome);
     }
@@ -115,7 +132,8 @@ public class ProvideResourceResponseProcessor implements Processor {
             }
         }
 
-        // merge and store the responses from FHIR_SERVER_OUTCOME, OPEN_FHIR_SERVER_OUTCOME and OPEN_EHR_SERVER_OUTCOME
+        // merge and save the responses for debug purpose
+        // from FHIR_SERVER_OUTCOME, OPEN_FHIR_SERVER_OUTCOME and OPEN_EHR_SERVER_OUTCOME
         debugProperties.saveMergedServerResponses(exchange);
 
         //Set response in exchange body
@@ -158,6 +176,8 @@ public class ProvideResourceResponseProcessor implements Processor {
             if (response != null) {
                 String location = response.optString("location");
                 if (!location.isEmpty()) {
+                    //Assuming HAPI FHIR server returns 
+                    // the resources in the response in the same order as that of the request. 
                     // Extract resource ID (e.g., "Condition/20")
                     String internalResourceId = location.split("/_history")[0];
                     String correspondingInputResourceId = findInputResourceIdByIndex(resourceIdMap, i);
