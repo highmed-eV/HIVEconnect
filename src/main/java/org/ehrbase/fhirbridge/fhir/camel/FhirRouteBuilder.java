@@ -13,6 +13,7 @@ import org.ehrbase.fhirbridge.fhir.support.PatientUtils;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Resource;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,8 +28,41 @@ public class FhirRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-
         from("direct:FHIRProcess")
+            .choice()
+                .when(header(CamelConstants.REQUESTDETAILS_OPERATION_TYPE).isEqualTo("CREATE"))
+                    .to("direct:handleCreateOperation")
+                .when(header(CamelConstants.REQUESTDETAILS_OPERATION_TYPE).isEqualTo("READ"))
+                    .to("direct:handleReadOperation")
+                .otherwise()
+                    .log("Unknown operation type: ${header.FHIR_REQUEST_DETAILS}")
+                .endChoice()
+            .end();       
+
+        from("direct:handleReadOperation")
+            .log("handleReadOperation")
+            .doTry()
+                .log("Read resource for ${header.CamelRequestResourceResourceType}/${header.CamelRequestDetailsId}")
+                .toD("fhir://read/resourceById?resourceClass=${header.CamelRequestResourceResourceType}&stringId=${header.CamelRequestDetailsId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                
+                //Store the response in the Exchange
+                .process(exchange -> {
+                    exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "GET");
+
+                    //Response may not be resource. It is OutCome
+                    Resource response = (Resource) exchange.getIn().getBody();
+                    exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME,  response);
+                })
+            .log("FHIR request to Read Resource ${header.CamelRequestResourceResourceType}/${header.CamelRequestDetailsId} completed ${body}")
+      
+            .doCatch(Exception.class)
+                .log("direct:handleReadOperation  exception during fhir read")
+                .process(new FhirBridgeExceptionHandler())
+            .endDoTry()
+            .end();
+        
+        
+        from("direct:handleCreateOperation")
             // Forward request to FHIR server
                 .choice()
                     .when().jsonpath("$[?(@.type == 'transaction')]")
@@ -44,7 +78,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                                 exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
 
                                  //set back the input json as body
-                                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                                 exchange.getIn().setBody(inputResource);
                                                 
                             })
@@ -54,21 +88,21 @@ public class FhirRouteBuilder extends RouteBuilder {
                         .endDoTry()
 
                     .endChoice()
-                    .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'POST'"))
+                    .when(simple("${header.CamelRequestResourceResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'POST'"))
                     .doTry()
                         .to("fhir://create/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                         .log("Create FHIR request. Starting process...")
                         
                         //Store the response in the Exchange
                         .process(exchange -> {
-                            exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, "POST");
+                            exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
                             //Response may not be resource. It is OutCome
                             MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
                             exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
 
                             //set back the input json as body
-                            String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                            String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                             exchange.getIn().setBody(inputResource);
                                         
                         })
@@ -77,7 +111,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                         .process(new FhirBridgeExceptionHandler())
                     .endDoTry()
                     .endChoice()
-                    .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'PUT'"))
+                    .when(simple("${header.CamelRequestResourceResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'PUT'"))
                     .doTry()
                         // String matchUrl = requestDetails.getConditionalUrl(RestOperationTypeEnum.UPDATE);
                         .to("fhir://update/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
@@ -85,14 +119,14 @@ public class FhirRouteBuilder extends RouteBuilder {
 
                         //Store the response in the Exchange
                         .process(exchange -> {
-                            exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, "PUT");
+                            exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "PUT");
 
                             //Response may not be resource. It is OutCome
                             MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
                             exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
 
                             //set back the input json as body
-                            String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                            String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                             exchange.getIn().setBody(inputResource);
                                         
                         })
@@ -120,7 +154,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                 .log("direct:extractPatientIdFromPatientProcessor exception")
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
-            .log("FHIR PatientId ${header." + CamelConstants.PATIENT_ID + "}" );
+            .log("FHIR PatientId ${header." + CamelConstants.FHIR_INPUT_PATIENT_ID + "}" );
 
         //Extract    
         // Check Patient Id exists
@@ -138,15 +172,15 @@ public class FhirRouteBuilder extends RouteBuilder {
             .endDoTry()
             .end()
 
-            .log("FHIR PatientId ${header." + CamelConstants.PATIENT_ID 
+            .log("FHIR PatientId ${header." + CamelConstants.FHIR_INPUT_PATIENT_ID 
                     + "}, Server PatientId ${header." 
-                    + CamelConstants.SERVER_PATIENT_ID 
+                    + CamelConstants.FHIR_SERVER_PATIENT_ID 
                     + "}, PatientId Type ${header."
-                    + CamelConstants.PATIENT_ID_TYPE
+                    + CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE
                     + "}")
 
             .choice()
-            .when(header(CamelConstants.SERVER_PATIENT_ID).isNull())
+            .when(header(CamelConstants.FHIR_SERVER_PATIENT_ID).isNull())
                 .to("direct:checkPatientIdExistsProcessor");
         
         //Extract    
@@ -163,7 +197,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             // as serverPatientId in exchange so that it can be added to fhi-patient-id to ehr-id map table
             //else it has to be created after the resource is created in the server.
             .choice()
-                .when(header(CamelConstants.PATIENT_ID_TYPE).isEqualTo("RELATIVE_REFERENCE"))
+                .when(header(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE).isEqualTo("RELATIVE_REFERENCE"))
                     .doTry()
                         .log("Read RELATIVE_REFERENCE patient id ${header.CamelFhirPatientId}")
                         .toD("fhir://read/resourceById?resourceClass=Patient&stringId=${header.CamelFhirPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
@@ -173,7 +207,7 @@ public class FhirRouteBuilder extends RouteBuilder {
                     .endDoTry()
                 .endChoice()
                 //else if identifier
-                .when(header(CamelConstants.PATIENT_ID_TYPE).isEqualTo("IDENTIFIER"))
+                .when(header(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE).isEqualTo("IDENTIFIER"))
                     .doTry()
                         .log("Search IDENTIFIER patient id for identifier ${header." + CamelConstants.IDENTIFIER_STRING + "}")
                         .toD("fhir://search/searchByUrl?url=Patient?identifier=${header.CamelIdentifierString}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
@@ -197,15 +231,15 @@ public class FhirRouteBuilder extends RouteBuilder {
                                     exchange.getIn().setBody(patient);
                                 } else {
                                     String serverPatientId = "Patient/" + serverPatient.getIdPart();
-                                    exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, serverPatient);
-                                    exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                                    exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, serverPatient);
+                                    exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
                                     exchange.getIn().setBody(serverPatient);
                                 }
                             }
                         })
                     // .log("Response Search body  ${body}")
 
-                    .log("Search server IDENTIFIER patient id ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                    .log("Search server IDENTIFIER patient id ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}")
                     .doCatch(ResourceNotFoundException.class)
                         .log("Patient Identifier Not Found")
                         .process(exchange -> { 
@@ -226,7 +260,7 @@ public class FhirRouteBuilder extends RouteBuilder {
 
             //If identifier not found; create dummy patient
             .choice()
-                .when(simple("${header.CamelFhirPatientIdType} == 'IDENTIFIER' && ${header.CamelFhirServerPatientId} == null "))
+                .when(simple("${header.CamelFhirInputPatientIdType} == 'IDENTIFIER' && ${header.CamelFhirServerPatientId} == null "))
                     .doTry()
                         .log("create  IDENTIFIER patient id  ${header." + CamelConstants.IDENTIFIER_OBJECT + "}")
                         .toD("fhir://create/resource?inBody=resource&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
@@ -235,26 +269,26 @@ public class FhirRouteBuilder extends RouteBuilder {
                             MethodOutcome response = exchange.getIn().getBody(MethodOutcome.class);
                             Patient patientResource = (Patient) response.getResource();
                             String serverPatientId = patientResource.getId().split("/_history")[0];
-                            exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patientResource);
-                            exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, patientResource);
+                            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
                         })
-                        .log("Created server patient id  ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                        .log("Created server patient id  ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}")
 
                     .doCatch(Exception.class)
                         .process(new FhirBridgeExceptionHandler())
                     .endDoTry()
                 .endChoice()
-                .when(header(CamelConstants.SERVER_PATIENT_ID).isNotNull())
+                .when(header(CamelConstants.FHIR_SERVER_PATIENT_ID).isNotNull())
                     .log("Server PatientId  exists ${header.CamelFhirServerPatientId}")
                 .endChoice()
             .end()
 
             .process(exchange -> {
                 //set back the input json as body
-                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                 exchange.getIn().setBody(inputResource);
             })
-            .log("FHIR PatientReferenceProcessor completed: input patient id: ${header." + CamelConstants.PATIENT_ID + "} input patient identifier:${header." + CamelConstants.IDENTIFIER_OBJECT + "}  and server patient id: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
+            .log("FHIR PatientReferenceProcessor completed: input patient id: ${header." + CamelConstants.FHIR_INPUT_PATIENT_ID + "} input patient identifier:${header." + CamelConstants.IDENTIFIER_OBJECT + "}  and server patient id: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}");
 
         //Validate and Enrich
         // Extract Reference Resource Ids from the FHIR Input Resource
@@ -268,20 +302,20 @@ public class FhirRouteBuilder extends RouteBuilder {
             // Add it in the referenceResourceIds(excluding subject.reference)
             // Note : reference resource Id(s) are in the form of inputResourceId(s)
             .process(exchange -> {
-                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                 List<String> referenceInputResourceIds = FhirUtils.getReferenceResourceIds(inputResource);
-                exchange.setProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS, referenceInputResourceIds);
+                exchange.setProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, referenceInputResourceIds);
             })
             // 3. Check the mapping table : FB_RESOURCE_COMPOSITION
             // and get the internalResourceId(s) for corresponding inputResourceId(s).
             // 4. Replace the reference inputResourceId(s) with the reference internalResourceId(s)
             // in the input fhir bundle
             .choice()
-                .when(simple("${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + ".size()} > 0"))
-                .log("FHIR Reference Resource IDs: ${exchangeProperty." + CamelConstants.REFERENCE_INPUT_RESOURCE_IDS + "}")
+                .when(simple("${exchangeProperty." + CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS + ".size()} > 0"))
+                .log("FHIR Reference Resource IDs: ${exchangeProperty." + CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS + "}")
                     .process(ReferencedResourceLookupProcessor.BEAN_ID)
             .end()
-            .log("FHIR Internal Resource ID(s) : ${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + "}")
+            .log("FHIR Internal Resource ID(s) : ${exchangeProperty." + CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS + "}")
             .log("Updated input resouce bundle with the internalResourceIds");
 
         //Validate and Enrich
@@ -293,7 +327,7 @@ public class FhirRouteBuilder extends RouteBuilder {
             // or Transaction reference
             // Extract or find the Patient ID from the resource
             .choice()
-                .when(header(CamelConstants.INPUT_RESOURCE_TYPE).isEqualTo("Bundle"))
+                .when(header(CamelConstants.REQUEST_RESOURCE_TYPE).isEqualTo("Bundle"))
                     .to("direct:extractPatientIdAndResourceIdFromBundleResponse")
             .otherwise()
                     .to("direct:extractPatientIdAndResourceIdFromResourceResponse")
@@ -313,13 +347,13 @@ public class FhirRouteBuilder extends RouteBuilder {
             .doCatch(Exception.class)
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
-            .log("FHIR Bundle Response server Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
+            .log("FHIR Bundle Response server Patient ID: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}");
 
         //Validate and Enrich
         from ("direct:extractPatientIdAndResourceIdFromResourceResponse")
             .routeId("extractPatientIdAndResourceIdFromResourceResponseRoute")
             .bean(PatientUtils.class, "getPatientIdAndResourceIdFromOutCome")
-            .log("FHIR Resource Response server Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}");
+            .log("FHIR Resource Response server Patient ID: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}");
 
 
         //Validate and Enrich
@@ -329,20 +363,20 @@ public class FhirRouteBuilder extends RouteBuilder {
             // 1. Fetch the resources for the internalResourceId(s) is/are in the server.
             // 2. Add the resources in the input fhir bundle.
             .choice()
-                .when(simple("${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + ".size()} > 0"))
+                .when(simple("${exchangeProperty." + CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS + ".size()} > 0"))
 
-                    .log("Property " + CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS + " is present.")
+                    .log("Property " + CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS + " is present.")
                     // Process the list of internal resource IDs
                     .process(exchange -> {
                         // Retrieve the list of internal resource Ids from property
-                        List<String> resourceIds = exchange.getProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS, List.class);
+                        List<String> resourceIds = exchange.getProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS, List.class);
                         // Add the list to the exchange body for splitting
                         exchange.getIn().setBody(resourceIds);
                         // Initialize the list of existingResources before split
-                        List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
+                        List<String> existingResources = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
                         if (existingResources == null) {
                             existingResources = new ArrayList<>();
-                            exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+                            exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
                         }
                     })
                     // Split the list to process each resource Ids individually
@@ -354,13 +388,13 @@ public class FhirRouteBuilder extends RouteBuilder {
                             Pattern pattern = Pattern.compile("([^/]+)/([^/]+)");
                             Matcher matcher = pattern.matcher(resourceString);
                             if (matcher.matches()) {
-                                exchange.setProperty(CamelConstants.INTERNAL_RESOURCE_TYPE, matcher.group(1));
-                                exchange.setProperty(CamelConstants.STRING_INTERAL_ID, matcher.group(2));
+                                exchange.setProperty(CamelConstants.FHIR_INTERNAL_RESOURCE_TYPE, matcher.group(1));
+                                exchange.setProperty(CamelConstants.FHIR_INTERAL_EXISTING_ID, matcher.group(2));
                             }
                         })
-                        .log("Processing resource: Class = ${exchangeProperty." + CamelConstants.INTERNAL_RESOURCE_TYPE + "}, ID = ${exchangeProperty." + CamelConstants.STRING_INTERAL_ID + "}")
+                        .log("Processing resource: Class = ${exchangeProperty." + CamelConstants.FHIR_INTERNAL_RESOURCE_TYPE + "}, ID = ${exchangeProperty." + CamelConstants.FHIR_INTERAL_EXISTING_ID + "}")
                         .doTry()
-                            .toD("fhir:read/resourceById?resourceClass=${exchangeProperty.FhirServerResourceType}&stringId=${exchangeProperty.FhirServerExistingId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                            .toD("fhir:read/resourceById?resourceClass=${exchangeProperty.CamelFhirInternalResourceType}&stringId=${exchangeProperty.CamelFhirInternalExistingId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                             .process(ExistingServerResourceProcessor.BEAN_ID)
                         .doCatch(ResourceNotFoundException.class)
                             .log("Resource not found for resourceClass=${exchangeProperty.resourceClass}, stringId=${exchangeProperty.stringId}. Skipping...")
@@ -374,7 +408,7 @@ public class FhirRouteBuilder extends RouteBuilder {
         from("direct:deleteResources")
                 .process(exchange -> {
                     // Get the list of resource URLs from the Exchange property
-                    List<String> resourceUrls = exchange.getProperty(CamelConstants.INPUT_RESOURCE_IDS, List.class);
+                    List<String> resourceUrls = exchange.getProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, List.class);
 
                     // Set the body with the list of resource URLs for processing
                     exchange.getIn().setBody(resourceUrls);

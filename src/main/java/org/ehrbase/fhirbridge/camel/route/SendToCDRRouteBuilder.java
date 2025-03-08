@@ -44,6 +44,7 @@ public class SendToCDRRouteBuilder extends RouteBuilder {
                 .to("direct:patientIdToEhrIdMapperProcess")
                 // .wireTap("direct:OpenEHRProcess")
                 .to("direct:OpenEHRProcess")
+                .log("Load to openEHR complete")
             .doCatch(ClientException.class)
                 .log("direct:OpenEHRProcess exception")
                 .process(new OpenEhrClientExceptionHandler())

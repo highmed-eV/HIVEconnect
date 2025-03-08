@@ -44,7 +44,7 @@ public class OpenFHIRAdapter {
     public String convertToOpenEHR(Exchange exchange) {
         try {
             logger.info("Calling openFHIR to convert FHIR JSON to openEHR format...");
-            String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+            String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -62,7 +62,7 @@ public class OpenFHIRAdapter {
 
     public boolean checkProfileSupported(Exchange exchange) {
         List<String> outputProfiles = null;
-        List<String> inputProfiles = (List<String>) exchange.getIn().getHeader(CamelConstants.INPUT_PROFILE);
+        List<String> inputProfiles = (List<String>) exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PROFILE);
         try {
             logger.info("Calling openFHIR to get profiles...");
                     

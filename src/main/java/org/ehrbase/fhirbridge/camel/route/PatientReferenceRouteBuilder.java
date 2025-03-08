@@ -39,7 +39,7 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
                         }
                     })
             .doCatch(Exception.class)
-                .log("direct:handleCreateOperationETL exception")
+                .log("direct:ExtractProcess exception")
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
             .end();
@@ -48,11 +48,11 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
         //Validate and Enrich
         from("direct:ValidateAndEnrichProcess")
             .choice()
-                .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
+                .when(simple("${header.CamelRequestResourceResourceType} != 'Patient'"))
                     .doTry()
                         // Step 1: Extract Patient Id from the FHIR Input Resource
                         .to("direct:extractAndValidatePatientIdExistsProcessor")
-                        .log("FHIR Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
+                        .log("FHIR Patient ID: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}")
                         // Step 2: Validate: 
                         //Check the incoming profile is supported by openFHIR
                         .to("direct:validateOpenFHIRProfilesProcess")
@@ -64,7 +64,7 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
             .otherwise()
                 .doTry()
                     .to("direct:extractPatientIdFromPatientProcessor")
-                    .log("FHIR Patient ID:  ${header." + CamelConstants.PATIENT_ID + "}")
+                    .log("FHIR Patient ID:  ${header." + CamelConstants.FHIR_INPUT_PATIENT_ID + "}")
                 .doCatch(Exception.class)
                     .log("direct:extractPatientIdFromPatientProcessor exception")
                     .process(new FhirBridgeExceptionHandler())
@@ -97,17 +97,17 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
 
             // 1. Retrieve the list of all input resource ids
             .process(exchange -> {
-                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                 List<String> inputResourceIds = FhirUtils.getInputResourceIds(inputResource);
-                exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+                exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
             })
-            .log("FHIR Input Resource ID(s) : ${header." + CamelConstants.INPUT_RESOURCE_IDS + "}")
+            .log("FHIR Input Resource ID(s) : ${header." + CamelConstants.FHIR_REQUEST_RESOURCE_IDS + "}")
             // 2. Check the mapping table : FB_RESOURCE_COMPOSITION
             // and get the compositionId(s) for corresponding inputResourceId(s).
             // 3. If all compositionId(s) is/are same and operation is POST
             //     throw duplicate bundle resource exception.
             .choice()
-                .when(simple("${exchangeProperty." + CamelConstants.INPUT_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.INPUT_RESOURCE_IDS + ".size()} > 0"))
+                .when(simple("${exchangeProperty." + CamelConstants.FHIR_REQUEST_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.FHIR_REQUEST_RESOURCE_IDS + ".size()} > 0"))
 
                     .doTry()
                         .process(CompositionLookupProcessor.BEAN_ID)

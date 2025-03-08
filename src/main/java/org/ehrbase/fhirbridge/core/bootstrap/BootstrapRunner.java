@@ -56,6 +56,9 @@ public class BootstrapRunner implements ApplicationRunner {
             paths.filter(path -> path.toString().toLowerCase().endsWith(".opt"))
                 .forEach(this::processOptFile);
         }
+
+        log.info("Bootstrap to Upload templates completed...");
+
     }
 
     private void processOptFile(Path path) {

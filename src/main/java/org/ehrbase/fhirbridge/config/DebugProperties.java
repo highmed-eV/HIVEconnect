@@ -59,7 +59,7 @@ public class DebugProperties {
         mergedJson.setAll((ObjectNode) node2);
         mergedJson.setAll((ObjectNode) node3);
 
-        String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
+        String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE_TYPE);
 
         Files.createDirectories(Paths.get(mappingOutputDirectory));
 

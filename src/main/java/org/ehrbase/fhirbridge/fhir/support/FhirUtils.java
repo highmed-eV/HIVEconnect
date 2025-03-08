@@ -2,12 +2,15 @@ package org.ehrbase.fhirbridge.fhir.support;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
+
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.jetbrains.annotations.NotNull;
@@ -241,12 +244,13 @@ public class FhirUtils {
             
             //set input parameters in excahnge
             if (metaSource != null) {
-                exchange.getIn().setHeader(CamelConstants.INPUT_SOURCE, metaSource);
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_SOURCE, metaSource);
             }
-            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
-            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
-            exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, method);
-            exchange.getIn().setHeader(CamelConstants.INPUT_PROFILE, profiles);
+            //Some of the headers in the RequestDetailsLookupProcessor are overwritten here
+            exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResource);
+            exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, inputResourceType);
+            exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, method);
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PROFILE, profiles);
     
         } catch (JsonProcessingException e) {
             throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");

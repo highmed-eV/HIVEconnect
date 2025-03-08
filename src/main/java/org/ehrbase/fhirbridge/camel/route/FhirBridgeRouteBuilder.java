@@ -1,5 +1,6 @@
 package org.ehrbase.fhirbridge.camel.route;
 
+import org.ehrbase.fhirbridge.fhir.camel.RequestDetailsLookupProcessor;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ public class FhirBridgeRouteBuilder extends AbstractRouteBuilder {
             // .onCompletion()
             //     .process(ProvideResourceAuditHandler.BEAN_ID)
             // .end()
+            .to("direct:InputProcess")
             .to("direct:provideResource")
             // Prepare the final output 
             .to("direct:OutputProcess")
@@ -35,15 +37,21 @@ public class FhirBridgeRouteBuilder extends AbstractRouteBuilder {
 
         from("direct:SearchRouteProcess")
             .routeId("SearchRouteProcessRoute")
-            .log("##########SearchRouteProcess")
-            .to("direct:ResourcePersistenceProcessor")
-            // Prepare the final output 
-            .to("direct:OutputProcess")
-            .log("SearchRouteProcess completed");
+            .log("SearchRouteProcess not supported");
+            // .to("direct:InputProcess")
+            // .to("direct:ResourcePersistenceProcessor")
+            // .log("SearchRouteProcess completed");
 
         from("direct:ReadRouteProcess")
             .routeId("ReadRouteProcessRoute")
-            .log("##########ReadRouteProcess");
+            .to("direct:InputProcess")
+            .to("direct:ResourcePersistenceProcessor")
+            .log("ReadRouteProcess completed");
+
+
+        from("direct:InputProcess")
+            //Extract all RequestDetails information from the input
+            .process(RequestDetailsLookupProcessor.BEAN_ID);
 
         from("direct:OutputProcess")
             //Step 9: Prepare the final output

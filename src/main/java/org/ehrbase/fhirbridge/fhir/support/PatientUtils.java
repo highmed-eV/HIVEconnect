@@ -49,7 +49,7 @@ public class PatientUtils {
         String serverPatientId = null;
         if (resourceNode.has(RESOURCE_TYPE) && PATIENT.equals(resourceNode.get(RESOURCE_TYPE).asText())) {
             //Patient resource
-            //get PATIENT_ID and SERVER_PATIENT_ID
+            //get FHIR_INPUT_PATIENT_ID and FHIR_SERVER_PATIENT_ID
             //TODO: Should this be id or identifier value??
             // Get the "identifier" array
             JsonNode identifierNode = resourceNode.path(IDENTIFIER);
@@ -70,27 +70,27 @@ public class PatientUtils {
                 throw new UnprocessableEntityException(resourceNode.path(RESOURCE_TYPE) + " absolute reference: " + patientId + " already exists.Please provide relative reference: " + serverPatientId);
             }
             //Set ids in exchange
-            exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
-            exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
-            exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "ABSOLUTE_PATIENT");
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
+            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "ABSOLUTE_PATIENT");
 
             return;
         }
         
         //subject, individual, patient resource
-        //get PATIENT_ID or IDENTIFIER_OBJECT
+        //get FHIR_INPUT_PATIENT_ID or IDENTIFIER_OBJECT
         if (!resourceNode.isMissingNode()) {
             // Check for "reference" field in subject
             if (resourceNode.has("reference")) {
                 String reference = resourceNode.get("reference").asText();
                 
-                //get PATIENT_ID and SERVER_PATIENT_ID
+                //get FHIR_INPUT_PATIENT_ID and FHIR_SERVER_PATIENT_ID
                 patientId = extractPatientIdFromReference(exchange, resourceNode, reference);
                 serverPatientId = getServerPatientIdFromDb(patientId);
 
                 //Set ids in exchange
-                exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
-                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
+                exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
                                 
             } else if (resourceNode.has(IDENTIFIER)) {
                 //get the Identifier systema nd value
@@ -98,18 +98,18 @@ public class PatientUtils {
                 String value =  resourceNode.path(IDENTIFIER).path(VALUE).asText();
                 
                 //TODO: Adding identifier as well in the PatientEhr repository
-                //get PATIENT_ID and SERVER_PATIENT_ID
+                //get FHIR_INPUT_PATIENT_ID and FHIR_SERVER_PATIENT_ID
                 patientId = system + "|" + value;
                 serverPatientId = getServerPatientIdFromDb(patientId);
                 
                 //Set in exchange
                 //Set ids in exchange
-                exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
-                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
+                exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
 
                 exchange.setProperty(CamelConstants.IDENTIFIER_OBJECT, new TokenParam(system, value));
                 exchange.getIn().setHeader(CamelConstants.IDENTIFIER_STRING,value);
-                exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "IDENTIFIER");
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "IDENTIFIER");
             }   
         }
     }
@@ -176,7 +176,7 @@ public class PatientUtils {
             if (reference.startsWith("Patient/")) {
                 //Internal Reference
                 // Relative reference to Patient resource
-                exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "RELATIVE_REFERENCE");
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "RELATIVE_REFERENCE");
                 return reference;
             } else if (reference.startsWith("#")) {
                 // Internal contained reference
@@ -201,7 +201,7 @@ public class PatientUtils {
                 // ]
                 // }
 
-                exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
                 String referenceStr = reference.split("#")[1];
                 JsonNode resource = extractContainedResource(resourceNode, referenceStr);
                 if (resource != null) {
@@ -226,7 +226,7 @@ public class PatientUtils {
                 // "resource": {
                 //     "resourceType": "Patient",
                 //     "id": "example_patient",
-                exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
                 JsonNode resource = extractFullUrlResource(resourceNode, reference);
                 if (resource != null) {
                     return resource.path("resource").path("id").asText();
@@ -246,7 +246,7 @@ public class PatientUtils {
                 //corresponding compositionid
 
                 //If FHIR server is not able to resolve the external ref, 404 is returned
-                exchange.getIn().setHeader(CamelConstants.PATIENT_ID_TYPE, "EXTERNAL_REFERENCE");
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "EXTERNAL_REFERENCE");
                 return reference;
             }
         }
@@ -266,29 +266,29 @@ public class PatientUtils {
     }
 
     public void getPatientIdAndResourceIdFromOutCome(Exchange exchange) {
-        String serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
+        String serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID);
         MethodOutcome resource = (MethodOutcome) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
-        String resourceType = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
+        String resourceType = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE_TYPE);
         
         //Get the Resource ID from the Outcome
         String serverResourceId = resource.getId().getResourceType() + "/" + resource.getId().getIdPart();
-        exchange.getIn().setHeader(CamelConstants.SERVER_RESOURCE_ID, serverResourceId);
+        exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_RESOURCE_ID, serverResourceId);
 
         //get patient id if not present
         if (serverPatientId == null) {
             if ("Patient".equals(resourceType)) {
-                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverResourceId);
-                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, resource.getResource());
+                exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverResourceId);
+                exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, resource.getResource());
             } else {
                 // get the subject reference 
-                serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.PATIENT_ID);
-                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID);
+                exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
             }
         }
     }
 
     public void getPatientIdFromPatientResource(Exchange exchange) {
-        String responseString = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+        String responseString = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String patientId = null;
         try {
             JsonNode rootNode = objectMapper.readTree(responseString);
@@ -311,7 +311,7 @@ public class PatientUtils {
                 //This can be the case when Patient resource is part of the bundle and the patient is already created
                 throw new UnprocessableEntityException("Patient: " + patientId + " already exists");
             }
-            exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             throw new UnprocessableEntityException("Unable to process the provided Patient resource JSON");
@@ -319,7 +319,7 @@ public class PatientUtils {
     }
 
     public void getPatientIdAndResourceIdFromResponse(Exchange exchange) {
-        String serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
+        String serverPatientId = (String) exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID);
         String responseString = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
 
         JsonNode rootNode = null;
@@ -338,7 +338,7 @@ public class PatientUtils {
                             .map(firstEntry -> firstEntry.path("response").path("location").asText()); 
         
         serverResourceId.ifPresent( id ->
-            exchange.getIn().setHeader(CamelConstants.SERVER_RESOURCE_ID, id)
+            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_RESOURCE_ID, id)
         );
 
         if (serverPatientId != null){
@@ -375,7 +375,7 @@ public class PatientUtils {
                 
             if (patientLocation.isPresent()) {
                 serverPatientId = patientLocation.get();
-                exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+                exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
             }
     }
 

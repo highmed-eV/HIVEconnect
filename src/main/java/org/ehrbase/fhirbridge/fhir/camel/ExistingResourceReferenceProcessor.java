@@ -62,7 +62,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         ObjectMapper objectMapper = new ObjectMapper();
 
         // Fetch required properties from the exchange
-        List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
+        List<String> existingResources = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
 
         // replace the ids in the existing fhir server resources
         // with the inputResourceIds corresponding to that in the db
@@ -72,10 +72,10 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         }
 
         // Update the Exchange property with the modified list
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
 
         // Parse the input JSON
-        String inputResourceBundle = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+        String inputResourceBundle = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         JsonNode rootNode = objectMapper.readTree(inputResourceBundle);
 
         if (!isValidBundle(rootNode)) {

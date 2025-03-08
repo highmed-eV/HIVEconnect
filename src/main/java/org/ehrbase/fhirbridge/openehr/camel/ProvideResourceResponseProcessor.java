@@ -68,9 +68,9 @@ public class ProvideResourceResponseProcessor implements Processor {
     public void process(@NotNull Exchange exchange) throws Exception {
         // Logic to update the resource to composition
 
-        Composition composition = exchange.getIn().getBody(Composition.class);
-        String inputResource = exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE, String.class);
-        String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
+        Composition composition = (Composition) exchange.getIn().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION);
+        String inputResource = exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE, String.class);
+        String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE_TYPE);
         // map to store the corresponding inputResourceId  and internalResourceId
         Map<String, String> resourceIdMap = new LinkedHashMap<>();
 
@@ -200,7 +200,7 @@ public class ProvideResourceResponseProcessor implements Processor {
                         .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, null));
             } else {
                 //PUT
-                compositionId = (String) exchange.getMessage().getHeader(CamelConstants.COMPOSITION_ID);
+                compositionId = (String) exchange.getMessage().getHeader(CamelConstants.OPENEHR_COMPOSITION_ID);
                 resourceComposition = resourceCompositionRepository.findByInternalResourceIdAndCompositionId(inputResourceId, compositionId)
                         .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, null));
             }

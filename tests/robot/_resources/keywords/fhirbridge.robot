@@ -74,7 +74,7 @@ Handle Subject Reference
 
     # Connect To Database to fetch internal_resource_id from fb_resource_composition table
     Connect To Database    psycopg2    ${DB_NAME}    ${DB_USER}    ${DB_PASSWORD}    ${DB_HOST}    ${DB_PORT}
-    ${result}=   Query    SELECT internal_resource_id FROM public.fb_resource_composition WHERE input_resource_id = '${input_patient_id}'
+    ${result}=   Query    SELECT internal_resource_id FROM public.fb_resource_composition WHERE REQUEST_RESOURCE_id = '${input_patient_id}'
     Log To Console    int resource:${result}
     ${result}=   Get From List    ${result}    0
     ${internal_patient_id}=    Get from list    ${result}    0

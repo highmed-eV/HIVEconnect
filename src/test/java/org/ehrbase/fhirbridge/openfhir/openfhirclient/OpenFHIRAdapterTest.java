@@ -42,7 +42,7 @@ class OpenFHIRAdapterTest {
 
     @Test
     void convertToOpenEHRSuccess() {
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResource);
         when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(openEhrJson);
 
         String result = openFHIRAdapter.convertToOpenEHR(exchange);
@@ -52,7 +52,7 @@ class OpenFHIRAdapterTest {
 
     @Test
     void convertToOpenEHRFailure() {
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResource);
         when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
                 .thenThrow(new RuntimeException("Connection error"));
 

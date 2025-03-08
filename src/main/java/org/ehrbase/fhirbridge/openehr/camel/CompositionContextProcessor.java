@@ -75,8 +75,8 @@ public class CompositionContextProcessor implements FhirRequestProcessor {
     @Override
     public void process(Exchange exchange) throws Exception {
         Composition composition = (Composition) exchange.getIn().getBody();
-        String source = (String) exchange.getMessage().getHeader(CamelConstants.INPUT_SOURCE);
-        String resourceId = (String) exchange.getMessage().getHeader(CamelConstants.SERVER_RESOURCE_ID);
+        String source = (String) exchange.getMessage().getHeader(CamelConstants.FHIR_INPUT_SOURCE);
+        String resourceId = (String) exchange.getMessage().getHeader(CamelConstants.FHIR_SERVER_RESOURCE_ID);
 
         TerminologyId terminologyId = new TerminologyId("openehr");
         CodePhrase definingCode = new CodePhrase(terminologyId, "433");

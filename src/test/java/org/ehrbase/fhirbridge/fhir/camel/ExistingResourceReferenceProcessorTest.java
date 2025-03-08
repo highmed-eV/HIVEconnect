@@ -48,10 +48,10 @@ class ExistingResourceReferenceProcessorTest {
         String existingResource2 = "{\"resourceType\":\"Observation\",\"id\":\"2\",\"status\":\"final\"}";
 
         List<String> existingResources = Arrays.asList(existingResource1, existingResource2);
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
 
         String inputResourceBundle = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Patient/101\", \"resource\": { \"resourceType\": \"Patient\", \"id\": \"101\",\"name\":[{\"family\":\"Doe\"}] } } ] }";
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResourceBundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResourceBundle);
 
         when(resourceCompositionRepository.findInternalResourceIdByInputResourceId("Patient/1")).thenReturn("Patient/101");
         when(resourceCompositionRepository.findInternalResourceIdByInputResourceId("Observation/2")).thenReturn("Observation/102");
@@ -68,10 +68,10 @@ class ExistingResourceReferenceProcessorTest {
 
     @Test
     void processWithNoExistingResources() throws Exception {
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, null);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, null);
 
         String inputResourceBundle = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"resource\": { \"resourceType\": \"Patient\", \"id\": \"101\" } } ] }";
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResourceBundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResourceBundle);
 
         existingResourceReferenceProcessor.process(exchange);
 
@@ -93,7 +93,7 @@ class ExistingResourceReferenceProcessorTest {
     void processWithInvalidBundle() throws Exception {
         // Prepare mock data with invalid input (not a Bundle)
         String invalidInputResourceBundle = "{ \"resourceType\": \"Patient\", \"id\": \"1\" }";
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, invalidInputResourceBundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, invalidInputResourceBundle);
 
         existingResourceReferenceProcessor.process(exchange);
 

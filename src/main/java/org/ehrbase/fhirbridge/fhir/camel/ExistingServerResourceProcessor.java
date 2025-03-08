@@ -20,14 +20,14 @@ public class ExistingServerResourceProcessor implements FhirRequestProcessor {
 
         if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
             // Retrieve existing resources or initialize list
-            List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
+            List<String> existingResources = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
             // Add resource response to the existing resources list
             Resource resourceResponse = exchange.getIn().getBody(Resource.class);
             // Convert the resource to String using HAPI FHIR JSON parser
             FhirContext fhirContext = FhirContext.forR4();
             String resourceResponseStr = fhirContext.newJsonParser().encodeResourceToString(resourceResponse);
             existingResources.add(resourceResponseStr);
-            exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+            exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
         }
     }
 }

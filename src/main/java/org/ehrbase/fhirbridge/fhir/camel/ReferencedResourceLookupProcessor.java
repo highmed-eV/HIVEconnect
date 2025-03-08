@@ -51,7 +51,7 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        List<String > inputResourceIds = exchange.getProperty(CamelConstants.REFERENCE_INPUT_RESOURCE_IDS, List.class);
+        List<String > inputResourceIds = exchange.getProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, List.class);
         if (inputResourceIds == null || inputResourceIds.isEmpty()) {
             return;
         }
@@ -60,10 +60,10 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
         List<String> internalResourceIds = resourceCompositionRepository.findInternalResourceIdsByInputResourceIds(inputResourceIds);
 
         if (!internalResourceIds.isEmpty()) {
-            exchange.setProperty(CamelConstants.REFERENCE_INTERNAL_RESOURCE_IDS, internalResourceIds);
+            exchange.setProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS, internalResourceIds);
         }
 
-        String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+        String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         if (inputResource != null) {
             // update the input resource bundle reference with internalResourceIds
             String updatedResource = updateInputResource(inputResource);

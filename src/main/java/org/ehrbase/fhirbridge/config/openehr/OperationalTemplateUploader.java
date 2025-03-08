@@ -67,7 +67,6 @@ public class OperationalTemplateUploader {
 
             //upload template to openFHIR
             openFHIRAdapter.ensureExistence(templateId);
-            log.info("Uploading templates completed...");
         }
     }
 }
