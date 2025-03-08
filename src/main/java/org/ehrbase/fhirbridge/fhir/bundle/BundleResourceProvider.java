@@ -74,6 +74,16 @@ public class BundleResourceProvider implements IResourceProvider  {
         FhirContext fhirContext = FhirContext.forR4();
         String inputResource = fhirContext.newJsonParser().encodeResourceToString(bundle);
         MethodOutcome methodOutcome = null;
+
+        // FhirContext context = FhirContext.forR4();
+        // JsonParser jsonParser = (JsonParser) context.newJsonParser();
+        // try {
+        //         Bundle bundleResource =  jsonParser.parseResource(Bundle.class, incomingFhirResource);
+        //         logger.info("input bundle...");
+        // } catch (final Exception e) {
+        //     Resource resource =  (Resource) jsonParser.parseResource(incomingFhirResource);
+        // }
+        
         try {
             // Call Camel route with the Bundle resource
             methodOutcome = producerTemplate.requestBodyAndHeader("direct:CamelCreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);

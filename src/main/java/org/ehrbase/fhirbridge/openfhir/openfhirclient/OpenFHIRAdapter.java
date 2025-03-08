@@ -1,8 +1,10 @@
 package org.ehrbase.fhirbridge.openfhir.openfhirclient;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Optional;
-
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.camel.Exchange;
@@ -56,6 +58,40 @@ public class OpenFHIRAdapter {
         } catch (Exception e) {
             throw new RuntimeException("Error in FHIR to openEHR conversion", e);
         }
+    }
+
+    public boolean checkProfileSupported(Exchange exchange) {
+        List<String> outputProfiles = null;
+        List<String> inputProfiles = (List<String>) exchange.getIn().getHeader(CamelConstants.INPUT_PROFILE);
+        try {
+            logger.info("Calling openFHIR to get profiles...");
+                    
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            
+            // Fetch the JSON response and convert it directly to List<String>
+            ResponseEntity<List<String>> response = restTemplate.exchange(
+                                                    openFhirUrl + "/fc/profiles",
+                                                    HttpMethod.GET,
+                                                    null,
+                                                    new ParameterizedTypeReference<List<String>>() {}
+                                                );
+            // Extract the list of profiles from the response
+            outputProfiles = response.getBody();
+            logger.info("Received supported profiles from openEHR JSON.");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error in getting openEHR supported profiles", e);
+        }
+        
+        // Check if all inputProfiles are in outputProfiles
+        boolean isProfilePresent = outputProfiles.containsAll(inputProfiles);
+        if (!isProfilePresent) {
+            throw new IllegalArgumentException("Profile not supported by openFHIR");
+        }
+        return isProfilePresent;
+
     }
 
     public Optional<OPERATIONALTEMPLATE> findTemplate(String templateId) {
