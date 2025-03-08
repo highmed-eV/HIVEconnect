@@ -3,6 +3,9 @@
 #   FHIR Bridge Properties                                                     #
 ################################################################################
 fhir-bridge:
+  bootstrap:
+    enabled: true
+    dir: ./src/main/resources/opt
   debug:
     enabled: true
     mapping-output-directory: ${java.io.tmpdir}/mappings

@@ -19,6 +19,7 @@ package org.ehrbase.fhirbridge.config.openehr;
 import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
 import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
+import org.springframework.stereotype.Component;
 import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import javax.annotation.PostConstruct;
  * @author Renaud Subiger
  * @since 1.6
  */
+@Component
 public class OperationalTemplateUploader {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -48,21 +50,24 @@ public class OperationalTemplateUploader {
         this.templateProvider = templateProvider;
     }
 
-    @PostConstruct
-    public void initialize() {
+    
+    public void uploadTemplates() {
         log.info("Uploading templates...");
 
         for (var templateId : templateProvider.getTemplateIds()) {
-            var template = openEhrClient.templateEndpoint().findTemplate(templateId);
-            if (template.isEmpty()) {
-                openEhrClient.templateEndpoint().ensureExistence(templateId);
-                log.info("Uploaded template to openEHR: {}", templateId);
-            }
+            //check if template exists in cache
             Optional<OPERATIONALTEMPLATE> opt = templateProvider.find(templateId);
-            if (!opt.isEmpty()) {
-                openFHIRAdapter.ensureExistence(templateId, opt.get());
-                log.info("Uploaded template to openFHIR: {}", templateId);
+            if (opt.isEmpty()) {
+                log.info("Template does not exist in Cache: {}", templateId);
+                continue;
             }
+
+            //upload template to openEHR
+            openEhrClient.templateEndpoint().ensureExistence(templateId);
+
+            //upload template to openFHIR
+            openFHIRAdapter.ensureExistence(templateId);
+            log.info("Uploading templates completed...");
         }
     }
 }

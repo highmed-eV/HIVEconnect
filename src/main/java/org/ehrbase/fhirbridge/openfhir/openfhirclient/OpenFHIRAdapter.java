@@ -4,19 +4,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
 import org.apache.camel.Exchange;
 import org.apache.xmlbeans.XmlOptions;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,11 @@ public class OpenFHIRAdapter {
     @Value("${openfhir.server.url}")
     private String openFhirUrl;
 
-    public OpenFHIRAdapter(RestTemplate restTemplate) {
+    private final DefaultTemplateProvider templateProvider;
+
+    public OpenFHIRAdapter(RestTemplate restTemplate, DefaultTemplateProvider templateProvider) {
         this.restTemplate = restTemplate;
+        this.templateProvider = templateProvider;
     }
 
     public String convertToOpenEHR(Exchange exchange) {
@@ -54,43 +58,66 @@ public class OpenFHIRAdapter {
         }
     }
 
-    public String ensureExistence(String templateId, OPERATIONALTEMPLATE operationaltemplate) {
-
-        //check if template exists
-        Boolean isExists = false;
+    public Optional<OPERATIONALTEMPLATE> findTemplate(String templateId) {
         try {
-            //TODO: Bug in openEHR:  openFHIR is throwing excption in case of not found scenario(404)
-            // catch the excption and continue for now
-            ResponseEntity<String> getEntity = restTemplate.getForEntity(openFhirUrl + "/opt", String.class);
-            if (getEntity.getStatusCode().value() == HttpStatus.OK.value()  ){
-                logger.debug("Template exists in openFHIR: {}", templateId);
-                isExists = true;
-                //TODO: Bug in openEHR: PUT is throwing exception if the id already exists.
-                //Hence returning for now, without update.
-                return getEntity.getBody();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_XML, MediaType.TEXT_XML));
+            HttpEntity<?> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<String> getEntity = restTemplate.exchange(
+                openFhirUrl + "/opt/" + templateId,
+                org.springframework.http.HttpMethod.GET,
+                entity,
+                String.class
+            );
+
+            if (getEntity.getStatusCode().value() == HttpStatus.OK.value()) {
+                try {
+                    String responseBody = getEntity.getBody();
+                    if (responseBody != null && !responseBody.trim().isEmpty()) {
+                        XmlOptions opts = new XmlOptions();
+                        opts.setLoadStripWhitespace();
+                        opts.setLoadReplaceDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
+                        
+                        OPERATIONALTEMPLATE template = OPERATIONALTEMPLATE.Factory.parse(responseBody, opts);
+                        return Optional.of(template);
+                    }
+                } catch (Exception e) {
+                    logger.error("Error parsing template response for template {}: {}", templateId, e.getMessage());
+                }
             }
         } catch (Exception e) {
-            logger.debug("Template does not exists in openFHIR: uploading template {}", templateId);
+            logger.debug("Template {} does not exist in openFHIR: {}", templateId, e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    public String ensureExistence(String templateId) {
+        //check if template exists in cache
+        Optional<OPERATIONALTEMPLATE> operationaltemplate = templateProvider.find(templateId);
+        if (operationaltemplate.isEmpty()) {
+            logger.info("Template does not exist in Cache: {}", templateId);
+            return "Template does not exist in Cache";
+        }
+
+        //check if template exists in openFHIR
+        if (findTemplate(templateId).isPresent()) {
+            logger.info("Template already exists in openFHIR: {}", templateId);
+            return "Template already exists in openFHIR";
         }
 
         //upload the template
         try{
-
             XmlOptions opts = new XmlOptions();
             opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
  
             String response = null;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.TEXT_PLAIN);
-            HttpEntity <String> entity = new HttpEntity<>(operationaltemplate.xmlText(opts), headers);
-            if (isExists) {
-                //update
-                restTemplate.put(openFhirUrl + "/opt/" + templateId, entity);
-                response = "Updated template successfully: " + templateId ;
-            } else {
-                //create
-                response = restTemplate.postForObject(openFhirUrl + "/opt", entity, String.class);
-            }
+            HttpEntity <String> entity = new HttpEntity<>(operationaltemplate.get().xmlText(opts), headers);
+            //create
+            response = restTemplate.postForObject(openFhirUrl + "/opt", entity, String.class);
+            logger.info("Uploaded template to openFHIR: {}", templateId);
             return response;
         } catch (Exception e) {
             throw new RuntimeException("Error in upload template: {}", e);

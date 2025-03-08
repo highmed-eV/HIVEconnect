@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
 
+    private static final Logger logger = LoggerFactory.getLogger(DefaultRestTemplateEndpoint.class);
+
     public static final String DEFINITION_TEMPLATE_ADL_1_4_PATH = "rest/openehr/v1/definition/template/adl1.4/";
 
     private final DefaultRestClient defaultRestClient;
@@ -92,6 +94,9 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
         }
         if (!findTemplate(templateId).isPresent()) {
             upload(operationalTemplate.get());
+            logger.info("Uploaded template to openEHR: {}", templateId);
+        } else {
+            logger.info("Template already exists in openEHR: {}", templateId);
         }
     }
 

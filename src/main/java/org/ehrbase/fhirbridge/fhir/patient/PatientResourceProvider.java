@@ -170,7 +170,7 @@ public class PatientResourceProvider implements IResourceProvider  {
     public Patient readPatient(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
         // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:CamelCreateRouteProcessRoute", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
+        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:CamelReadRouteProcess", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
 
         return processedPatient;
     }    

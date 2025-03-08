@@ -16,65 +16,59 @@
 
 package org.ehrbase.fhirbridge.openehr;
 
-import org.apache.xmlbeans.XmlException;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.Resource;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Renaud Subiger
  * @since 1.6
  */
+@Component
 public class DefaultTemplateProvider implements TemplateProvider, ApplicationContextAware {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private final Cache templateCache;
-
+    private final CacheManager cacheManager;
     private ApplicationContext applicationContext;
 
-    public DefaultTemplateProvider(Cache cache) {
-        this.templateCache = cache;
-    }
-
-    @PostConstruct
-    public void initialize() throws IOException, XmlException {
-        Resource[] resources = applicationContext.getResources("classpath:/opt/*.opt");
-
-        log.info("Initializing openEHR templates...");
-
-        for (var resource : resources) {
-            var templateDocument = TemplateDocument.Factory.parse(resource.getInputStream());
-            var template = templateDocument.getTemplate();
-            templateCache.put(template.getTemplateId().getValue(), template);
-        }
+    public DefaultTemplateProvider(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
 
     @Override
     public Optional<OPERATIONALTEMPLATE> find(String templateId) {
-        var template = templateCache.get(templateId, OPERATIONALTEMPLATE.class);
-        return Optional.ofNullable(template);
+        var cache = cacheManager.getCache("templateCache");
+        if (cache != null) {
+            var template = cache.get(templateId, OPERATIONALTEMPLATE.class);
+            return Optional.ofNullable(template);
+        }
+        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")
     public Set<String> getTemplateIds() {
         var templateIds = new HashSet<String>();
-        var iterator = ((javax.cache.Cache<String, ?>) templateCache.getNativeCache()).iterator();
-        iterator.forEachRemaining(entry -> templateIds.add(entry.getKey()));
+        var cache = cacheManager.getCache("templateCache");
+        if (cache != null && cache instanceof ConcurrentMapCache) {
+            ConcurrentMap<Object, Object> nativeCache = ((ConcurrentMapCache) cache).getNativeCache();
+            templateIds.addAll(nativeCache.keySet().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.toSet()));
+        }
         return templateIds;
     }
 
