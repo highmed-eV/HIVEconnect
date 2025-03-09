@@ -25,8 +25,8 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
                 String openEhrJson = exchange.getIn().getBody(String.class);
                 Composition composition = new CanonicalJson().unmarshal(openEhrJson, Composition.class);
                 //set the compositionId if the method is put
-                if("PUT".equals(exchange.getIn().getHeader(CamelConstants.INPUT_HTTP_METHOD))){
-                    String compositionId = (String) exchange.getMessage().getHeader(CamelConstants.COMPOSITION_ID);
+                if("PUT".equals(exchange.getIn().getHeader(CamelConstants.REQUEST_HTTP_METHOD))){
+                    String compositionId = (String) exchange.getMessage().getHeader(CamelConstants.OPENEHR_COMPOSITION_ID);
                     Optional.ofNullable(compositionId)
                         .ifPresent(id -> composition.setUid(new ObjectVersionId(id)));
                 }
@@ -38,13 +38,14 @@ public class OpenEHRRouteBuilder extends RouteBuilder {
 
             .doTry()
                 .to("ehr-composition:compositionProducer?operation=mergeCanonicalCompositionEntity")
+                .log("Successfully committed composition to openEHR server with EHR ID: ${header." + CompositionConstants.EHR_ID + "}")
             .doCatch(ClientException.class)
                 .log("composition:compositionProducer exception")
-                .to("direct:deleteResources")
+                //TODO: Rollback
+                // .to("direct:deleteResources")
                 .process(new OpenEhrClientExceptionHandler())
-            .endDoTry()
-            .log("Successfully committed composition to openEHR server with EHR ID: ${header." + CompositionConstants.EHR_ID + "}");
-
+            .endDoTry();
+ 
 
         from("direct:patientIdToEhrIdMapperProcess")
             //Get the mapped openEHRId if avaialbe else create new ehrId 

@@ -74,7 +74,9 @@ public class PatientResourceProvider implements IResourceProvider  {
 
         try {
             // Call Camel route with the Patient resource
-            MethodOutcome outcome  = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
+            MethodOutcome outcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
+
+            // MethodOutcome outcome  = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
             return outcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -169,10 +171,19 @@ public class PatientResourceProvider implements IResourceProvider  {
     @Read(version = true)
     public Patient readPatient(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
-        // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:ReadRouteProcess", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
-
-        return processedPatient;
+        try {
+            // Call Camel route with the Patient resource
+            Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:ReadRouteProcess", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
+            return processedPatient;
+        } catch (CamelExecutionException exception) {
+            Exchange exchange = exception.getExchange();
+            if (exchange.isFailed()) {
+                BaseServerResponseException baseException = exchange.getException(BaseServerResponseException.class);
+                throw (baseException != null) ? baseException : new InternalErrorException("Unexpected server error", exchange.getException());
+            } else {
+                throw new InternalErrorException("Unexpected internal server error", exchange.getException());
+            }
+        }
     }    
 }
 

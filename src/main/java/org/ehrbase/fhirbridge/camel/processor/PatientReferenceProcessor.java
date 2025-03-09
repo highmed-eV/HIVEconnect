@@ -76,7 +76,7 @@ package org.ehrbase.fhirbridge.camel.processor;
 //                 throw new UnprocessableEntityException("Subject identifier is required");
 //             }
 
-//             exchange.getIn().setHeader(CamelConstants.PATIENT_ID, patientId);
+//             exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
 //         }
 //     }
 

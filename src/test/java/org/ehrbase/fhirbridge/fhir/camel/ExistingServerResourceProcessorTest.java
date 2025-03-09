@@ -42,7 +42,7 @@ class ExistingServerResourceProcessorTest {
         exchange.getIn().setBody(patientResource);
 
         List<String> existingResources = new ArrayList<>();
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
 
         existingServerResourceProcessor.process(exchange);
 
@@ -58,7 +58,7 @@ class ExistingServerResourceProcessorTest {
         exchange.getIn().setBody(null);
 
         List<String> existingResources = new ArrayList<>();
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
 
         existingServerResourceProcessor.process(exchange);
 

@@ -82,6 +82,7 @@ public class CompositionProducer extends DefaultProducer {
 
         String mergedCompositionStr = new CanonicalJson().marshal(mergedComposition);
         exchange.getMessage().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME, mergedCompositionStr);
+        exchange.getMessage().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION, mergedComposition);
 
         exchange.getMessage().setBody(mergedComposition);
     }
@@ -106,7 +107,7 @@ public class CompositionProducer extends DefaultProducer {
     }
 
     private void find(UUID ehrId, Exchange exchange) {
-        UUID compositionId = exchange.getIn().getHeader(CompositionConstants.COMPOSITION_ID, UUID.class);
+        UUID compositionId = exchange.getIn().getHeader(CompositionConstants.OPENEHR_COMPOSITION_ID, UUID.class);
         Class<?> expectedType = endpoint.getExpectedType();
 
         Object result = endpoint.getOpenEhrClient().compositionEndpoint(ehrId)

@@ -72,11 +72,11 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        Patient resource = (Patient) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE);
+        Patient resource = (Patient) exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE);
 
-        String systemId = (String) exchange.getIn().getHeader(CamelConstants.INPUT_SYSTEM_ID);
-        String patientId = (String) exchange.getIn().getHeader(CamelConstants.PATIENT_ID);
-        String serverPatientIdStr = (String) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID);
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
+        String patientId = (String) exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID);
+        String serverPatientIdStr = (String) exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID);
         String serverPatientId = extractPatientId(serverPatientIdStr);
         UUID ehrId = Optional.ofNullable(patientEhrRepository.findByInternalPatientId(serverPatientIdStr))  
                     .map(PatientEhr::getEhrId) 

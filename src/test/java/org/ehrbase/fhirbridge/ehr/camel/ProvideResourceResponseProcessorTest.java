@@ -57,8 +57,8 @@ class ProvideResourceResponseProcessorTest {
     @Test
     void processWithSingleResource() throws Exception {
         Message message = new DefaultMessage(exchange.getContext());
-        message.setHeader(CamelConstants.INPUT_RESOURCE_TYPE, "Patient");
-        message.setHeader(CamelConstants.INPUT_RESOURCE, "{\"resourceType\":\"Patient\"}");
+        message.setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, "Patient");
+        message.setHeader(CamelConstants.REQUEST_RESOURCE, "{\"resourceType\":\"Patient\"}");
         MethodOutcome outcome = new MethodOutcome();
         outcome.setResource(FhirContext.forR4().newJsonParser().parseResource(
                 "{\"resourceType\":\"Patient\",\"id\":\"123\"}"
@@ -94,8 +94,8 @@ class ProvideResourceResponseProcessorTest {
     void processWithBundleResource() throws Exception {
         // Prepare input Bundle resource
         String bundleInput = "{\"resourceType\":\"Bundle\",\"entry\":[{\"resource\":{\"resourceType\":\"Condition\",\"id\":\"21\"}}]}";
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, bundleInput);
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, "Bundle");
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, bundleInput);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, "Bundle");
 
         // Mock Composition object
         Composition composition = new Composition();
@@ -110,6 +110,7 @@ class ProvideResourceResponseProcessorTest {
         // Mock Open EHR server outcome
         String openEhrOutcome = "{\"archetype_node_id\":\"openEHR-EHR-COMPOSITION.report.v1\",\"uid\":{\"_type\":\"OBJECT_VERSION_ID\",\"value\":\"07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1\"}}";
         exchange.getMessage().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME, openEhrOutcome);
+        exchange.getMessage().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION, composition);
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode node2 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME));

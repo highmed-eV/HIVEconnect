@@ -2,12 +2,15 @@ package org.ehrbase.fhirbridge.fhir.support;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
+
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.jetbrains.annotations.NotNull;
@@ -208,7 +211,7 @@ public class FhirUtils {
                 }
                 method = methods.get(0);
 
-                //extract profiles
+                //extract profiles to be validated if it is supported by openFHIR for transformation
                 profiles = StreamSupport.stream(entryode.spliterator(), false)
                                     .map(node -> node.path("resource").path("meta")) 
                                     .filter(metaNode -> metaNode.has("profile")) 
@@ -221,7 +224,7 @@ public class FhirUtils {
                 //extract method
                 method = exchange.getProperty(Exchange.HTTP_METHOD, String.class);
 
-                //extract profile
+                //extract profile to be validated if it is supported by openFHIR for transformation
                 JsonNode profileNode = rootNode.path("meta").path("profile");
                 // Convert the JsonNode array to a List<String>
                 profiles =  StreamSupport.stream(profileNode.spliterator(), false)
@@ -233,7 +236,7 @@ public class FhirUtils {
                 throw new IllegalArgumentException("Meta profile not provided in the resource");
             }
 
-            //Get source
+            //Get source to be added in openehr composition
             String metaSource = Optional.ofNullable(rootNode)
                             .map(resource -> resource.path("meta").path("source").asText())
                             .filter(source -> !source.isEmpty())
@@ -241,12 +244,13 @@ public class FhirUtils {
             
             //set input parameters in excahnge
             if (metaSource != null) {
-                exchange.getIn().setHeader(CamelConstants.INPUT_SOURCE, metaSource);
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_SOURCE, metaSource);
             }
-            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResource);
-            exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, inputResourceType);
-            exchange.getIn().setHeader(CamelConstants.INPUT_HTTP_METHOD, method);
-            exchange.getIn().setHeader(CamelConstants.INPUT_PROFILE, profiles);
+            //Some of the headers in the RequestDetailsLookupProcessor are overwritten here
+            exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResource);
+            exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, inputResourceType);
+            exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, method);
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PROFILE, profiles);
     
         } catch (JsonProcessingException e) {
             throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");

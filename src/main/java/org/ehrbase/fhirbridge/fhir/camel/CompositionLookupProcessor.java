@@ -23,7 +23,7 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        List<String> inputResourceIds = exchange.getProperty(CamelConstants.INPUT_RESOURCE_IDS, List.class);
+        List<String> inputResourceIds = exchange.getProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, List.class);
         if (inputResourceIds == null || inputResourceIds.isEmpty()) {
             return;
         }
@@ -31,7 +31,7 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
         Set<String> compositionIds = new HashSet<>();
         boolean isDuplicate = false;
 
-        String operation = (String) exchange.getMessage().getHeader(CamelConstants.INPUT_HTTP_METHOD);
+        String operation = (String) exchange.getMessage().getHeader(CamelConstants.REQUEST_HTTP_METHOD);
         if ("POST".equals(operation)) {        
             // Fetch compositionIds corresponding to inputResourceIds from the db
             for (String inputResourceId : inputResourceIds) {
@@ -81,7 +81,7 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
                 if (existingResources.containsAll(inputResourceIds)) {
                     // If a composition already has the input resources or a subset, mark as duplicate
                     isDuplicate = true;
-                    exchange.getMessage().setHeader(CamelConstants.COMPOSITION_ID, compositionId);
+                    exchange.getMessage().setHeader(CamelConstants.OPENEHR_COMPOSITION_ID, compositionId);
                     break; // No need to check further, a duplicate has been found
                 }
             }

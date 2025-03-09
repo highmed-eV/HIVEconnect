@@ -33,7 +33,7 @@ class ServerPatientResourceProcessorTest {
 
         serverPatientResourceProcessor.process(exchange);
 
-        Patient headerPatientResource = (Patient) exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE);
+        Patient headerPatientResource = (Patient) exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE);
         assertNotNull(headerPatientResource);
         assertEquals("Patient/12345", headerPatientResource.getId());
     }
@@ -44,7 +44,7 @@ class ServerPatientResourceProcessorTest {
 
         serverPatientResourceProcessor.process(exchange);
 
-        assertNull(exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
+        assertNull(exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE));
     }
 
     @Test

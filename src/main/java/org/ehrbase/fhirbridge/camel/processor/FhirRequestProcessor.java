@@ -33,6 +33,8 @@ public interface FhirRequestProcessor extends Processor {
      * @return the request details
      */
     default RequestDetails getRequestDetails(Exchange exchange) {
+        exchange.getIn().getHeaders().forEach((key, value) -> System.out.println("Key: " + key + value));
+
         if (ObjectHelper.isEmpty(exchange.getIn().getHeader("FHIR_REQUEST_DETAILS"))) {
             throw new IllegalArgumentException("RequestDetails must not be null");
         }

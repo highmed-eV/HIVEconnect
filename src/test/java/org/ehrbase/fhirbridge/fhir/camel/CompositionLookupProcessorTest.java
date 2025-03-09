@@ -38,8 +38,8 @@ class CompositionLookupProcessorTest {
     @Test
     void processWithValidResourceIds() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7");
-        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
-        exchange.getMessage().setHeader(CamelConstants.INPUT_HTTP_METHOD, "POST");
+        exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
+        exchange.getMessage().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));
@@ -56,8 +56,8 @@ class CompositionLookupProcessorTest {
     @Test
     void processWithSameCompositionIdsShouldThrowException() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7");
-        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
-        exchange.getMessage().setHeader(CamelConstants.INPUT_HTTP_METHOD, "POST");
+        exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
+        exchange.getMessage().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));
@@ -80,8 +80,8 @@ class CompositionLookupProcessorTest {
     @Test
     void processWithSingleCompositionIdShouldThrowException() throws Exception {
         List<String> inputResourceIds = List.of("Encounter/6");
-        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
-        exchange.getMessage().setHeader(CamelConstants.INPUT_HTTP_METHOD, "POST");
+        exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
+        exchange.getMessage().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));
@@ -101,8 +101,8 @@ class CompositionLookupProcessorTest {
     @Test
     void processWithNewResourceShouldNotThrowException() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7", "NewResource/8");
-        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
-        exchange.getMessage().setHeader(CamelConstants.INPUT_HTTP_METHOD, "POST");
+        exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
+        exchange.getMessage().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));

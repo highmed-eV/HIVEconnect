@@ -15,17 +15,15 @@ public class ResourcePersistenceRouteBuilder extends RouteBuilder {
         from("direct:ResourcePersistenceProcessor")
         
             .doTry()
-                // Step 4: Forward request to FHIR server
+                // Forward request to FHIR server
                 .to("direct:FHIRProcess")
-                // Step 5: Extract Patient Id created in the FHIR server
-                .to("direct:extractPatientIdFromFhirResponseProcessor")
             .doCatch(Exception.class)
                 .log("direct:FHIRProcess exception")
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
             .end()
 
-            // Step 6: Add the extracted reference Resources to the input fhir bundle
+            // Add the extracted reference Resources to the input fhir bundle
             .doTry()
                 .to("direct:referencedResourceProcessor")
             .doCatch(Exception.class)

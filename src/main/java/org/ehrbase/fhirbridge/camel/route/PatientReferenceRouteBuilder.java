@@ -19,10 +19,27 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
 
         // Route to perform the ETL for the FHIR request
         from("direct:PatientReferenceProcessor")
-        //Perform ETL
+        //Perform Extract and Enrich
             .doTry()
+                // Extract Request type(Bundle or Resource),
+                // method, source to be added in openehr context
+                // and profiles to be validated if it is supported by openFHIR for transformation
                 .to("direct:ExtractProcess")
-                .to("direct:ValidateAndEnrichProcess")
+                
+                // Validate 
+                // 1. Extract  for all falvours of patientId(relative, identifier, absolute
+                // and validate if it exists in the fhir server
+                // and get the server patient id from db if present
+
+                //2. Check the incoming profile is supported by openFHIR
+
+                //3. Check if the input resource or input bundle resource consisting of same resources already exist
+                // If already exist : throw duplicate resource or bundle resource creation
+
+                //4. Extract Reference(all  flavours: local, relative, absolute, or internal) Resource Ids 
+                // from the FHIR Input Resource, lookup db and maintain the mapping
+
+                .to("direct:ValidatePatientAndResourceReferenceProcess")
             .doCatch(Exception.class)
                 .log("direct:PatientReferenceProcessor exception")
                 .process(new FhirBridgeExceptionHandler())
@@ -39,32 +56,39 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
                         }
                     })
             .doCatch(Exception.class)
-                .log("direct:handleCreateOperationETL exception")
+                .log("direct:ExtractProcess exception")
                 .process(new FhirBridgeExceptionHandler())
             .endDoTry()
             .end();
             
 
         //Validate and Enrich
-        from("direct:ValidateAndEnrichProcess")
+        from("direct:ValidatePatientAndResourceReferenceProcess")
             .choice()
-                .when(simple("${header.CamelFhirBridgeIncomingResourceType} != 'Patient'"))
+                .when(simple("${header.CamelRequestResourceResourceType} != 'Patient'"))
                     .doTry()
-                        // Step 1: Extract Patient Id from the FHIR Input Resource
+                        // Extract  for all falvours of patientId(relative, identifier, absolute
+                        // and validate if it exists in the fhir server
+                        // and get the server patient id from db if present
                         .to("direct:extractAndValidatePatientIdExistsProcessor")
-                        .log("FHIR Patient ID: ${header." + CamelConstants.SERVER_PATIENT_ID + "}")
-                        // Step 2: Validate: 
+                        .log("FHIR Patient ID: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}")
+                        
+                        // Validate: 
                         //Check the incoming profile is supported by openFHIR
                         .to("direct:validateOpenFHIRProfilesProcess")
                     .doCatch(Exception.class)
-                        .log("direct:ValidateAndEnrichProcess exception")
+                        .log("direct:ValidatePatientAndResourceReferenceProcess exception")
                         .process(new FhirBridgeExceptionHandler())
                     .endDoTry()
                 .endChoice()
             .otherwise()
                 .doTry()
+                    // Extract Patient Id from the Patient resource
+                    // and get the server patient id from db if present
+                    // and validate if it exists in the fhir server
+                    // Not validating the profile as we are not transforming to an openehr template
                     .to("direct:extractPatientIdFromPatientProcessor")
-                    .log("FHIR Patient ID:  ${header." + CamelConstants.PATIENT_ID + "}")
+                    .log("FHIR Patient ID:  ${header." + CamelConstants.FHIR_INPUT_PATIENT_ID + "}")
                 .doCatch(Exception.class)
                     .log("direct:extractPatientIdFromPatientProcessor exception")
                     .process(new FhirBridgeExceptionHandler())
@@ -82,7 +106,8 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
             .endDoTry()
             .end()
 
-            // Step 3:  Enrich: Extract and update the input reference Resources from the input fhir bundle
+            /// Extract Reference(all  flavours: local, relative, absolute, or internal) Resource Ids 
+            // from the FHIR Input Resource, lookup db and maintain the mapping
             .doTry()
                 .to("direct:mapReferencedInternalResourceProcessor")
             .doCatch(Exception.class)
@@ -97,17 +122,17 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
 
             // 1. Retrieve the list of all input resource ids
             .process(exchange -> {
-                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                 List<String> inputResourceIds = FhirUtils.getInputResourceIds(inputResource);
-                exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+                exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
             })
-            .log("FHIR Input Resource ID(s) : ${header." + CamelConstants.INPUT_RESOURCE_IDS + "}")
+            .log("FHIR Input Resource ID(s) : ${header." + CamelConstants.FHIR_REQUEST_RESOURCE_IDS + "}")
             // 2. Check the mapping table : FB_RESOURCE_COMPOSITION
             // and get the compositionId(s) for corresponding inputResourceId(s).
             // 3. If all compositionId(s) is/are same and operation is POST
             //     throw duplicate bundle resource exception.
             .choice()
-                .when(simple("${exchangeProperty." + CamelConstants.INPUT_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.INPUT_RESOURCE_IDS + ".size()} > 0"))
+                .when(simple("${exchangeProperty." + CamelConstants.FHIR_REQUEST_RESOURCE_IDS + "} != null && ${exchangeProperty." + CamelConstants.FHIR_REQUEST_RESOURCE_IDS + ".size()} > 0"))
 
                     .doTry()
                         .process(CompositionLookupProcessor.BEAN_ID)

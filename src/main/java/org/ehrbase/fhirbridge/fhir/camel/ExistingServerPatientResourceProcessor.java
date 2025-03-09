@@ -18,8 +18,8 @@ public class ExistingServerPatientResourceProcessor implements FhirRequestProces
         if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
             Patient patientResource = (Patient) exchange.getIn().getBody();
             String serverPatientId = patientResource.getId();
-            exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patientResource);
-            exchange.getIn().setHeader(CamelConstants.SERVER_PATIENT_ID, serverPatientId);
+            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, patientResource);
+            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
         }
     }
 }

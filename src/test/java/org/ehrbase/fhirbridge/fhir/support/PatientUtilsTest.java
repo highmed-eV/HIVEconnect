@@ -49,9 +49,9 @@ class PatientUtilsTest {
     void extractPatientIdOrIdentifierWithPatientResource() {
         String resourceJson = "{\"resourceType\":\"Patient\", \"identifier\":[{\"system\":\"system1\",\"value\":\"value1\"}]}";
         exchange.getIn().setBody(resourceJson);
-        exchange.getIn().setHeader(CamelConstants.PATIENT_ID, "system1|value1");
+        exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, "system1|value1");
         patientUtils.extractPatientIdOrIdentifier(exchange);
-        String  patientId = exchange.getIn().getHeader(CamelConstants.PATIENT_ID, String.class);
+        String  patientId = exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, String.class);
         assertEquals("system1|value1", patientId);
     }
 
@@ -94,7 +94,7 @@ class PatientUtilsTest {
         JsonNode resourceNode = objectMapper.readTree(resourceJson);
         String patientId = patientUtils.extractPatientIdFromReference(exchange, resourceNode, reference);
         assertEquals("Patient/12345", patientId);
-        String patientIdType = exchange.getIn().getHeader(CamelConstants.PATIENT_ID_TYPE, String.class);
+        String patientIdType = exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, String.class);
         assertEquals("RELATIVE_REFERENCE",patientIdType);
     }
 
@@ -105,7 +105,7 @@ class PatientUtilsTest {
         JsonNode resourceNode = objectMapper.readTree(resourceJson);
         String patientId = patientUtils.extractPatientIdFromReference(exchange, resourceNode, reference);
         assertEquals("patient1", patientId);
-        String patientIdType = exchange.getIn().getHeader(CamelConstants.PATIENT_ID_TYPE, String.class);
+        String patientIdType = exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, String.class);
         assertEquals("ABSOLUTE_REFERENCE",patientIdType);
     }
 
@@ -116,7 +116,7 @@ class PatientUtilsTest {
         JsonNode resourceNode = objectMapper.readTree(resourceJson);
         String patientId = patientUtils.extractPatientIdFromReference(exchange, resourceNode, reference);
         assertEquals("patient1", patientId);
-        String patientIdType = exchange.getIn().getHeader(CamelConstants.PATIENT_ID_TYPE, String.class);
+        String patientIdType = exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, String.class);
         assertEquals("ABSOLUTE_REFERENCE",patientIdType);
     }
 
@@ -127,7 +127,7 @@ class PatientUtilsTest {
         JsonNode resourceNode = objectMapper.readTree(resourceJson);
         String patientId = patientUtils.extractPatientIdFromReference(exchange, resourceNode, reference);
         assertEquals("http://external-fhir-server.com/Patient/456", patientId);
-        String patientIdType = exchange.getIn().getHeader(CamelConstants.PATIENT_ID_TYPE, String.class);
+        String patientIdType = exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, String.class);
         assertEquals("EXTERNAL_REFERENCE",patientIdType);
     }
 
@@ -155,15 +155,15 @@ class PatientUtilsTest {
 
         // Setup exchange
         exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, methodOutcome);
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, "Patient");
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, "Patient");
         
         // Execute the method under test
         patientUtils.getPatientIdAndResourceIdFromOutCome(exchange);
         
         // Verify results
-        assertEquals("Patient/123", exchange.getIn().getHeader(CamelConstants.SERVER_RESOURCE_ID));
-        assertEquals("Patient/123", exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
-        assertEquals(mockPatient, exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
+        assertEquals("Patient/123", exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_RESOURCE_ID));
+        assertEquals("Patient/123", exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID));
+        assertEquals(mockPatient, exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE));
     }
 
     @Test
@@ -178,24 +178,24 @@ class PatientUtilsTest {
 
         // Setup exchange
         exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, methodOutcome);
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE_TYPE, "Observation");
-        exchange.getIn().setHeader(CamelConstants.PATIENT_ID, "Patient/789");
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, "Observation");
+        exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, "Patient/789");
         
         // Execute the method under test
         patientUtils.getPatientIdAndResourceIdFromOutCome(exchange);
         
         // Verify results
-        assertEquals("Observation/456", exchange.getIn().getHeader(CamelConstants.SERVER_RESOURCE_ID));
-        assertEquals("Patient/789", exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
+        assertEquals("Observation/456", exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_RESOURCE_ID));
+        assertEquals("Patient/789", exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID));
     }
 
     @Test
     void getPatientIdFromPatientResource() {
         String responseString = "{\"identifier\":[{\"system\":\"system1\",\"value\":\"value1\"}]}";
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, responseString);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, responseString);
         when(patientEhrRepository.findByInputPatientId("system1|value1")).thenReturn(null);
         patientUtils.getPatientIdFromPatientResource(exchange);
-        assertEquals("system1|value1", exchange.getIn().getHeader(CamelConstants.PATIENT_ID));
+        assertEquals("system1|value1", exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID));
     }
 
     @Test
