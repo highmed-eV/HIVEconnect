@@ -1,9 +1,11 @@
 package org.ehrbase.fhirbridge.camel.processor;
 
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.RestOperationTypeEnum;
 import ca.uhn.fhir.rest.server.servlet.ServletRequestDetails;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.hl7.fhir.r4.model.Resource;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,18 @@ public class RequestDetailsProcessor implements Processor {
             exchange.getIn().setHeader("FHIR_RESOURCE_TYPE", resourceName);
             exchange.getIn().setHeader("HTTP_METHOD", requestType);
             exchange.getIn().setHeader("RESOURCE_ID", resourceId);
+            
+            // Handle resource based on HTTP method
+            if (!"GET".equals(requestType)) {
+                if (requestDetails.getResource() == null) {
+                    throw new IllegalArgumentException("Resource is null for non-GET request");
+                }
+                // Process resource only for non-GET requests when resource exists
+                Resource resource = (Resource) requestDetails.getResource();
+                FhirContext fhirContext = FhirContext.forR4();
+                String inputResource = fhirContext.newJsonParser().encodeResourceToString(resource);
+                exchange.getIn().setBody(inputResource);
+            }
             
             // Store the entire RequestDetails object for later use if needed
             exchange.setProperty("RequestDetails", requestDetails);

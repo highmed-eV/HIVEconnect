@@ -15,7 +15,7 @@ public class ResourcePersistenceRouteBuilder extends RouteBuilder {
         from("direct:ResourcePersistenceProcessor")
         
             .doTry()
-                // Step 4: Forward request to FHIR server
+                // Forward request to FHIR server
                 .to("direct:FHIRProcess")
             .doCatch(Exception.class)
                 .log("direct:FHIRProcess exception")
@@ -23,7 +23,7 @@ public class ResourcePersistenceRouteBuilder extends RouteBuilder {
             .endDoTry()
             .end()
 
-            // Step 6: Add the extracted reference Resources to the input fhir bundle
+            // Add the extracted reference Resources to the input fhir bundle
             .doTry()
                 .to("direct:referencedResourceProcessor")
             .doCatch(Exception.class)

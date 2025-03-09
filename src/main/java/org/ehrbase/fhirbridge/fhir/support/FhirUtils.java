@@ -211,7 +211,7 @@ public class FhirUtils {
                 }
                 method = methods.get(0);
 
-                //extract profiles
+                //extract profiles to be validated if it is supported by openFHIR for transformation
                 profiles = StreamSupport.stream(entryode.spliterator(), false)
                                     .map(node -> node.path("resource").path("meta")) 
                                     .filter(metaNode -> metaNode.has("profile")) 
@@ -224,7 +224,7 @@ public class FhirUtils {
                 //extract method
                 method = exchange.getProperty(Exchange.HTTP_METHOD, String.class);
 
-                //extract profile
+                //extract profile to be validated if it is supported by openFHIR for transformation
                 JsonNode profileNode = rootNode.path("meta").path("profile");
                 // Convert the JsonNode array to a List<String>
                 profiles =  StreamSupport.stream(profileNode.spliterator(), false)
@@ -236,7 +236,7 @@ public class FhirUtils {
                 throw new IllegalArgumentException("Meta profile not provided in the resource");
             }
 
-            //Get source
+            //Get source to be added in openehr composition
             String metaSource = Optional.ofNullable(rootNode)
                             .map(resource -> resource.path("meta").path("source").asText())
                             .filter(source -> !source.isEmpty())

@@ -54,7 +54,7 @@ public class FhirBridgeRouteBuilder extends AbstractRouteBuilder {
             .process(RequestDetailsLookupProcessor.BEAN_ID);
 
         from("direct:OutputProcess")
-            //Step 9: Prepare the final output
+            // Prepare the final output
             .process(ProvideResourceResponseProcessor.BEAN_ID);
 
     }       

@@ -27,7 +27,7 @@ public class SendToCDRRouteBuilder extends RouteBuilder {
 
         //Transform
         from("direct:TransformProcess")
-            //Step 7: Process the openFHIR Input
+            //Process the openFHIR Input
             .doTry()
                 .to("direct:OpenFHIRProcess")
             .doCatch(Exception.class)
@@ -38,7 +38,7 @@ public class SendToCDRRouteBuilder extends RouteBuilder {
 
         //Load
         from("direct:LoadProcess")
-            //Step 8: Process the EHR Input
+            //Process the EHR Input
             .doTry()
                 //Get the mapped openEHRId if avaialbe else create new ehrId
                 .to("direct:patientIdToEhrIdMapperProcess")

@@ -28,20 +28,26 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
         // Get operation type
         RestOperationTypeEnum operationType = requestDetails.getRestOperationType();
         if (operationType == null) {
-            throw new IllegalArgumentException("Reest OperationType is null");
+            throw new IllegalArgumentException("Rest OperationType is null");
         }
 
         String httpMethod = requestDetails.getRequestType().name();
         String resourceName = requestDetails.getResourceName();
         String path = requestDetails.getRequestPath();
         String id = requestDetails.getId() != null ? requestDetails.getId().getIdPart() : null;
-        
-        // FExpecting input as String TODO: Change to Resource;
-        Resource resource = (Resource) requestDetails.getResource();
-        FhirContext fhirContext = FhirContext.forR4();
-        String inputResource = fhirContext.newJsonParser().encodeResourceToString(resource);
-        exchange.getIn().setBody(inputResource);
-
+        Resource resource = null;
+        // Handle resource based on HTTP method
+        if (!"GET".equals(httpMethod)) {
+            if (requestDetails.getResource() == null) {
+                throw new IllegalArgumentException("Resource is null for non-GET request");
+            }
+            // Process resource only for non-GET requests when resource exists
+            resource = (Resource) requestDetails.getResource();
+            FhirContext fhirContext = FhirContext.forR4();
+            String inputResource = fhirContext.newJsonParser().encodeResourceToString(resource);
+            exchange.getIn().setBody(inputResource);
+        }
+    
         String remoteSystemId = requestDetails.getServletRequest().getRemoteAddr();
         // Store in headers for route decision making
         exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, operationType != null ? operationType.name() : null);

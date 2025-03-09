@@ -343,6 +343,7 @@ public class PatientUtils {
 
         if (serverPatientId != null){
             //patient id already found. so return
+            // via reference id
             return;
         }
 
