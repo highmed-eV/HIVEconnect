@@ -35,7 +35,7 @@ $ mvn clean install -DskipITs=false
 cd docker
 docker-compose -f docker-compose-light.yml up
 ```
-Note: Ensure that the OPENFHIR application is up and running before starting
+Note: Ensure that the OPENFHIR application is up and running before starting fhir-bridge
 ### Run the application
 
 ```bash
