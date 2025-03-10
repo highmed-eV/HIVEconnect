@@ -45,7 +45,11 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
             resource = (Resource) requestDetails.getResource();
             FhirContext fhirContext = FhirContext.forR4();
             String inputResource = fhirContext.newJsonParser().encodeResourceToString(resource);
-            exchange.getIn().setBody(inputResource);
+            //jsonparser_changes: commenting the lines. Body always has Resource
+            // exchange.getIn().setBody(inputResource);
+            exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, resource);
+            //Inut as String is required for logging: DebugProperties
+            exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResource);
         }
     
         String remoteSystemId = requestDetails.getServletRequest().getRemoteAddr();

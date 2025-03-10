@@ -20,11 +20,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.JsonParser;
+
 import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
+import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -63,30 +68,40 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
             exchange.setProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS, internalResourceIds);
         }
 
-        String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
+        //jsonparser_changes: This has to be TEMP_REQUEST_RESOURCE_STRING
+        String inputResource = (String) exchange.getIn().getHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING);
         if (inputResource != null) {
             // update the input resource bundle reference with internalResourceIds
-            String updatedResource = updateInputResource(inputResource);
+            updateInputResource(exchange, inputResource);
             // Set the updated resource back into the exchange body
-            exchange.getIn().setBody(updatedResource);
+
         }
     }
 
-    private String updateInputResource(String inputResource) throws JsonProcessingException {
+    private String updateInputResource(Exchange exchange, String inputResource) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(inputResource);
 
+        String updatedResource = inputResource;
         if (rootNode != null && rootNode.isObject()) {
             // if resourceType is Bundle
             if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
                 updateBundleReferences(rootNode);
+                updatedResource = objectMapper.writeValueAsString(rootNode);
+                FhirContext fhirContext = FhirContext.forR4();
+                JsonParser jsonParser = (JsonParser) fhirContext.newJsonParser();
+                Bundle updatedBundleResource =  jsonParser.parseResource(Bundle.class, updatedResource);   
+                exchange.getIn().setBody(updatedBundleResource);
+                exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, updatedResource);
+
             } else {
                 // for individual resource
                 updateReferences(rootNode);
+                //TODO: Set the updated resource back into the exchange body
             }
         }
         // Return the updated JSON as a string
-        return objectMapper.writeValueAsString(rootNode);
+        return updatedResource;
     }
 
     private void updateBundleReferences(JsonNode rootNode) {
