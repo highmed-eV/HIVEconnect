@@ -84,10 +84,6 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
           if (ListSelectAqlField.class.isAssignableFrom(aqlField.getClass())) {
             List<Object> list = new ArrayList<>();
             object = list;
-            // @TODO how to handle list values results like
-            // content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
-            //      for (JsonElement element :
-            // JsonParser.parseString(valueAsString).getAsJsonObject().get("items").getAsJsonArray()) {
             list.add(extractValue(valueAsString, ((ListSelectAqlField) aqlField).getInnerClass()));
             //    }
 

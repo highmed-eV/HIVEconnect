@@ -87,8 +87,6 @@ public class BundleResourceProvider implements IResourceProvider  {
         try {
             // Call Camel route with the Bundle resource
             methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
-
-            // methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
             return methodOutcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -110,14 +108,10 @@ public class BundleResourceProvider implements IResourceProvider  {
                                 HttpServletResponse response) {
         System.out.println("Executing 'Update Bundle' transaction using 'create' operation...");
     
-        FhirContext fhirContext = FhirContext.forR4();
-        String inputResource = fhirContext.newJsonParser().encodeResourceToString(bundle);
         MethodOutcome methodOutcome = null;
         try {
             // Call Camel route with the Bundle resource
             methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "PUT", MethodOutcome.class);
-
-            // methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", inputResource, Exchange.HTTP_METHOD, "PUT", MethodOutcome.class);
             return methodOutcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();

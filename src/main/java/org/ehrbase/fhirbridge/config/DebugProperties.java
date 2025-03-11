@@ -1,5 +1,7 @@
 package org.ehrbase.fhirbridge.config;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -8,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.hl7.fhir.r4.model.Resource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,6 +26,8 @@ public class DebugProperties {
     private boolean enabled = false;
 
     private String mappingOutputDirectory;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public boolean isEnabled() {
         return enabled;
@@ -46,10 +51,21 @@ public class DebugProperties {
             return;
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
         // Parse JSON strings into JsonNode objects
-        JsonNode node1 = objectMapper.readTree((String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME));
+        Object outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
+        String jsonString;
+        if (outcome instanceof Resource) {
+            jsonString = FhirContext.forR4().newJsonParser().encodeResourceToString((Resource) outcome);
+        } else if (outcome instanceof MethodOutcome) {
+            Resource resource = (Resource) ((MethodOutcome) outcome).getResource();
+            jsonString = FhirContext.forR4().newJsonParser().encodeResourceToString(resource);
+        } else if (outcome instanceof String) {
+            jsonString = (String) outcome;
+        } else {
+            throw new IllegalArgumentException("Unexpected server response type: " + 
+                (outcome != null ? outcome.getClass().getName() : "null"));
+        }
+        JsonNode node1 = objectMapper.readTree(jsonString);
         JsonNode node2 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_FHIR_SERVER_OUTCOME));
         JsonNode node3 = objectMapper.readTree((String) exchange.getMessage().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME));
 

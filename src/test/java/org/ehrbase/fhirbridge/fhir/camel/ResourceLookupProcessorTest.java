@@ -50,7 +50,7 @@ class ResourceLookupProcessorTest {
         when(resourceCompositionRepository.findByInputResourceId("Organization/7")).thenReturn(Optional.of(resource2));
 
         String inputResource = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Condition/6\", \"resource\": { \"resourceType\": \"Condition\", \"id\": \"6\", \"encounter\": { \"reference\": \"Encounter/6\" }, \"organization\": { \"reference\": \"Organization/7\" } } } ] }";
-        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResource);
+        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResource);
 
         resourceLookupProcessor.process(exchange);
 
@@ -61,7 +61,7 @@ class ResourceLookupProcessorTest {
         assertEquals(Arrays.asList("Encounter/106", "Organization/107"), exchange.getProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS));
 
         // Verify that the updated resource is set correctly
-        String updatedResource = exchange.getIn().getBody(String.class);
+        String updatedResource =  (String) exchange.getIn().getHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING);
         assertNotNull(updatedResource);
         assertTrue(updatedResource.contains("Encounter/106"));
         assertTrue(updatedResource.contains("Organization/107"));
@@ -78,7 +78,7 @@ class ResourceLookupProcessorTest {
         when(resourceCompositionRepository.findByInputResourceId("Encounter/6")).thenReturn(Optional.of(resource1));
 
         String inputResource = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Condition/6\", \"resource\": { \"resourceType\": \"Condition\", \"id\": \"6\", \"encounter\": { \"reference\": \"Encounter/6\" }, \"organization\": { \"reference\": \"invalidResource\" } } } ] }";
-        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResource);
+        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResource);
 
         resourceLookupProcessor.process(exchange);
 
@@ -89,7 +89,7 @@ class ResourceLookupProcessorTest {
         assertEquals(Arrays.asList("Encounter/106"), exchange.getProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS));
 
         // Verify that the updated resource is set correctly
-        String updatedResource = exchange.getIn().getBody(String.class);
+        String updatedResource =  (String) exchange.getIn().getHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING);
         assertNotNull(updatedResource);
         assertTrue(updatedResource.contains("Encounter/106"));
         assertTrue(updatedResource.contains("invalidResource"));

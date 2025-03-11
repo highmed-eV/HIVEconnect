@@ -8,6 +8,7 @@ import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
 import org.ehrbase.fhirbridge.fhir.camel.CompositionLookupProcessor;
 import org.ehrbase.fhirbridge.fhir.support.FhirUtils;
+import org.hl7.fhir.r4.model.Resource;
 import org.springframework.stereotype.Component;
 
 
@@ -122,7 +123,7 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
 
             // 1. Retrieve the list of all input resource ids
             .process(exchange -> {
-                String inputResource = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
+                Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                 List<String> inputResourceIds = FhirUtils.getInputResourceIds(inputResource);
                 exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
             })

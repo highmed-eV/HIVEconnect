@@ -13,9 +13,14 @@ import org.apache.camel.Exchange;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Bundle;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -37,26 +42,18 @@ public class FhirUtils {
         // Private constructor to prevent instantiation
     }
 
-    public static String getResourceType(String resourceJson) {
+    public static String getResourceType(Resource resource) {
         try {
-            // Parse the JSON
-            JsonNode rootNode = objectMapper.readTree(resourceJson);
-
-            // Get resourceType
-            if (rootNode.has(RESOURCE_TYPE)) {
-                return rootNode.get(RESOURCE_TYPE).asText();
-            }
-
+            return resource.getResourceType().name();
         } catch (Exception e) {
             throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");
-
         }
-
-        return null; // Return null if no patient ID is found
     }
 
-    public static @NotNull List<String> getReferenceResourceIds(String resourceJson) {
+    public static @NotNull List<String> getReferenceResourceIds(Resource resource) {
         try {
+            //TODO: change to fhir built in functions to parse the resource
+            String resourceJson = FHIR_CONTEXT.newJsonParser().encodeResourceToString(resource);
             // Parse the JSON
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(resourceJson);
@@ -143,118 +140,91 @@ public class FhirUtils {
         return FHIR_CONTEXT.newJsonParser().encodeResourceToString(outcome);
     }
 
-    public static @NotNull List<String> getInputResourceIds(String resourceJson) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(resourceJson);
-            Set<String> inputResourceIds = new HashSet<>();
+    public static @NotNull List<String> getInputResourceIds(Resource resource) {
+        Set<String> inputResourceIds = new HashSet<>();
 
-            if (rootNode != null && rootNode.isObject()) {
-                if (rootNode.has(RESOURCE_TYPE) && "Bundle".equals(rootNode.get(RESOURCE_TYPE).asText())) {
-                    // Handle as a Bundle
-                    extractFromBundle(rootNode, inputResourceIds);
-                } else {
-                    // Handle as a single resource
-                    if (rootNode.has(RESOURCE_TYPE) && rootNode.has("id")) {
-                        String resourceType = rootNode.get(RESOURCE_TYPE).asText();
-                        String id = rootNode.get("id").asText();
-                        inputResourceIds.add(resourceType + "/" + id);
-                    }
-                }
+        if (resource instanceof Bundle) {
+            // Handle as a Bundle
+            extractFromBundle((Bundle) resource, inputResourceIds);
+        } else {
+            // Handle as a single resource
+            if (resource.hasId()) {
+                inputResourceIds.add(resource.getResourceType().name() + "/" + resource.getIdElement().getIdPart());
             }
-            if (!inputResourceIds.isEmpty()) {
-                // Return List of all the unique resource Ids in the input bundle or single resource
-                return new ArrayList<>(inputResourceIds);
-            }
-        } catch (Exception e) {
-            throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource IDs from the provided JSON");
         }
 
-        return Collections.emptyList(); // Return an empty list if no resource ID is found
+        return new ArrayList<>(inputResourceIds);
     }
 
-    private static void extractFromBundle(JsonNode rootNode, Set<String> inputResourceIds) {
-        JsonNode entries = rootNode.path(ENTRY);
-        for (JsonNode entry : entries) {
-            JsonNode resource = entry.path("resource");
-            if (resource.has(RESOURCE_TYPE) && resource.has("id")) {
-                String resourceType = resource.get(RESOURCE_TYPE).asText();
-                String id = resource.get("id").asText();
-                inputResourceIds.add(resourceType + "/" + id);
+    private static void extractFromBundle(Bundle bundle, Set<String> inputResourceIds) {
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            Resource resource = entry.getResource();
+            if (resource != null && resource.hasId()) {
+                inputResourceIds.add(resource.getResourceType().name() + "/" + resource.getIdElement().getIdPart());
             }
         }
     }
 
     public static void extractInputParameters(Exchange exchange) {
-        String inputResource = (String) exchange.getIn().getBody();
+        Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String inputResourceType = getResourceType(inputResource);
         String method = null;
-        try{
-            JsonNode rootNode = objectMapper.readTree(inputResource);
-            List<String> profiles = null;
-            if ("Bundle".equals(inputResourceType)) {
-                
-                //extract and verify the request is either POST or PUT
-                //In case of Bundle all the  resources should have the same request http method
-                JsonNode entryode = rootNode.get("entry");
-                
-                var methods = StreamSupport.stream(entryode.spliterator(), false)
-                                .map(node -> {
-                                    JsonNode requests = node.get("request");
-                                    return requests.has("method") ? requests.get("method").asText() : null;
-                                })
-                                .distinct()
-                                .toList();
-                
-                if (methods.contains(null) || methods.size() > 1) {
-                    throw new IllegalArgumentException("Inconsistent or invalid request http methods detected");
-                }
-                method = methods.get(0);
+        List<String> profiles = null;
 
-                //extract profiles to be validated if it is supported by openFHIR for transformation
-                profiles = StreamSupport.stream(entryode.spliterator(), false)
-                                    .map(node -> node.path("resource").path("meta")) 
-                                    .filter(metaNode -> metaNode.has("profile")) 
-                                    .flatMap(metaNode -> StreamSupport.stream(metaNode.path("profile").spliterator(), false)) 
-                                    .map(JsonNode::asText) 
-                                    .distinct() 
-                                    .collect(Collectors.toList()); 
-                
-            } else {
-                //extract method
-                method = exchange.getProperty(Exchange.HTTP_METHOD, String.class);
-
-                //extract profile to be validated if it is supported by openFHIR for transformation
-                JsonNode profileNode = rootNode.path("meta").path("profile");
-                // Convert the JsonNode array to a List<String>
-                profiles =  StreamSupport.stream(profileNode.spliterator(), false)
-                        .map(JsonNode::asText) // Convert each JsonNode to a String
-                        .collect(Collectors.toList());
-            }
-
-            if (profiles.contains(null) || profiles.size() == 0) {
-                throw new IllegalArgumentException("Meta profile not provided in the resource");
-            }
-
-            //Get source to be added in openehr composition
-            String metaSource = Optional.ofNullable(rootNode)
-                            .map(resource -> resource.path("meta").path("source").asText())
-                            .filter(source -> !source.isEmpty())
-                            .orElse(null);
+        if ("Bundle".equals(inputResourceType)) {
+            Bundle bundle = (Bundle) inputResource;
             
-            //set input parameters in excahnge
-            if (metaSource != null) {
-                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_SOURCE, metaSource);
+            // Get distinct request methods
+            var methods = bundle.getEntry().stream()
+                    .map(entry -> entry.getRequest() != null ? entry.getRequest().getMethod().toCode() : null)
+                    .distinct()
+                    .toList();
+            
+            if (methods.contains(null) || methods.size() > 1) {
+                throw new IllegalArgumentException("Inconsistent or invalid request http methods detected");
             }
-            //Some of the headers in the RequestDetailsLookupProcessor are overwritten here
-            exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResource);
-            exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, inputResourceType);
-            exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, method);
-            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PROFILE, profiles);
-    
-        } catch (JsonProcessingException e) {
-            throw new UnprocessableEntityException("Unable to process the resource JSON and failed to extract resource type");
-        }   
+            method = methods.get(0);
+
+            // Extract profiles from resources' meta
+            profiles = bundle.getEntry().stream()
+                    .map(Bundle.BundleEntryComponent::getResource)
+                    .filter(entryResource -> entryResource != null && entryResource.getMeta() != null)
+                    .flatMap(entryResource -> entryResource.getMeta().getProfile().stream())
+                    .map(canonical -> canonical.getValue())
+                    .distinct()
+                    .toList();
+            
+        } else {
+            // Get method from exchange property
+            method = exchange.getProperty(Exchange.HTTP_METHOD, String.class);
+
+            // Extract profiles directly from resource meta
+            profiles = Optional.ofNullable(inputResource.getMeta())
+                    .map(meta -> meta.getProfile().stream()
+                            .map(canonical -> canonical.getValue())
+                            .collect(Collectors.toList()))
+                    .orElse(Collections.emptyList());
+        }
+
+        if (profiles.isEmpty()) {
+            throw new IllegalArgumentException("Meta profile not provided in the resource");
+        }
+
+        // Get source from meta
+        String metaSource = Optional.ofNullable(inputResource.getMeta())
+                .map(meta -> meta.getSource())
+                .orElse(null);
+        
+        // Set input parameters in exchange
+        if (metaSource != null) {
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_SOURCE, metaSource);
+        }
+        
+        // Set headers
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputResource);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, inputResourceType);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, method);
+        exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PROFILE, profiles);
     }
 }
 

@@ -64,7 +64,7 @@ spring:
     basename: messages/messages
     use-code-as-default-message: true
 
-  #Medblocks
+  
   flyway:
     enabled: false
   autoconfigure:
@@ -109,7 +109,7 @@ management:
       elastic:
         auto-create-index:
 
-#Medblocks
+#fhir server
 hapi:
   fhir:
     server:
@@ -139,14 +139,6 @@ camel:
     mapping:
       contextPath: /*
 
-################################################################################
-# Open eHealth Integration Platform Properties                                 #
-################################################################################
-ipf:
-  atna:
-    audit-enabled: false
-  fhir:
-    fhir-version: r4
 
 demographics:
   patient:
