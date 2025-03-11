@@ -25,7 +25,7 @@ public final class CamelConstants {
 
     public static final String TEMP_REQUEST_RESOURCE_STRING = "CamelTempRequestResourceString";
 
-    public static final String TEMP_REQUEST_RESOURCE_OBJECT = "CamelTempRequestResourceObject";
+    // public static final String TEMP_REQUEST_RESOURCE_OBJECT = "CamelTempRequestResourceObject";
 
      public static final String OPENEHR_COMPOSITION_ID = "CamelOpenEhrCompositionId";
      

@@ -68,7 +68,7 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
             exchange.setProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS, internalResourceIds);
         }
 
-        //jsonparser_changes: This has to be TEMP_REQUEST_RESOURCE_STRING
+        //Input taken as String
         String inputResource = (String) exchange.getIn().getHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING);
         if (inputResource != null) {
             // update the input resource bundle reference with internalResourceIds

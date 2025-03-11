@@ -65,7 +65,6 @@ public class ProvideResourceResponseProcessor implements Processor {
     @Override
     public void process(@NotNull Exchange exchange) throws Exception {
         Composition composition = (Composition) exchange.getIn().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION);
-        //jsonparser_changes
         Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE_TYPE);
         Map<String, String> resourceIdMap = new LinkedHashMap<>();
@@ -134,10 +133,6 @@ public class ProvideResourceResponseProcessor implements Processor {
                         baseResource.getClass().getName() + ". Expected Bundle.");
                 }
                 serverBundle = (Bundle) baseResource;
-                //jsonparser_changes: commenting out the following line
-                // not needed as DebugProperties does the required conversion
-                // jsonString = fhirContext.newJsonParser().encodeResourceToString(serverBundle);
-                // exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, jsonString);
             } else if (serverResponse instanceof String) {
                 jsonString = (String) serverResponse;
                 serverBundle = fhirContext.newJsonParser().parseResource(Bundle.class, jsonString);
@@ -186,7 +181,6 @@ public class ProvideResourceResponseProcessor implements Processor {
                 String internalResourceId = location.split("/_history")[0];
                 
                 if (i < inputResourceIds.size()) {
-                    //jsonparser_changes: value is Procedure/Procedure/example-procedure-10"
                     String inputResourceId = inputResourceIds.get(i);
                     validateAndUpdateMap(resourceIdMap, inputResourceId, internalResourceId);
                 }

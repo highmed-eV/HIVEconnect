@@ -11,9 +11,13 @@ import ca.uhn.fhir.rest.server.servlet.ServletRequestDetails;
 
 import org.hl7.fhir.r4.model.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component(RequestDetailsLookupProcessor.BEAN_ID)
 public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
-
+    private static final Logger LOG = LoggerFactory.getLogger(RequestDetailsLookupProcessor.class);
+    
     public static final String BEAN_ID = "requestDetailsLookupProcessor";
 
     @Override
@@ -42,14 +46,14 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
                 throw new IllegalArgumentException("Resource is null for non-GET request");
             }
             // Process resource only for non-GET requests when resource exists
+            //Inut as String is required for logging: DebugProperties
             resource = (Resource) requestDetails.getResource();
             FhirContext fhirContext = FhirContext.forR4();
             String inputResource = fhirContext.newJsonParser().encodeResourceToString(resource);
-            //jsonparser_changes: commenting the lines. Body always has Resource
-            // exchange.getIn().setBody(inputResource);
-            exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, resource);
-            //Inut as String is required for logging: DebugProperties
             exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResource);
+
+            //Set the Resource extracted from requestDetails 
+            exchange.getIn().setBody(resource);
         }
     
         String remoteSystemId = requestDetails.getServletRequest().getRemoteAddr();
@@ -66,7 +70,7 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
        
         // Log all headers for debugging
         exchange.getIn().getHeaders().forEach((key, value) -> 
-            System.out.println("Header: " + key + " = " + value));
+            LOG.info("Header: " + key + " = " + value));
     
  
         switch (operationType.name()) {

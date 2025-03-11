@@ -236,7 +236,7 @@ class FhirUtilsTest {
         entry2.getRequest().setMethod(Bundle.HTTPVerb.POST);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, bundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, bundle);
 
         // Execute
         FhirUtils.extractInputParameters(exchange);
@@ -258,7 +258,7 @@ class FhirUtilsTest {
         patient.getMeta().addProfile("http://test.profile/Patient");
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
         exchange.setProperty(Exchange.HTTP_METHOD, "POST");
 
         // Execute
@@ -290,7 +290,7 @@ class FhirUtilsTest {
         entry2.getRequest().setMethod(Bundle.HTTPVerb.PUT);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, bundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, bundle);
 
         // Execute and verify exception
         assertThrows(IllegalArgumentException.class, () -> 
@@ -305,7 +305,7 @@ class FhirUtilsTest {
         Patient patient = new Patient();
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
         exchange.setProperty(Exchange.HTTP_METHOD, "POST");
 
         // Execute and verify exception
@@ -323,7 +323,7 @@ class FhirUtilsTest {
         patient.getMeta().setSource("http://test.source");
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
         exchange.setProperty(Exchange.HTTP_METHOD, "POST");
 
         // Execute

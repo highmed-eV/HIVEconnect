@@ -263,8 +263,7 @@ class ProvideResourceResponseProcessorTest {
     private void setupBundleExchange(Bundle inputBundle) {
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, "Bundle");
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, inputBundle);
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, inputBundle);
-
+        
         Composition composition = new Composition();
         composition.setUid(new ObjectVersionId("test-composition-id"));
         exchange.getIn().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION, composition);

@@ -52,7 +52,7 @@ class PatientUtilsTest {
         patient.addIdentifier(identifier);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -71,7 +71,7 @@ class PatientUtilsTest {
         observation.setSubject(patientRef);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, observation);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, observation);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -96,7 +96,7 @@ class PatientUtilsTest {
         
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, medicationRequest);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, medicationRequest);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -123,7 +123,7 @@ class PatientUtilsTest {
         obsEntry.setResource(obs);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, bundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, bundle);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -145,7 +145,7 @@ class PatientUtilsTest {
         observation.setSubject(reference);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, observation);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, observation);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -271,7 +271,7 @@ class PatientUtilsTest {
         when(patientEhrRepository.findByInputPatientId("system1|value1")).thenReturn(mockPatientEhr);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
 
         // Execute and verify exception
         UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> 
@@ -403,7 +403,7 @@ class PatientUtilsTest {
         entry2.setResource(obs2);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, bundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, bundle);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -428,7 +428,7 @@ class PatientUtilsTest {
         entry2.setResource(obs2);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, bundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, bundle);
 
         // Execute and verify exception
         UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> 
@@ -443,7 +443,7 @@ class PatientUtilsTest {
         Bundle bundle = new Bundle();
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, bundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, bundle);
 
         // Execute and verify exception
         UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> 
@@ -459,7 +459,7 @@ class PatientUtilsTest {
         consent.setPatient(new Reference("Patient/123"));
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, consent);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, consent);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -476,7 +476,7 @@ class PatientUtilsTest {
         immunization.setPatient(new Reference("Patient/123"));
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, immunization);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, immunization);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -493,7 +493,7 @@ class PatientUtilsTest {
         researchSubject.setIndividual(new Reference("Patient/123"));
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, researchSubject);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, researchSubject);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -520,7 +520,7 @@ class PatientUtilsTest {
         bundle.addEntry().setResource(obs);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, bundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, bundle);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -536,7 +536,7 @@ class PatientUtilsTest {
         Patient patient = new Patient();
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -560,7 +560,7 @@ class PatientUtilsTest {
         observation.setSubject(subject);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, observation);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, observation);
 
         // Execute
         patientUtils.extractPatientIdOrIdentifier(exchange);
@@ -588,7 +588,7 @@ class PatientUtilsTest {
         when(patientEhrRepository.findByInputPatientId("system1|value1")).thenReturn(mockPatientEhr);
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
 
         // Execute and verify exception
         UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> 
@@ -604,7 +604,7 @@ class PatientUtilsTest {
         Observation observation = new Observation();
 
         // Set up exchange
-        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT, observation);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, observation);
 
         // Execute and verify exception
         UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> 

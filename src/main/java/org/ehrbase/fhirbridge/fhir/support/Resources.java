@@ -64,6 +64,10 @@ public class Resources {
                 return getSubject((ServiceRequest) resource);
             case MedicationAdministration:
                 return getSubject((MedicationAdministration) resource);
+            case Medication:
+                return getSubject((Medication) resource);
+            case Organization:
+                return getSubject((Organization) resource);
             case List:
                 return getSubject((ListResource) resource);
             default:
@@ -130,6 +134,7 @@ public class Resources {
         }
     }
 
+    //A more genric approach to get the subject from the resource
     public static Reference getSubjectGeneric(Resource resource) {
             // Handle Patient resource explicitly
             if (resource instanceof Patient) {
@@ -238,6 +243,13 @@ public class Resources {
         return medicationAdministration.hasSubject() ? Optional.of(medicationAdministration.getSubject()) : Optional.empty();
     }
 
+    private static Optional<Reference> getSubject(Medication medication) {
+        return  Optional.empty();
+    }
+
+    private static Optional<Reference> getSubject(Organization organization) {
+        return Optional.empty();
+    }    
     private static Optional<Reference> getSubject(ListResource listResource) {
         return listResource.hasSubject() ? Optional.of(listResource.getSubject()) : Optional.empty();
     }

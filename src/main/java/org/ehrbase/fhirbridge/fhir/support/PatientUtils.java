@@ -12,11 +12,16 @@ import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
 import org.hl7.fhir.r4.model.*;
 import org.springframework.stereotype.Component;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
 import java.util.Optional;
 
 @Component
 public class PatientUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(PatientUtils.class);
+    
     private PatientEhrRepository patientEhrRepository;
 
     public PatientUtils(PatientEhrRepository patientEhrRepository) {
@@ -25,7 +30,7 @@ public class PatientUtils {
 
     @Handler
     public void extractPatientIdOrIdentifier(Exchange exchange) {
-        Resource resource = (Resource) exchange.getIn().getHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT);
+        Resource resource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String patientId = null;
         String serverPatientId = null;
 
@@ -213,7 +218,6 @@ public class PatientUtils {
             // Get the first resource ID from the response
             Bundle.BundleEntryComponent firstEntry = responseBundle.getEntryFirstRep();
             if (firstEntry.hasResponse() && firstEntry.getResponse().hasLocation()) {
-                //jsonparser_changes: location  is "Procedure/4/_history/2" should we truncate the history part? and add to db as every update the history is updated
                 String location = firstEntry.getResponse().getLocation();
                 exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_RESOURCE_ID, location);
             }

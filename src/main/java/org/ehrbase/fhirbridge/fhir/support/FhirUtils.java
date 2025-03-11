@@ -52,7 +52,7 @@ public class FhirUtils {
 
     public static @NotNull List<String> getReferenceResourceIds(Resource resource) {
         try {
-            //jsonparser_changes: change to fhir build in functions
+            //TODO: change to fhir built in functions to parse the resource
             String resourceJson = FHIR_CONTEXT.newJsonParser().encodeResourceToString(resource);
             // Parse the JSON
             ObjectMapper objectMapper = new ObjectMapper();
@@ -166,7 +166,7 @@ public class FhirUtils {
     }
 
     public static void extractInputParameters(Exchange exchange) {
-        Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.TEMP_REQUEST_RESOURCE_OBJECT);
+        Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String inputResourceType = getResourceType(inputResource);
         String method = null;
         List<String> profiles = null;

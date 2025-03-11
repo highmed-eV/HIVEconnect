@@ -80,12 +80,6 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                                 Bundle response = exchange.getIn().getBody(Bundle.class);
                                 exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, response);
 
-                                //Jsonparser_changes
-                                // FhirContext fhirContext = FhirContext.forR4();
-                                // JsonParser jsonParser = (JsonParser) fhirContext.newJsonParser();
-                                // Bundle bundleResource =  jsonParser.parseResource(Bundle.class, response);
-                                // exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, bundleResource);
-
                                  //set back the input json as body
                                 Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                                 exchange.getIn().setBody(inputResource);
@@ -99,8 +93,9 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                     .endChoice()
                     .when(simple("${header.CamelRequestResourceResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'POST'"))
                     .doTry()
-                        .to("fhir://create/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                         .log("Create FHIR request. Starting process...")
+                        .to("fhir://create/resource?inBody=resource&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                        .log("Create FHIR request. Done...")
                         
                         //Store the response in the Exchange
                         .process(exchange -> {
@@ -122,10 +117,11 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                     .endChoice()
                     .when(simple("${header.CamelRequestResourceResourceType} != 'Bundle' && ${header.CamelHttpMethod} == 'PUT'"))
                     .doTry()
-                        // String matchUrl = requestDetails.getConditionalUrl(RestOperationTypeEnum.UPDATE);
-                        .to("fhir://update/resource?inBody=resourceAsString&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
-                        .log("Update FHIR request. Starting process...")
 
+                        .log("Update FHIR request. Starting process...")
+                        .to("fhir://update/resource?inBody=resource&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                        .log("Update FHIR request. Done...")
+ 
                         //Store the response in the Exchange
                         .process(exchange -> {
                             exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "PUT");
@@ -311,7 +307,6 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
             // Add it in the referenceResourceIds(excluding subject.reference)
             // Note : reference resource Id(s) are in the form of inputResourceId(s)
             .process(exchange -> {
-                //jsonparser_changes: 
                 Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                 List<String> referenceInputResourceIds = FhirUtils.getReferenceResourceIds(inputResource);
                 exchange.setProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, referenceInputResourceIds);
