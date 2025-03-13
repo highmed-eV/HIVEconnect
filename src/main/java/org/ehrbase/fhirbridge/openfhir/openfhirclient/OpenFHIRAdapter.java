@@ -85,13 +85,13 @@ public class OpenFHIRAdapter {
             throw new RuntimeException("Error in getting openEHR supported profiles", e);
         }
         
-        // Check if all inputProfiles are in outputProfiles
-        boolean isProfilePresent = outputProfiles.containsAll(inputProfiles);
+        // Check if any inputProfiles are in outputProfiles
+        boolean isProfilePresent = inputProfiles.stream()
+                .anyMatch(outputProfiles::contains);
         if (!isProfilePresent) {
-            throw new IllegalArgumentException("Profile not supported by openFHIR");
+            throw new IllegalArgumentException("No matching profiles found in openFHIR");
         }
         return isProfilePresent;
-
     }
 
     public Optional<OPERATIONALTEMPLATE> findTemplate(String templateId) {
@@ -123,7 +123,7 @@ public class OpenFHIRAdapter {
                 }
             }
         } catch (Exception e) {
-            logger.debug("Template {} does not exist in openFHIR: {}", templateId, e.getMessage());
+            logger.debug("Template {} does not exist in openFHIR: {}", templateId);
         }
         return Optional.empty();
     }
@@ -156,7 +156,8 @@ public class OpenFHIRAdapter {
             logger.info("Uploaded template to openFHIR: {}", templateId);
             return response;
         } catch (Exception e) {
-            throw new RuntimeException("Error in upload template: {}", e);
+            logger.info("Error in Template upload to openFHIR: {}", templateId);
+            return "Error in Template upload to openFHIR";
         }
     }
 }

@@ -69,6 +69,23 @@
               "reference": "urn:uuid:11e05b70-b4e6-12ec-b909-0242ac120002",
               "display": "Organization"
             }
+          },
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://hospital.smarthealthit.org",
+            "value": "VN-encounter-id-12345",
+            "assigner": {
+              "reference": "urn:uuid:11e05b70-b4e6-12ec-b909-0242ac120002",
+              "display": "Organization"
+            }
           }
         ],
         "status": "finished",
@@ -86,7 +103,7 @@
                 "display": "Einrichtungskontakt"
               },
               {
-                "system":  "http://fhir.de/CodeSystem/kontaktart-de",
+                "system": "http://fhir.de/CodeSystem/kontaktart-de",
                 "code": "begleitperson",
                 "display": "Begleitperson"
               }
@@ -107,7 +124,7 @@
         "diagnosis": [
           {
             "condition": {
-              // "reference": "Condition/reference-condition",
+              "reference": "urn:uuid:11e05b70-b4e6-12ec-b909-0242ac120222",
               "type": "Condition",
               "identifier": {
                 "type": {
@@ -146,7 +163,6 @@
             "rank": 1
           }
         ],
-
         "hospitalization": {
           "admitSource": {
             "coding": [
@@ -181,10 +197,15 @@
         "location": [
           {
             "id": "zimmer-1",
-          //   "location": {
-          //     "reference": "Location/example",
-          //     "display": "Main Hospital Room 101"
-          //   },
+            // "location": {
+            //   "reference": "Location/example",
+            //   "display": "Main Hospital Room 101",
+            //   "identifier": [
+            //     {
+            //       "value": "zimmer-1-identifier"
+            //     }
+            //   ]
+            // },
             "status": "active",
             "physicalType": {
               "coding": [
@@ -201,10 +222,15 @@
           },
           {
             "id": "bett-1",
-          //   "location": {
-          //     "reference": "Location/example",
-          //     "display": "Main Hospital Room 101"
-          //   },
+            // "location": {
+            //   "reference": "Location/example",
+            //   "display": "Main Hospital Room 101",
+            //   "identifier": [
+            //     {
+            //       "value": "bett-1-identifier"
+            //     }
+            //   ]
+            // },
             "status": "active",
             "physicalType": {
               "coding": [
@@ -221,10 +247,15 @@
           },
           {
             "id": "station-1",
-          //   "location": {
-          //     "reference": "Location/example",
-          //     "display": "Main Hospital Room 101"
-          //   },
+            // "location": {
+            //   "reference": "Location/example",
+            //   "display": "Main Hospital Room 101",
+            //   "identifier": [
+            //     {
+            //       "value": "station-1-identifier"
+            //     }
+            //   ]
+            // },
             "status": "active",
             "physicalType": {
               "coding": [
@@ -244,11 +275,10 @@
           "reference": "urn:uuid:11e05b70-b4e6-12ec-b909-0242ac120002",
           "display": "Organization"
         },
-
         "serviceType": {
           "coding": [
             {
-              "system":"local_terms",
+              "system": "local_terms",
               "code": "dept",
               "display": "Innere Medizin"
             },
@@ -282,6 +312,26 @@
           }
         ],
         "name": "Example Hospital"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:11e05b70-b4e6-12ec-b909-0242ac120222",
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      },
+      "resource": {
+        "resourceType": "Condition",
+        "id": "reference-condition",
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "code": "ref_C34.1",
+              "display": "ref_Malignant neoplasm of upper lobe, bronchus or lung"
+            }
+          ]
+        }
       }
     }
   ]

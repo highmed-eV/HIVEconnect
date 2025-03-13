@@ -13,7 +13,7 @@
         "resourceType": "ServiceRequest",
         "id": "servicerequest-lab-id-1234",
         "meta": {
-          "source": "Hospital-abc",
+          "source" : "Hospital-abc",
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab"
           ]
@@ -33,7 +33,7 @@
             "system": "https://fhir.acme.org/identifiers/patient",
             "value": "123456-0_KH",
             "assigner": {
-              "reference": "Organization/example-lab",
+              "reference": "urn:uuid:11e05b70-b4e6-11ec-b909-0242ac120002",
               "display": "Example Laboratory"
             }
           }
@@ -44,12 +44,11 @@
           {
             "coding": [
               {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "system": "http://terminology.hl7.org/ValueSet/observation-category",
                 "code": "laboratory",
                 "display": "Laboratory"
               }
-            ],
-            "text": "Laboratory"
+            ]
           }
         ],
         "code": {
@@ -63,18 +62,21 @@
           "text": "Blood Glucose Test"
         },
         "subject": {
-          "reference": "Patient/1"
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
+          }
         },
         "authoredOn": "2024-08-24",
         "performer": [
           {
-            "reference": "Organization/example-lab",
+            "reference": "urn:uuid:11e05b70-b4e6-11ec-b909-0242ac120002",
             "display": "Example Laboratory"
           }
         ],
         "requester": [
           {
-            "reference": "Organization/example-lab",
+            "reference": "urn:uuid:11e05b70-b4e6-11ec-b909-0242ac120002",
             "display": "Example Laboratory"
           }
         ],
@@ -83,20 +85,20 @@
             "coding": [
               {
                 "system": "http://snomed.info/sct",
-                "code": "116686009",
-                "display": "Has specimen"
+                "code": "271737000",
+                "display": "High blood glucose level"
               }
             ],
             "text": "Hyperglycemia"
           }
         ],
         "encounter": {
-          "reference": "Encounter/encounter-12345",
+          "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee",
           "display": "Routine Checkup"
         },
         "specimen": [
           {
-            "reference": "Specimen/example-blood",
+            "reference": "urn:uuid:00000000-0000-0000-0000-000000000002",
             "display": "Blood specimen"
           }
         ],
@@ -104,7 +106,7 @@
       }
     },
     {
-      "fullUrl": "Specimen/example-blood",
+      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000002",
       "request": {
         "method": "POST",
         "url": "Specimen"
@@ -114,7 +116,7 @@
         "id": "example-blood",
         "meta": {
           "profile": [
-            "http://hl7.org/fhir/StructureDefinition/Specimen"
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
           ]
         },
         "status": "available",
@@ -129,7 +131,10 @@
           "text": "Venous blood specimen"
         },
         "subject": {
-          "reference": "Patient/1"
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
+          }
         },
         "identifier": [
           {
@@ -139,10 +144,12 @@
         ],
         "receivedTime": "2024-08-24T09:30:00Z",
         "collection": {
-          "collectedDateTime": "2024-08-24T09:00:00Z",
-          "collector": {
-            "display": "Dr. John Doe"
-          }
+          "collectedDateTime": "2024-08-24T09:00:00Z"
+        //   ,
+        //   "collector": {
+        //     "reference": "Practitioner/example-practitioner",
+        //     "display": "Dr. John Doe"
+        //   }
         },
         "note": [
           {
@@ -152,7 +159,7 @@
       }
     },
     {
-      "fullUrl": "Organization/example-lab",
+      "fullUrl": "urn:uuid:11e05b70-b4e6-11ec-b909-0242ac120002",
       "request": {
         "method": "POST",
         "url": "Organization"
@@ -170,15 +177,10 @@
       }
     },
     {
-      "fullUrl": "Encounter/encounter-12345",
+      "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee",
       "resource": {
         "resourceType": "Encounter",
         "id": "encounter-12345",
-        "class": {
-          "code": "AMB",
-          "display": "ambulatory",
-          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
-        },
         "identifier": [
           {
             "use": "official",
@@ -186,8 +188,7 @@
               "coding": [
                 {
                   "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                  "code": "VN",
-                  "display": "Visit number"
+                  "code": "VN"
                 }
               ]
             },
@@ -197,7 +198,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/1"
+          "reference": "Patient/{{patientId}}"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",

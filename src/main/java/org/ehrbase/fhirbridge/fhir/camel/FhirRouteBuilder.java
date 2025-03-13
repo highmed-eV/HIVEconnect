@@ -69,10 +69,16 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                 .choice()
                     .when(simple("${header.CamelRequestResourceResourceType} == 'Bundle'"))
                         // if body.type == "transaction"
+                        .process(exchange -> {
+                            //Set the incoming resource in body as camel-fhir take from body (inBody)
+                            exchange.getIn().setBody(exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE));
+                        }
+                        )
                         // create Transaction bundle in our FHIR server
                         .log("Transaction FHIR request. Starting process...")
+                        
                         .doTry()
-                            // .to("fhir://transaction/withBundle?inBody=stringBundle&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                            .log("Type####: ${header.Type} ${body}")
                             .to("fhir://transaction/withBundle?inBody=bundle&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                             //Store the response in the Exchange
                             .process(exchange -> {

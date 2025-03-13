@@ -4,7 +4,7 @@
   "type": "transaction",
   "entry": [
     {
-      "fullUrl": "urn:uuid:fe3ac757-44e2-402e-ad7d-4265f6b9d51d",
+      "fullUrl": "urn:uuid:72c2e2b6-a89b-4a7c-8c1e-54268edf515b",
       "resource": {
         "resourceType": "Procedure",
         "id": "example-procedure",
@@ -13,27 +13,13 @@
             "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure"
           ]
         },
-        "extension": [
-          {
-            "url": "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum",
-            "valueDateTime": "2023-11-29T14:00:00Z"
-          },
-          {
-            "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht",
-            "valueCoding": {
-              "system": "http://snomed.info/sct",
-              "code": "103693007",
-              "display": "Planned"
-            }
-          }
-        ],
         "status": "completed",
         "category": {
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "387713003",
-              "display": "Surgical procedure"
+              "code": "103693007",
+              "display": "Diagnostic procedure"
             }
           ],
           "text": "Diagnostic procedure"
@@ -42,15 +28,15 @@
           "coding": [
             {
               "extension": [
-                {
-                  "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
-                  "valueCoding": {
-                    "code": "B",
-                    "display": "beiderseits",
-                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION"
-                  }
-                }
-              ],
+                    {
+                        "url": "http://fhir.de/StructureDefinition/seitenlokalisation",
+                        "valueCoding" : {
+                          "code": "B",
+                          "display": "beiderseits",
+                          "system":"https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_ICD_SEITENLOKALISATION"
+                        }
+                    }
+                ],
               "system": "http://fhir.de/CodeSystem/bfarm/ops",
               "version": "20200131",
               "code": "5-470",
@@ -66,7 +52,10 @@
           "text": "Appendectomy"
         },
         "subject": {
-          "reference": "Patient/1"
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
+          }
         },
         "performedDateTime": "2024-08-20T14:00:00Z",
         "bodySite": [
@@ -82,14 +71,14 @@
           }
         ],
         "encounter": {
-          "reference": "urn:uuid:688f8bd7-f1a9-426d-b27f-a7a249e1c55e"
+          "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee"
         },
         "note": [
           {
-            "authorReference": {
-              "reference": "Practitioner/gen1",
-              "display": "Dr. Jane Smith"
-            },
+            // "authorReference": {
+            //   "reference": "Practitioner/gen1",
+            //   "display": "Dr. Jane Smith"
+            // },
             "time": "2024-08-21T00:00:00Z",
             "text": "Procedure completed successfully with no complications."
           }
@@ -101,15 +90,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:688f8bd7-f1a9-426d-b27f-a7a249e1c55e",
+      "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee",
       "resource": {
         "resourceType": "Encounter",
         "id": "encounter-12345",
-        "class": {
-          "code": "AMB",
-          "display": "ambulatory",
-          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
-        },
         "identifier": [
           {
             "use": "official",
@@ -117,8 +101,7 @@
               "coding": [
                 {
                   "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                  "code": "VN",
-                  "display": "Visit Number"
+                  "code": "VN"
                 }
               ]
             },
@@ -128,13 +111,14 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/1"
+          "reference": "Patient/{{patientId}}"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
           "end": "2024-08-21T09:30:00+01:00"
         }
-      },
+      }
+    ,
       "request": {
         "method": "POST",
         "url": "Encounter"

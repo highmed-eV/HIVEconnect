@@ -61,6 +61,8 @@ public final class CamelConstants {
 
     public static final String FHIR_REFERENCE_INTERNAL_RESOURCE_IDS = "CamelFhirReferenceInternalResourceIds";
 
+    public static final String FHIR_REFERENCE_INTERNAL_RESOURCE_IDS_TEMP = "CamelFhirReferenceInternalResourceIdsTemp";
+
     public static final String FHIR_SERVER_EXISTING_RESOURCES = "CamelFhirServerExistingResources";
 
     public static final String FHIR_SERVER_OUTCOME = "CamelFhirServerOutcome";
@@ -69,6 +71,7 @@ public final class CamelConstants {
 
     public static final String FHIR_INTERAL_EXISTING_ID = "CamelFhirInternalExistingId";
 
+    
     public static final String OPEN_FHIR_SERVER_OUTCOME = "CamelOpenFhirServerOutcome";
 
     public static final String OPEN_EHR_SERVER_OUTCOME = "CamelOpenEHRServerOutcome";

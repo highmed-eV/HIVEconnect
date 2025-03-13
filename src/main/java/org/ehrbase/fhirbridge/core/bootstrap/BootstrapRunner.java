@@ -25,7 +25,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Value("${fhir-bridge.bootstrap.dir:/app/bootstrap/}")
+    @Value("${fhir-bridge.bootstrap.dir:/fhir-bridge-app/bootstrap/}")
     private String bootstrapDir;
 
     @Value("${fhir-bridge.bootstrap.recursively-open-directories:false}")
@@ -57,6 +57,9 @@ public class BootstrapRunner implements ApplicationRunner {
                 .forEach(this::processOptFile);
         }
 
+        // Upload templates to OpenEHR and openFHIR
+        operationalTemplateUploader.uploadTemplates();
+
         log.info("Bootstrap to Upload templates completed...");
 
     }
@@ -69,12 +72,12 @@ public class BootstrapRunner implements ApplicationRunner {
             var bootstrapEntity = bootstrapRepository.findByFile(relativePath);
             
             // Check if file was modified since last processing
-            if (bootstrapEntity.isPresent() && 
-                !Files.getLastModifiedTime(path).toInstant()
-                    .isAfter(bootstrapEntity.get().getUpdatedDateTime().toInstant())) {
-                log.debug("Skipping unchanged template file: {}", relativePath);
-                return;
-            }
+            // if (bootstrapEntity.isPresent() && 
+            //     !Files.getLastModifiedTime(path).toInstant()
+            //         .isAfter(bootstrapEntity.get().getUpdatedDateTime().toInstant())) {
+            //     log.debug("Skipping unchanged template file: {}", relativePath);
+            //     return;
+            // }
 
             log.info("Loading template from file: {}", relativePath);
             var templateDocument = TemplateDocument.Factory.parse(new FileInputStream(file));
@@ -87,8 +90,6 @@ public class BootstrapRunner implements ApplicationRunner {
                 log.error("Template cache not found");
             }
             
-            // Upload templates to OpenEHR and openFHIR
-            operationalTemplateUploader.uploadTemplates();
 
             // Create new bootstrap record if file was modified
             if (!bootstrapEntity.isPresent()) {
