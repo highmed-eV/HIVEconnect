@@ -149,7 +149,7 @@ public class OpenFHIRAdapter {
  
             String response = null;
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.TEXT_PLAIN);
+            headers.setContentType(MediaType.parseMediaType("application/xml;charset=UTF-8"));
             HttpEntity <String> entity = new HttpEntity<>(operationaltemplate.get().xmlText(opts), headers);
             //create
             response = restTemplate.postForObject(openFhirUrl + "/opt", entity, String.class);

@@ -78,7 +78,6 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                         .log("Transaction FHIR request. Starting process...")
                         
                         .doTry()
-                            .log("Type####: ${header.Type} ${body}")
                             .to("fhir://transaction/withBundle?inBody=bundle&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                             //Store the response in the Exchange
                             .process(exchange -> {
