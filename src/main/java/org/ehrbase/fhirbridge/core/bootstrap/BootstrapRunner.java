@@ -48,6 +48,9 @@ public class BootstrapRunner implements ApplicationRunner {
             log.error("Bootstrap directory for opt files does not exists at: {}", directory.getAbsolutePath());
             return;
         }
+        else{
+            log.info("Bootstrap directory for opt files {} ", directory.getAbsolutePath());
+        }
 
         try (Stream<Path> paths = recursivelyOpenDirectories ? 
                 Files.walk(directory.toPath()) : 
