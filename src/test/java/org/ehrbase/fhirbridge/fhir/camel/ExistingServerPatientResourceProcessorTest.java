@@ -33,8 +33,8 @@ class ExistingServerPatientResourceProcessorTest {
 
         assertDoesNotThrow(() -> existingServerPatientResourceProcessor.process(exchange));
 
-        assertEquals(patientResource, exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
-        assertEquals("Patient/12345", exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
+        assertEquals(patientResource, exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE));
+        assertEquals("Patient/12345", exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID));
     }
 
     @Test
@@ -43,8 +43,8 @@ class ExistingServerPatientResourceProcessorTest {
 
         assertDoesNotThrow(() -> existingServerPatientResourceProcessor.process(exchange));
 
-        assertNull(exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
-        assertNull(exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
+        assertNull(exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE));
+        assertNull(exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID));
     }
 
     @Test

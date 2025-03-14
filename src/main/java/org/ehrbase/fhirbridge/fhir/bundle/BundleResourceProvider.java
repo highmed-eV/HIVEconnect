@@ -27,6 +27,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.Constants;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
@@ -41,6 +42,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
@@ -72,9 +74,19 @@ public class BundleResourceProvider implements IResourceProvider  {
         FhirContext fhirContext = FhirContext.forR4();
         String inputResource = fhirContext.newJsonParser().encodeResourceToString(bundle);
         MethodOutcome methodOutcome = null;
+
+        // FhirContext context = FhirContext.forR4();
+        // JsonParser jsonParser = (JsonParser) context.newJsonParser();
+        // try {
+        //         Bundle bundleResource =  jsonParser.parseResource(Bundle.class, incomingFhirResource);
+        //         logger.info("input bundle...");
+        // } catch (final Exception e) {
+        //     Resource resource =  (Resource) jsonParser.parseResource(incomingFhirResource);
+        // }
+        
         try {
             // Call Camel route with the Bundle resource
-            methodOutcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
+            methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
             return methodOutcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -88,15 +100,29 @@ public class BundleResourceProvider implements IResourceProvider  {
     }
 
 
-    private OperationOutcome createOperationOutcome(String message) {
-        OperationOutcome outcome = new OperationOutcome();
-        outcome.addIssue()
-                .setSeverity(OperationOutcome.IssueSeverity.ERROR)
-                .setCode(OperationOutcome.IssueType.EXCEPTION)
-                .setDiagnostics(message)
-                .setDetails(new org.hl7.fhir.r4.model.CodeableConcept()
-                        .setText("Internal Server Error during Condition creation"));
-        return outcome;
+    @Update
+    public MethodOutcome update(@IdParam IdType bundleId,
+                                @ResourceParam Bundle bundle,
+                                RequestDetails requestDetails,
+                                HttpServletRequest request,
+                                HttpServletResponse response) {
+        System.out.println("Executing 'Update Bundle' transaction using 'create' operation...");
+    
+        MethodOutcome methodOutcome = null;
+        try {
+            // Call Camel route with the Bundle resource
+            methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "PUT", MethodOutcome.class);
+            return methodOutcome;
+        } catch (CamelExecutionException exception) {
+            Exchange exchange = exception.getExchange();
+            if (exchange.isFailed()) {
+                BaseServerResponseException baseException = exchange.getException(BaseServerResponseException.class);
+                throw (baseException != null) ? baseException : new InternalErrorException("Unexpected server error", exchange.getException());
+            } else {
+                throw new InternalErrorException("Unexpected internal server error", exchange.getException());
+            }
+        }
+        
     }
 
 
@@ -174,7 +200,7 @@ public class BundleResourceProvider implements IResourceProvider  {
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Bundle resource
-        Bundle processedBundle = producerTemplate.requestBody("direct:CamelSearchRouteProcess", requestDetails, Bundle.class);
+        Bundle processedBundle = producerTemplate.requestBody("direct:SearchRouteProcess", requestDetails, Bundle.class);
 
         return processedBundle;
     }
@@ -183,7 +209,7 @@ public class BundleResourceProvider implements IResourceProvider  {
     public Bundle readBundle(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
         // Call Camel route with the Bundle resource
-        Bundle processedBundle = producerTemplate.requestBody("direct:CamelCreateRouteProcessRoute", requestDetails, Bundle.class);
+        Bundle processedBundle = producerTemplate.requestBody("direct:CreateRouteProcessRoute", requestDetails, Bundle.class);
 
         return processedBundle;
     }    

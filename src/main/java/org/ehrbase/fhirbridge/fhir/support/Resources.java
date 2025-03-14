@@ -3,6 +3,9 @@ package org.ehrbase.fhirbridge.fhir.support;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.*;
 
+import ca.uhn.fhir.util.ReflectionUtil;
+
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,15 +21,6 @@ public class Resources {
 
     public static boolean isPatient(Resource resource) {
         return resource != null && resource.getResourceType() == ResourceType.Patient;
-    }
-
-    public static boolean isQuestionnaireResponse(Resource resource) {
-        return resource != null && resource.getResourceType() == ResourceType.QuestionnaireResponse;
-    }
-
-    public static boolean isCovid19Questionnaire(Resource resource) {
-        return isQuestionnaireResponse(resource) &&
-                StringUtils.contains(((QuestionnaireResponse) resource).getQuestionnaire(), COVID_19_QUESTIONNAIRE_URL);
     }
 
     public static boolean isReferenceType(Reference reference, ResourceType resourceType) {
@@ -52,6 +46,8 @@ public class Resources {
                 return getPatient((Immunization) resource);
             case MedicationStatement:
                 return getSubject((MedicationStatement) resource);
+            case  MedicationRequest:
+                return getSubject((MedicationRequest) resource);
             case Observation:
                 return getSubject((Observation) resource);
             case Procedure:
@@ -68,6 +64,10 @@ public class Resources {
                 return getSubject((ServiceRequest) resource);
             case MedicationAdministration:
                 return getSubject((MedicationAdministration) resource);
+            case Medication:
+                return getSubject((Medication) resource);
+            case Organization:
+                return getSubject((Organization) resource);
             case List:
                 return getSubject((ListResource) resource);
             default:
@@ -76,6 +76,7 @@ public class Resources {
     }
 
     public static void setSubject(Resource resource, Reference subject) {
+        
         switch (resource.getResourceType()) {
             case Condition:
                 ((Condition) resource).setSubject(subject);
@@ -97,6 +98,9 @@ public class Resources {
                 break;
             case MedicationStatement:
                 ((MedicationStatement) resource).setSubject(subject);
+                break;
+            case MedicationRequest:
+                ((MedicationRequest) resource).setSubject(subject);
                 break;
             case Observation:
                 ((Observation) resource).setSubject(subject);
@@ -129,6 +133,44 @@ public class Resources {
                 throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
         }
     }
+
+    //A more genric approach to get the subject from the resource
+    public static Reference getSubjectGeneric(Resource resource) {
+            // Handle Patient resource explicitly
+            if (resource instanceof Patient) {
+                return new Reference(resource.getIdElement().getValue());
+            }
+        
+            // List of common fields that may contain patient references
+            String[] patientReferenceFields = {"subject", "patient", "individual"};
+        
+            // Use reflection to check for common fields
+            for (String field : patientReferenceFields) {
+                try {
+                    // Capitalize the field name to match the getter method name
+                    String getterName = "get" + field.substring(0, 1).toUpperCase() + field.substring(1);
+        
+                    // Get the getter method for the field
+                    Method getter = resource.getClass().getMethod(getterName);
+        
+                    // Invoke the getter method
+                    Object result = getter.invoke(resource);
+        
+                    // If the result is a Reference, return it
+                    if (result instanceof Reference) {
+                        Reference reference = (Reference) result;
+                        if (reference.hasReference()) {
+                            return reference;
+                        }
+                    }
+                } catch (Exception e) {
+                    // Ignore exceptions and continue checking other fields
+                }
+            }
+        
+            // If no patient reference is found, throw an exception
+            throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
+        }
 
     public static List<String> getProfileUris(Resource resource) {
         return resource.getMeta().getProfile()
@@ -165,6 +207,10 @@ public class Resources {
         return medicationStatement.hasSubject() ? Optional.of(medicationStatement.getSubject()) : Optional.empty();
     }
 
+    private static Optional<Reference> getSubject(MedicationRequest medicationRequest) {
+        return medicationRequest.hasSubject() ? Optional.of(medicationRequest.getSubject()) : Optional.empty();
+    }
+
     private static Optional<Reference> getSubject(Observation observation) {
         return observation.hasSubject() ? Optional.of(observation.getSubject()) : Optional.empty();
     }
@@ -197,6 +243,13 @@ public class Resources {
         return medicationAdministration.hasSubject() ? Optional.of(medicationAdministration.getSubject()) : Optional.empty();
     }
 
+    private static Optional<Reference> getSubject(Medication medication) {
+        return  Optional.empty();
+    }
+
+    private static Optional<Reference> getSubject(Organization organization) {
+        return Optional.empty();
+    }    
     private static Optional<Reference> getSubject(ListResource listResource) {
         return listResource.hasSubject() ? Optional.of(listResource.getSubject()) : Optional.empty();
     }

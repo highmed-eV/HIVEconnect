@@ -41,6 +41,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.IdType;
@@ -68,12 +69,9 @@ public class PatientResourceProvider implements IResourceProvider  {
                                 HttpServletResponse response) {
         System.out.println("Executing 'Provide Patient' transaction using 'create' operation...");
     
-        FhirContext fhirContext = FhirContext.forR4();
-        String inputResource = fhirContext.newJsonParser().encodeResourceToString(patient);
-
         try {
             // Call Camel route with the Patient resource
-            MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
+            MethodOutcome outcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
             return outcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -160,7 +158,7 @@ public class PatientResourceProvider implements IResourceProvider  {
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBody("direct:CamelSearchRouteProcess", requestDetails, Patient.class);
+        Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:SearchRouteProcess", requestDetails,  Exchange.HTTP_METHOD, "GET", Patient.class);
 
         return processedPatient;
     }
@@ -168,10 +166,19 @@ public class PatientResourceProvider implements IResourceProvider  {
     @Read(version = true)
     public Patient readPatient(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
-        // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBody("direct:CamelCreateRouteProcessRoute", requestDetails, Patient.class);
-
-        return processedPatient;
+        try {
+            // Call Camel route with the Patient resource
+            Patient processedPatient = producerTemplate.requestBodyAndHeader("direct:ReadRouteProcess", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
+            return processedPatient;
+        } catch (CamelExecutionException exception) {
+            Exchange exchange = exception.getExchange();
+            if (exchange.isFailed()) {
+                BaseServerResponseException baseException = exchange.getException(BaseServerResponseException.class);
+                throw (baseException != null) ? baseException : new InternalErrorException("Unexpected server error", exchange.getException());
+            } else {
+                throw new InternalErrorException("Unexpected internal server error", exchange.getException());
+            }
+        }
     }    
 }
 

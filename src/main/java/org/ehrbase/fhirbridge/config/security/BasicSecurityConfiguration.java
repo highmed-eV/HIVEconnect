@@ -21,13 +21,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -38,84 +39,48 @@ import org.springframework.security.web.SecurityFilterChain;
  * @since 1.6
  */
 @Configuration(proxyBeanMethods = false)
-@EnableWebSecurity //MedBlocks
+@EnableWebSecurity
 @ConditionalOnProperty(value = "fhir-bridge.security.type", havingValue = "basic")
-public class BasicSecurityConfiguration  {
+public class BasicSecurityConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(BasicSecurityConfiguration.class);
-
     private final SecurityProperties properties;
 
     public BasicSecurityConfiguration(SecurityProperties properties) {
         this.properties = properties;
     }
 
-    
     @Bean
-     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        //  http.authorizeRequests().requestMatchers("/**").hasRole("USER").and().formLogin();
-        log.info("#########securityFilterChain");
-         http
-            .authorizeRequests()
-                .requestMatchers("/**")
-                    .permitAll()
-                .anyRequest()
-                    .authenticated()
-            .and().httpBasic()
-            .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.csrf().disable();
-        return http.build();
-     }
-
-     @Bean
-     public UserDetailsService userDetailsService() {
-         UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build();
-         UserDetails admin = User.withDefaultPasswordEncoder()
-             .username("admin")
-             .password("password")
-             .roles("ADMIN", "USER")
-             .build();
-         return new InMemoryUserDetailsManager(user, admin);
-     }
-
-    //New spring security
-    // @Bean
-    // public WebSecurityCustomizer webSecurityCustomizer() {
-    //     return (web) -> web.ignoring().antMatchers("/ignore1", "/ignore2");
-    // }
-
-    /**
-     * @see WebSecurityConfigurerAdapter#configure(HttpSecurity)
-     */
-    // @Override //MedBlocks
-    public void configure(HttpSecurity http) throws Exception {
-        // @formatter:off
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("Configuring Basic Authentication security filter chain");
         http
             .csrf()
                 .disable()
             .authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-            .httpBasic();
-        // @formatter:on
+                .anyRequest()
+                .authenticated()
+            .and()
+                .httpBasic()
+            .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        return http.build();
     }
 
-    /**
-     * @see WebSecurityConfigurerAdapter#configure(AuthenticationManagerBuilder)
-     */
-    // @Override //MedBlocks
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // @formatter:off
-        auth
-            .inMemoryAuthentication()
-                .withUser(properties.getUser().getName())
-                    .password("{noop}" + properties.getUser().getPassword())
-                    .roles("ROLE_USER");
-        // @formatter:on
+    @Bean
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails user = User.builder()
+                .username(properties.getUser().getName())
+                .password(passwordEncoder.encode(properties.getUser().getPassword()))
+                .roles("USER")
+                .build();
+        
+        return new InMemoryUserDetailsManager(user);
+    }
+
+    @Bean 
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

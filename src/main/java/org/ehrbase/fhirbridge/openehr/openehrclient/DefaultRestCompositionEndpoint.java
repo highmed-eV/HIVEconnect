@@ -60,7 +60,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     final VersionUid updatedVersion = internalMerge(composition, versionUid.orElse(null));
     
-    //TODO: update version
+    //update version
     if (composition.getUid() == null) {
       UIDBasedId uIDBasedId = new ObjectVersionId(updatedVersion.toString());
       composition.setUid(uIDBasedId);
@@ -90,7 +90,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     final VersionUid updatedVersion = internalMerge(composition, versionUid.orElse(null));
     
-    //TODO: update version
+    //update version
     if (composition.getUid() == null) {
       UIDBasedId uIDBasedId = new ObjectVersionId(updatedVersion.toString());
       composition.setUid(uIDBasedId);

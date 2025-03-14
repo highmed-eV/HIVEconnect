@@ -88,10 +88,10 @@ class EhrLookupProcessorTests {
         patient.addIdentifier()
                 .setSystem("http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym")
                 .setValue("123");
-        defaultExchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patient);
-        defaultExchange.getMessage().setHeader(CamelConstants.INPUT_SYSTEM_ID, "system123");
-        defaultExchange.getMessage().setHeader(CamelConstants.PATIENT_ID, "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123");
-        defaultExchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_ID, "Patient/123");
+        defaultExchange.getMessage().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, patient);
+        defaultExchange.getMessage().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "system123");
+        defaultExchange.getMessage().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123");
+        defaultExchange.getMessage().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, "Patient/123");
         return defaultExchange;
     }
 

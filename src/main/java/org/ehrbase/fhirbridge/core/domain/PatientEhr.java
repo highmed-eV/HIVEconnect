@@ -18,19 +18,25 @@ package org.ehrbase.fhirbridge.core.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 @Entity
 @Table(name = "FB_PATIENT_EHR")
+@EntityListeners(AuditingEntityListener.class)
 public class PatientEhr {
 
     @Id
     @Column(name = "INPUT_PATIENT_ID")
     private String inputPatientId;
-
 
     @Column(name = "INTERNAL_PATIENT_ID")
     private String internalPatientId;
@@ -41,6 +47,14 @@ public class PatientEhr {
     @NotNull
     @Column(name = "EHR_ID")
     private UUID ehrId;
+
+    @CreatedDate
+    @Column(name = "CREATED_DATE_TIME", nullable = false, updatable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private ZonedDateTime createdDateTime;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_DATE_TIME", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private ZonedDateTime updatedDateTime;
 
     public PatientEhr() {
     }
@@ -87,6 +101,22 @@ public class PatientEhr {
         this.ehrId = ehrId;
     }
 
+    public ZonedDateTime getCreatedDateTime() {
+        return createdDateTime;
+    }
+
+    public void setCreatedDateTime(ZonedDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
+    }
+
+    public ZonedDateTime getUpdatedDateTime() {
+        return updatedDateTime;
+    }
+
+    public void setUpdatedDateTime(ZonedDateTime updatedDateTime) {
+        this.updatedDateTime = updatedDateTime;
+    }
+
     @Override
     public String toString() {
         return "PatientEhr{" +
@@ -94,6 +124,8 @@ public class PatientEhr {
                 "internalPatientId='" + internalPatientId + '\'' +
                 "systemId='" + systemId + '\'' +
                 ", ehrId=" + ehrId +
+                ", createdDateTime=" + createdDateTime +
+                ", updatedDateTime=" + updatedDateTime +
                 '}';
     }
 }

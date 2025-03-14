@@ -1,7 +1,6 @@
-# FHIR Bridge 2 [![CircleCI Status](https://circleci.com/gh/ehrbase/fhir-bridge.svg?style=shield)](https://circleci.com/gh/ehrbase/fhir-bridge)
+# FHIR Bridge 2
 
-FHIR Bridge is an official component of [EHRbase](https://ehrbase.org/).
-The purpose of the application is to act as a broker between an HL7 FHIR client and an openEHR server.
+The purpose of FHIR Bridge  application is to act as a broker between an HL7 FHIR client and an openEHR server.
 
 The implementation is based on [Apache Camel](https://camel.apache.org/) and [Open eHealth Integration Platform](https://github.com/oehf/ipf).
 

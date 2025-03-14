@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,14 +38,17 @@ class CompositionLookupProcessorTest {
     @Test
     void processWithValidResourceIds() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7");
-        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+        exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
+        exchange.getMessage().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Organization/7"))
                 .thenReturn(Arrays.asList("28da67b8-426e-4eb7-bcc5-8be85d9284e7::local.ehrbase.org::1"));
 
-        compositionLookupProcessor.process(exchange);
+        // Should not throw an exception
+        assertDoesNotThrow(() -> compositionLookupProcessor.process(exchange));
+        
         verify(resourceCompositionRepository, times(1)).findCompositionIdsByInputResourceId("Encounter/6");
         verify(resourceCompositionRepository, times(1)).findCompositionIdsByInputResourceId("Organization/7");
     }
@@ -52,7 +56,8 @@ class CompositionLookupProcessorTest {
     @Test
     void processWithSameCompositionIdsShouldThrowException() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7");
-        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+        exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
+        exchange.getMessage().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));
@@ -75,7 +80,8 @@ class CompositionLookupProcessorTest {
     @Test
     void processWithSingleCompositionIdShouldThrowException() throws Exception {
         List<String> inputResourceIds = List.of("Encounter/6");
-        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+        exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
+        exchange.getMessage().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));
@@ -95,7 +101,8 @@ class CompositionLookupProcessorTest {
     @Test
     void processWithNewResourceShouldNotThrowException() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7", "NewResource/8");
-        exchange.setProperty(CamelConstants.INPUT_RESOURCE_IDS, inputResourceIds);
+        exchange.setProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, inputResourceIds);
+        exchange.getMessage().setHeader(CamelConstants.REQUEST_HTTP_METHOD, "POST");
 
         when(resourceCompositionRepository.findCompositionIdsByInputResourceId("Encounter/6"))
                 .thenReturn(Arrays.asList("07b59702-39e1-4a87-880c-6271fe66edea::local.ehrbase.org::1"));

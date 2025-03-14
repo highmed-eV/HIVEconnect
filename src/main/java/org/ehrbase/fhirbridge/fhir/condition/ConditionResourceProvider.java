@@ -82,7 +82,7 @@ public class ConditionResourceProvider implements IResourceProvider  {
 
         try {
             // Call Camel route with the Condition resource
-            MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", condition, MethodOutcome.class);
+            MethodOutcome outcome = producerTemplate.requestBody("direct:CreateRouteProcess", condition, MethodOutcome.class);
             return outcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -169,7 +169,7 @@ public class ConditionResourceProvider implements IResourceProvider  {
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Condition resource
-        Condition processedCondition = producerTemplate.requestBody("direct:CamelSearchRouteProcess", requestDetails, Condition.class);
+        Condition processedCondition = producerTemplate.requestBody("direct:SearchRouteProcess", requestDetails, Condition.class);
 
         return processedCondition;
     }
@@ -178,7 +178,7 @@ public class ConditionResourceProvider implements IResourceProvider  {
     public Condition readCondition(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
         // Call Camel route with the Condition resource
-        Condition processedCondition = producerTemplate.requestBody("direct:CamelCreateRouteProcessRoute", requestDetails, Condition.class);
+        Condition processedCondition = producerTemplate.requestBody("direct:CreateRouteProcessRoute", requestDetails, Condition.class);
 
         return processedCondition;
     }    
