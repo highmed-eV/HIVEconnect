@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         Composition composition = (Composition) exchange.getIn().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION);
         Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE_TYPE);
+        
         UUID ehrId = (UUID) exchange.getIn().getHeader(CompositionConstants.EHR_ID);
         Map<String, String> resourceIdMap = new LinkedHashMap<>();
 
@@ -196,27 +198,40 @@ public class ProvideResourceResponseProcessor implements Processor {
         for (Map.Entry<String, String> entry : resourceIdMap.entrySet()) {
             String inputResourceId = entry.getKey();
             String internalResourceId = entry.getValue();
-            String compositionId = getCompositionId(composition);
             ResourceComposition resourceComposition;
-
+            String compositionId = getCompositionId(composition);
+            String templateId = Optional.ofNullable(composition.getArchetypeDetails()) 
+                                .map(archetypeDetails -> Optional.ofNullable(archetypeDetails.getTemplateId()) 
+                                .orElse(null)) 
+                                .map(template -> template.getValue()) 
+                                .orElse(null);
             String method =  (String) exchange.getIn().getHeader(CamelConstants.REQUEST_HTTP_METHOD);
             if ("POST".equals(method)) {
                 // resourceComposition = resourceCompositionRepository.findByInputResourceIdAndSystemId(inputResourceId, systemId);
                 // If found throw error
-                resourceComposition = new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId);
+                resourceComposition = new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId, templateId);
+                LocalDateTime dateTime = LocalDateTime.now();
+                resourceComposition.setCreatedDateTime(dateTime);
+                resourceComposition.setUpdatedDateTime(dateTime);
             } else {
                 compositionId = (String) exchange.getMessage().getHeader(CamelConstants.OPENEHR_COMPOSITION_ID);
                 resourceComposition = resourceCompositionRepository.findByInternalResourceIdAndCompositionIdAndEhrId(inputResourceId, compositionId, ehrId)
-                        .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId));
+                        .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId, templateId));
+                LocalDateTime dateTime = LocalDateTime.now();
+                if (resourceComposition.getCreatedDateTime() == null) {
+                    resourceComposition.setCreatedDateTime(dateTime);
+                }
+                resourceComposition.setUpdatedDateTime(dateTime);
             }
 
             resourceComposition.setCompositionId(getCompositionId(composition));
             resourceComposition.setInternalResourceId(internalResourceId);
             resourceComposition.setEhrId(ehrId);
+            resourceComposition.setTemplateId(templateId);
             resourceCompositionRepository.save(resourceComposition);
 
-            LOG.debug("Saved ResourceComposition: inputResourceId={}, internalResourceId={}, compositionId={}",
-                    resourceComposition.getInputResourceId(), resourceComposition.getInternalResourceId(), resourceComposition.getCompositionId());
+            LOG.debug("Saved ResourceComposition: inputResourceId={}, internalResourceId={}, compositionId={}, templateId={}",
+                    resourceComposition.getInputResourceId(), resourceComposition.getInternalResourceId(), resourceComposition.getCompositionId(), resourceComposition.getTemplateId());
         }
 
         LOG.info("ProvideResourceResponseProcessor");

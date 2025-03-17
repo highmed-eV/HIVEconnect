@@ -230,11 +230,7 @@
           }
         },
         "subject": {
-          "reference": "Patient/{{patientid}}",
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
+          "reference": "Patient/{{patientid}}"
         },
         "onsetPeriod": {
           "start": {
@@ -448,11 +444,7 @@
           }
         ],
         "subject": {
-          "reference": "Patient/{{patientid}}",
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
+          "reference": "Patient/{{patientid}}"
         },
         "encounter": {
           "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-53c6e5294aee",
