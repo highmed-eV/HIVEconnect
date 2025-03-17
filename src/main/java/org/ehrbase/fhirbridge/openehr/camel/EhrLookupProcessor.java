@@ -119,11 +119,8 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
             ehrId = result.get(0).value1();
             
             //TODO: Check the patientid-ehrid mapping is correct in the db
-            // TODO: check if ehrid mapped to serverPatientId in db. Else throw error ??
-            // PatientEhr patientEhr = Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndEhrId(serverPatientId, ehrId))
-            //                 .orElseThrow(() -> new ConversionException("Conflict: EHR ids and patient id do not match (subject.external_ref.id.value). Please check your input and pass the correct reference"));
-            // LOG.info("EhrLookupProcessor: PatientId: {} EHRId: {}", patientId, ehrId);
-   
+            // check if ehrid mapped to serverPatientId in db. Else throw error ??
+  
             PatientEhr patientEhr = patientEhrRepository.findByInternalPatientIdAndEhrId(serverPatientId, ehrId);
             if (patientEhr == null) {
                 // Create and save new mapping if none exists

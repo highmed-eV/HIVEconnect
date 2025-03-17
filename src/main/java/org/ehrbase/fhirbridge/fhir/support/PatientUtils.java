@@ -118,7 +118,7 @@ public class PatientUtils {
             //Not supporting mix of  Relative reference with serch urls although this is possible
             //In order to support this we need to first resolve the serch url to relative reference
             //eg: Patient/123 and Patient?identifier=12345
-            //First relsolev the serch url by calling server
+            //First resolve the serch url by calling server
             //get the Relative reference for this and check if it is present in the bundle  
             //if not then throw error
             //if yes then return the relative reference

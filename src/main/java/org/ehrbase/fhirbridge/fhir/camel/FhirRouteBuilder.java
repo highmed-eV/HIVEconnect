@@ -267,11 +267,6 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                 .when(header(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE).isEqualTo("SEARCH_URL"))
                     .doTry()
                         .log("Read SEARCH_URL patient id ${header.CamelFhirPatientId}") 
-                        // .process(exchange -> {
-                        //     String patientSearchUrl = (String) exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_SEARCH_URL);
-                        //     String patientSearchPart = patientSearchUrl.split("Patient?")[1];
-                        //     exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_SEARCH_URL, patientSearchPart);
-                        // })
                         .toD("fhir://search/searchByUrl?url=${header.CamelFhirPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                             .process(exchange -> {
                                 if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {

@@ -156,8 +156,8 @@ public class OpenFHIRAdapter {
             logger.info("Uploaded template to openFHIR: {}", templateId);
             return response;
         } catch (Exception e) {
-            logger.info("Error in Template upload to openFHIR: {}", templateId);
-            return "Error in Template upload to openFHIR";
+            logger.info("Template upload to openFHIR: {}", templateId);
+            return "Template upload to openFHIR error";
         }
     }
 }
