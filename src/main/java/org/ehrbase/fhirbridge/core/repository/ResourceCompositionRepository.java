@@ -17,6 +17,7 @@
 package org.ehrbase.fhirbridge.core.repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.ehrbase.fhirbridge.core.domain.PatientEhr;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
@@ -31,31 +32,31 @@ import java.util.Optional;
 @Repository
 public interface ResourceCompositionRepository extends JpaRepository<ResourceComposition, String> {
 
-    @Query("SELECT rc.inputResourceId FROM ResourceComposition rc WHERE rc.internalResourceId = :internalResourceId")
-    String findInternalResourceIdByInputResourceId(@Param("internalResourceId") String internalResourceId);
+    @Query("SELECT rc.inputResourceId FROM ResourceComposition rc WHERE rc.internalResourceId = :internalResourceId AND rc.systemId = :systemId")
+    String findInternalResourceIdByInputResourceIdAndSystemId(@Param("internalResourceId") String internalResourceId, @Param("systemId") String systemId);
 
-    @Query("SELECT rc.internalResourceId FROM ResourceComposition rc WHERE rc.inputResourceId IN :inputResourceIds")
-    List<String> findInternalResourceIdsByInputResourceIds(@Param("inputResourceIds") List<String> inputResourceIds);
+    @Query("SELECT rc.internalResourceId FROM ResourceComposition rc WHERE rc.inputResourceId IN :inputResourceIds AND rc.systemId = :systemId")
+    List<String> findInternalResourceIdsByInputResourceIdsAndSystemId(@Param("inputResourceIds") List<String> inputResourceIds, @Param("systemId") String systemId);
 
-    @Query("SELECT rc FROM ResourceComposition rc WHERE rc.inputResourceId = :inputResourceId ORDER BY rc.id DESC LIMIT 1")
-    Optional<ResourceComposition> findByInputResourceId(@Param("inputResourceId") String inputResourceId);
+    @Query("SELECT rc FROM ResourceComposition rc WHERE rc.inputResourceId = :inputResourceId AND rc.systemId = :systemId ORDER BY rc.id DESC LIMIT 1")
+    Optional<ResourceComposition> findByInputResourceIdAndSystemId(@Param("inputResourceId") String inputResourceId, @Param("systemId") String systemId);
 
-    Optional<ResourceComposition> findByInputResourceIdAndCompositionId(String inputResourceId, String compositionId);
+    Optional<ResourceComposition> findByInputResourceIdAndCompositionIdAndEhrId(String inputResourceId, String compositionId, UUID ehrId);
 
-    Optional<ResourceComposition> findByInternalResourceIdAndCompositionId(String internalResourceId, String compositionId);
+    Optional<ResourceComposition> findByInternalResourceIdAndCompositionIdAndEhrId(String internalResourceId, String compositionId, UUID ehrId);
 
-    @Query("SELECT rc.compositionId FROM ResourceComposition rc WHERE rc.inputResourceId = :inputResourceId")
-    List<String> findCompositionIdsByInputResourceId(@Param("inputResourceId") String inputResourceId);
+    @Query("SELECT rc.compositionId FROM ResourceComposition rc WHERE rc.inputResourceId = :inputResourceId AND rc.ehrId = :ehrId")
+    List<String> findCompositionIdsByInputResourceIdAndEhrId(@Param("inputResourceId") String inputResourceId, @Param("ehrId") UUID ehrId);
 
-    @Query("SELECT rc.compositionId FROM ResourceComposition rc WHERE rc.internalResourceId = :internalResourceId")
-    List<String> findCompositionIdsByInternalResourceId(@Param("internalResourceId") String internalResourceId);
+    @Query("SELECT rc.compositionId FROM ResourceComposition rc WHERE rc.internalResourceId = :internalResourceId AND rc.ehrId = :ehrId")
+    List<String> findCompositionIdsByInternalResourceIdAndEhrId(@Param("internalResourceId") String internalResourceId, @Param("ehrId") UUID ehrId);
 
-    @Query("SELECT rc.inputResourceId FROM ResourceComposition rc WHERE rc.compositionId = :compositionId")
-    List<String> findInputResourcesByCompositionId(@Param("compositionId") String compositionId);
+    @Query("SELECT rc.inputResourceId FROM ResourceComposition rc WHERE rc.compositionId = :compositionId AND rc.ehrId = :ehrId")
+    List<String> findInputResourcesByCompositionIdAndEhrId(@Param("compositionId") String compositionId, @Param("ehrId") UUID ehrId);
 
-    @Query("SELECT rc.internalResourceId FROM ResourceComposition rc WHERE rc.compositionId = :compositionId")
-    List<String> findInternalResourcesByCompositionId(@Param("compositionId") String compositionId);
+    @Query("SELECT rc.internalResourceId FROM ResourceComposition rc WHERE rc.compositionId = :compositionId AND rc.ehrId = :ehrId")
+    List<String> findInternalResourcesByCompositionIdAndEhrId(@Param("compositionId") String compositionId, @Param("ehrId") UUID ehrId);
 
-    Optional<ResourceComposition> findByInternalResourceId(String internalResourceId);
+    Optional<ResourceComposition> findByInternalResourceIdAndSystemId(String internalResourceId, String systemId);
 
 }

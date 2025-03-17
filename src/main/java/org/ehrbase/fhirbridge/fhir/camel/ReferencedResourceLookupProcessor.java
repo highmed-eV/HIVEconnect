@@ -56,13 +56,14 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
         List<String > inputResourceIds = exchange.getProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, List.class);
         if (inputResourceIds == null || inputResourceIds.isEmpty()) {
             return;
         }
 
         // fetch the internalResourceIds corresponding to the inputResourceIds from db
-        List<String> internalResourceIds = resourceCompositionRepository.findInternalResourceIdsByInputResourceIds(inputResourceIds);
+        List<String> internalResourceIds = resourceCompositionRepository.findInternalResourceIdsByInputResourceIdsAndSystemId(inputResourceIds, systemId);
 
         if (!internalResourceIds.isEmpty()) {
             exchange.setProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS, internalResourceIds);
@@ -81,12 +82,13 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
     private String updateInputResource(Exchange exchange, String inputResource) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(inputResource);
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
 
         String updatedResource = inputResource;
         if (rootNode != null && rootNode.isObject()) {
             // if resourceType is Bundle
             if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
-                updateBundleReferences(rootNode);
+                updateBundleReferences(rootNode, systemId);
                 updatedResource = objectMapper.writeValueAsString(rootNode);
                 FhirContext fhirContext = FhirContext.forR4();
                 JsonParser jsonParser = (JsonParser) fhirContext.newJsonParser();
@@ -96,7 +98,7 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
 
             } else {
                 // for individual resource
-                updateReferences(rootNode);
+                updateReferences(rootNode, systemId);
                 //TODO: Set the updated resource back into the exchange body
             }
         }
@@ -104,7 +106,7 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
         return updatedResource;
     }
 
-    private void updateBundleReferences(JsonNode rootNode) {
+    private void updateBundleReferences(JsonNode rootNode, String systemId) {
         // Extract the "entry" array from the bundle
         JsonNode entryArray = rootNode.path("entry");
         if (entryArray.isArray()) {
@@ -112,13 +114,13 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
             for (JsonNode entry : entryArray) {
                 JsonNode resourceNode = entry.path("resource");
                 if (resourceNode.isObject()) {
-                    updateReferences(resourceNode);
+                    updateReferences(resourceNode, systemId);
                 }
             }
         }
     }
 
-    private void updateReferences(JsonNode resourceNode) {
+    private void updateReferences(JsonNode resourceNode, String systemId) {
         Iterator<String> fieldNames = resourceNode.fieldNames();
         String regex = "^[^/]+/[A-Za-z0-9-]+$";
         while (fieldNames.hasNext()) {
@@ -126,23 +128,23 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
             JsonNode childNode = resourceNode.get(fieldName);
 
             if ("reference".equals(fieldName) && childNode.isTextual()) {
-                if (processReferenceField(resourceNode, childNode, regex, fieldName)) break;
+                if (processReferenceField(resourceNode, childNode, regex, fieldName, systemId)) break;
             } else if (childNode.isObject()) {
                 // Recursively update references in child objects
-                updateReferences(childNode);
+                updateReferences(childNode, systemId);
             } else if (childNode.isArray()) {
                 // Recursively update references in array elements
                 for (JsonNode arrayElement : childNode) {
-                    updateReferences(arrayElement);
+                    updateReferences(arrayElement, systemId);
                 }
             }
         }
     }
 
-    private boolean processReferenceField(JsonNode resourceNode, JsonNode childNode, String regex, String fieldName) {
+    private boolean processReferenceField(JsonNode resourceNode, JsonNode childNode, String regex, String fieldName, String systemId) {
         String inputResourceId = childNode.asText();
         if (Pattern.matches(regex, inputResourceId)) {
-            Optional<String> dbInternalResourceId = resourceCompositionRepository.findByInputResourceId(inputResourceId)
+            Optional<String> dbInternalResourceId = resourceCompositionRepository.findByInputResourceIdAndSystemId(inputResourceId, systemId)
                     .map(ResourceComposition::getInternalResourceId);
 
             if (dbInternalResourceId.isPresent() && resourceNode instanceof ObjectNode objectNode) {

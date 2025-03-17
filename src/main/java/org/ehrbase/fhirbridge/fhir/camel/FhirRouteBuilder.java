@@ -5,6 +5,7 @@ import ca.uhn.fhir.parser.JsonParser;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -263,6 +264,41 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                         })
                     .endDoTry()
                 .endChoice()
+                .when(header(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE).isEqualTo("SEARCH_URL"))
+                    .doTry()
+                        .log("Read SEARCH_URL patient id ${header.CamelFhirPatientId}") 
+                        // .process(exchange -> {
+                        //     String patientSearchUrl = (String) exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_SEARCH_URL);
+                        //     String patientSearchPart = patientSearchUrl.split("Patient?")[1];
+                        //     exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_SEARCH_URL, patientSearchPart);
+                        // })
+                        .toD("fhir://search/searchByUrl?url=${header.CamelFhirPatientId}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+                            .process(exchange -> {
+                                if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+                                    Bundle patientBundleResource = (Bundle) exchange.getIn().getBody();
+                                    Patient serverPatient = Optional.ofNullable(patientBundleResource.getEntry())
+                                                            .filter(entryList -> !entryList.isEmpty())
+                                                            .map(entryList -> entryList.get(0).getResource())
+                                                            .filter(Patient.class::isInstance)
+                                                            .map(Patient.class::cast)
+                                                            .orElse(null);
+
+                                    if( serverPatient == null) {
+                                        throw new UnprocessableEntityException("Patient not found for search url: " + exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_SEARCH_URL));
+                                    } else {
+                                        String serverPatientId = "Patient/" + serverPatient.getIdPart();
+                                        exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, serverPatient);
+                                        exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
+                                        exchange.getIn().setBody(serverPatient);
+                                    }
+                                } else {
+                                    throw new UnprocessableEntityException("Patient not found for search url: " + exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_SEARCH_URL));
+                                }
+                            })            
+                    .doCatch(Exception.class)
+                        .process(new FhirBridgeExceptionHandler())
+                    .endDoTry()
+                .endChoice()
                 .otherwise()
                     .log("ABSOLUTE PatientId Type")
                 .endChoice()
@@ -299,7 +335,7 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                 Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
                 exchange.getIn().setBody(inputResource);
             })
-            .log("FHIR PatientReferenceProcessor completed: input patient id: ${header." + CamelConstants.FHIR_INPUT_PATIENT_ID + "} input patient identifier:${header." + CamelConstants.IDENTIFIER_OBJECT + "}  and server patient id: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}");
+            .log("FHIR PatientReferenceProcessor completed: input patient id: ${header." + CamelConstants.FHIR_INPUT_PATIENT_ID + "} input patient identifier:${header." + CamelConstants.IDENTIFIER_OBJECT + "}  and server patient id from db: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}");
 
         // Extract Reference(all  flavours: local, relative, absolute, or internal) Resource Ids 
         // from the FHIR Input Resource, lookup db and maintain the mapping

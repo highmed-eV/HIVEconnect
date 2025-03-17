@@ -1,22 +1,31 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.Handler;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
+import org.ehrbase.fhirbridge.core.domain.PatientEhr;
+import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import org.apache.camel.Exchange;
-import org.apache.camel.Handler;
-import org.ehrbase.fhirbridge.camel.CamelConstants;
-import org.ehrbase.fhirbridge.core.domain.PatientEhr;
-import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
-import org.hl7.fhir.r4.model.*;
-import org.springframework.stereotype.Component;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Objects;
-import java.util.Optional;
 
 @Component
 public class PatientUtils {
@@ -30,9 +39,11 @@ public class PatientUtils {
 
     @Handler
     public void extractPatientIdOrIdentifier(Exchange exchange) {
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
         Resource resource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String patientId = null;
         String serverPatientId = null;
+        UUID ehrId = null;
 
         if (resource instanceof Patient) {
             // Handle Patient resource
@@ -43,9 +54,9 @@ public class PatientUtils {
 
             if (identifier != null) {
                 patientId = identifier.getSystem() + "|" + identifier.getValue();
-                serverPatientId = getServerPatientIdFromDb(patientId);
-                
-                if (serverPatientId != null) {
+                PatientEhr serverPatient = getServerPatientIdFromDb(patientId, systemId);
+                if (serverPatient != null) {
+                    serverPatientId = serverPatient.getInternalPatientId();
                     throw new UnprocessableEntityException("Patient: " + patientId + " absolute reference already exists. Please provide relative reference: " + serverPatientId);
                 }
             }
@@ -62,22 +73,32 @@ public class PatientUtils {
             String reference = subject.getReference();
             if (subject.hasReference()) {
                 patientId = handlePatientReference(exchange, resource, reference);
-                serverPatientId = getServerPatientIdFromDb(patientId);
+                PatientEhr serverPatient = getServerPatientIdFromDb(patientId, systemId);
+                if (serverPatient != null) {
+                    serverPatientId = serverPatient.getInternalPatientId();
+                    ehrId = serverPatient.getEhrId();
+                }
 
                 exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
                 exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
+                exchange.getIn().setHeader(CompositionConstants.EHR_ID, ehrId);
             } else if (hasIdentifier(subject)) {
                 // Handle identifier-based reference
                 Identifier identifier = subject.getIdentifier();
                 if (identifier != null) {
                     patientId = identifier.getSystem() + "|" + identifier.getValue();
-                    serverPatientId = getServerPatientIdFromDb(patientId);
+                    PatientEhr serverPatient = getServerPatientIdFromDb(patientId, systemId);
+                    if (serverPatient != null) {
+                        serverPatientId = serverPatient.getInternalPatientId();
+                        ehrId = serverPatient.getEhrId();
+                    }
 
                     exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
                     exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
                     exchange.setProperty(CamelConstants.IDENTIFIER_OBJECT, new TokenParam(identifier.getSystem(), identifier.getValue()));
                     exchange.getIn().setHeader(CamelConstants.IDENTIFIER_STRING, identifier.getValue());
                     exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "IDENTIFIER");
+                    exchange.getIn().setHeader(CompositionConstants.EHR_ID, ehrId);
                 }
             } else {
                 throw new UnprocessableEntityException("Subject identifier is required");
@@ -93,24 +114,62 @@ public class PatientUtils {
 
     private Reference extractPatientReference(Resource resource) {
         if (resource instanceof Bundle) {
+            //Supporting homogenous patient references in bundle for now.
+            //Not supporting mix of  Relative reference with serch urls although this is possible
+            //In order to support this we need to first resolve the serch url to relative reference
+            //eg: Patient/123 and Patient?identifier=12345
+            //First relsolev the serch url by calling server
+            //get the Relative reference for this and check if it is present in the bundle  
+            //if not then throw error
+            //if yes then return the relative reference
+            //TODO: Support heterogenous patient references in bundle.
             Bundle bundle = (Bundle) resource;
-            return bundle.getEntry().stream()
-                .map(entry -> {
-                    try {
-                        if (Resources.isPatient(entry.getResource())) {
-                            return null;
-                        } else {
-                            return Resources.getSubject(entry.getResource())
-                                    .orElse(null);
-                        }
-                    } catch (UnprocessableEntityException e) {
-                        // Continue searching if this entry doesn't have a subject
-                        return null;
+            List<Reference> subjectReferences = bundle.getEntry().stream()
+            .map(entry -> {
+                try {
+                    if (Resources.isPatient(entry.getResource())) {
+                        return null; // Skip Patient resources
+                    } else {
+                        return Resources.getSubject(entry.getResource())
+                                .orElse(null); // Get subject reference, if any
                     }
-                })
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElseThrow(() -> new UnprocessableEntityException("Bundle does not contain any resources with patient references"));
+                } catch (UnprocessableEntityException e) {
+                    // Skip entries that don't have a subject
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull) // Filter out null values
+            .collect(Collectors.toList()); // Collect all subject references into a list
+
+            // Check if the bundle contains any resources with subject references
+            if (subjectReferences.isEmpty()) {
+                throw new UnprocessableEntityException("Bundle does not contain any resources with patient references");
+            }
+
+            Reference firstReference = subjectReferences.get(0);
+            boolean referencesMatch;
+            
+            // Check if first reference is an identifier-based reference
+            if (firstReference.hasIdentifier()) {
+                // All should be identifier references with matching system and value
+                referencesMatch = subjectReferences.stream()
+                        .allMatch(ref -> ref.hasIdentifier() 
+                                && ref.getIdentifier().getSystem().equals(firstReference.getIdentifier().getSystem())
+                                && ref.getIdentifier().getValue().equals(firstReference.getIdentifier().getValue()));
+            } else if (firstReference.hasReference()) {
+                // All should be string references with matching values
+                referencesMatch = subjectReferences.stream()
+                        .allMatch(ref -> ref.hasReference() 
+                                && ref.getReference().equals(firstReference.getReference()));
+            } else {
+                referencesMatch = false;
+            }
+
+            if (!referencesMatch) {
+                throw new UnprocessableEntityException("Bundle contains resources with inconsistent patient references");
+            }
+
+            return firstReference;
         }
         
         return Resources.getSubject(resource)
@@ -134,7 +193,11 @@ public class PatientUtils {
                 return patient.map(p -> p.getId()).orElse(null);
             }
             return null;
-        } else {
+        } else if (reference.startsWith("Patient?")) {
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "SEARCH_URL");
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_SEARCH_URL, reference);
+            return reference;
+        }  else {
             exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "EXTERNAL_REFERENCE");
             return reference;
         }
@@ -160,11 +223,9 @@ public class PatientUtils {
                 .findFirst();
     }
 
-    public String getServerPatientIdFromDb(String patientId) {
-        return Optional.ofNullable(patientEhrRepository.findByInputPatientId(patientId))  
-                .map(PatientEhr::getInternalPatientId)  
-                .orElseGet(() -> Optional.ofNullable(patientEhrRepository.findByInternalPatientId(patientId))
-                .map(PatientEhr::getInternalPatientId)  
+    public PatientEhr getServerPatientIdFromDb(String patientId, String systemId) {
+        return Optional.ofNullable(patientEhrRepository.findByInputPatientIdAndSystemId(patientId, systemId))  
+                .orElseGet(() -> Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndSystemId(patientId, systemId))
                 .orElse(null));  
     }
 
@@ -191,6 +252,7 @@ public class PatientUtils {
     }
 
     public void getPatientIdFromPatientResource(Exchange exchange) {
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
         Patient patient = (Patient) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String patientId = null;
         
@@ -202,8 +264,8 @@ public class PatientUtils {
             patientId = system + "|" + value;
         }
 
-        String serverPatientId = getServerPatientIdFromDb(patientId);
-        if (serverPatientId != null) {
+        PatientEhr serverPatient = getServerPatientIdFromDb(patientId, systemId);
+        if (serverPatient != null) {
             //This can be the case when Patient resource is part of the bundle and the patient is already created
             throw new UnprocessableEntityException("Patient: " + patientId + " already exists");
         }

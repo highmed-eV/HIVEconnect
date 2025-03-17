@@ -123,7 +123,7 @@ public class OpenFHIRAdapter {
                 }
             }
         } catch (Exception e) {
-            logger.debug("Template {} does not exist in openFHIR: {}", templateId);
+            logger.debug("Template {} does not exist in openFHIR", templateId);
         }
         return Optional.empty();
     }

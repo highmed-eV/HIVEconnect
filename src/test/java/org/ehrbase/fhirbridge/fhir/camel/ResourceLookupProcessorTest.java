@@ -44,19 +44,20 @@ class ResourceLookupProcessorTest {
         exchange.setProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, inputResourceIds);
         ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106", null, null);
         ResourceComposition resource2 = new ResourceComposition("Organization/7", "Organization/107", null, null);
-        when(resourceCompositionRepository.findInternalResourceIdsByInputResourceIds(inputResourceIds))
+        when(resourceCompositionRepository.findInternalResourceIdsByInputResourceIdsAndSystemId(inputResourceIds, "systemId"))
                 .thenReturn(Arrays.asList("Encounter/106", "Organization/107"));
-        when(resourceCompositionRepository.findByInputResourceId("Encounter/6")).thenReturn(Optional.of(resource1));
-        when(resourceCompositionRepository.findByInputResourceId("Organization/7")).thenReturn(Optional.of(resource2));
+        when(resourceCompositionRepository.findByInputResourceIdAndSystemId("Encounter/6", "systemId")).thenReturn(Optional.of(resource1));
+        when(resourceCompositionRepository.findByInputResourceIdAndSystemId("Organization/7", "systemId")).thenReturn(Optional.of(resource2));
 
         String inputResource = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Condition/6\", \"resource\": { \"resourceType\": \"Condition\", \"id\": \"6\", \"encounter\": { \"reference\": \"Encounter/6\" }, \"organization\": { \"reference\": \"Organization/7\" } } } ] }";
         exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResource);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "systemId");
 
         resourceLookupProcessor.process(exchange);
 
-        verify(resourceCompositionRepository, times(1)).findInternalResourceIdsByInputResourceIds(inputResourceIds);
-        verify(resourceCompositionRepository, times(1)).findByInputResourceId("Encounter/6");
-        verify(resourceCompositionRepository, times(1)).findByInputResourceId("Organization/7");
+        verify(resourceCompositionRepository, times(1)).findInternalResourceIdsByInputResourceIdsAndSystemId(inputResourceIds, "systemId");
+        verify(resourceCompositionRepository, times(1)).findByInputResourceIdAndSystemId("Encounter/6", "systemId");
+        verify(resourceCompositionRepository, times(1)).findByInputResourceIdAndSystemId("Organization/7", "systemId");
 
         assertEquals(Arrays.asList("Encounter/106", "Organization/107"), exchange.getProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS));
 
@@ -73,18 +74,19 @@ class ResourceLookupProcessorTest {
         exchange.setProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, inputResourceIds);
         ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106", null, null);
 
-        when(resourceCompositionRepository.findInternalResourceIdsByInputResourceIds(inputResourceIds))
+        when(resourceCompositionRepository.findInternalResourceIdsByInputResourceIdsAndSystemId(inputResourceIds, "systemId"))
                 .thenReturn(Arrays.asList("Encounter/106"));
-        when(resourceCompositionRepository.findByInputResourceId("Encounter/6")).thenReturn(Optional.of(resource1));
+        when(resourceCompositionRepository.findByInputResourceIdAndSystemId("Encounter/6", "systemId")).thenReturn(Optional.of(resource1));
 
         String inputResource = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Condition/6\", \"resource\": { \"resourceType\": \"Condition\", \"id\": \"6\", \"encounter\": { \"reference\": \"Encounter/6\" }, \"organization\": { \"reference\": \"invalidResource\" } } } ] }";
         exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResource);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "systemId");
 
         resourceLookupProcessor.process(exchange);
 
         // Verify that the internalResourceIds list contains only valid ones
-        verify(resourceCompositionRepository, times(1)).findInternalResourceIdsByInputResourceIds(inputResourceIds);
-        verify(resourceCompositionRepository, times(1)).findByInputResourceId("Encounter/6");
+        verify(resourceCompositionRepository, times(1)).findInternalResourceIdsByInputResourceIdsAndSystemId(inputResourceIds, "systemId");
+        verify(resourceCompositionRepository, times(1)).findByInputResourceIdAndSystemId("Encounter/6", "systemId");
 
         assertEquals(Arrays.asList("Encounter/106"), exchange.getProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS));
 
