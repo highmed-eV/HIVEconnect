@@ -17,10 +17,9 @@
 package org.ehrbase.fhirbridge.core.domain;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import java.time.ZonedDateTime;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -46,16 +45,19 @@ public class ResourceComposition {
     @Column(name = "COMPOSITION_ID", nullable = false)
     private String compositionId;
 
+    @Column(name = "TEMPLATE_ID")
+    private String templateId;
+
     @Column(name = "SYSTEM_ID", nullable = false)
     private String systemId;
 
-    @Column(name = "CREATED_DATE_TIME", nullable = false, updatable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    @CreatedDate
-    private ZonedDateTime createdDateTime;
-
-    @Column(name = "UPDATED_DATE_TIME", columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    @LastModifiedDate
-    private ZonedDateTime updatedDateTime;
+    @Column(name = "CREATED_DATE_TIME", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdDateTime;
+    
+    @Column(name = "UPDATED_DATE_TIME", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime updatedDateTime;
 
     public ResourceComposition() {
     }
@@ -64,11 +66,12 @@ public class ResourceComposition {
         this.inputResourceId = inputResourceId;
     }
 
-    public ResourceComposition(String inputResourceId, String internalResourceId, String compositionId, String systemId) {
+    public ResourceComposition(String inputResourceId, String internalResourceId, String compositionId, String systemId, String templateId) {
         this.inputResourceId = inputResourceId;
         this.internalResourceId = internalResourceId;
         this.compositionId = compositionId;
         this.systemId = systemId;
+        this.templateId = templateId;
     }
 
     public String getInputResourceId() {
@@ -95,6 +98,14 @@ public class ResourceComposition {
         this.compositionId = versionUid;
     }
 
+    public String getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(String templateId) {
+        this.templateId = templateId;
+    }
+
     public UUID getEhrId() {
         return ehrId;
     }
@@ -111,13 +122,22 @@ public class ResourceComposition {
         this.systemId = systemId;
     }
 
-    public ZonedDateTime getCreatedDateTime() {
+    public LocalDateTime getCreatedDateTime() {
         return createdDateTime;
     }
 
-    public ZonedDateTime getUpdatedDateTime() {
+    public void setCreatedDateTime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
+    }
+
+    public LocalDateTime getUpdatedDateTime() {
         return updatedDateTime;
     }
+
+    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
+        this.updatedDateTime = updatedDateTime;
+    }
+
 
     @Override
     public String toString() {

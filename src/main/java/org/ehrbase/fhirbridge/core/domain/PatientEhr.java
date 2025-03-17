@@ -21,11 +21,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
@@ -48,13 +51,13 @@ public class PatientEhr {
     @Column(name = "EHR_ID")
     private UUID ehrId;
 
-    @CreatedDate
-    @Column(name = "CREATED_DATE_TIME", nullable = false, updatable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private ZonedDateTime createdDateTime;
+    @Column(name = "CREATED_DATE_TIME", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdDateTime;
 
-    @LastModifiedDate
-    @Column(name = "UPDATED_DATE_TIME", columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private ZonedDateTime updatedDateTime;
+    @Column(name = "UPDATED_DATE_TIME", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime updatedDateTime;
 
     public PatientEhr() {
     }
@@ -101,19 +104,19 @@ public class PatientEhr {
         this.ehrId = ehrId;
     }
 
-    public ZonedDateTime getCreatedDateTime() {
+    public LocalDateTime getCreatedDateTime() {
         return createdDateTime;
     }
 
-    public void setCreatedDateTime(ZonedDateTime createdDateTime) {
+    public void setCreatedDateTime(LocalDateTime createdDateTime) {
         this.createdDateTime = createdDateTime;
     }
 
-    public ZonedDateTime getUpdatedDateTime() {
+    public LocalDateTime getUpdatedDateTime() {
         return updatedDateTime;
     }
 
-    public void setUpdatedDateTime(ZonedDateTime updatedDateTime) {
+    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
         this.updatedDateTime = updatedDateTime;
     }
 
