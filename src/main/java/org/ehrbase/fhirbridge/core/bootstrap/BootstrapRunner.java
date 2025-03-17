@@ -50,9 +50,6 @@ public class BootstrapRunner implements ApplicationRunner {
         } else{
             log.info("Bootstrap directory for opt files {} ", directory.getAbsolutePath());
         }
-        else{
-            log.info("Bootstrap directory for opt files {} ", directory.getAbsolutePath());
-        }
 
         try (Stream<Path> paths = recursivelyOpenDirectories ? 
                 Files.walk(directory.toPath()) : 
