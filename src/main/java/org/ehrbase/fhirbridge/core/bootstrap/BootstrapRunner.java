@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 @Component
@@ -95,9 +96,15 @@ public class BootstrapRunner implements ApplicationRunner {
 
             // Create new bootstrap record if file was modified
             if (!bootstrapEntity.isPresent()) {
-                bootstrapRepository.save(new BootstrapEntity(relativePath));
+                BootstrapEntity bootstrapEntity1 = new BootstrapEntity(relativePath);
+                LocalDateTime dateTime = LocalDateTime.now();
+                bootstrapEntity1.setCreatedDateTime(dateTime);
+                bootstrapEntity1.setUpdatedDateTime(dateTime);
+
+                bootstrapRepository.save(bootstrapEntity1);
             } else {
                 // Update existing record - @LastModifiedDate will be updated automatically
+                bootstrapEntity.get().setUpdatedDateTime(LocalDateTime.now());
                 bootstrapRepository.save(bootstrapEntity.get());
             }
 
