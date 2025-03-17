@@ -61,9 +61,10 @@ class ExistingResourceReferenceProcessorTest {
 
         String inputResourceBundle = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Patient/101\", \"resource\": { \"resourceType\": \"Patient\", \"id\": \"101\",\"name\":[{\"family\":\"Doe\"}] } } ] }";
         exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResourceBundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "systemId");
 
-        when(resourceCompositionRepository.findInternalResourceIdByInputResourceId("Patient/1")).thenReturn("Patient/101");
-        when(resourceCompositionRepository.findInternalResourceIdByInputResourceId("Observation/2")).thenReturn("Observation/102");
+        when(resourceCompositionRepository.findInternalResourceIdByInputResourceIdAndSystemId("Patient/1", "systemId")).thenReturn("Patient/101");
+        when(resourceCompositionRepository.findInternalResourceIdByInputResourceIdAndSystemId("Observation/2", "systemId")).thenReturn("Observation/102");
 
         existingResourceReferenceProcessor.process(exchange);
 

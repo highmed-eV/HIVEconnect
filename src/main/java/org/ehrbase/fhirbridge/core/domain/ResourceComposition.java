@@ -21,9 +21,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "FB_RESOURCE_COMPOSITION", uniqueConstraints = @UniqueConstraint(columnNames = {"INPUT_RESOURCE_ID", "COMPOSITION_ID"}))
+@Table(name = "FB_RESOURCE_COMPOSITION", uniqueConstraints = @UniqueConstraint(columnNames = {"INPUT_RESOURCE_ID", "COMPOSITION_ID", "SYSTEM_ID", "EHR_ID"}))
 @EntityListeners(AuditingEntityListener.class)
 public class ResourceComposition {
 
@@ -39,10 +40,13 @@ public class ResourceComposition {
     @Column(name = "INTERNAL_RESOURCE_ID")
     private String internalResourceId;
 
+    @Column(name = "EHR_ID", nullable = false)
+    private UUID ehrId;
+
     @Column(name = "COMPOSITION_ID", nullable = false)
     private String compositionId;
 
-    @Column(name = "SYSTEM_ID")
+    @Column(name = "SYSTEM_ID", nullable = false)
     private String systemId;
 
     @Column(name = "CREATED_DATE_TIME", nullable = false, updatable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
@@ -89,6 +93,14 @@ public class ResourceComposition {
 
     public void setCompositionId(String versionUid) {
         this.compositionId = versionUid;
+    }
+
+    public UUID getEhrId() {
+        return ehrId;
+    }
+
+    public void setEhrId(UUID ehrId) {
+        this.ehrId = ehrId;
     }
 
     public String getSystemId() {

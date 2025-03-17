@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PatientUtilsTest {
@@ -162,11 +163,11 @@ class PatientUtilsTest {
     void getServerPatientIdFromDb() {
         String patientId = "system1|value1";
         PatientEhr patientEhr = mock(PatientEhr.class);
-        when(patientEhrRepository.findByInputPatientId(patientId)).thenReturn(patientEhr);
+        when(patientEhrRepository.findByInputPatientIdAndSystemId(patientId, "system1")).thenReturn(patientEhr);
         when(patientEhr.getInternalPatientId()).thenReturn("internalId");
         
-        String serverPatientId = patientUtils.getServerPatientIdFromDb(patientId);
-        assertEquals("internalId", serverPatientId);
+        PatientEhr serverPatient = patientUtils.getServerPatientIdFromDb(patientId, "system1");
+        assertEquals("internalId", serverPatient.getInternalPatientId());
     }
 
     @Test
@@ -258,27 +259,29 @@ class PatientUtilsTest {
 
     @Test
     void getPatientIdFromPatientResource_WithExistingPatient() {
-        // Create a Patient resource with identifier
+        // Setup
         Patient patient = new Patient();
         Identifier identifier = new Identifier()
-            .setSystem("system1")
-            .setValue("value1");
+            .setSystem("test-system")
+            .setValue("test-value");
         patient.addIdentifier(identifier);
 
-        // Mock repository to return existing patient
-        PatientEhr mockPatientEhr = mock(PatientEhr.class);
-        when(mockPatientEhr.getInternalPatientId()).thenReturn("existingId");
-        when(patientEhrRepository.findByInputPatientId("system1|value1")).thenReturn(mockPatientEhr);
+        String patientId = "test-system|test-value";
+        String serverPatientId = "Patient/123";
 
-        // Set up exchange
+        when(patientEhrRepository.findByInputPatientIdAndSystemId(patientId, "test-system"))
+            .thenReturn(createPatientEhr(patientId, serverPatientId));
+
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "test-system");
 
-        // Execute and verify exception
-        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> 
-            patientUtils.extractPatientIdOrIdentifier(exchange)
-        );
-        assertEquals("Patient: system1|value1 absolute reference already exists. Please provide relative reference: existingId", 
-            exception.getMessage());
+        // Execute and verify
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> {
+            patientUtils.getPatientIdFromPatientResource(exchange);
+        });
+
+        assertEquals("Patient: " + patientId + " already exists", exception.getMessage());
+        verify(patientEhrRepository).findByInputPatientIdAndSystemId(patientId, "test-system");
     }
 
     @Test
@@ -575,27 +578,30 @@ class PatientUtilsTest {
 
     @Test
     void extractPatientIdOrIdentifier_WithExistingPatient() {
-        // Create a Patient resource with identifier
+        // Setup
         Patient patient = new Patient();
         Identifier identifier = new Identifier()
-            .setSystem("system1")
-            .setValue("value1");
+            .setSystem("test-system")
+            .setValue("test-value");
         patient.addIdentifier(identifier);
 
-        // Mock repository to return existing patient
-        PatientEhr mockPatientEhr = mock(PatientEhr.class);
-        when(mockPatientEhr.getInternalPatientId()).thenReturn("existingId");
-        when(patientEhrRepository.findByInputPatientId("system1|value1")).thenReturn(mockPatientEhr);
+        String patientId = "test-system|test-value";
+        String serverPatientId = "Patient/123";
 
-        // Set up exchange
+        when(patientEhrRepository.findByInputPatientIdAndSystemId(patientId, "test-system"))
+            .thenReturn(createPatientEhr(patientId, serverPatientId));
+
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, patient);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "test-system");
 
-        // Execute and verify exception
-        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> 
-            patientUtils.extractPatientIdOrIdentifier(exchange)
-        );
-        assertEquals("Patient: system1|value1 absolute reference already exists. Please provide relative reference: existingId", 
+        // Execute and verify
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> {
+            patientUtils.extractPatientIdOrIdentifier(exchange);
+        });
+
+        assertEquals("Patient: " + patientId + " absolute reference already exists. Please provide relative reference: " + serverPatientId, 
             exception.getMessage());
+        verify(patientEhrRepository).findByInputPatientIdAndSystemId(patientId, "test-system");
     }
 
     @Test
@@ -611,6 +617,13 @@ class PatientUtilsTest {
             patientUtils.extractPatientIdOrIdentifier(exchange)
         );
         assertEquals("Observation should be linked to a subject/patient", exception.getMessage());
+    }
+
+    private PatientEhr createPatientEhr(String inputPatientId, String internalPatientId) {
+        PatientEhr patientEhr = new PatientEhr();
+        patientEhr.setInputPatientId(inputPatientId);
+        patientEhr.setInternalPatientId(internalPatientId);
+        return patientEhr;
     }
 }
 

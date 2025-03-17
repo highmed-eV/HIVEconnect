@@ -103,9 +103,10 @@ class ProvideResourceResponseProcessorTest {
         
         Composition composition = new Composition();
         composition.setUid(new ObjectVersionId("test-composition-id"));
+
         exchange.getIn().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION, composition);
 
-        when(resourceCompositionRepository.findByInputResourceId(anyString())).thenReturn(Optional.empty());
+        when(resourceCompositionRepository.findByInputResourceIdAndSystemId(anyString(), anyString())).thenReturn(Optional.empty());
 
         provideResourceResponseProcessor.process(exchange);
 
@@ -139,7 +140,7 @@ class ProvideResourceResponseProcessorTest {
         composition.setUid(new ObjectVersionId("test-composition-id"));
         exchange.getIn().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION, composition);
 
-        when(resourceCompositionRepository.findByInputResourceId(anyString())).thenReturn(Optional.empty());
+        when(resourceCompositionRepository.findByInputResourceIdAndSystemId(anyString(), anyString())).thenReturn(Optional.empty());
 
         provideResourceResponseProcessor.process(exchange);
 
@@ -268,7 +269,7 @@ class ProvideResourceResponseProcessorTest {
         composition.setUid(new ObjectVersionId("test-composition-id"));
         exchange.getIn().setHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION, composition);
 
-        when(resourceCompositionRepository.findByInputResourceId(anyString())).thenReturn(Optional.empty());
+        when(resourceCompositionRepository.findByInputResourceIdAndSystemId(anyString(), anyString())).thenReturn(Optional.empty());
     }
 
     private void testBundleProcessing() throws Exception {
