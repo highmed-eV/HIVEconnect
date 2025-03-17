@@ -2,6 +2,7 @@ package org.ehrbase.fhirbridge.fhir.camel;
 
 import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Component(CompositionLookupProcessor.BEAN_ID)
 public class CompositionLookupProcessor implements FhirRequestProcessor {
@@ -32,11 +34,12 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
         boolean isDuplicate = false;
 
         String operation = (String) exchange.getMessage().getHeader(CamelConstants.REQUEST_HTTP_METHOD);
+        UUID ehrId = (UUID) exchange.getMessage().getHeader(CompositionConstants.EHR_ID);
         if ("POST".equals(operation)) {        
             // Fetch compositionIds corresponding to inputResourceIds from the db
             for (String inputResourceId : inputResourceIds) {
                 // Fetch all compositionIds associated with the current inputResourceId
-                List<String> compositionIdList = resourceCompositionRepository.findCompositionIdsByInputResourceId(inputResourceId);
+                List<String> compositionIdList = resourceCompositionRepository.findCompositionIdsByInputResourceIdAndEhrId(inputResourceId,ehrId);
 
                 if (!compositionIdList.isEmpty()) {
                     // Add all compositionIds to the set
@@ -47,7 +50,7 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
             // Now process each compositionId
             for (String compositionId : compositionIds) {
                 // Fetch the list of input resources already in the composition
-                List<String> existingResources = resourceCompositionRepository.findInputResourcesByCompositionId(compositionId);
+                List<String> existingResources = resourceCompositionRepository.findInputResourcesByCompositionIdAndEhrId(compositionId,ehrId);
 
                 // Check if the current inputResourceIds are a subset of the existing resources in the composition
                 if (existingResources.containsAll(inputResourceIds)) {
@@ -65,7 +68,7 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
             // PUT
             for (String inputResourceId : inputResourceIds) {
                 // Fetch all compositionIds associated with the current inputResourceId
-                List<String> compositionIdList = resourceCompositionRepository.findCompositionIdsByInternalResourceId(inputResourceId);
+                List<String> compositionIdList = resourceCompositionRepository.findCompositionIdsByInternalResourceIdAndEhrId(inputResourceId,ehrId);
 
                 if (!compositionIdList.isEmpty()) {
                     // Add all compositionIds to the set
@@ -75,7 +78,7 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
             // Now process each compositionId for PUT 
             for (String compositionId : compositionIds) {
                 // Fetch the list of input resources already in the composition
-                List<String> existingResources = resourceCompositionRepository.findInternalResourcesByCompositionId(compositionId);
+                List<String> existingResources = resourceCompositionRepository.findInternalResourcesByCompositionIdAndEhrId(compositionId,ehrId);
 
                 // Check if the current inputResourceIds are a subset of the existing resources in the composition
                 if (existingResources.containsAll(inputResourceIds)) {

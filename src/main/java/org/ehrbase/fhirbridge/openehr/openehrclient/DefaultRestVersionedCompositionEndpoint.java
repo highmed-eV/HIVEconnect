@@ -136,8 +136,7 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
             result.setData(composition);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ClientException(e.getMessage(), e);
         }
 
         return result;

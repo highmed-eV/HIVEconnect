@@ -56,14 +56,29 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
             exchange.getIn().setBody(resource);
         }
     
-        String remoteSystemId = requestDetails.getServletRequest().getRemoteAddr();
+        // Get system ID from headers or OAuth client ID
+        String remoteSystemId = requestDetails.getServletRequest().getHeader("X-System-ID");
+        if (remoteSystemId == null) {
+            // Try to get from OAuth context if available
+            remoteSystemId = requestDetails.getServletRequest().getHeader("Authorization");
+            if (remoteSystemId != null && remoteSystemId.startsWith("Bearer ")) {
+                // TODO: Extract client_id from JWT token if needed
+                // For now, use a default system ID
+                remoteSystemId = "default-system";
+            }
+        }
+        
+        if (remoteSystemId == null) {
+            remoteSystemId = "unknown-system";
+        }
+        
         // Store in headers for route decision making
         exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, operationType != null ? operationType.name() : null);
         exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, httpMethod);
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, resourceName);
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, resource);
         exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_ID, id);
-        // exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, remoteSystemId);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, remoteSystemId);
         
         // Store the entire RequestDetails object for later use if needed
         exchange.setProperty("RequestDetails", requestDetails);

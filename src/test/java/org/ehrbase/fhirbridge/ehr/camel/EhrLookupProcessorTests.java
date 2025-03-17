@@ -57,18 +57,18 @@ class EhrLookupProcessorTests {
     void processWithExistingEhrId() throws Exception {
         UUID existingEhrId = UUID.randomUUID();
         PatientEhr mockPatientEhr = new PatientEhr("http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123", "Patient/123", "system123", existingEhrId);
-        when(patientEhrRepository.findByInternalPatientId(anyString())).thenReturn(mockPatientEhr);
+        when(patientEhrRepository.findByInternalPatientIdAndSystemId(anyString(), anyString())).thenReturn(mockPatientEhr);
 
         ehrLookupProcessor.process(exchange);
 
         UUID ehrId = exchange.getMessage().getHeader(CompositionConstants.EHR_ID, UUID.class);
         assertEquals(existingEhrId, ehrId);
-        verify(patientEhrRepository, times(1)).findByInternalPatientId(anyString());
+        verify(patientEhrRepository, times(1)).findByInternalPatientIdAndSystemId(anyString(), anyString());
     }
 
     @Test
     void processWithNewEhrId() throws Exception {
-        when(patientEhrRepository.findByInternalPatientId(anyString())).thenReturn(null);
+        when(patientEhrRepository.findByInternalPatientIdAndSystemId(anyString(), anyString())).thenReturn(null);
 
         when(openEhrClient.aqlEndpoint()).thenReturn(aqlEndpoint);
         when(openEhrClient.aqlEndpoint().execute(any())).thenReturn(List.of());
