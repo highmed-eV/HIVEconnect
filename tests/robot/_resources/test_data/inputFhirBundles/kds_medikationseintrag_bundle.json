@@ -5,6 +5,72 @@
     "type": "transaction",
     "entry": [
       {
+        "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000003",
+        "request": {
+          "method": "POST",
+          "url": "MedicationStatement"
+        },
+        "resource": {
+          "resourceType": "MedicationStatement",
+          "id": "example-med2",
+          "meta": {
+            "profile": [
+              "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
+            ]
+          },
+          "status": "completed",
+          "medicationCodeableConcept": {
+            "coding": [
+              {
+                "system": "local",
+                "code": "C09AA05",
+                "display": "Ramipril"
+              }
+            ],
+            "text": "Ramipril 5mg capsule"
+          },
+          "subject": {
+            "reference": "Patient/{{patientId}}"
+          },
+          "effectivePeriod": {
+            "start": "2024-07-15",
+            "end": "2024-08-01"
+          },
+          "dateAsserted": "2024-07-15",
+          "dosage": [
+            {
+              "text": "Take 1 capsule daily",
+              "timing": {
+                "repeat": {
+                  "frequency": 1,
+                  "period": 1,
+                  "periodUnit": "d"
+                }
+              },
+              "route": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "26643006",
+                    "display": "Oral route"
+                  }
+                ]
+              },
+              "doseAndRate": [
+                {
+                  "doseQuantity": {
+                    "value": 5,
+                    "unit": "mg",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "mg"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
         "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000001",
         "request": {
           "method": "POST",
@@ -170,72 +236,7 @@
           ]
         }
       },
-      {
-        "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000003",
-        "request": {
-          "method": "POST",
-          "url": "MedicationStatement"
-        },
-        "resource": {
-          "resourceType": "MedicationStatement",
-          "id": "example-med2",
-          "meta": {
-            "profile": [
-              "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
-            ]
-          },
-          "status": "completed",
-          "medicationCodeableConcept": {
-            "coding": [
-              {
-                "system": "local",
-                "code": "C09AA05",
-                "display": "Ramipril"
-              }
-            ],
-            "text": "Ramipril 5mg capsule"
-          },
-          "subject": {
-            "reference": "Patient/{{patientId}}"
-          },
-          "effectivePeriod": {
-            "start": "2024-07-15",
-            "end": "2024-08-01"
-          },
-          "dateAsserted": "2024-07-15",
-          "dosage": [
-            {
-              "text": "Take 1 capsule daily",
-              "timing": {
-                "repeat": {
-                  "frequency": 1,
-                  "period": 1,
-                  "periodUnit": "d"
-                }
-              },
-              "route": {
-                "coding": [
-                  {
-                    "system": "http://snomed.info/sct",
-                    "code": "26643006",
-                    "display": "Oral route"
-                  }
-                ]
-              },
-              "doseAndRate": [
-                {
-                  "doseQuantity": {
-                    "value": 5,
-                    "unit": "mg",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "mg"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      },
+
       {
         "fullUrl": "urn:uuid:69f8e214-b4e6-11ec-b909-0242ac120002",
         "request": {

@@ -33,11 +33,7 @@
                     "reference": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fd76e5c72d"
                 },
                 "subject": {
-                    "reference": "Patient/{{patientId}}",
-                    "identifier": {
-                        "system": "urn:ietf:rfc:4122",
-                        "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
-                    }
+                    "reference": "Patient/{{patientId}}"
                 },
                 "context": {
                     "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5284ade"
@@ -65,6 +61,7 @@
                 ],
                 "dosage": {
                     "text": "20 mg orally once daily",
+                    
                     "route": {
                         "coding": [
                             {
@@ -95,6 +92,7 @@
                             "code": "h"
                         }
                     }
+                    
                 }
             },
             "request": {
@@ -194,7 +192,8 @@
                     "start": "2024-08-21T09:00:00+01:00",
                     "end": "2024-08-21T09:30:00+01:00"
                 }
-            },
+            }
+        ,
             "request": {
                 "method": "POST",
                 "url": "Encounter"
@@ -223,11 +222,9 @@
                     "text": "Aspirin 81 MG Oral Tablet"
                 },
                 "subject": {
-                    "identifier": {
-                        "system": "urn:ietf:rfc:4122",
-                        "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-                    }
+                    "reference": "Patient/{{patientId}}"
                 }
+                
             },
             "request": {
                 "method": "POST",
