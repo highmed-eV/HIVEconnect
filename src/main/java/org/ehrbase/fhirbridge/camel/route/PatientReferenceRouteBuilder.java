@@ -72,7 +72,7 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
                         // and validate if it exists in the fhir server
                         // and get the server patient id from db if present
                         .to("direct:extractAndValidatePatientIdExistsProcessor")
-                        .log("FHIR Patient ID: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}")
+                        .log("FHIR ServerPatient ID: ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}")
                         
                         // Validate: 
                         //Check the incoming profile is supported by openFHIR

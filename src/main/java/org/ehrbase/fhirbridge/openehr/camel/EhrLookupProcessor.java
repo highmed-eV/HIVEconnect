@@ -78,7 +78,7 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         String patientId = (String) exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PATIENT_ID);
         String serverPatientIdStr = (String) exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID);
         String serverPatientId = extractPatientId(serverPatientIdStr);
-        UUID ehrId = Optional.ofNullable(patientEhrRepository.findByInternalPatientId(serverPatientIdStr))  
+        UUID ehrId = Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndSystemId(serverPatientIdStr, systemId))  
                     .map(PatientEhr::getEhrId) 
                     .orElseGet(() -> createOrGetPatientEhr(resource, patientId, serverPatientId, systemId));
         
@@ -111,12 +111,7 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         if (result.isEmpty()) {
             LOG.debug("PatientId not found in EHR server: {} Creating EHRId", patientId);
             ehrId = (UUID) createEhr(pseudonym.getValue());
-            PatientEhr patientEhr = new PatientEhr(patientId, serverPatientId, systemId, ehrId);
-            patientEhrRepository.save(patientEhr);
-            LOG.debug("Created PatientEhr: patientId={}, serverPatientId={}, ehrId={}", 
-                        patientEhr.getInputPatientId(), 
-                        patientEhr.getInternalPatientId(), 
-                        patientEhr.getEhrId());
+            savePatientEhr(patientId, serverPatientId, systemId, ehrId);
         
         } else if (result.size() > 1) {
             throw new ConversionException("Conflict: several EHR ids have the same patient id connected (subject.external_ref.id.value). Please check your EHR ids");
@@ -124,10 +119,17 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
             ehrId = result.get(0).value1();
             
             //TODO: Check the patientid-ehrid mapping is correct in the db
-            // TODO: check if ehrid mapped to serverPatientId in db. Else throw error ??
-            // PatientEhr patientEhr = Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndEhrId(serverPatientId, ehrId))
-            //                 .orElseThrow(() -> new ConversionException("Conflict: EHR ids and patient id do not match (subject.external_ref.id.value). Please check your input and pass the correct reference"));
-            // LOG.info("EhrLookupProcessor: PatientId: {} EHRId: {}", patientId, ehrId);
+            // check if ehrid mapped to serverPatientId in db. Else throw error ??
+  
+            PatientEhr patientEhr = patientEhrRepository.findByInternalPatientIdAndEhrId(serverPatientId, ehrId);
+            if (patientEhr == null) {
+                // Create and save new mapping if none exists
+                // A new patient could be created if
+                // the input Subject reference Identifier was not found in Fhir server
+                //TODO: Add identifier as input patientId?
+                savePatientEhr(patientId, serverPatientId, systemId, ehrId);
+            }
+  
         }
         return ehrId;
     }
@@ -139,4 +141,13 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
         return openEhrClient.ehrEndpoint().createEhr(ehrStatus);
     }
 
+    private void savePatientEhr(String patientId, String serverPatientId,String systemId, UUID ehrId) {
+        PatientEhr patientEhr = new PatientEhr(patientId, serverPatientId, systemId, ehrId);
+        patientEhrRepository.save(patientEhr);
+        LOG.debug("Saved PatientEhr: patientId={}, serverPatientId={}, ehrId={}", 
+            patientEhr.getInputPatientId(), 
+            patientEhr.getInternalPatientId(), 
+            patientEhr.getEhrId());
+
+    }
 }

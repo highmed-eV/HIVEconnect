@@ -22,6 +22,7 @@ import com.nedap.archie.rm.composition.Composition;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.config.DebugProperties;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
@@ -37,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * {@link Processor} that stores the link between the FHIR resource and the openEHR composition.
@@ -67,6 +69,7 @@ public class ProvideResourceResponseProcessor implements Processor {
         Composition composition = (Composition) exchange.getIn().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION);
         Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE_TYPE);
+        UUID ehrId = (UUID) exchange.getIn().getHeader(CompositionConstants.EHR_ID);
         Map<String, String> resourceIdMap = new LinkedHashMap<>();
 
         if (!"Bundle".equals(inputResourceType)) {
@@ -79,7 +82,7 @@ public class ProvideResourceResponseProcessor implements Processor {
             processBundle(exchange, (Bundle) inputResource, resourceIdMap);
         }
 
-        updateResourceCompositions(exchange, inputResourceType, resourceIdMap, composition);
+        updateResourceCompositions(exchange, inputResourceType, resourceIdMap, composition, ehrId);
     }
 
     private void processPatientResource(Exchange exchange) {
@@ -188,7 +191,8 @@ public class ProvideResourceResponseProcessor implements Processor {
         }
     }
 
-    private void updateResourceCompositions(Exchange exchange, String inputResourceType, Map<String, String> resourceIdMap, Composition composition) {
+    private void updateResourceCompositions(Exchange exchange, String inputResourceType, Map<String, String> resourceIdMap, Composition composition, UUID ehrId) {
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
         for (Map.Entry<String, String> entry : resourceIdMap.entrySet()) {
             String inputResourceId = entry.getKey();
             String internalResourceId = entry.getValue();
@@ -197,16 +201,18 @@ public class ProvideResourceResponseProcessor implements Processor {
 
             String method =  (String) exchange.getIn().getHeader(CamelConstants.REQUEST_HTTP_METHOD);
             if ("POST".equals(method)) {
-                resourceComposition = resourceCompositionRepository.findByInputResourceId(inputResourceId)
-                        .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, null));
+                // resourceComposition = resourceCompositionRepository.findByInputResourceIdAndSystemId(inputResourceId, systemId);
+                // If found throw error
+                resourceComposition = new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId);
             } else {
                 compositionId = (String) exchange.getMessage().getHeader(CamelConstants.OPENEHR_COMPOSITION_ID);
-                resourceComposition = resourceCompositionRepository.findByInternalResourceIdAndCompositionId(inputResourceId, compositionId)
-                        .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, null));
+                resourceComposition = resourceCompositionRepository.findByInternalResourceIdAndCompositionIdAndEhrId(inputResourceId, compositionId, ehrId)
+                        .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId));
             }
 
             resourceComposition.setCompositionId(getCompositionId(composition));
             resourceComposition.setInternalResourceId(internalResourceId);
+            resourceComposition.setEhrId(ehrId);
             resourceCompositionRepository.save(resourceComposition);
 
             LOG.debug("Saved ResourceComposition: inputResourceId={}, internalResourceId={}, compositionId={}",
