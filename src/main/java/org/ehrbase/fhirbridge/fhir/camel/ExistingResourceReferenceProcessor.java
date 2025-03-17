@@ -64,7 +64,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
 
     @Override
     public void process(Exchange exchange) throws Exception {
-
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
         ObjectMapper objectMapper = new ObjectMapper();
 
         // Fetch required properties from the exchange
@@ -74,7 +74,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         // with the inputResourceIds corresponding to that in the db
         // according to the mapping table : FB_RESOURCE_COMPOSITION
         if (existingResources != null && !existingResources.isEmpty()) {
-            mapToInputResourceId(existingResources, objectMapper);
+            mapToInputResourceId(existingResources, objectMapper, systemId);
         }
 
         // Update the Exchange property with the modified list
@@ -103,7 +103,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         exchange.getIn().setBody(bundleResource);
     }
 
-    private List<String> mapToInputResourceId(List<String> existingResources, ObjectMapper objectMapper) throws JsonProcessingException {
+    private List<String> mapToInputResourceId(List<String> existingResources, ObjectMapper objectMapper, String systemId) throws JsonProcessingException {
         for (int i = 0; i < existingResources.size(); i++) {
             String resourceJson = existingResources.get(i);
             JsonNode resourceNode = objectMapper.readTree(resourceJson);
@@ -112,7 +112,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
                 String resourceId = resourceNode.get(RESOURCE_TYPE).asText() + "/" + resourceNode.get("id").asText();
 
                 // Fetch replacement IDs from the database
-                String dbInputResourceId = resourceCompositionRepository.findInternalResourceIdByInputResourceId(resourceId);
+                String dbInputResourceId = resourceCompositionRepository.findInternalResourceIdByInputResourceIdAndSystemId(resourceId, systemId);
 
                 if(StringUtils.isNotBlank(dbInputResourceId)){
                     Matcher matcher = Pattern.compile("([^/]+)/([^/]+)").matcher(dbInputResourceId);

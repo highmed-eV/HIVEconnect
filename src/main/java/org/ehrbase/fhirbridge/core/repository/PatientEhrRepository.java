@@ -22,9 +22,9 @@ import org.ehrbase.fhirbridge.core.domain.PatientEhr;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PatientEhrRepository extends JpaRepository<PatientEhr, String> {
-    PatientEhr findByInputPatientId(String inputPatientId);
+    PatientEhr findByInputPatientIdAndSystemId(String inputPatientId, String systemId);
     
-    PatientEhr findByInternalPatientId(String internalPatientId);
+    PatientEhr findByInternalPatientIdAndSystemId(String internalPatientId, String systemId);
 
     PatientEhr findByInternalPatientIdAndEhrId(String serverPatientId, UUID ehrId);
 }

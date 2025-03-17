@@ -49,6 +49,8 @@ public final class CamelConstants {
 
     public static final String FHIR_INPUT_PATIENT_ID = "CamelFhirPatientId";
 
+    public static final String FHIR_INPUT_PATIENT_SEARCH_URL = "CamelFhirPatientSearchUrl";
+
     public static final String FHIR_INPUT_PATIENT_ID_TYPE = "CamelFhirInputPatientIdType";
 
     public static final String FHIR_SERVER_PATIENT_ID = "CamelFhirServerPatientId";
