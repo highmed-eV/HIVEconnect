@@ -62,10 +62,7 @@
           "text": "Blood Glucose Test"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
+          "reference": "Patient/{{patientId}}"
         },
         "authoredOn": "2024-08-24",
         "performer": [
@@ -130,11 +127,9 @@
           ],
           "text": "Venous blood specimen"
         },
+        
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-          }
+          "reference": "Patient/{{patientId}}"
         },
         "identifier": [
           {
@@ -197,9 +192,10 @@
           }
         ],
         "status": "finished",
-        "subject": {
-          "reference": "Patient/{{patientId}}"
-        },
+          "identifier": {
+            "system": "urn:ietf:rfc:4122",
+            "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
+          },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
           "end": "2024-08-21T09:30:00+01:00"

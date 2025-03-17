@@ -42,8 +42,8 @@ class ResourceLookupProcessorTest {
     void processWithValidReferenceResourceIds() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "Organization/7");
         exchange.setProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, inputResourceIds);
-        ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106", null, null);
-        ResourceComposition resource2 = new ResourceComposition("Organization/7", "Organization/107", null, null);
+        ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106", null, null, null);
+        ResourceComposition resource2 = new ResourceComposition("Organization/7", "Organization/107", null, null, null);
         when(resourceCompositionRepository.findInternalResourceIdsByInputResourceIdsAndSystemId(inputResourceIds, "systemId"))
                 .thenReturn(Arrays.asList("Encounter/106", "Organization/107"));
         when(resourceCompositionRepository.findByInputResourceIdAndSystemId("Encounter/6", "systemId")).thenReturn(Optional.of(resource1));
@@ -72,7 +72,7 @@ class ResourceLookupProcessorTest {
     void processWithInvalidReferenceResourceIds() throws Exception {
         List<String> inputResourceIds = Arrays.asList("Encounter/6", "invalidResource");
         exchange.setProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, inputResourceIds);
-        ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106", null, null);
+        ResourceComposition resource1 = new ResourceComposition("Encounter/6", "Encounter/106", null, null, null);
 
         when(resourceCompositionRepository.findInternalResourceIdsByInputResourceIdsAndSystemId(inputResourceIds, "systemId"))
                 .thenReturn(Arrays.asList("Encounter/106"));

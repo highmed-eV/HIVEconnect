@@ -63,10 +63,7 @@
           "text": "Complete Blood Count"
         },
         "subject": {
-          "identifier": {
-            "system": "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym",
-            "value": "release_test_1_1"
-          }
+          "reference": "Patient/{{patientId}}"
         },
         "encounter": {
           "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee"
@@ -259,10 +256,7 @@
           "text": "Venous blood specimen"
         },
         "subject": {
-          "identifier": {
-            "system": "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym",
-            "value": "release_test_1_1"
-          }
+          "reference": "Patient/{{patientId}}"
         },
         "encounter": {
           "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee"

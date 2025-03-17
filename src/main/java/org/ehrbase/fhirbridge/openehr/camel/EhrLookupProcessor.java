@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -143,6 +144,9 @@ public class EhrLookupProcessor implements FhirRequestProcessor {
 
     private void savePatientEhr(String patientId, String serverPatientId,String systemId, UUID ehrId) {
         PatientEhr patientEhr = new PatientEhr(patientId, serverPatientId, systemId, ehrId);
+        LocalDateTime dateTime = LocalDateTime.now();
+        patientEhr.setCreatedDateTime(dateTime);
+        patientEhr.setUpdatedDateTime(dateTime);    
         patientEhrRepository.save(patientEhr);
         LOG.debug("Saved PatientEhr: patientId={}, serverPatientId={}, ehrId={}", 
             patientEhr.getInputPatientId(), 

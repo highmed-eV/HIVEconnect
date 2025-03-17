@@ -52,10 +52,7 @@
           "text": "Appendectomy"
         },
         "subject": {
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
-          }
+          "reference": "Patient/{{patienId}}"
         },
         "performedDateTime": "2024-08-20T14:00:00Z",
         "bodySite": [
@@ -111,7 +108,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/{{patientId}}"
+          "reference": "Patient/{{patienId}}"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",

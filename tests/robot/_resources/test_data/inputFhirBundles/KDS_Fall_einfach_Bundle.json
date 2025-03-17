@@ -111,11 +111,7 @@
           }
         ],
         "subject": {
-          "reference": "Patient/{{patientId}}",
-          "identifier": {
-            "system": "urn:ietf:rfc:4122",
-            "value": "07f602e0-579e-4fe3-95af-381728bf0d49"
-          }
+            "reference": "Patient/{{patientId}}"
         },
         "period": {
           "start": "2022-02-03T04:05:06Z",
