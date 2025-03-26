@@ -19,7 +19,7 @@ import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.record.RecordImp;
 import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.response.openehr.QueryResponseData;
-import org.ehrbase.serialisation.jsonencoding.JacksonUtil;
+import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 
 import java.io.IOException;
 import java.net.URI;
@@ -41,7 +41,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
   }
 
   private static ObjectMapper buildAqlObjectMapper() {
-    ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+    ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
     SimpleModule module = new SimpleModule("openEHR", new Version(1, 0, 0, null, null, null));
     module.addDeserializer(VersionUid.class, new VersionUidDeSerializer());
     module.addDeserializer(TemporalAccessor.class, new TemporalAccessorDeSerializer());
