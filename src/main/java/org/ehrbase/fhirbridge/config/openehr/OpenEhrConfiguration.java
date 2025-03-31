@@ -22,9 +22,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
-import org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient;
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClient;
+import org.ehrbase.client.openehrclient.defaultrestclient.FHIRBridgeDefaultRestClient;
+import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
 import org.ehrbase.fhirbridge.security.oauth2.AccessTokenService;
 import org.ehrbase.fhirbridge.security.oauth2.TokenAuthenticationInterceptor;
@@ -72,7 +76,7 @@ public class OpenEhrConfiguration {
     @Bean
     public OpenEhrClient openEhrClient(OpenEhrClientConfig configuration, TemplateProvider templateProvider,
                                        @Qualifier("openEhrHttpClient") HttpClient httpClient) {
-        return new DefaultRestClient(configuration, templateProvider, httpClient);
+        return new FHIRBridgeDefaultRestClient(configuration, templateProvider, httpClient);
     }
 
     @Bean

@@ -1,7 +1,8 @@
 package org.ehrbase.fhirbridge.camel.component.ehr;
 
 import org.apache.camel.RuntimeCamelException;
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.OpenEhrClient;
 
 @SuppressWarnings("java:S2157")
 public class EhrConfiguration implements Cloneable {

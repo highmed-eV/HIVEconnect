@@ -4,6 +4,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.support.DefaultProducer;
 import org.apache.commons.io.FileUtils;
 import com.nedap.archie.rm.composition.Composition;
+
+import org.ehrbase.client.openehrclient.defaultrestclient.FHIRBridgeRestCompositionEndpoint;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.slf4j.Logger;
@@ -77,7 +79,7 @@ public class CompositionProducer extends DefaultProducer {
         //This internally checks if versionUID is present
         //if yes: post and return the mergedCompositions versionUid
         //else put and return the mergedCompositions versionUid
-        Composition mergedComposition = endpoint.getOpenEhrClient().compositionEndpoint(ehrId).mergeCanonicalCompositionEntity(body);
+        Composition mergedComposition = ((FHIRBridgeRestCompositionEndpoint)(endpoint.getOpenEhrClient().compositionEndpoint(ehrId))).mergeCanonicalCompositionEntity(body);
         exchange.getMessage().setHeader(CompositionConstants.VERSION_UID, mergedComposition.getUid());
 
         String mergedCompositionStr = new CanonicalJson().marshal(mergedComposition);

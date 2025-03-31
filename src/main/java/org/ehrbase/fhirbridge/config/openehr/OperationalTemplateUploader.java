@@ -16,7 +16,9 @@
 
 package org.ehrbase.fhirbridge.config.openehr;
 
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.OpenEhrClient;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.defaultrestclient.FHIRBridgeRestTemplateEndpoint;
 import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.stereotype.Component;
@@ -63,7 +65,7 @@ public class OperationalTemplateUploader {
             }
 
             //upload template to openEHR
-            openEhrClient.templateEndpoint().ensureExistence(templateId);
+            ((FHIRBridgeRestTemplateEndpoint)(openEhrClient.templateEndpoint())).ensureExistence(templateId);
 
             //upload template to openFHIR
             openFHIRAdapter.ensureExistence(templateId);

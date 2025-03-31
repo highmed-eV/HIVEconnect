@@ -9,9 +9,13 @@ import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstan
 import org.ehrbase.fhirbridge.core.domain.PatientEhr;
 import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
 import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
-import org.ehrbase.fhirbridge.openehr.openehrclient.AqlEndpoint;
-import org.ehrbase.fhirbridge.openehr.openehrclient.EhrEndpoint;
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.AqlEndpoint;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.EhrEndpoint;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.AqlEndpoint;
+import org.ehrbase.client.openehrclient.EhrEndpoint;
+
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
