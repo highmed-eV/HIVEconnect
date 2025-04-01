@@ -1,25 +1,27 @@
 package org.ehrbase.fhirbridge.config;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@TestPropertySource(properties = {
-    "async.core-pool-size=5",
-    "async.max-pool-size=10",
-    "async.queue-capacity=25",
-    "async.thread-name-prefix=AsyncThread-"
-})
+@SpringBootTest(classes = AsyncConfiguration.class)
 class AsyncConfigurationTest {
+
+    @Autowired
+    private AsyncConfiguration asyncConfiguration;
 
     @Test
     void testAsyncConfiguration() {
-        // This test verifies that the Spring context loads with the AsyncConfiguration
-        // The actual configuration is tested through property injection
-        assertTrue(true);
+        assertNotNull(asyncConfiguration);
+        
+        ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) asyncConfiguration.getAsyncExecutor();
+        assertNotNull(executor);
+        
+        assertEquals(3, executor.getCorePoolSize());
+        assertEquals(4, executor.getMaxPoolSize());
+        assertEquals("asyn-task-thread-", executor.getThreadNamePrefix());
     }
 } 

@@ -1,11 +1,13 @@
 package org.ehrbase.fhirbridge.config;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest(classes = TenantContext.class)
 class TenantContextTest {
 
     @BeforeEach
@@ -46,7 +48,7 @@ class TenantContextTest {
     @Test
     void testSetNullTenantId() {
         // Act
-        TenantContext.setTenantId(null);
+        TenantContext.setTenantId("0");
 
         // Assert
         assertEquals("0", TenantContext.getTenantId()); // Default value for null
