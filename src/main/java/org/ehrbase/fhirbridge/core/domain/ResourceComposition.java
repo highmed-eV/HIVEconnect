@@ -73,7 +73,14 @@ public class ResourceComposition {
         this.systemId = systemId;
         this.templateId = templateId;
     }
-
+    public ResourceComposition(String inputResourceId, String internalResourceId, String compositionId, String systemId, String templateId, UUID ehrId) {
+        this.inputResourceId = inputResourceId;
+        this.internalResourceId = internalResourceId;
+        this.compositionId = compositionId;
+        this.systemId = systemId;
+        this.templateId = templateId;
+        this.ehrId = ehrId;
+    }
     public String getInputResourceId() {
         return inputResourceId;
     }
@@ -146,6 +153,8 @@ public class ResourceComposition {
                 ", inputResourceId='" + inputResourceId + '\'' +
                 ", internalResourceId='" + internalResourceId + '\'' +
                 ", compositionId='" + compositionId + '\'' +
+                ", templateId='" + templateId + '\'' +
+                ", ehrId='" + ehrId + '\'' +
                 ", systemId='" + systemId + '\'' +
                 ", createdDateTime='" + createdDateTime + '\'' +
                 ", updatedDateTime='" + updatedDateTime + '\'' +

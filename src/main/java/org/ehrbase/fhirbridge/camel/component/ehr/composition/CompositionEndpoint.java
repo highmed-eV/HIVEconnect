@@ -7,7 +7,8 @@ import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.camel.support.DefaultEndpoint;
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.fhirbridge.camel.component.ehr.EhrConfiguration;
 import org.ehrbase.fhirbridge.config.DebugProperties;
 

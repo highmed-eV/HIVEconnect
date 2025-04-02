@@ -21,8 +21,8 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.ehrbase.client.exception.OptimisticLockException;
-import org.ehrbase.client.exception.WrongStatusCodeException;
+import org.ehrbase.openehr.sdk.util.exception.OptimisticLockException;
+import org.ehrbase.openehr.sdk.util.exception.WrongStatusCodeException;
 import org.springframework.util.Assert;
 
 /**
