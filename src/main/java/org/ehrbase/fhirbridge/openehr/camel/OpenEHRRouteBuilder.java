@@ -5,11 +5,11 @@ import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.util.Optional;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.openehr.sdk.util.exception.ClientException;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
-import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.springframework.stereotype.Component;
 
 @Component

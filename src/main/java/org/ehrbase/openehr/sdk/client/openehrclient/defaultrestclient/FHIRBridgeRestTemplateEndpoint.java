@@ -1,7 +1,7 @@
-package org.ehrbase.client.openehrclient.defaultrestclient;
+package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 import java.util.Optional;
-import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.openehr.sdk.util.exception.ClientException;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

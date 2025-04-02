@@ -22,41 +22,20 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvIdentifier;
-import com.nedap.archie.rm.datavalues.DvText;
-import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.generic.PartySelf;
-import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 
 import org.apache.camel.Exchange;
-import org.ehrbase.client.aql.query.Query;
-import org.ehrbase.client.aql.record.Record1;
-import org.ehrbase.client.classgenerator.shareddefinition.Setting;
-import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
-import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
-import org.ehrbase.fhirbridge.core.domain.PatientEhr;
-import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
-import org.ehrbase.fhirbridge.exception.ConversionException;
-import org.ehrbase.fhirbridge.fhir.support.PatientUtils;
-// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
-import org.ehrbase.client.openehrclient.OpenEhrClient;
-
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * {@link org.apache.camel.Processor Processor} that retrieves the EHR ID of the patient involved in the current

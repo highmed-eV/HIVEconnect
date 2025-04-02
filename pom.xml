@@ -23,7 +23,7 @@
 		<javers.version>7.3.7</javers.version>
 		<camel.version>4.5.0</camel.version>
 		<hapi-fhir.version>7.4.2</hapi-fhir.version>
-		<ehrbase-sdk.version>1.18.0</ehrbase-sdk.version>
+		<ehrbase-sdk.version>2.21.0</ehrbase-sdk.version>
 		<jacoco.version>0.8.12</jacoco.version>
 	</properties>
 

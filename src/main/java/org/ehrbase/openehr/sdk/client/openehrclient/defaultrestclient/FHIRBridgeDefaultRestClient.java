@@ -1,13 +1,13 @@
-package org.ehrbase.client.openehrclient.defaultrestclient;
+package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 
 import org.apache.http.client.HttpClient;
 import java.util.UUID;
 
-import org.ehrbase.client.openehrclient.CompositionEndpoint;
-import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
-import org.ehrbase.client.openehrclient.TemplateEndpoint;
-import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
+import org.ehrbase.openehr.sdk.client.openehrclient.CompositionEndpoint;
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.openehr.sdk.client.openehrclient.TemplateEndpoint;
+import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
 
 public class FHIRBridgeDefaultRestClient extends DefaultRestClient {
 

@@ -16,9 +16,9 @@
 
 package org.ehrbase.fhirbridge.config.openehr;
 
-import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 // import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
-import org.ehrbase.client.openehrclient.defaultrestclient.FHIRBridgeRestTemplateEndpoint;
+import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.FHIRBridgeRestTemplateEndpoint;
 import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.springframework.stereotype.Component;
