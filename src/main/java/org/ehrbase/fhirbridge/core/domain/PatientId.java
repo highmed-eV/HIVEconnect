@@ -37,6 +37,10 @@ public class PatientId {
     @GeneratedValue
     private UUID uuid;
 
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public UUID getUuid() {
         return uuid;
     }
