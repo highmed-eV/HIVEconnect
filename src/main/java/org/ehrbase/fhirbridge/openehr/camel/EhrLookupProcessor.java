@@ -32,7 +32,7 @@ import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
 import org.ehrbase.fhirbridge.exception.ConversionException;
 import org.ehrbase.fhirbridge.fhir.support.PatientUtils;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
-// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.slf4j.Logger;

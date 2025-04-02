@@ -11,7 +11,7 @@ import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
 import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
 // import org.ehrbase.fhirbridge.openehr.openehrclient.AqlEndpoint;
 // import org.ehrbase.fhirbridge.openehr.openehrclient.EhrEndpoint;
-// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.AqlEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.EhrEndpoint;

@@ -27,7 +27,7 @@ import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.DefaultRes
 import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.FHIRBridgeDefaultRestClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
 // import org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient;
-// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+
 // import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
 import org.ehrbase.fhirbridge.security.oauth2.AccessTokenService;

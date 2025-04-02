@@ -3,7 +3,7 @@ package org.ehrbase.fhirbridge.camel.component.ehr.composition;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.support.DefaultComponent;
-// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.fhirbridge.camel.component.ehr.EhrConfiguration;
 import org.ehrbase.fhirbridge.config.DebugProperties;
