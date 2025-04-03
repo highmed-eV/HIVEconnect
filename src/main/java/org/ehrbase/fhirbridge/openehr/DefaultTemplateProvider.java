@@ -16,7 +16,7 @@
 
 package org.ehrbase.fhirbridge.openehr;
 
-import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
+import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

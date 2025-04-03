@@ -1,7 +1,7 @@
 package org.ehrbase.fhirbridge.camel.route;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.ehrbase.client.exception.ClientException;
+import org.ehrbase.openehr.sdk.util.exception.ClientException;
 import org.ehrbase.fhirbridge.exception.FhirBridgeExceptionHandler;
 import org.ehrbase.fhirbridge.exception.OpenEhrClientExceptionHandler;
 import org.springframework.stereotype.Component;
