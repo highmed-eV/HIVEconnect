@@ -2,31 +2,20 @@ package org.ehrbase.fhirbridge.fhir.support;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import ca.uhn.fhir.rest.api.server.RequestDetails;
-
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
-import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
-import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Resource;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
+@Slf4j
 public class FhirUtils {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -36,7 +25,6 @@ public class FhirUtils {
     public static final String ENTRY = "entry";
     public static final String REQUEST = "request";
     public static final String FULL_URL = "fullUrl";
-    private static final Logger LOG = LoggerFactory.getLogger(FhirUtils.class);
     
     private FhirUtils() {
         // Private constructor to prevent instantiation
@@ -58,7 +46,6 @@ public class FhirUtils {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(resourceJson);
             List<String> extractedResourceIds;
-            Set<String> resultSet = new HashSet<>();
 
             List<String> fullUrlList = extractFullUrls(rootNode);
             // Handle both Bundle and a single resource
@@ -67,7 +54,7 @@ public class FhirUtils {
 
             if (!extractedResourceIds.isEmpty()) {
                 // Collect all the uniques resource IDs
-                resultSet.addAll(extractedResourceIds);
+                Set<String> resultSet = new HashSet<>(extractedResourceIds);
                 // List of all the unique resource Ids in the input bundle or single resource
                 return new ArrayList<>(resultSet);
             }
@@ -168,8 +155,8 @@ public class FhirUtils {
     public static void extractInputParameters(Exchange exchange) {
         Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String inputResourceType = getResourceType(inputResource);
-        String method = null;
-        List<String> profiles = null;
+        String method;
+        List<String> profiles;
 
         if ("Bundle".equals(inputResourceType)) {
             Bundle bundle = (Bundle) inputResource;
@@ -202,7 +189,7 @@ public class FhirUtils {
             profiles = Optional.ofNullable(inputResource.getMeta())
                     .map(meta -> meta.getProfile().stream()
                             .map(canonical -> canonical.getValue())
-                            .collect(Collectors.toList()))
+                            .toList())
                     .orElse(Collections.emptyList());
         }
 

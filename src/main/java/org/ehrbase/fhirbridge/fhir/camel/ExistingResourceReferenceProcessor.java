@@ -16,22 +16,19 @@
 
  package org.ehrbase.fhirbridge.fhir.camel;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.JsonParser;
 import com.apicatalog.jsonld.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.JsonParser;
-
 import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -103,7 +100,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
         exchange.getIn().setBody(bundleResource);
     }
 
-    private List<String> mapToInputResourceId(List<String> existingResources, ObjectMapper objectMapper, String systemId) throws JsonProcessingException {
+    private void mapToInputResourceId(List<String> existingResources, ObjectMapper objectMapper, String systemId) throws JsonProcessingException {
         for (int i = 0; i < existingResources.size(); i++) {
             String resourceJson = existingResources.get(i);
             JsonNode resourceNode = objectMapper.readTree(resourceJson);
@@ -125,7 +122,6 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
                 }
             }
         }
-        return existingResources;
     }
 
     private boolean isValidBundle(JsonNode rootNode) {

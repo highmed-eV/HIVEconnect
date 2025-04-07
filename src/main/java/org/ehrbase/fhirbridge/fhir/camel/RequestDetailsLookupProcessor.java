@@ -1,23 +1,19 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
-import org.apache.camel.Exchange;
-import org.ehrbase.fhirbridge.camel.CamelConstants;
-import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
-import org.springframework.stereotype.Component;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.RestOperationTypeEnum;
 import ca.uhn.fhir.rest.server.servlet.ServletRequestDetails;
-
+import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.Exchange;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.hl7.fhir.r4.model.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 @Component(RequestDetailsLookupProcessor.BEAN_ID)
+@Slf4j
 public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
-    private static final Logger LOG = LoggerFactory.getLogger(RequestDetailsLookupProcessor.class);
-    
+
     public static final String BEAN_ID = "requestDetailsLookupProcessor";
 
     @Override
@@ -37,7 +33,6 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
 
         String httpMethod = requestDetails.getRequestType().name();
         String resourceName = requestDetails.getResourceName();
-        String path = requestDetails.getRequestPath();
         String id = requestDetails.getId() != null ? requestDetails.getId().getIdPart() : null;
         Resource resource = null;
         // Handle resource based on HTTP method
@@ -84,8 +79,8 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
         exchange.setProperty("RequestDetails", requestDetails);
        
         // Log all headers for debugging
-        exchange.getIn().getHeaders().forEach((key, value) -> 
-            LOG.info("Header: " + key + " = " + value));
+        exchange.getIn().getHeaders().forEach((key, value) ->
+                log.info("Header: {} = {}", key, value));
     
  
         switch (operationType.name()) {

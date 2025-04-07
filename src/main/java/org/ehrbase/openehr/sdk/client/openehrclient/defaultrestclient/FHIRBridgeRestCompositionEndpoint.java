@@ -4,12 +4,9 @@ package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
+
 import java.util.Optional;
 import java.util.UUID;
-
-import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.DefaultRestCompositionEndpoint;
-import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.DefaultRestClient;
-
 
 import static org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
@@ -29,14 +26,10 @@ public class FHIRBridgeRestCompositionEndpoint extends DefaultRestCompositionEnd
   public <T> T mergeCompositionEntity(T entity) {
     Composition composition =
         (Composition) entity;
-            // new Unflattener(
-            //         defaultRestClient.getTemplateProvider(),
-            //         defaultRestClient.getDefaultValuesProvider())
-            //     .unflatten(entity);
 
-    Optional<ObjectVersionId> ObjectVersionId = extractVersionUid(entity);
+    Optional<ObjectVersionId> objectVersionId = extractVersionUid(entity);
 
-    final ObjectVersionId updatedVersion = internalMerge(composition, ObjectVersionId.orElse(null));
+    final ObjectVersionId updatedVersion = internalMerge(composition, objectVersionId.orElse(null));
     
     //update version
     if (composition.getUid() == null) {
@@ -47,13 +40,6 @@ public class FHIRBridgeRestCompositionEndpoint extends DefaultRestCompositionEnd
       composition.getUid().setValue(updatedVersion.toString());
     }
 
-    // Flattener.addVersion(entity, updatedVersion);
-    // entity =
-    //     (T)
-    //         new Flattener(defaultRestClient.getTemplateProvider())
-    //             .flatten(composition, entity.getClass());
-    // Flattener.addVersion(entity, updatedVersion);
-
     return entity;
   }
 
@@ -62,11 +48,11 @@ public class FHIRBridgeRestCompositionEndpoint extends DefaultRestCompositionEnd
 
     UIDBasedId compUIDBasedId = composition.getUid();
 
-    Optional<ObjectVersionId> ObjectVersionId = compUIDBasedId != null && compUIDBasedId.getValue() != null 
+    Optional<ObjectVersionId> objectVersionId = compUIDBasedId != null && compUIDBasedId.getValue() != null
                                     ? Optional.of(new ObjectVersionId(compUIDBasedId.getValue())) 
                                     : Optional.empty();
 
-    final ObjectVersionId updatedVersion = internalMerge(composition, ObjectVersionId.orElse(null));
+    final ObjectVersionId updatedVersion = internalMerge(composition, objectVersionId.orElse(null));
     
     //update version
     if (composition.getUid() == null) {
@@ -80,9 +66,10 @@ public class FHIRBridgeRestCompositionEndpoint extends DefaultRestCompositionEnd
     return composition;
   }
 
-  private ObjectVersionId internalMerge(Composition composition, ObjectVersionId ObjectVersionId) {
+
+  private ObjectVersionId internalMerge(Composition composition, ObjectVersionId objectVersionId) {
     final ObjectVersionId updatedVersion;
-    if (ObjectVersionId == null) {
+    if (objectVersionId == null) {
       updatedVersion =
           defaultRestClient.httpPost(
               defaultRestClient
@@ -97,9 +84,9 @@ public class FHIRBridgeRestCompositionEndpoint extends DefaultRestCompositionEnd
                   .getConfig()
                   .getBaseUri()
                   .resolve(
-                      EHR_PATH + ehrId.toString() + COMPOSITION_PATH + ObjectVersionId.getValue()),
+                      EHR_PATH + ehrId.toString() + COMPOSITION_PATH + objectVersionId.getValue()),
                   composition,
-              ObjectVersionId);
+              objectVersionId);
     }
     return updatedVersion;
   }

@@ -21,7 +21,6 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.openehr.sdk.util.exception.WrongStatusCodeException;
-import org.ehrbase.fhirbridge.exception.ConversionException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -48,8 +47,6 @@ public class DefaultExceptionHandler implements Processor, MessageSourceAware {
 
         if (ex instanceof WrongStatusCodeException e) {
             handleWrongStatusCode(e);
-        // } else if (ex instanceof ConversionException e) { //Chanyas
-        //     handleConversionException(e);
         } else {
             handleException(ex);
         }
@@ -59,10 +56,6 @@ public class DefaultExceptionHandler implements Processor, MessageSourceAware {
         HttpStatus status = HttpStatus.valueOf(ex.getActualStatusCode());
         throw new UnprocessableEntityException(messages.getMessage("ehrbase.wrongStatusCode",
                 new Object[]{status.value(), status.getReasonPhrase(), ex.getMessage()}), ex);
-    }
-
-    private void handleConversionException(ConversionException ex) {
-        throw new UnprocessableEntityException(ex.getMessage());
     }
 
     private void handleException(Exception ex) {

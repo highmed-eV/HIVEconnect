@@ -79,12 +79,12 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
         }
     }
 
-    private String updateInputResource(Exchange exchange, String inputResource) throws JsonProcessingException {
+    private void updateInputResource(Exchange exchange, String inputResource) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(inputResource);
         String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
 
-        String updatedResource = inputResource;
+        String updatedResource;
         if (rootNode != null && rootNode.isObject()) {
             // if resourceType is Bundle
             if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
@@ -103,7 +103,6 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
             }
         }
         // Return the updated JSON as a string
-        return updatedResource;
     }
 
     private void updateBundleReferences(JsonNode rootNode, String systemId) {

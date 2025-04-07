@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class FHIRBridgeRestTemplateEndpoint extends DefaultRestTemplateEndpoint  {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultRestTemplateEndpoint.class);
-
-    public static final String DEFINITION_TEMPLATE_ADL_1_4_PATH = "rest/openehr/v1/definition/template/adl1.4/";
+    private static final Logger logger = LoggerFactory.getLogger(FHIRBridgeRestTemplateEndpoint.class);
 
     private final DefaultRestClient defaultRestClient;
 

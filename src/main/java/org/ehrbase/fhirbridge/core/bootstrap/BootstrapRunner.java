@@ -73,14 +73,6 @@ public class BootstrapRunner implements ApplicationRunner {
 
         try {
             var bootstrapEntity = bootstrapRepository.findByFile(relativePath);
-            
-            // Check if file was modified since last processing
-            // if (bootstrapEntity.isPresent() && 
-            //     !Files.getLastModifiedTime(path).toInstant()
-            //         .isAfter(bootstrapEntity.get().getUpdatedDateTime().toInstant())) {
-            //     log.debug("Skipping unchanged template file: {}", relativePath);
-            //     return;
-            // }
 
             log.info("Loading template from file: {}", relativePath);
             var templateDocument = TemplateDocument.Factory.parse(new FileInputStream(file));
@@ -89,8 +81,6 @@ public class BootstrapRunner implements ApplicationRunner {
             var templateCache = cacheManager.getCache("templateCache");
             if (templateCache != null) {
                 templateCache.put(template.getTemplateId().getValue(), template);
-            } else {
-                log.error("Template cache not found");
             }
             
 
@@ -109,7 +99,7 @@ public class BootstrapRunner implements ApplicationRunner {
             }
 
         } catch (IOException | XmlException e) {
-            log.error("Failed to process template file: " + relativePath, e);
+            log.error("Failed to process template file: {}",relativePath, e);
         }
     }
 } 

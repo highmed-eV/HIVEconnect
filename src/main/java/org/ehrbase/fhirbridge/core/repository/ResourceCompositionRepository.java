@@ -16,10 +16,6 @@
 
 package org.ehrbase.fhirbridge.core.repository;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import org.ehrbase.fhirbridge.core.domain.PatientEhr;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,6 +24,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface ResourceCompositionRepository extends JpaRepository<ResourceComposition, String> {
@@ -40,8 +37,6 @@ public interface ResourceCompositionRepository extends JpaRepository<ResourceCom
 
     @Query("SELECT rc FROM ResourceComposition rc WHERE rc.inputResourceId = :inputResourceId AND rc.systemId = :systemId ORDER BY rc.id DESC LIMIT 1")
     Optional<ResourceComposition> findByInputResourceIdAndSystemId(@Param("inputResourceId") String inputResourceId, @Param("systemId") String systemId);
-
-    Optional<ResourceComposition> findByInputResourceIdAndCompositionIdAndEhrId(String inputResourceId, String compositionId, UUID ehrId);
 
     Optional<ResourceComposition> findByInternalResourceIdAndCompositionIdAndEhrId(String internalResourceId, String compositionId, UUID ehrId);
 
@@ -56,7 +51,4 @@ public interface ResourceCompositionRepository extends JpaRepository<ResourceCom
 
     @Query("SELECT rc.internalResourceId FROM ResourceComposition rc WHERE rc.compositionId = :compositionId AND rc.ehrId = :ehrId")
     List<String> findInternalResourcesByCompositionIdAndEhrId(@Param("compositionId") String compositionId, @Param("ehrId") UUID ehrId);
-
-    Optional<ResourceComposition> findByInternalResourceIdAndSystemId(String internalResourceId, String systemId);
-
 }

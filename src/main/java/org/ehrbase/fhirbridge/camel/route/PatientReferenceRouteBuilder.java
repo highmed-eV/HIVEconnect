@@ -28,7 +28,7 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
                 .to("direct:ExtractProcess")
                 
                 // Validate 
-                // 1. Extract  for all falvours of patientId(relative, identifier, absolute
+                // 1. Extract  for all flavours of patientId(relative, identifier, absolute
                 // and validate if it exists in the fhir server
                 // and get the server patient id from db if present
 
@@ -68,7 +68,7 @@ public class PatientReferenceRouteBuilder extends RouteBuilder {
             .choice()
                 .when(simple("${header.CamelRequestResourceResourceType} != 'Patient'"))
                     .doTry()
-                        // Extract  for all falvours of patientId(relative, identifier, absolute
+                        // Extract  for all flavours of patientId(relative, identifier, absolute
                         // and validate if it exists in the fhir server
                         // and get the server patient id from db if present
                         .to("direct:extractAndValidatePatientIdExistsProcessor")

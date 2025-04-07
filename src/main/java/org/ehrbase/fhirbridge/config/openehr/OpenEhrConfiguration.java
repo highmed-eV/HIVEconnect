@@ -22,16 +22,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
-import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.DefaultRestClient;
-import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.FHIRBridgeDefaultRestClient;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
-// import org.ehrbase.fhirbridge.openehr.openehrclient.DefaultRestClient;
-
-// import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
 import org.ehrbase.fhirbridge.security.oauth2.AccessTokenService;
 import org.ehrbase.fhirbridge.security.oauth2.TokenAuthenticationInterceptor;
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.FHIRBridgeDefaultRestClient;
 import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,11 +63,6 @@ public class OpenEhrConfiguration {
     public void initialize() {
         log.info("Running FHIR Bridge using openEHR");
     }
-
-    // @Bean(name = "openEhrRouteBuilder")
-    // public OpenEhrRouteBuilder routeBuilder() {
-    //     return new OpenEhrRouteBuilder();
-    // }
 
     @Bean
     public OpenEhrClient openEhrClient(OpenEhrClientConfig configuration, TemplateProvider templateProvider,

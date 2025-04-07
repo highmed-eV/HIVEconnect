@@ -4,8 +4,6 @@ public final class CompositionConstants {
 
     public static final String VERSION_UID = "CompositionVersionUid";
 
-    public static final String COMPOSITION_CONVERTER = "CamelEhrCompositionConverter";
-
     public static final String OPENEHR_COMPOSITION_ID = "CamelEhrCompositionCompositionId";
 
     public static final String EHR_ID = "CamelEhrCompositionEhrId";

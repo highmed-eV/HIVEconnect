@@ -124,9 +124,8 @@ public class ProvideResourceResponseProcessor implements Processor {
             // Convert response to JSON string for consistent handling
             String jsonString;
             if (serverResponse instanceof Resource) {
-                jsonString = fhirContext.newJsonParser().encodeResourceToString((Resource) serverResponse);
+                fhirContext.newJsonParser().encodeResourceToString((Resource) serverResponse);
                 // Update the exchange property to maintain compatibility with DebugProperties
-                // exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, jsonString);
                 serverBundle = (Bundle) serverResponse;
             } else if (serverResponse instanceof MethodOutcome) {
                 IBaseResource baseResource = ((MethodOutcome) serverResponse).getResource();
@@ -162,8 +161,7 @@ public class ProvideResourceResponseProcessor implements Processor {
     }
 
     private String extractResourceId(Resource resource) {
-        if (resource instanceof Patient) {
-            Patient patient = (Patient) resource;
+        if (resource instanceof Patient patient) {
             Optional<Identifier> identifier = patient.getIdentifier().stream().findFirst();
             return identifier.map(id -> id.getSystem() + "|" + id.getValue()).orElse(null);
         } else {
@@ -200,14 +198,11 @@ public class ProvideResourceResponseProcessor implements Processor {
             String internalResourceId = entry.getValue();
             ResourceComposition resourceComposition;
             String compositionId = getCompositionId(composition);
-            String templateId = Optional.ofNullable(composition.getArchetypeDetails()) 
-                                .map(archetypeDetails -> Optional.ofNullable(archetypeDetails.getTemplateId()) 
-                                .orElse(null)) 
-                                .map(template -> template.getValue()) 
+            String templateId = Optional.ofNullable(composition.getArchetypeDetails()).flatMap(archetypeDetails -> Optional.ofNullable(archetypeDetails.getTemplateId()))
+                                .map(template -> template.getValue())
                                 .orElse(null);
             String method =  (String) exchange.getIn().getHeader(CamelConstants.REQUEST_HTTP_METHOD);
             if ("POST".equals(method)) {
-                // resourceComposition = resourceCompositionRepository.findByInputResourceIdAndSystemId(inputResourceId, systemId);
                 // If found throw error
                 resourceComposition = new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId, templateId);
                 LocalDateTime dateTime = LocalDateTime.now();
