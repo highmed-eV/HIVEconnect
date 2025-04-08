@@ -39,14 +39,6 @@
                     "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5284ade"
                 },
                 "effectiveDateTime": "2024-08-20T14:30:00+00:00",
-                // "performer": [
-                //     {
-                //         "actor": {
-                //             "reference": "Practitioner/1",
-                //             "display": "Dr. John Smith"
-                //         }
-                //     }
-                // ],
                 "reasonCode": [
                     {
                         "coding": [

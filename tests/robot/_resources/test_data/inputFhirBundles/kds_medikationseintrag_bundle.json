@@ -112,9 +112,6 @@
           "subject": {
             "reference": "Patient/{{patientId}}"
           },
-          // "encounter": {
-          //   "reference": "Encounter/example"
-          // },
           "date": "2024-08-24T10:00:00Z",
           "entry": [
             {

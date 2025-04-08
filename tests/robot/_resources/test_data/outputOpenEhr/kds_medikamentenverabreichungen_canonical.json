@@ -1,367 +1,394 @@
 {
-  "uid": {
-    "_type": "OBJECT_VERSION_ID",
-    "value": "4d82679a-a40b-40fd-8725-cf9ee72d41e0::local.ehrbase.org::1"
-  },
-  "name": {
-    "_type": "DV_TEXT",
-    "value": "KDS_Medikamentenverabreichungen"
-  },
   "_type": "COMPOSITION",
-  "context": {
-    "_type": "EVENT_CONTEXT",
-    "setting": {
-      "_type": "DV_CODED_TEXT",
-      "value": "other care",
-      "defining_code": {
-        "_type": "CODE_PHRASE",
-        "code_string": "238",
-        "terminology_id": {
-          "_type": "TERMINOLOGY_ID",
-          "value": "openehr"
-        }
-      }
-    },
-    "start_time": {
-      "_type": "DV_DATE_TIME",
-      "value": "2025-01-22T06:27:17.119+05:30"
-    },
-    "other_context": {
-      "name": {
-        "value": "Tree",
-        "_type": "DV_TEXT"
-      },
-      "archetype_node_id": "at0001",
-      "_type": "ITEM_TREE",
-      "items": [
-        {
-          "name": {
-            "value": "Status",
-            "_type": "DV_TEXT"
-          },
-          "value": {
-            "_type": "DV_CODED_TEXT",
-            "value": "Completed",
-            "defining_code": {
-              "_type": "CODE_PHRASE",
-              "code_string": "completed",
-              "terminology_id": {
-                "_type": "TERMINOLOGY_ID",
-                "value": "http://terminology.hl7.org/CodeSystem/medication-admin-status"
-              }
-            }
-          },
-          "_type": "ELEMENT",
-          "archetype_node_id": "at0005"
-        },
-        {
-          "name": {
-            "value": "Fallidentifikation",
-            "_type": "DV_TEXT"
-          },
-          "archetype_node_id": "openEHR-EHR-CLUSTER.case_identification.v0",
-          "_type": "CLUSTER",
-          "items": [
-            {
-              "name": {
-                "value": "Fall-Kennung",
-                "_type": "DV_TEXT"
-              },
-              "value": {
-                "_type": "DV_TEXT",
-                "value": "urn:uuid:2145985c-5036-4500-9a1b-12bd96687072"
-              },
-              "_type": "ELEMENT",
-              "archetype_node_id": "at0001"
-            }
-          ]
-        }
-      ]
-    }
-  },
-  "category": {
-    "_type": "DV_CODED_TEXT",
-    "value": "event",
-    "defining_code": {
-      "_type": "CODE_PHRASE",
-      "code_string": "433",
-      "terminology_id": {
-        "_type": "TERMINOLOGY_ID",
-        "value": "openehr"
-      }
-    }
-  },
-  "composer": {
-    "_type": "PARTY_SELF"
-  },
-  "language": {
-    "_type": "CODE_PHRASE",
-    "code_string": "de",
-    "terminology_id": {
-      "_type": "TERMINOLOGY_ID",
-      "value": "ISO_639-1"
-    }
-  },
-  "territory": {
-    "_type": "CODE_PHRASE",
-    "code_string": "DE",
-    "terminology_id": {
-      "_type": "TERMINOLOGY_ID",
-      "value": "ISO_3166-1"
-    }
+  "name": {
+      "_type": "DV_TEXT",
+      "value": "KDS_Medikamentenverabreichungen"
   },
   "archetype_details": {
-    "_type": "ARCHETYPED",
-    "rm_version": "1.0.4",
-    "template_id": {
-      "_type": "TEMPLATE_ID",
-      "value": "KDS_Medikamentenverabreichungen"
-    },
-    "archetype_id": {
-      "_type": "ARCHETYPE_ID",
-      "value": "openEHR-EHR-COMPOSITION.report.v1"
-    }
+      "archetype_id": {
+          "value": "openEHR-EHR-COMPOSITION.report.v1"
+      },
+      "template_id": {
+          "value": "KDS_Medikamentenverabreichungen"
+      },
+      "rm_version": "1.0.4"
   },
-  "archetype_node_id": "openEHR-EHR-COMPOSITION.report.v1",
-  "content": [
-    {
-      "name": {
-        "value": "Arzneimittelanwendung",
-        "_type": "DV_TEXT"
-      },
-      "time": {
-        "value": "2025-01-22T06:27:17.1191225+05:30",
-        "_type": "DV_DATE_TIME"
-      },
-      "_type": "ACTION",
-      "subject": {
-        "_type": "PARTY_SELF"
-      },
-      "encoding": {
-        "_type": "CODE_PHRASE",
-        "code_string": "UTF-8",
-        "terminology_id": {
-          "_type": "TERMINOLOGY_ID",
-          "value": "IANA_character-sets"
-        }
-      },
-      "language": {
-        "_type": "CODE_PHRASE",
-        "code_string": "de",
-        "terminology_id": {
+  "feeder_audit": {
+      "_type": "FEEDER_AUDIT",
+      "originating_system_item_ids": [
+          {
+              "_type": "DV_IDENTIFIER",
+              "id": "MedicationAdministration/38/_history/1",
+              "type": "fhir_logical_id"
+          }
+      ],
+      "originating_system_audit": {
+          "_type": "FEEDER_AUDIT_DETAILS",
+          "system_id": "FHIR-Bridge"
+      }
+  },
+  "language": {
+      "_type": "CODE_PHRASE",
+      "terminology_id": {
           "_type": "TERMINOLOGY_ID",
           "value": "ISO_639-1"
-        }
       },
-      "ism_transition": {
-        "_type": "ISM_TRANSITION",
-        "current_state": {
-          "_type": "DV_CODED_TEXT",
-          "value": "completed",
-          "defining_code": {
-            "_type": "CODE_PHRASE",
-            "code_string": "532",
-            "terminology_id": {
+      "code_string": "de"
+  },
+  "territory": {
+      "_type": "CODE_PHRASE",
+      "terminology_id": {
+          "_type": "TERMINOLOGY_ID",
+          "value": "ISO_3166-1"
+      },
+      "code_string": "DE"
+  },
+  "category": {
+      "_type": "DV_CODED_TEXT",
+      "value": "event",
+      "defining_code": {
+          "_type": "CODE_PHRASE",
+          "terminology_id": {
               "_type": "TERMINOLOGY_ID",
               "value": "openehr"
-            }
+          },
+          "code_string": "433"
+      }
+  },
+  "composer": {
+      "_type": "PARTY_SELF"
+  },
+  "context": {
+      "_type": "EVENT_CONTEXT",
+      "start_time": {
+          "_type": "DV_DATE_TIME",
+          "value": "2025-04-08T11:49:03.0754949+05:30"
+      },
+      "setting": {
+          "_type": "DV_CODED_TEXT",
+          "value": "secondary medical care",
+          "defining_code": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "openehr"
+              },
+              "code_string": "232"
           }
-        }
       },
-      "archetype_details": {
-        "rm_version": "1.0.4",
-        "archetype_id": {
-          "value": "openEHR-EHR-ACTION.medication.v1"
-        }
-      },
-      "description": {
-        "name": {
-          "value": "Tree",
-          "_type": "DV_TEXT"
-        },
-        "archetype_node_id": "at0017",
-        "_type": "ITEM_TREE",
-        "items": [
-          {
-            "name": {
-              "value": "Klinische Indikation",
-              "_type": "DV_TEXT"
-            },
-            "value": {
+      "other_context": {
+          "_type": "ITEM_TREE",
+          "name": {
               "_type": "DV_TEXT",
-              "value": "Hypertensive disorder, systemic arterial"
-            },
-            "_type": "ELEMENT",
-            "archetype_node_id": "at0156"
+              "value": "Tree"
           },
-          {
-            "name": {
-              "value": "Dosierung",
-              "_type": "DV_TEXT"
-            },
-            "archetype_node_id": "openEHR-EHR-CLUSTER.dosage.v2",
-            "_type": "CLUSTER",
-            "items": [
+          "items": [
               {
-                "name": {
-                  "value": "Dosis",
-                  "_type": "DV_TEXT"
-                },
-                "value": {
-                  "_type": "DV_QUANTITY",
-                  "units": "1",
-                  "magnitude": 250.0
-                },
-                "_type": "ELEMENT",
-                "archetype_node_id": "at0144"
-              },
-              {
-                "name": {
-                  "value": "Dosierung Freitext",
-                  "_type": "DV_TEXT"
-                },
-                "value": {
-                  "_type": "DV_TEXT",
-                  "value": "20 mg orally once daily"
-                },
-                "_type": "ELEMENT",
-                "archetype_node_id": "at0178"
-              }
-            ]
-          },
-          {
-            "name": {
-              "value": "Arzneimittel",
-              "_type": "DV_TEXT"
-            },
-            "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2",
-            "_type": "CLUSTER",
-            "items": [
-              {
-                "name": {
-                  "value": "Darreichungsform",
-                  "_type": "DV_TEXT"
-                },
-                "value": {
-                  "_type": "DV_CODED_TEXT",
-                  "value": "tablet",
-                  "defining_code": {
-                    "_type": "CODE_PHRASE",
-                    "code_string": "10225000",
-                    "terminology_id": {
-                      "_type": "TERMINOLOGY_ID",
-                      "value": "http://standardterms.edqm.eu"
-                    }
-                  }
-                },
-                "_type": "ELEMENT",
-                "archetype_node_id": "at0071"
-              },
-              {
-                "name": {
-                  "value": "Arzneimittel-Name",
-                  "_type": "DV_TEXT"
-                },
-                "value": {
-                  "_type": "DV_TEXT",
-                  "value": "Paracetamol 500mg tablet"
-                },
-                "_type": "ELEMENT",
-                "archetype_node_id": "at0132"
-              },
-              {
-                "name": {
-                  "value": "Wirkstoff",
-                  "_type": "DV_TEXT"
-                },
-                "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2",
-                "_type": "CLUSTER",
-                "items": [
-                  {
-                    "name": {
-                      "value": "Wirkstofftyp",
-                      "_type": "DV_TEXT"
-                    },
-                    "value": {
+                  "_type": "ELEMENT",
+                  "name": {
                       "_type": "DV_TEXT",
-                      "value": "Active"
-                    },
-                    "_type": "ELEMENT",
-                    "archetype_node_id": "at0142"
+                      "value": "Bericht ID"
                   },
-                  {
-                    "name": {
-                      "value": "Wirkstoffmenge",
-                      "_type": "DV_TEXT"
-                    },
-                    "archetype_node_id": "at0152",
-                    "_type": "CLUSTER",
-                    "items": [
-                      {
-                        "name": {
-                          "value": "Zähler",
-                          "_type": "DV_TEXT"
-                        },
-                        "value": {
-                          "_type": "DV_QUANTITY",
-                          "units": "1",
-                          "magnitude": 250.0
-                        },
-                        "_type": "ELEMENT",
-                        "archetype_node_id": "at0153"
-                      },
-                      {
-                        "name": {
-                          "value": "Nenner",
-                          "_type": "DV_TEXT"
-                        },
-                        "value": {
-                          "_type": "DV_QUANTITY",
-                          "units": "1",
-                          "magnitude": 8.0
-                        },
-                        "_type": "ELEMENT",
-                        "archetype_node_id": "at0157"
-                      }
-                    ]
+                  "value": {
+                      "_type": "DV_TEXT",
+                      "value": "MA123456"
                   },
-                  {
-                    "name": {
-                      "value": "Wirkstoff-Code  (ASK, SNOMED CT, UNII, CAS)",
-                      "_type": "DV_TEXT"
-                    },
-                    "archetype_node_id": "openEHR-EHR-CLUSTER.drug_class.v0",
-                    "_type": "CLUSTER",
-                    "items": [
-                      {
-                        "name": {
-                          "value": "Wirkstoff-Code",
-                          "_type": "DV_TEXT"
-                        },
-                        "value": {
-                          "_type": "DV_CODED_TEXT",
-                          "value": "Oral",
-                          "defining_code": {
-                            "_type": "CODE_PHRASE",
-                            "code_string": "26643006",
-                            "terminology_id": {
+                  "archetype_node_id": "at0002"
+              },
+              {
+                  "_type": "ELEMENT",
+                  "name": {
+                      "_type": "DV_TEXT",
+                      "value": "Status"
+                  },
+                  "value": {
+                      "_type": "DV_CODED_TEXT",
+                      "value": "Completed",
+                      "defining_code": {
+                          "_type": "CODE_PHRASE",
+                          "terminology_id": {
                               "_type": "TERMINOLOGY_ID",
-                              "value": "http://snomed.info/sct"
-                            }
-                          }
-                        },
-                        "_type": "ELEMENT",
-                        "archetype_node_id": "at0001"
+                              "value": "http://terminology.hl7.org/CodeSystem/medication-admin-status"
+                          },
+                          "code_string": "completed"
                       }
-                    ]
-                  }
-                ]
+                  },
+                  "archetype_node_id": "at0005"
               }
-            ]
-          }
-        ]
-      },
-      "archetype_node_id": "openEHR-EHR-ACTION.medication.v1"
-    }
-  ]
+          ],
+          "archetype_node_id": "at0001"
+      }
+  },
+  "content": [
+      {
+          "_type": "ACTION",
+          "name": {
+              "_type": "DV_TEXT",
+              "value": "Arzneimittelanwendung"
+          },
+          "archetype_details": {
+              "archetype_id": {
+                  "value": "openEHR-EHR-ACTION.medication.v1"
+              },
+              "rm_version": "1.0.4"
+          },
+          "language": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "ISO_639-1"
+              },
+              "code_string": "de"
+          },
+          "encoding": {
+              "_type": "CODE_PHRASE",
+              "terminology_id": {
+                  "_type": "TERMINOLOGY_ID",
+                  "value": "IANA_character-sets"
+              },
+              "code_string": "UTF-8"
+          },
+          "subject": {
+              "_type": "PARTY_SELF"
+          },
+          "time": {
+              "_type": "DV_DATE_TIME",
+              "value": "2025-04-08T11:49:03.0754949+05:30"
+          },
+          "description": {
+              "_type": "ITEM_TREE",
+              "name": {
+                  "_type": "DV_TEXT",
+                  "value": "Tree"
+              },
+              "items": [
+                  {
+                      "_type": "CLUSTER",
+                      "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Arzneimittel"
+                      },
+                      "archetype_details": {
+                          "archetype_id": {
+                              "value": "openEHR-EHR-CLUSTER.medication.v2"
+                          },
+                          "rm_version": "1.0.4"
+                      },
+                      "items": [
+                          {
+                              "_type": "ELEMENT",
+                              "name": {
+                                  "_type": "DV_TEXT",
+                                  "value": "Darreichungsform"
+                              },
+                              "value": {
+                                  "_type": "DV_CODED_TEXT",
+                                  "value": "Tabl",
+                                  "defining_code": {
+                                      "_type": "CODE_PHRASE",
+                                      "terminology_id": {
+                                          "_type": "TERMINOLOGY_ID",
+                                          "value": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_BMP_DARREICHUNGSFORM"
+                                      },
+                                      "code_string": "UTA"
+                                  }
+                              },
+                              "archetype_node_id": "at0071"
+                          },
+                          {
+                              "_type": "CLUSTER",
+                              "name": {
+                                  "_type": "DV_TEXT",
+                                  "value": "Wirkstoff"
+                              },
+                              "archetype_details": {
+                                  "archetype_id": {
+                                      "value": "openEHR-EHR-CLUSTER.medication.v2"
+                                  },
+                                  "rm_version": "1.0.4"
+                              },
+                              "items": [
+                                  {
+                                      "_type": "ELEMENT",
+                                      "name": {
+                                          "_type": "DV_TEXT",
+                                          "value": "Wirkstoff-Name"
+                                      },
+                                      "value": {
+                                          "_type": "DV_TEXT",
+                                          "value": "Active"
+                                      },
+                                      "archetype_node_id": "at0132"
+                                  },
+                                  {
+                                      "_type": "ELEMENT",
+                                      "name": {
+                                          "_type": "DV_TEXT",
+                                          "value": "Wirkstofftyp"
+                                      },
+                                      "value": {
+                                          "_type": "DV_CODED_TEXT",
+                                          "value": "N02BE01",
+                                          "defining_code": {
+                                              "_type": "CODE_PHRASE",
+                                              "terminology_id": {
+                                                  "_type": "TERMINOLOGY_ID",
+                                                  "value": "http://www.whocc.no/atc"
+                                              },
+                                              "code_string": "N02BE01"
+                                          }
+                                      },
+                                      "archetype_node_id": "at0142"
+                                  },
+                                  {
+                                      "_type": "CLUSTER",
+                                      "name": {
+                                          "_type": "DV_TEXT",
+                                          "value": "Wirkstoffmenge"
+                                      },
+                                      "items": [
+                                          {
+                                              "_type": "ELEMENT",
+                                              "name": {
+                                                  "_type": "DV_TEXT",
+                                                  "value": "Zähler"
+                                              },
+                                              "value": {
+                                                  "_type": "DV_QUANTITY",
+                                                  "units": "mg",
+                                                  "magnitude": 500.0
+                                              },
+                                              "archetype_node_id": "at0153"
+                                          },
+                                          {
+                                              "_type": "ELEMENT",
+                                              "name": {
+                                                  "_type": "DV_TEXT",
+                                                  "value": "Nenner"
+                                              },
+                                              "value": {
+                                                  "_type": "DV_QUANTITY",
+                                                  "units": "tablet",
+                                                  "magnitude": 1.0
+                                              },
+                                              "archetype_node_id": "at0157"
+                                          }
+                                      ],
+                                      "archetype_node_id": "at0152"
+                                  }
+                              ],
+                              "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2"
+                          }
+                      ],
+                      "archetype_node_id": "openEHR-EHR-CLUSTER.medication.v2"
+                  },
+                  {
+                      "_type": "CLUSTER",
+                      "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Dosierung"
+                      },
+                      "archetype_details": {
+                          "archetype_id": {
+                              "value": "openEHR-EHR-CLUSTER.dosage.v2"
+                          },
+                          "rm_version": "1.0.4"
+                      },
+                      "items": [
+                          {
+                              "_type": "ELEMENT",
+                              "name": {
+                                  "_type": "DV_TEXT",
+                                  "value": "Dosis"
+                              },
+                              "value": {
+                                  "_type": "DV_QUANTITY",
+                                  "units": "mg",
+                                  "magnitude": 250.0
+                              },
+                              "archetype_node_id": "at0144"
+                          },
+                          {
+                              "_type": "ELEMENT",
+                              "name": {
+                                  "_type": "DV_TEXT",
+                                  "value": "Dosierung Freitext"
+                              },
+                              "value": {
+                                  "_type": "DV_TEXT",
+                                  "value": "20 mg orally once daily"
+                              },
+                              "archetype_node_id": "at0178"
+                          }
+                      ],
+                      "archetype_node_id": "openEHR-EHR-CLUSTER.dosage.v2"
+                  },
+                  {
+                      "_type": "ELEMENT",
+                      "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Klinische Indikation"
+                      },
+                      "value": {
+                          "_type": "DV_TEXT",
+                          "value": "Hypertensive disorder, systemic arterial"
+                      },
+                      "archetype_node_id": "at0156"
+                  },
+                  {
+                      "_type": "CLUSTER",
+                      "name": {
+                          "_type": "DV_TEXT",
+                          "value": "Details zur Verabreichung"
+                      },
+                      "items": [
+                          {
+                              "_type": "ELEMENT",
+                              "name": {
+                                  "_type": "DV_TEXT",
+                                  "value": "Verabreichungsweg"
+                              },
+                              "value": {
+                                  "_type": "DV_CODED_TEXT",
+                                  "value": "Oral",
+                                  "defining_code": {
+                                      "_type": "CODE_PHRASE",
+                                      "terminology_id": {
+                                          "_type": "TERMINOLOGY_ID",
+                                          "value": "http://snomed.info/sct"
+                                      },
+                                      "code_string": "26643006"
+                                  }
+                              },
+                              "archetype_node_id": "at0147"
+                          }
+                      ],
+                      "archetype_node_id": "at0140"
+                  }
+              ],
+              "archetype_node_id": "at0017"
+          },
+          "ism_transition": {
+              "_type": "ISM_TRANSITION",
+              "current_state": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "completed",
+                  "defining_code": {
+                      "_type": "CODE_PHRASE",
+                      "terminology_id": {
+                          "_type": "TERMINOLOGY_ID",
+                          "value": "openehr"
+                      },
+                      "code_string": "532"
+                  }
+              }
+          },
+          "archetype_node_id": "openEHR-EHR-ACTION.medication.v1"
+      }
+  ],
+  "archetype_node_id": "openEHR-EHR-COMPOSITION.report.v1",
+  "uid": {
+      "_type": "OBJECT_VERSION_ID",
+      "value": "36551f70-cdbf-4b1d-8b00-a8385d081b4c::local.ehrbase.org::1"
+  }
 }
