@@ -16,6 +16,7 @@
 
 package org.ehrbase.fhirbridge.config.openehr;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
@@ -29,8 +30,6 @@ import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.FHIRBridgeDefaultRestClient;
 import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -55,9 +54,8 @@ import static org.ehrbase.fhirbridge.config.openehr.OpenEhrProperties.SecurityTy
 // @ConditionalOnProperty(prefix = "fhir-bridge", name = "mode", havingValue = "openehr", matchIfMissing = true)
 // @ComponentScan(basePackages = "org.ehrbase.fhirbridge")
 @EnableConfigurationProperties(OpenEhrProperties.class)
+@Slf4j
 public class OpenEhrConfiguration {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @PostConstruct
     public void initialize() {

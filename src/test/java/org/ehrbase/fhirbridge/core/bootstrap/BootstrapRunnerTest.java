@@ -13,14 +13,10 @@ import org.springframework.cache.CacheManager;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,9 +38,7 @@ class BootstrapRunnerTest {
 
     @BeforeEach
     void setUp() {
-        bootstrapRunner = new BootstrapRunner(cacheManager, bootstrapRepository, operationalTemplateUploader);
-        ReflectionTestUtils.setField(bootstrapRunner, "bootstrapDir", "test-bootstrap");
-        ReflectionTestUtils.setField(bootstrapRunner, "recursivelyOpenDirectories", false);
+        bootstrapRunner = new BootstrapRunner(cacheManager, bootstrapRepository, operationalTemplateUploader,"test-bootstrap", false);
     }
 
     @Test

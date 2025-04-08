@@ -9,6 +9,8 @@ import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.PrimitiveType;
 import org.hl7.fhir.r4.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,12 +20,8 @@ import java.util.regex.Pattern;
 @Slf4j
 public class FhirUtils {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
     private static final FhirContext FHIR_CONTEXT = FhirContext.forR4();
-    public static final String RESOURCE_TYPE = "resourceType";
     public static final String ENTRY = "entry";
-    public static final String REQUEST = "request";
     public static final String FULL_URL = "fullUrl";
     
     private FhirUtils() {
@@ -177,7 +175,7 @@ public class FhirUtils {
                     .map(Bundle.BundleEntryComponent::getResource)
                     .filter(entryResource -> entryResource != null && entryResource.getMeta() != null)
                     .flatMap(entryResource -> entryResource.getMeta().getProfile().stream())
-                    .map(canonical -> canonical.getValue())
+                    .map(PrimitiveType::getValue)
                     .distinct()
                     .toList();
             
@@ -188,7 +186,7 @@ public class FhirUtils {
             // Extract profiles directly from resource meta
             profiles = Optional.ofNullable(inputResource.getMeta())
                     .map(meta -> meta.getProfile().stream()
-                            .map(canonical -> canonical.getValue())
+                            .map(PrimitiveType::getValue)
                             .toList())
                     .orElse(Collections.emptyList());
         }
@@ -199,7 +197,7 @@ public class FhirUtils {
 
         // Get source from meta
         String metaSource = Optional.ofNullable(inputResource.getMeta())
-                .map(meta -> meta.getSource())
+                .map(Meta::getSource)
                 .orElse(null);
         
         // Set input parameters in exchange

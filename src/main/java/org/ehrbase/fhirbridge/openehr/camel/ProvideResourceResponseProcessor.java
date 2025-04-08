@@ -19,6 +19,7 @@ package org.ehrbase.fhirbridge.openehr.camel;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -26,6 +27,7 @@ import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstan
 import org.ehrbase.fhirbridge.config.DebugProperties;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
+import org.ehrbase.fhirbridge.exception.ConversionException;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.jetbrains.annotations.NotNull;
@@ -128,14 +130,7 @@ public class ProvideResourceResponseProcessor implements Processor {
                 // Update the exchange property to maintain compatibility with DebugProperties
                 serverBundle = (Bundle) serverResponse;
             } else if (serverResponse instanceof MethodOutcome) {
-                IBaseResource baseResource = ((MethodOutcome) serverResponse).getResource();
-                if (baseResource == null) {
-                    throw new IllegalArgumentException("MethodOutcome does not contain a resource");
-                }
-                if (!(baseResource instanceof Bundle)) {
-                    throw new IllegalArgumentException("MethodOutcome contains invalid resource type: " + 
-                        baseResource.getClass().getName() + ". Expected Bundle.");
-                }
+                IBaseResource baseResource = getiBaseResource((MethodOutcome) serverResponse);
                 serverBundle = (Bundle) baseResource;
             } else if (serverResponse instanceof String) {
                 jsonString = (String) serverResponse;
@@ -156,8 +151,20 @@ public class ProvideResourceResponseProcessor implements Processor {
             methodOutcome.setResource(serverBundle);
             exchange.getMessage().setBody(methodOutcome);
         } catch (Exception e) {
-            throw new RuntimeException("Error processing bundle: " + e.getMessage(), e);
+            throw new ConversionException("Error processing bundle: " + e.getMessage(), e);
         }
+    }
+
+    private static @NotNull IBaseResource getiBaseResource(MethodOutcome serverResponse) {
+        IBaseResource baseResource = serverResponse.getResource();
+        if (baseResource == null) {
+            throw new IllegalArgumentException("MethodOutcome does not contain a resource");
+        }
+        if (!(baseResource instanceof Bundle)) {
+            throw new IllegalArgumentException("MethodOutcome contains invalid resource type: " +
+                baseResource.getClass().getName() + ". Expected Bundle.");
+        }
+        return baseResource;
     }
 
     private String extractResourceId(Resource resource) {
@@ -199,7 +206,7 @@ public class ProvideResourceResponseProcessor implements Processor {
             ResourceComposition resourceComposition;
             String compositionId = getCompositionId(composition);
             String templateId = Optional.ofNullable(composition.getArchetypeDetails()).flatMap(archetypeDetails -> Optional.ofNullable(archetypeDetails.getTemplateId()))
-                                .map(template -> template.getValue())
+                                .map(ObjectId::getValue)
                                 .orElse(null);
             String method =  (String) exchange.getIn().getHeader(CamelConstants.REQUEST_HTTP_METHOD);
             if ("POST".equals(method)) {

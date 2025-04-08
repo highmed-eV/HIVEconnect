@@ -38,15 +38,17 @@ import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Patient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class PatientResourceProvider implements IResourceProvider  {
 
-    @Autowired
-    private ProducerTemplate producerTemplate;
+    private final ProducerTemplate producerTemplate;
+
+    public PatientResourceProvider(ProducerTemplate producerTemplate) {
+        this.producerTemplate = producerTemplate;
+    }
 
     @Override
     public Class<Patient> getResourceType() {

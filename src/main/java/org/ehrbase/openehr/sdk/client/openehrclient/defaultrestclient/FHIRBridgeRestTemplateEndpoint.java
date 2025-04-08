@@ -22,10 +22,10 @@ public class FHIRBridgeRestTemplateEndpoint extends DefaultRestTemplateEndpoint 
     @Override
     public void ensureExistence(String templateId) {
         Optional<OPERATIONALTEMPLATE> operationalTemplate = defaultRestClient.getTemplateProvider().find(templateId);
-        if (!operationalTemplate.isPresent()) {
+        if (operationalTemplate.isEmpty()) {
             throw new ClientException(String.format("Unknown Template with Id %s", templateId));
         }
-        if (!findTemplate(templateId).isPresent()) {
+        if (findTemplate(templateId).isEmpty()) {
             super.upload(operationalTemplate.get());
             logger.info("Uploaded template to openEHR: {}", templateId);
         } else {

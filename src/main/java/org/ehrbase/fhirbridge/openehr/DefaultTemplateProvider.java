@@ -55,7 +55,6 @@ public class DefaultTemplateProvider implements TemplateProvider, ApplicationCon
         return Optional.empty();
     }
 
-    @SuppressWarnings("unchecked")
     public Set<String> getTemplateIds() {
         var templateIds = new HashSet<String>();
         var cache = cacheManager.getCache("templateCache");

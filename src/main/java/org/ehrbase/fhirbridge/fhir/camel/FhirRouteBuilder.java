@@ -4,6 +4,8 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.route.AbstractRouteBuilder;
@@ -25,6 +27,11 @@ import java.util.regex.Pattern;
 @Component
 @SuppressWarnings("java:S1192")
 public class FhirRouteBuilder extends AbstractRouteBuilder {
+    private final ObjectMapper objectMapper;
+
+    public FhirRouteBuilder(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public void configure() throws Exception {
@@ -411,11 +418,17 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                     // Process the list of internal resource IDs
                     .process(exchange -> {
                         // Retrieve the list of internal resource Ids from property
-                        List<String> resourceIds = exchange.getProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS, List.class);
+                        Object property = exchange.getProperty(CamelConstants.FHIR_REFERENCE_INTERNAL_RESOURCE_IDS, List.class);
+                        List<String> resourceIds = objectMapper.convertValue(
+                                property, new TypeReference<>() {}
+                        );
                         // Add the list to the exchange body for splitting
                         exchange.getIn().setBody(resourceIds);
                         // Initialize the list of existingResources before split
-                        List<String> existingResources = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
+                        Object exchangeProperty = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
+                        List<String> existingResources = objectMapper.convertValue(
+                                exchangeProperty, new TypeReference<>() {}
+                        );
                         if (existingResources == null) {
                             existingResources = new ArrayList<>();
                             exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
@@ -450,7 +463,10 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
         from("direct:deleteResources")
                 .process(exchange -> {
                     // Get the list of resource URLs from the Exchange property
-                    List<String> resourceUrls = exchange.getProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, List.class);
+                    Object property = exchange.getProperty(CamelConstants.FHIR_REQUEST_RESOURCE_IDS, List.class);
+                    List<String> resourceUrls = objectMapper.convertValue(
+                            property, new TypeReference<>() {}
+                    );
 
                     // Set the body with the list of resource URLs for processing
                     exchange.getIn().setBody(resourceUrls);

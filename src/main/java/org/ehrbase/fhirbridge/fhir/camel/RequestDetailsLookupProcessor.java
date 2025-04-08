@@ -68,7 +68,7 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
         }
         
         // Store in headers for route decision making
-        exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, operationType != null ? operationType.name() : null);
+        exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, operationType.name());
         exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, httpMethod);
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, resourceName);
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, resource);
@@ -84,12 +84,10 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
     
  
         switch (operationType.name()) {
-            case "CREATE":
-            case "TRANSACTION":
+            case "CREATE", "TRANSACTION":
                 exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, "CREATE");
                 break;
-            case "READ":
-            case "VREAD":
+            case "READ","VREAD":
                 exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, "READ");
                 break;
             case "UPDATE":

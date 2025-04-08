@@ -1,12 +1,11 @@
 package org.ehrbase.fhirbridge.core.bootstrap;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.fhirbridge.config.openehr.OperationalTemplateUploader;
 import org.ehrbase.fhirbridge.core.domain.BootstrapEntity;
 import org.ehrbase.fhirbridge.core.repository.BootstrapRepository;
 import org.openehr.schemas.v1.TemplateDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -22,24 +21,23 @@ import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 @Component
+@Slf4j
 public class BootstrapRunner implements ApplicationRunner {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Value("${fhir-bridge.bootstrap.dir:/fhir-bridge-app/bootstrap/}")
-    private String bootstrapDir;
-
-    @Value("${fhir-bridge.bootstrap.recursively-open-directories:false}")
-    private boolean recursivelyOpenDirectories;
-
+    private final String bootstrapDir;
+    private final boolean recursivelyOpenDirectories;
     private final CacheManager cacheManager;
     private final BootstrapRepository bootstrapRepository;
     private final OperationalTemplateUploader operationalTemplateUploader;
 
-    public BootstrapRunner(CacheManager cacheManager, BootstrapRepository bootstrapRepository, OperationalTemplateUploader operationalTemplateUploader) {
+    public BootstrapRunner(CacheManager cacheManager, BootstrapRepository bootstrapRepository, OperationalTemplateUploader operationalTemplateUploader
+                            ,@Value("${fhir-bridge.bootstrap.dir:/fhir-bridge-app/bootstrap/}") String bootstrapDir
+                            , @Value("${fhir-bridge.bootstrap.recursively-open-directories:false}") boolean recursivelyOpenDirectories) {
         this.cacheManager = cacheManager;
         this.bootstrapRepository = bootstrapRepository;
         this.operationalTemplateUploader = operationalTemplateUploader;
+        this.bootstrapDir = bootstrapDir;
+        this.recursivelyOpenDirectories = recursivelyOpenDirectories;
     }
 
     @Override
@@ -79,13 +77,11 @@ public class BootstrapRunner implements ApplicationRunner {
             var template = templateDocument.getTemplate();
             
             var templateCache = cacheManager.getCache("templateCache");
-            if (templateCache != null) {
-                templateCache.put(template.getTemplateId().getValue(), template);
-            }
-            
+            templateCache.put(template.getTemplateId().getValue(), template);
+
 
             // Create new bootstrap record if file was modified
-            if (!bootstrapEntity.isPresent()) {
+            if (bootstrapEntity.isEmpty()) {
                 BootstrapEntity bootstrapEntity1 = new BootstrapEntity(relativePath);
                 LocalDateTime dateTime = LocalDateTime.now();
                 bootstrapEntity1.setCreatedDateTime(dateTime);

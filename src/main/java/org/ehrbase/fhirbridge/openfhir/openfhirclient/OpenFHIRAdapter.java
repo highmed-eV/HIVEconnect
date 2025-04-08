@@ -1,5 +1,6 @@
 package org.ehrbase.fhirbridge.openfhir.openfhirclient;
 
+import org.ehrbase.fhirbridge.exception.ConversionException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -56,7 +57,7 @@ public class OpenFHIRAdapter {
             
             return openEhrJson;
         } catch (Exception e) {
-            throw new RuntimeException("Error in FHIR to openEHR conversion", e);
+            throw new ConversionException("Error in FHIR to openEHR conversion", e);
         }
     }
 
@@ -78,7 +79,7 @@ public class OpenFHIRAdapter {
             logger.info("Received supported profiles from openEHR JSON.");
 
         } catch (Exception e) {
-            throw new RuntimeException("Error in getting openEHR supported profiles", e);
+            throw new ConversionException("Error in getting openEHR supported profiles", e);
         }
         
         // Check if any inputProfiles are in outputProfiles

@@ -212,8 +212,7 @@ public class PatientUtils {
 
     public PatientEhr getServerPatientIdFromDb(String patientId, String systemId) {
         return Optional.ofNullable(patientEhrRepository.findByInputPatientIdAndSystemId(patientId, systemId))  
-                .orElseGet(() -> Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndSystemId(patientId, systemId))
-                .orElse(null));
+                .orElseGet(() -> patientEhrRepository.findByInternalPatientIdAndSystemId(patientId, systemId));
     }
 
     public void getPatientIdAndResourceIdFromOutCome(Exchange exchange) {

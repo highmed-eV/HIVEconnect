@@ -20,6 +20,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.JsonParser;
 import com.apicatalog.jsonld.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -53,19 +54,23 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
     public static final String RESOURCE_TYPE = "resourceType";
     public static final String RESOURCE = "resource";
 
+    private final ObjectMapper objectMapper;
     private final ResourceCompositionRepository resourceCompositionRepository;
 
-    public ExistingResourceReferenceProcessor(ResourceCompositionRepository resourceCompositionRepository) {
+    public ExistingResourceReferenceProcessor(ObjectMapper objectMapper, ResourceCompositionRepository resourceCompositionRepository) {
+        this.objectMapper = objectMapper;
         this.resourceCompositionRepository = resourceCompositionRepository;
     }
 
     @Override
     public void process(Exchange exchange) throws Exception {
         String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
-        ObjectMapper objectMapper = new ObjectMapper();
 
         // Fetch required properties from the exchange
-        List<String> existingResources = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
+        Object property = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
+        List<String> existingResources = objectMapper.convertValue(
+                property, new TypeReference<>() {}
+        );
 
         // replace the ids in the existing fhir server resources
         // with the inputResourceIds corresponding to that in the db

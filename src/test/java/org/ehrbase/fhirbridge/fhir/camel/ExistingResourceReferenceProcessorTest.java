@@ -1,22 +1,13 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.parser.JsonParser;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +36,7 @@ class ExistingResourceReferenceProcessorTest {
 
     @BeforeEach
     void setUp() {
-        existingResourceReferenceProcessor = new ExistingResourceReferenceProcessor(resourceCompositionRepository);
+        existingResourceReferenceProcessor = new ExistingResourceReferenceProcessor(objectMapper,resourceCompositionRepository);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
         objectMapper = new ObjectMapper();

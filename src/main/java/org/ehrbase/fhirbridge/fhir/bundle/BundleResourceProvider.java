@@ -38,15 +38,17 @@ import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class BundleResourceProvider implements IResourceProvider  {
 
-    @Autowired
-    private ProducerTemplate producerTemplate;
+    private final ProducerTemplate producerTemplate;
+
+    public BundleResourceProvider(ProducerTemplate producerTemplate) {
+        this.producerTemplate = producerTemplate;
+    }
 
     @Override
     public Class<Bundle> getResourceType() {
@@ -60,8 +62,6 @@ public class BundleResourceProvider implements IResourceProvider  {
                                 HttpServletResponse response) {
         log.info("Executing 'Provide Bundle' transaction using 'create' operation...");
     
-//        FhirContext fhirContext = FhirContext.forR4();
-//        String inputResource = fhirContext.newJsonParser().encodeResourceToString(bundle);
         MethodOutcome methodOutcome;
 
         
