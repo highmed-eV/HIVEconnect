@@ -28,13 +28,7 @@
       "testCaseName": "kdsmedikationseintrag",
       "inputBundleFileName": "kds_medikationseintrag_bundle.json",
       "expectedOpenEhrFileName": "kds_medikationseintrag_v1_canonical.json",
-      "openEhrTemplateId": "KDS_Medikationseintrag_v1"
-    },
-    {
-      "testCaseName": "kdsperson",
-      "inputBundleFileName": "kds_person_bundle.json",
-      "expectedOpenEhrFileName": "kds_person_canonical.json",
-      "openEhrTemplateId": "KDS_Person"
+      "openEhrTemplateId": "KDS_Medikationseintrag"
     },
     {
       "testCaseName": "kdsprozedur",
@@ -44,15 +38,15 @@
     },
     {
       "testCaseName": "stationärerversorgungsfall",
-      "inputBundleFileName": "stationarer_versorgungsfall_bundle.json",
-      "expectedOpenEhrFileName": "stationarer_versorgungsfall_canonical.json",
-      "openEhrTemplateId": "Stationärer Versorgungsfall"
+      "inputBundleFileName": "KDS_Fall_einfach_Bundle.json",
+      "expectedOpenEhrFileName": "KDS_Fall_einfach_canonical.json",
+      "openEhrTemplateId": "KDS_Fall_einfach"
     },
     {
-      "testCaseName": "studienteilnahme",
-      "inputBundleFileName": "studienteilnahme_bundle.json",
-      "expectedOpenEhrFileName": "studienteilnahme_canonical.json",
-      "openEhrTemplateId": "Studienteilnahme"
+      "testCaseName": "kdsperson",
+      "inputBundleFileName": "kds_person_bundle.json",
+      "expectedOpenEhrFileName": "kds_person_canonical.json",
+      "openEhrTemplateId": "KDS_Person"
     }
   ]
 }

@@ -193,15 +193,6 @@
         "location": [
           {
             "id": "zimmer-1",
-            // "location": {
-            //   "reference": "Location/example",
-            //   "display": "Main Hospital Room 101",
-            //   "identifier": [
-            //     {
-            //       "value": "zimmer-1-identifier"
-            //     }
-            //   ]
-            // },
             "status": "active",
             "physicalType": {
               "coding": [
@@ -218,15 +209,6 @@
           },
           {
             "id": "bett-1",
-            // "location": {
-            //   "reference": "Location/example",
-            //   "display": "Main Hospital Room 101",
-            //   "identifier": [
-            //     {
-            //       "value": "bett-1-identifier"
-            //     }
-            //   ]
-            // },
             "status": "active",
             "physicalType": {
               "coding": [
@@ -243,15 +225,6 @@
           },
           {
             "id": "station-1",
-            // "location": {
-            //   "reference": "Location/example",
-            //   "display": "Main Hospital Room 101",
-            //   "identifier": [
-            //     {
-            //       "value": "station-1-identifier"
-            //     }
-            //   ]
-            // },
             "status": "active",
             "physicalType": {
               "coding": [

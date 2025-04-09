@@ -138,14 +138,6 @@
           }
         ],
         "receivedTime": "2024-08-24T09:30:00Z",
-        "collection": {
-          "collectedDateTime": "2024-08-24T09:00:00Z"
-        //   ,
-        //   "collector": {
-        //     "reference": "Practitioner/example-practitioner",
-        //     "display": "Dr. John Doe"
-        //   }
-        },
         "note": [
           {
             "text": "Sample collected in the morning."

@@ -1,8 +1,8 @@
 package org.ehrbase.fhirbridge.fhir.processor;
 
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
-import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
@@ -14,19 +14,18 @@ import org.hl7.fhir.r4.model.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FhirProcessorTest {
 
     private Exchange exchange;
+    private ObjectMapper objectMapper;
 
     private ServerPatientResourceProcessor serverPatientResourceProcessor;
     private ExistingServerResourceProcessor existingServerResourceProcessor;
@@ -35,9 +34,9 @@ class FhirProcessorTest {
     @BeforeEach
     void setUp() {
         exchange = new DefaultExchange(new DefaultCamelContext());
-        
+        objectMapper = new ObjectMapper();
         serverPatientResourceProcessor = new ServerPatientResourceProcessor();
-        existingServerResourceProcessor = new ExistingServerResourceProcessor();
+        existingServerResourceProcessor = new ExistingServerResourceProcessor(objectMapper);
         existingServerPatientResourceProcessor = new ExistingServerPatientResourceProcessor();
     }
 
@@ -76,7 +75,6 @@ class FhirProcessorTest {
         
         exchange.getIn().setBody(resource);
         exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
-
         // Act
         existingServerResourceProcessor.process(exchange);
 

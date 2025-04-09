@@ -1,14 +1,14 @@
 package org.ehrbase.fhirbridge.camel.component.ehr.composition;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.support.DefaultComponent;
-
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.fhirbridge.camel.component.ehr.EhrConfiguration;
 import org.ehrbase.fhirbridge.config.DebugProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 
 import java.util.Map;
 import java.util.Set;
@@ -16,9 +16,10 @@ import java.util.Set;
 /**
  * Composition component
  */
+@Getter
+@Setter
+@Slf4j
 public class CompositionComponent extends DefaultComponent {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CompositionComponent.class);
 
     private EhrConfiguration configuration;
 
@@ -41,7 +42,7 @@ public class CompositionComponent extends DefaultComponent {
                 OpenEhrClient client = beans.iterator().next();
                 configuration.setOpenEhrClient(client);
             } else if (beans.size() > 1) {
-                LOG.debug("Cannot autowire OpenEhrClient as {} instances found in registry.", beans.size());
+                log.debug("Cannot autowire OpenEhrClient as {} instances found in registry.", beans.size());
             }
         }
         super.doStart();
@@ -55,22 +56,6 @@ public class CompositionComponent extends DefaultComponent {
         endpoint.setProperties(properties);
         setProperties(endpoint, parameters);
         return endpoint;
-    }
-
-    public EhrConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(EhrConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public boolean isAllowAutoWiredOpenEhrClient() {
-        return allowAutoWiredOpenEhrClient;
-    }
-
-    public void setAllowAutoWiredOpenEhrClient(boolean allowAutoWiredOpenEhrClient) {
-        this.allowAutoWiredOpenEhrClient = allowAutoWiredOpenEhrClient;
     }
 
     public OpenEhrClient getOpenEhrClient() {

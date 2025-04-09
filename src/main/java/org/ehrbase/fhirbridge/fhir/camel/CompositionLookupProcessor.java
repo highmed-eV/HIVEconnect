@@ -53,7 +53,7 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
                 List<String> existingResources = resourceCompositionRepository.findInputResourcesByCompositionIdAndEhrId(compositionId,ehrId);
 
                 // Check if the current inputResourceIds are a subset of the existing resources in the composition
-                if (existingResources.containsAll(inputResourceIds)) {
+                if (new HashSet<>(existingResources).containsAll(inputResourceIds)) {
                     // If a composition already has the input resources or a subset, mark as duplicate
                     isDuplicate = true;
                     break; // No need to check further, a duplicate has been found
@@ -81,7 +81,7 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
                 List<String> existingResources = resourceCompositionRepository.findInternalResourcesByCompositionIdAndEhrId(compositionId,ehrId);
 
                 // Check if the current inputResourceIds are a subset of the existing resources in the composition
-                if (existingResources.containsAll(inputResourceIds)) {
+                if (new HashSet<>(existingResources).containsAll(inputResourceIds)) {
                     // If a composition already has the input resources or a subset, mark as duplicate
                     isDuplicate = true;
                     exchange.getMessage().setHeader(CamelConstants.OPENEHR_COMPOSITION_ID, compositionId);

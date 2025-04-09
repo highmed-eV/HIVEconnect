@@ -230,7 +230,7 @@
           }
         },
         "subject": {
-          "reference": "Patient/{{patientid}}"
+          "reference": "Patient/{{patientId}}"
         },
         "onsetPeriod": {
           "start": {
@@ -444,7 +444,7 @@
           }
         ],
         "subject": {
-          "reference": "Patient/{{patientid}}"
+          "reference": "Patient/{{patientId}}"
         },
         "encounter": {
           "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-53c6e5294aee",
@@ -532,14 +532,6 @@
         "onsetString": "The patient reported symptoms starting around the beginning of 2023.",
         "onsetDateTime": "2024-02-08T00:00:00Z",
         "recordedDate": "2027-05-02T00:00:00Z",
-        // "recorder": {
-        //   "reference": "Practitioner/example-recorder",
-        //   "display": "Dr. John Doe"
-        // },
-        // "asserter": {
-        //   "reference": "Practitioner/example-practitioner",
-        //   "display": "Dr. John Doe"
-        // },
         "stage": [
           {
             "summary": {
@@ -603,7 +595,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/{{patientid}}"
+          "reference": "Patient/{{patientId}}"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",

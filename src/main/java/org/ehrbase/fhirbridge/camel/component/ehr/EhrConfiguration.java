@@ -1,10 +1,14 @@
 package org.ehrbase.fhirbridge.camel.component.ehr;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.camel.RuntimeCamelException;
 
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 
 @SuppressWarnings("java:S2157")
+@Getter
+@Setter
 public class EhrConfiguration implements Cloneable {
 
     private OpenEhrClient openEhrClient;
@@ -15,13 +19,5 @@ public class EhrConfiguration implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeCamelException(e);
         }
-    }
-
-    public OpenEhrClient getOpenEhrClient() {
-        return openEhrClient;
-    }
-
-    public void setOpenEhrClient(OpenEhrClient openEhrClient) {
-        this.openEhrClient = openEhrClient;
     }
 }

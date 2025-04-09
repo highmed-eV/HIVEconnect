@@ -70,24 +70,13 @@
         },
         "effectiveDateTime": "2024-08-22T08:30:00Z",
         "issued": "2022-02-03T04:05:06Z",
-        // "performer": [
-        //   {
-        //     "reference": "Organization/example-lab",
-        //     "display": "Example Lab Organization"
-        //   }
-        // ],
         "specimen": [
           {
             "reference": "urn:uuid:00000000-0000-0000-0000-000000000002",
             "display": "Blood sample"
           }
         ],
-        // "result": [
-        //   {
-        //     "reference": "Observation/987",
-        //     "display": "Hemoglobin level"
-        //   }
-        // ],
+
         "conclusion": "Normal blood count"
       },
       "request": {
@@ -152,12 +141,6 @@
             ]
           }
         ],
-        // "basedOn": [
-        //   {
-        //     "reference": "ServiceRequest/servicerequest-lab-id-1234",
-        //     "display": "Blood Glucose Test"
-        //   }
-        // ],
         "code": {
           "coding": [
             {
@@ -214,11 +197,6 @@
           ],
           "text": "Blood test using standard laboratory methods"
         },
-        // "performer": [
-        //   {
-        //     "reference": "Organization/example-lab"
-        //   }
-        // ],
         "note": [
           {
             "text": "The observation result is within normal range, but further review may be needed."
@@ -270,15 +248,6 @@
         "receivedTime": "2022-02-03T04:05:06Z",
         "collection": {
           "collectedDateTime": "2024-08-24T09:00:00Z",
-        //   "collector": {
-        //     "reference": "Practitioner/123",
-        //     "type": "Practitioner",
-        //     "identifier": {
-        //       "system": "http://hospital.org/practitioners",
-        //       "value": "1234567"
-        //     },
-        //     "display": "Dr. John Doe"
-        //   },
           "method": {
             "coding": [
               {

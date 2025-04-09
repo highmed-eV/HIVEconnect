@@ -20,6 +20,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -31,19 +33,13 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "FB_PATIENT_ID")
+@Setter
+@Getter
 public class PatientId {
 
     @Id
     @GeneratedValue
     private UUID uuid;
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
 
     public String getUuidAsString() {
         if (uuid == null) {
