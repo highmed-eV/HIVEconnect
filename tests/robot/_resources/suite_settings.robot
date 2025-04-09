@@ -43,7 +43,7 @@ ${BASE_URL}                             http://localhost:8888/fhir-bridge/fhir/B
 ${USERNAME}                             fhirbridge-user
 ${PASSWORD}                             myPassword1234
 ${AUTH}                                 Basic ZmhpcmJyaWRnZS11c2VyOm15UGFzc3dvcmQxMjM0
-${INPUT_PATIENT_ID}                           4
+${INPUT_PATIENT_ID}                     1
 ${EHRBASE_URL}                          http://localhost:8080/ehrbase/rest/openehr/v1
 ${TEST_CASE_LIST_FILE}                  ${EXECDIR}/robot/BUNDLE/test_case_list.json
 ${EHR_COMPOSITION}                      ${EXECDIR}/robot/_resources/test_data/outputOpenEhr
