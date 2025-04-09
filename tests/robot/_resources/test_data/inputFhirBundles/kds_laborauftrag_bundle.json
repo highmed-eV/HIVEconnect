@@ -138,9 +138,6 @@
           }
         ],
         "receivedTime": "2024-08-24T09:30:00Z",
-        "collection": {
-          "collectedDateTime": "2024-08-24T09:00:00Z"
-        },
         "note": [
           {
             "text": "Sample collected in the morning."
