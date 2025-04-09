@@ -45,7 +45,6 @@ class RequestDetailsLookupProcessorTest {
         when(requestDetails.getServletRequest()).thenReturn(request);
         when(requestDetails.getRequestType()).thenReturn(RequestTypeEnum.POST);
         when(requestDetails.getResourceName()).thenReturn("Patient");
-        when(requestDetails.getRequestPath()).thenReturn("/Patient");
         when(requestDetails.getRestOperationType()).thenReturn(RestOperationTypeEnum.CREATE);
         when(requestDetails.getResource()).thenReturn(new Patient());
         when(requestDetails.getId()).thenReturn(new IdType("Patient/123"));
@@ -80,7 +79,6 @@ class RequestDetailsLookupProcessorTest {
         exchange.getIn().setBody(requestDetails);
         when(requestDetails.getRequestType()).thenReturn(RequestTypeEnum.POST);
         when(requestDetails.getResourceName()).thenReturn("Patient");
-        when(requestDetails.getRequestPath()).thenReturn("/Patient");
         when(requestDetails.getRestOperationType()).thenReturn(RestOperationTypeEnum.CREATE);
         when(requestDetails.getResource()).thenReturn(null);
         when(requestDetails.getId()).thenReturn(new IdType("Patient/123"));
@@ -98,7 +96,6 @@ class RequestDetailsLookupProcessorTest {
         when(requestDetails.getServletRequest()).thenReturn(request);
         when(requestDetails.getRequestType()).thenReturn(RequestTypeEnum.GET);
         when(requestDetails.getResourceName()).thenReturn("Patient");
-        when(requestDetails.getRequestPath()).thenReturn("/Patient");
         when(requestDetails.getRestOperationType()).thenReturn(RestOperationTypeEnum.READ);
         when(requestDetails.getId()).thenReturn(new IdType("Patient/123"));
         request.addHeader("X-System-ID", "test-system");
@@ -119,7 +116,6 @@ class RequestDetailsLookupProcessorTest {
         when(requestDetails.getServletRequest()).thenReturn(request);
         when(requestDetails.getRequestType()).thenReturn(RequestTypeEnum.POST);
         when(requestDetails.getResourceName()).thenReturn("Patient");
-        when(requestDetails.getRequestPath()).thenReturn("/Patient");
         when(requestDetails.getRestOperationType()).thenReturn(RestOperationTypeEnum.SEARCH_TYPE);
         when(requestDetails.getResource()).thenReturn(new Patient());
         when(requestDetails.getId()).thenReturn(new IdType("Patient/123"));
@@ -142,7 +138,6 @@ class RequestDetailsLookupProcessorTest {
         when(requestDetails.getServletRequest()).thenReturn(request);
         when(requestDetails.getRequestType()).thenReturn(RequestTypeEnum.POST);
         when(requestDetails.getResourceName()).thenReturn("Patient");
-        when(requestDetails.getRequestPath()).thenReturn("/Patient");
         when(requestDetails.getRestOperationType()).thenReturn(RestOperationTypeEnum.CREATE);
         when(requestDetails.getResource()).thenReturn(new Patient());
         when(requestDetails.getId()).thenReturn(new IdType("Patient/123"));
@@ -163,7 +158,6 @@ class RequestDetailsLookupProcessorTest {
         when(requestDetails.getServletRequest()).thenReturn(request);
         when(requestDetails.getRequestType()).thenReturn(RequestTypeEnum.POST);
         when(requestDetails.getResourceName()).thenReturn("Patient");
-        when(requestDetails.getRequestPath()).thenReturn("/Patient");
         when(requestDetails.getRestOperationType()).thenReturn(RestOperationTypeEnum.CREATE);
         when(requestDetails.getResource()).thenReturn(new Patient());
         when(requestDetails.getId()).thenReturn(new IdType("Patient/123"));

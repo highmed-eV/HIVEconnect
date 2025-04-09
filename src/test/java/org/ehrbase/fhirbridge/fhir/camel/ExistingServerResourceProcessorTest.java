@@ -31,6 +31,7 @@ class ExistingServerResourceProcessorTest {
 
     @BeforeEach
     void setUp() {
+        objectMapper = new ObjectMapper();
         existingServerResourceProcessor = new ExistingServerResourceProcessor(objectMapper);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
@@ -45,9 +46,8 @@ class ExistingServerResourceProcessorTest {
 
         List<String> existingResources = new ArrayList<>();
         exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
-
         existingServerResourceProcessor.process(exchange);
-
+        existingResources = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
         assertEquals(1, existingResources.size());
 
         String resourceJson = existingResources.get(0);

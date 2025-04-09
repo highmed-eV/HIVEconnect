@@ -1,5 +1,6 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +37,7 @@ class ResourceLookupProcessorTest {
 
     @BeforeEach
     void setUp() {
+        objectMapper = new ObjectMapper();
         resourceLookupProcessor = new ReferencedResourceLookupProcessor(resourceCompositionRepository, objectMapper);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
@@ -54,7 +57,6 @@ class ResourceLookupProcessorTest {
         String inputResource = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Condition/6\", \"resource\": { \"resourceType\": \"Condition\", \"id\": \"6\", \"encounter\": { \"reference\": \"Encounter/6\" }, \"organization\": { \"reference\": \"Organization/7\" } } } ] }";
         exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResource);
         exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "systemId");
-
         resourceLookupProcessor.process(exchange);
 
         verify(resourceCompositionRepository, times(1)).findInternalResourceIdsByInputResourceIdsAndSystemId(inputResourceIds, "systemId");
@@ -83,7 +85,6 @@ class ResourceLookupProcessorTest {
         String inputResource = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Condition/6\", \"resource\": { \"resourceType\": \"Condition\", \"id\": \"6\", \"encounter\": { \"reference\": \"Encounter/6\" }, \"organization\": { \"reference\": \"invalidResource\" } } } ] }";
         exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResource);
         exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "systemId");
-
         resourceLookupProcessor.process(exchange);
 
         // Verify that the internalResourceIds list contains only valid ones
