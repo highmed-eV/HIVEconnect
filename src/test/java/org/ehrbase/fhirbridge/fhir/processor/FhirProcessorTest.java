@@ -1,6 +1,7 @@
 package org.ehrbase.fhirbridge.fhir.processor;
 
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.*;
 class FhirProcessorTest {
 
     private Exchange exchange;
+    private ObjectMapper objectMapper;
 
     private ServerPatientResourceProcessor serverPatientResourceProcessor;
     private ExistingServerResourceProcessor existingServerResourceProcessor;
@@ -37,7 +39,7 @@ class FhirProcessorTest {
         exchange = new DefaultExchange(new DefaultCamelContext());
         
         serverPatientResourceProcessor = new ServerPatientResourceProcessor();
-        existingServerResourceProcessor = new ExistingServerResourceProcessor();
+        existingServerResourceProcessor = new ExistingServerResourceProcessor(objectMapper);
         existingServerPatientResourceProcessor = new ExistingServerPatientResourceProcessor();
     }
 

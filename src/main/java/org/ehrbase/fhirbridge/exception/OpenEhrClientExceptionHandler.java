@@ -27,7 +27,7 @@ import org.springframework.util.Assert;
 
 /**
  * {@link org.apache.camel.Processor Processor} that transforms an exception
- * thrown by the {@link org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient OpenEhrClient} into the corresponding FHIR exception.
+ * thrown by the {@link org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient OpenEhrClient} into the corresponding FHIR exception.
  *
  * @since 1.2.0
  */
@@ -48,7 +48,7 @@ public class OpenEhrClientExceptionHandler implements Processor {
     }
 
     private void handleWrongStatusCode(WrongStatusCodeException ex) {
-        if (ex.getActualStatusCode() == 400 ) {  //|| ex.getActualStatusCode() == 422) {
+        if (ex.getActualStatusCode() == 400 ) {
             throw new UnprocessableEntityException(ex.getMessage());
         } else {
             handleException(ex);

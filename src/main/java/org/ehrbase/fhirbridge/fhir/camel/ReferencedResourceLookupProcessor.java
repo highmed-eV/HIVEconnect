@@ -17,6 +17,7 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -49,15 +50,20 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
     public static final String BEAN_ID = "resourceLookupProcessor";
 
     private final ResourceCompositionRepository resourceCompositionRepository;
+    private final ObjectMapper objectMapper;
 
-    public ReferencedResourceLookupProcessor(ResourceCompositionRepository resourceCompositionRepository) {
+    public ReferencedResourceLookupProcessor(ResourceCompositionRepository resourceCompositionRepository, ObjectMapper objectMapper) {
         this.resourceCompositionRepository = resourceCompositionRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void process(Exchange exchange) throws Exception {
         String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
-        List<String > inputResourceIds = exchange.getProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, List.class);
+        Object property = exchange.getProperty(CamelConstants.FHIR_REFERENCE_REQUEST_RESOURCE_IDS, List.class);
+        List<String> inputResourceIds = objectMapper.convertValue(
+                property, new TypeReference<>() {}
+        );
         if (inputResourceIds == null || inputResourceIds.isEmpty()) {
             return;
         }
@@ -79,12 +85,11 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
         }
     }
 
-    private String updateInputResource(Exchange exchange, String inputResource) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    private void updateInputResource(Exchange exchange, String inputResource) throws JsonProcessingException {
         JsonNode rootNode = objectMapper.readTree(inputResource);
         String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
 
-        String updatedResource = inputResource;
+        String updatedResource;
         if (rootNode != null && rootNode.isObject()) {
             // if resourceType is Bundle
             if (rootNode.has("resourceType") && "Bundle".equals(rootNode.get("resourceType").asText())) {
@@ -103,7 +108,6 @@ public class ReferencedResourceLookupProcessor implements FhirRequestProcessor {
             }
         }
         // Return the updated JSON as a string
-        return updatedResource;
     }
 
     private void updateBundleReferences(JsonNode rootNode, String systemId) {

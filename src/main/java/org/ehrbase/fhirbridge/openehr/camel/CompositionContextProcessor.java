@@ -26,12 +26,9 @@ import com.nedap.archie.rm.generic.PartyProxy;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-
 import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -50,8 +47,6 @@ public class CompositionContextProcessor implements FhirRequestProcessor {
     public static final String BEAN_ID = "compositionContextProcessor";
 
     public static final String DEFAULT_SYSTEM_ID = "FHIR-Bridge";
-
-    private static final Logger LOG = LoggerFactory.getLogger(CompositionContextProcessor.class);
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -80,8 +75,6 @@ public class CompositionContextProcessor implements FhirRequestProcessor {
             composer.setExternalRef(compoPartyRef);
             composition.setComposer(composer);
         }
-        // convertHealthCareFacility(resource).ifPresent(composition::setHealthCareFacility);
-
         exchange.getIn().setBody(composition);
     }
 

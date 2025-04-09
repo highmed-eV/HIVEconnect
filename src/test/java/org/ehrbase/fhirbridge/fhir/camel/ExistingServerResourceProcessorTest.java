@@ -1,6 +1,7 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
 import ca.uhn.fhir.context.FhirContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
@@ -26,10 +27,11 @@ class ExistingServerResourceProcessorTest {
 
     private ExistingServerResourceProcessor existingServerResourceProcessor;
     private Exchange exchange;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        existingServerResourceProcessor = new ExistingServerResourceProcessor();
+        existingServerResourceProcessor = new ExistingServerResourceProcessor(objectMapper);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
         fhirContext = FhirContext.forR4();

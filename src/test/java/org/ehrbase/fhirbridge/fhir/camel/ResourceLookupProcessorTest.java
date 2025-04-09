@@ -1,5 +1,6 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
@@ -30,10 +31,11 @@ class ResourceLookupProcessorTest {
 
     @Mock
     private Exchange exchange;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        resourceLookupProcessor = new ReferencedResourceLookupProcessor(resourceCompositionRepository);
+        resourceLookupProcessor = new ReferencedResourceLookupProcessor(resourceCompositionRepository, objectMapper);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
     }

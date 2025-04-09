@@ -6,6 +6,8 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -16,6 +18,8 @@ import jakarta.persistence.TemporalType;
 @Entity
 @Table(name = "bootstrap")
 @EntityListeners(AuditingEntityListener.class)
+@Setter
+@Getter
 public class BootstrapEntity {
 
     @Id
@@ -41,38 +45,6 @@ public class BootstrapEntity {
 
     public BootstrapEntity(String file) {
         this.file = file;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
-    }
-
-    public void setCreatedDateTime(LocalDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
-    }
-
-    public LocalDateTime getUpdatedDateTime() {
-        return updatedDateTime;
-    }
-
-    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
-        this.updatedDateTime = updatedDateTime;
     }
 
 } 

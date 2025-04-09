@@ -5,12 +5,13 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.camel.Exchange;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.hl7.fhir.r4.model.Resource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.hl7.fhir.r4.model.Resource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,29 +22,17 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 @ConfigurationProperties(prefix = "fhir-bridge.debug")
+@Setter
+@Getter
 public class DebugProperties {
 
     private boolean enabled = false;
 
     private String mappingOutputDirectory;
 
+    private static final String PATH_DELIMITER = "/";
+
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getMappingOutputDirectory() {
-        return mappingOutputDirectory;
-    }
-
-    public void setMappingOutputDirectory(String mappingOutputDirectory) {
-        this.mappingOutputDirectory = mappingOutputDirectory;
-    }
 
     public void saveMergedServerResponses(Exchange exchange) throws IOException {
 
@@ -81,7 +70,7 @@ public class DebugProperties {
 
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String filename = inputResourceType + "_" + timestamp + ".json";
-        String filePath = mappingOutputDirectory + "/" + filename;
+        String filePath = mappingOutputDirectory + PATH_DELIMITER + filename;
 
         Files.write(Paths.get(filePath), objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(mergedJson), StandardOpenOption.CREATE);
     }

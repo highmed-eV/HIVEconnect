@@ -1,37 +1,29 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.core.domain.PatientEhr;
 import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.DomainResource;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.stereotype.Component;
 
-import ca.uhn.fhir.rest.api.MethodOutcome;
-import ca.uhn.fhir.rest.param.TokenParam;
-import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
-import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component
+@Slf4j
 public class PatientUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(PatientUtils.class);
     
-    private PatientEhrRepository patientEhrRepository;
+    private final PatientEhrRepository patientEhrRepository;
 
     public PatientUtils(PatientEhrRepository patientEhrRepository) {
         this.patientEhrRepository = patientEhrRepository;
@@ -45,9 +37,8 @@ public class PatientUtils {
         String serverPatientId = null;
         UUID ehrId = null;
 
-        if (resource instanceof Patient) {
+        if (resource instanceof Patient patient) {
             // Handle Patient resource
-            Patient patient = (Patient) resource;
             Identifier identifier = patient.getIdentifier().stream()
                     .findFirst()
                     .orElse(null);
@@ -113,7 +104,7 @@ public class PatientUtils {
     }
 
     private Reference extractPatientReference(Resource resource) {
-        if (resource instanceof Bundle) {
+        if (resource instanceof Bundle bundle) {
             //Supporting homogenous patient references in bundle for now.
             //Not supporting mix of  Relative reference with serch urls although this is possible
             //In order to support this we need to first resolve the serch url to relative reference
@@ -123,7 +114,6 @@ public class PatientUtils {
             //if not then throw error
             //if yes then return the relative reference
             //TODO: Support heterogenous patient references in bundle.
-            Bundle bundle = (Bundle) resource;
             List<Reference> subjectReferences = bundle.getEntry().stream()
             .map(entry -> {
                 try {
@@ -139,7 +129,7 @@ public class PatientUtils {
                 }
             })
             .filter(Objects::nonNull) // Filter out null values
-            .collect(Collectors.toList()); // Collect all subject references into a list
+            .toList(); // Collect all subject references into a list
 
             // Check if the bundle contains any resources with subject references
             if (subjectReferences.isEmpty()) {
@@ -187,10 +177,9 @@ public class PatientUtils {
             return containedPatient != null ? containedId : null;
         } else if (reference.startsWith("urn:uuid:")) {
             exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "ABSOLUTE_REFERENCE");
-            if (resource instanceof Bundle) {
-                Bundle bundle = (Bundle) resource;
+            if (resource instanceof Bundle bundle) {
                 Optional<Patient> patient = findPatientInBundle(bundle, reference);
-                return patient.map(p -> p.getId()).orElse(null);
+                return patient.map(Resource::getId).orElse(null);
             }
             return null;
         } else if (reference.startsWith("Patient?")) {
@@ -204,29 +193,26 @@ public class PatientUtils {
     }
 
     private Patient findContainedPatient(Resource resource, String containedId) {
-        if (resource instanceof DomainResource) {
-            return ((DomainResource) resource).getContained().stream()
-                    .filter(r -> r instanceof Patient && containedId.equals(r.getId()))
-                    .map(r -> (Patient) r)
-                    .findFirst()
-                    .orElse(null);
-        }
-        return null;
+        return ((DomainResource) resource).getContained().stream()
+                .filter(r -> r instanceof Patient && containedId.equals(r.getId()))
+                .map(r -> (Patient) r)
+                .findFirst()
+                .orElse(null);
+
     }
 
     private Optional<Patient> findPatientInBundle(Bundle bundle, String fullUrl) {
         return bundle.getEntry().stream()
                 .filter(entry -> fullUrl.equals(entry.getFullUrl()))
                 .map(Bundle.BundleEntryComponent::getResource)
-                .filter(r -> r instanceof Patient)
+                .filter(Patient.class::isInstance)
                 .map(r -> (Patient) r)
                 .findFirst();
     }
 
     public PatientEhr getServerPatientIdFromDb(String patientId, String systemId) {
         return Optional.ofNullable(patientEhrRepository.findByInputPatientIdAndSystemId(patientId, systemId))  
-                .orElseGet(() -> Optional.ofNullable(patientEhrRepository.findByInternalPatientIdAndSystemId(patientId, systemId))
-                .orElse(null));  
+                .orElseGet(() -> patientEhrRepository.findByInternalPatientIdAndSystemId(patientId, systemId));
     }
 
     public void getPatientIdAndResourceIdFromOutCome(Exchange exchange) {
@@ -301,9 +287,7 @@ public class PatientUtils {
                 })
                 .findFirst();
 
-            patientLocation.ifPresent(location -> {
-                exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, location);
-            });
+            patientLocation.ifPresent(location -> exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, location));
         }
     }
 

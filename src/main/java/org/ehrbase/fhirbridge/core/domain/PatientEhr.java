@@ -24,6 +24,8 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -31,6 +33,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "FB_PATIENT_EHR")
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class PatientEhr {
 
     @Id
@@ -66,54 +70,6 @@ public class PatientEhr {
         this.internalPatientId = internalPatientId;
         this.systemId = systemId;
         this.ehrId = ehrId;
-    }
-
-    public String getInputPatientId() {
-        return inputPatientId;
-    }
-
-    public void setInputPatientId(String inputPatientId) {
-        this.inputPatientId = inputPatientId;
-    }
-
-    public String getInternalPatientId() {
-        return internalPatientId;
-    }
-
-    public void setInternalPatientId(String internalPatientId) {
-        this.internalPatientId = internalPatientId;
-    }
-
-    public String getSystemId() {
-        return systemId;
-    }
-
-    public void setSystemId(String systemId) {
-        this.systemId = systemId;
-    }
-
-    public UUID getEhrId() {
-        return ehrId;
-    }
-
-    public void setEhrId(UUID ehrId) {
-        this.ehrId = ehrId;
-    }
-
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
-    }
-
-    public void setCreatedDateTime(LocalDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
-    }
-
-    public LocalDateTime getUpdatedDateTime() {
-        return updatedDateTime;
-    }
-
-    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
-        this.updatedDateTime = updatedDateTime;
     }
 
     @Override
