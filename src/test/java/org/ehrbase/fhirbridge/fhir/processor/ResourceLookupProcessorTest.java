@@ -38,7 +38,7 @@ class ResourceLookupProcessorTest {
     @BeforeEach
     void setUp() {
         exchange = new DefaultExchange(new DefaultCamelContext());
-        
+        objectMapper = new ObjectMapper();
         referencedResourceLookupProcessor = new ReferencedResourceLookupProcessor(resourceCompositionRepository, objectMapper);
         compositionLookupProcessor = new CompositionLookupProcessor(resourceCompositionRepository);
     }

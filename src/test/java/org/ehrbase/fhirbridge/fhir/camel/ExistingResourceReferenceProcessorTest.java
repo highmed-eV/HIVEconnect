@@ -1,5 +1,6 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -14,10 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,10 +39,11 @@ class ExistingResourceReferenceProcessorTest {
 
     @BeforeEach
     void setUp() {
+        objectMapper = new ObjectMapper();
         existingResourceReferenceProcessor = new ExistingResourceReferenceProcessor(objectMapper,resourceCompositionRepository);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
-        objectMapper = new ObjectMapper();
+
     }
 
     @Test
@@ -56,7 +60,6 @@ class ExistingResourceReferenceProcessorTest {
 
         when(resourceCompositionRepository.findInternalResourceIdByInputResourceIdAndSystemId("Patient/1", "systemId")).thenReturn("Patient/101");
         when(resourceCompositionRepository.findInternalResourceIdByInputResourceIdAndSystemId("Observation/2", "systemId")).thenReturn("Observation/102");
-
         existingResourceReferenceProcessor.process(exchange);
 
         // Verify the updated bundle
@@ -97,7 +100,6 @@ class ExistingResourceReferenceProcessorTest {
         // Prepare mock data with invalid input (not a Bundle)
         String invalidInputResourceBundle = "{ \"resourceType\": \"Patient\", \"id\": \"1\" }";
         exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, invalidInputResourceBundle);
-
         existingResourceReferenceProcessor.process(exchange);
 
         // No change expected
