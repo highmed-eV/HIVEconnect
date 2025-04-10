@@ -8,11 +8,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = {CamelRestAuthenticationConfig.class})
-@EnableConfigurationProperties(SecurityProperties.class)
-class CamelRestAuthenticationConfigTest {
-    // Base test class with common setup
-}
 
 @SpringBootTest(classes = {CamelRestAuthenticationConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)

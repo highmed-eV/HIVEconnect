@@ -61,9 +61,31 @@ public class PatientUtils {
         // Handle other resources with patient references
         Reference subject = extractPatientReference(resource);
         if (subject != null) {
-            String reference = subject.getReference();
-            if (subject.hasReference()) {
-                patientId = handlePatientReference(exchange, resource, reference);
+            handleSubject(exchange, systemId, resource, subject);
+        }
+    }
+    private void handleSubject(Exchange exchange, String systemId, Resource resource, Reference subject) {
+        String patientId = null;
+        String serverPatientId = null;
+        UUID ehrId = null;
+
+        String reference = subject.getReference();
+        if (subject.hasReference()) {
+            patientId = handlePatientReference(exchange, resource, reference);
+            PatientEhr serverPatient = getServerPatientIdFromDb(patientId, systemId);
+            if (serverPatient != null) {
+                serverPatientId = serverPatient.getInternalPatientId();
+                ehrId = serverPatient.getEhrId();
+            }
+
+            exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
+            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
+            exchange.getIn().setHeader(CompositionConstants.EHR_ID, ehrId);
+        } else if (hasIdentifier(subject)) {
+            // Handle identifier-based reference
+            Identifier identifier = subject.getIdentifier();
+            if (identifier != null) {
+                patientId = identifier.getSystem() + "|" + identifier.getValue();
                 PatientEhr serverPatient = getServerPatientIdFromDb(patientId, systemId);
                 if (serverPatient != null) {
                     serverPatientId = serverPatient.getInternalPatientId();
@@ -72,28 +94,13 @@ public class PatientUtils {
 
                 exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
                 exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
+                exchange.setProperty(CamelConstants.IDENTIFIER_OBJECT, new TokenParam(identifier.getSystem(), identifier.getValue()));
+                exchange.getIn().setHeader(CamelConstants.IDENTIFIER_STRING, identifier.getValue());
+                exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "IDENTIFIER");
                 exchange.getIn().setHeader(CompositionConstants.EHR_ID, ehrId);
-            } else if (hasIdentifier(subject)) {
-                // Handle identifier-based reference
-                Identifier identifier = subject.getIdentifier();
-                if (identifier != null) {
-                    patientId = identifier.getSystem() + "|" + identifier.getValue();
-                    PatientEhr serverPatient = getServerPatientIdFromDb(patientId, systemId);
-                    if (serverPatient != null) {
-                        serverPatientId = serverPatient.getInternalPatientId();
-                        ehrId = serverPatient.getEhrId();
-                    }
-
-                    exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, patientId);
-                    exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
-                    exchange.setProperty(CamelConstants.IDENTIFIER_OBJECT, new TokenParam(identifier.getSystem(), identifier.getValue()));
-                    exchange.getIn().setHeader(CamelConstants.IDENTIFIER_STRING, identifier.getValue());
-                    exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "IDENTIFIER");
-                    exchange.getIn().setHeader(CompositionConstants.EHR_ID, ehrId);
-                }
-            } else {
-                throw new UnprocessableEntityException("Subject identifier is required");
             }
+        } else {
+            throw new UnprocessableEntityException("Subject identifier is required");
         }
     }
 
