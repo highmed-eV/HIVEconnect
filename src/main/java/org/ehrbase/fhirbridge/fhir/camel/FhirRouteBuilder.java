@@ -228,34 +228,8 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                         .log("Search IDENTIFIER patient id for identifier ${header." + CamelConstants.IDENTIFIER_STRING + "}")
                         .toD("fhir://search/searchByUrl?url=Patient?identifier=${header.CamelIdentifierString}&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
                         .log("Response Search patient id  for identifier ${body}")
-                        .process(exchange -> {
-                            if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
-                                Bundle patientBundleResource = (Bundle) exchange.getIn().getBody();
-                                Patient serverPatient = Optional.ofNullable(patientBundleResource.getEntry())
-                                                        .filter(entryList -> !entryList.isEmpty())
-                                                        .map(entryList -> entryList.get(0).getResource())
-                                                        .filter(Patient.class::isInstance)
-                                                        .map(Patient.class::cast)
-                                                        .orElse(null);
-
-                                if( serverPatient == null) {
-                                    TokenParam  tokenParam = (TokenParam) exchange.getProperty(CamelConstants.IDENTIFIER_OBJECT);
-                                    Identifier identifier=  new Patient().addIdentifier();
-                                    identifier.setValue(tokenParam.getValue());
-                                    identifier.setSystem(tokenParam.getSystem());
-                                    Patient patient = new Patient().addIdentifier(identifier);
-                                    exchange.getIn().setBody(patient);
-                                } else {
-                                    String serverPatientId = "Patient/" + serverPatient.getIdPart();
-                                    exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, serverPatient);
-                                    exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
-                                    exchange.getIn().setBody(serverPatient);
-                                }
-                            }
-                        })
-                    // .log("Response Search body  ${body}")
-
-                    .log("Search server IDENTIFIER patient id ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}")
+                        .bean(PatientUtils.class, "extractPatientIdentifier")
+                        .log("Search server IDENTIFIER patient id ${header." + CamelConstants.FHIR_SERVER_PATIENT_ID + "}")
                     .doCatch(ResourceNotFoundException.class)
                         .log("Patient Identifier Not Found")
                         .process(exchange -> { 
