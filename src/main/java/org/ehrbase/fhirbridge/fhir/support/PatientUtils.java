@@ -7,6 +7,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
+import org.apache.camel.util.ObjectHelper;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.core.domain.PatientEhr;
@@ -14,6 +15,7 @@ import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
 import org.hl7.fhir.r4.model.*;
 import org.springframework.stereotype.Component;
 
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,6 +65,36 @@ public class PatientUtils {
             handleSubject(exchange, systemId, resource, subject);
         }
     }
+
+    @Handler
+    public void extractPatientIdentifier(Exchange exchange) {
+        if (ObjectHelper.isNotEmpty(exchange.getIn().getBody())) {
+            Bundle patientBundleResource = (Bundle) exchange.getIn().getBody();
+            Patient serverPatient = Optional.ofNullable(patientBundleResource.getEntry())
+                                    .filter(entryList -> !entryList.isEmpty())
+                                    .map(entryList -> entryList.get(0).getResource())
+                                    .filter(Patient.class::isInstance)
+                                    .map(Patient.class::cast)
+                                    .orElse(null);
+
+            if( serverPatient == null) {
+                TokenParam  tokenParam = (TokenParam) exchange.getProperty(CamelConstants.IDENTIFIER_OBJECT);
+                Identifier identifier=  new Patient().addIdentifier();
+                identifier.setValue(tokenParam.getValue());
+                identifier.setSystem(tokenParam.getSystem());
+                Patient patient = new Patient().addIdentifier(identifier);
+                exchange.getIn().setBody(patient);
+                return;
+            } 
+        
+            String serverPatientId = "Patient/" + serverPatient.getIdPart();
+            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, serverPatient);
+            exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
+            exchange.getIn().setBody(serverPatient);
+            
+        }
+    }
+
     private void handleSubject(Exchange exchange, String systemId, Resource resource, Reference subject) {
         String patientId = null;
         String serverPatientId = null;
@@ -195,6 +227,7 @@ public class PatientUtils {
             return null;
         } else if (reference.startsWith("Patient?")) {
             exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "SEARCH_URL");
+            reference.replace("|", "%7C");
             exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_SEARCH_URL, reference);
             return reference;
         }  else {
