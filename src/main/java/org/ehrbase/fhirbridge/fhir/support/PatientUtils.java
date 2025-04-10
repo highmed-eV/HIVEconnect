@@ -24,6 +24,8 @@ import java.util.UUID;
 @Component
 @Slf4j
 public class PatientUtils {
+    public static final String PATIENT_URL_STRING = "Patient/";
+    
     
     private final PatientEhrRepository patientEhrRepository;
 
@@ -87,7 +89,7 @@ public class PatientUtils {
                 return;
             } 
         
-            String serverPatientId = "Patient/" + serverPatient.getIdPart();
+            String serverPatientId = PATIENT_URL_STRING + serverPatient.getIdPart();
             exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, serverPatient);
             exchange.getIn().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, serverPatientId);
             exchange.getIn().setBody(serverPatient);
@@ -210,7 +212,7 @@ public class PatientUtils {
     }
 
     private String handlePatientReference(Exchange exchange, Resource resource, String reference) {
-        if (reference.startsWith("Patient/")) {
+        if (reference.startsWith(PATIENT_URL_STRING)) {
             exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "RELATIVE_REFERENCE");
             return reference;
         } else if (reference.startsWith("#")) {
@@ -323,7 +325,7 @@ public class PatientUtils {
             Optional<String> patientLocation = responseBundle.getEntry().stream()
                 .filter(entry -> entry.hasResponse() && entry.getResponse().hasLocation())
                 .map(entry -> entry.getResponse().getLocation())
-                .filter(location -> location != null && location.startsWith("Patient/"))
+                .filter(location -> location != null && location.startsWith(PATIENT_URL_STRING))
                 .map(location -> {
                     // Truncate the location before "/_history" if present
                     int historyIndex = location.indexOf("/_history");
