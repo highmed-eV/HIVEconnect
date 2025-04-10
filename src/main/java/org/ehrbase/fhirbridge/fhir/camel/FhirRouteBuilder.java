@@ -77,8 +77,7 @@ public class FhirRouteBuilder extends AbstractRouteBuilder {
                         .process(exchange -> {
                             //Set the incoming resource in body as camel-fhir take from body (inBody)
                             exchange.getIn().setBody(exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE));
-                        }
-                        )
+                        })
                         // create Transaction bundle in our FHIR server
                         .log("Transaction FHIR request. Starting process...")
                         

@@ -30,9 +30,6 @@ public class CompositionLookupProcessor implements FhirRequestProcessor {
             return;
         }
 
-        Set<String> compositionIds = new HashSet<>();
-        boolean isDuplicate = false;
-
         String operation = (String) exchange.getMessage().getHeader(CamelConstants.REQUEST_HTTP_METHOD);
         UUID ehrId = (UUID) exchange.getMessage().getHeader(CompositionConstants.EHR_ID);
         if ("POST".equals(operation)) {        
