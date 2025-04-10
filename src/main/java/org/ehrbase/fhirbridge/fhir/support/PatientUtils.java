@@ -35,7 +35,6 @@ public class PatientUtils {
         Resource resource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
         String patientId = null;
         String serverPatientId = null;
-        UUID ehrId = null;
 
         if (resource instanceof Patient patient) {
             // Handle Patient resource
@@ -112,65 +111,70 @@ public class PatientUtils {
 
     private Reference extractPatientReference(Resource resource) {
         if (resource instanceof Bundle bundle) {
-            //Supporting homogenous patient references in bundle for now.
-            //Not supporting mix of  Relative reference with serch urls although this is possible
-            //In order to support this we need to first resolve the serch url to relative reference
-            //eg: Patient/123 and Patient?identifier=12345
-            //First resolve the serch url by calling server
-            //get the Relative reference for this and check if it is present in the bundle  
-            //if not then throw error
-            //if yes then return the relative reference
-            //TODO: Support heterogenous patient references in bundle.
-            List<Reference> subjectReferences = bundle.getEntry().stream()
-            .map(entry -> {
-                try {
-                    if (Resources.isPatient(entry.getResource())) {
-                        return null; // Skip Patient resources
-                    } else {
-                        return Resources.getSubject(entry.getResource())
-                                .orElse(null); // Get subject reference, if any
-                    }
-                } catch (UnprocessableEntityException e) {
-                    // Skip entries that don't have a subject
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull) // Filter out null values
-            .toList(); // Collect all subject references into a list
-
-            // Check if the bundle contains any resources with subject references
-            if (subjectReferences.isEmpty()) {
-                throw new UnprocessableEntityException("Bundle does not contain any resources with patient references");
-            }
-
-            Reference firstReference = subjectReferences.get(0);
-            boolean referencesMatch;
-            
-            // Check if first reference is an identifier-based reference
-            if (firstReference.hasIdentifier()) {
-                // All should be identifier references with matching system and value
-                referencesMatch = subjectReferences.stream()
-                        .allMatch(ref -> ref.hasIdentifier() 
-                                && ref.getIdentifier().getSystem().equals(firstReference.getIdentifier().getSystem())
-                                && ref.getIdentifier().getValue().equals(firstReference.getIdentifier().getValue()));
-            } else if (firstReference.hasReference()) {
-                // All should be string references with matching values
-                referencesMatch = subjectReferences.stream()
-                        .allMatch(ref -> ref.hasReference() 
-                                && ref.getReference().equals(firstReference.getReference()));
-            } else {
-                referencesMatch = false;
-            }
-
-            if (!referencesMatch) {
-                throw new UnprocessableEntityException("Bundle contains resources with inconsistent patient references");
-            }
-
-            return firstReference;
+           return handleBundle(bundle);
         }
         
         return Resources.getSubject(resource)
                 .orElseThrow(() -> new UnprocessableEntityException(resource.getResourceType().name() + " should be linked to a subject/patient"));
+    }
+
+    private Reference handleBundle(Bundle bundle) {
+         //Supporting homogenous patient references in bundle for now.
+        //Not supporting mix of  Relative reference with serch urls although this is possible
+        //In order to support this we need to first resolve the serch url to relative reference
+        //eg: Patient/123 and Patient?identifier=12345
+        //First resolve the serch url by calling server
+        //get the Relative reference for this and check if it is present in the bundle  
+        //if not then throw error
+        //if yes then return the relative reference
+        //Support heterogenous patient references in bundle.
+        List<Reference> subjectReferences = bundle.getEntry().stream()
+                .map(entry -> {
+                    try {
+                        if (Resources.isPatient(entry.getResource())) {
+                            return null; // Skip Patient resources
+                        } 
+
+                        return Resources.getSubject(entry.getResource())
+                                    .orElse(null); // Get subject reference, if any
+                        
+                    } catch (UnprocessableEntityException e) {
+                        // Skip entries that don't have a subject
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull) // Filter out null values
+                .toList(); // Collect all subject references into a list
+
+        // Check if the bundle contains any resources with subject references
+        if (subjectReferences.isEmpty()) {
+            throw new UnprocessableEntityException("Bundle does not contain any resources with patient references");
+        }
+
+        Reference firstReference = subjectReferences.get(0);
+        boolean referencesMatch;
+        
+        // Check if first reference is an identifier-based reference
+        if (firstReference.hasIdentifier()) {
+            // All should be identifier references with matching system and value
+            referencesMatch = subjectReferences.stream()
+                    .allMatch(ref -> ref.hasIdentifier() 
+                            && ref.getIdentifier().getSystem().equals(firstReference.getIdentifier().getSystem())
+                            && ref.getIdentifier().getValue().equals(firstReference.getIdentifier().getValue()));
+        } else if (firstReference.hasReference()) {
+            // All should be string references with matching values
+            referencesMatch = subjectReferences.stream()
+                    .allMatch(ref -> ref.hasReference() 
+                            && ref.getReference().equals(firstReference.getReference()));
+        } else {
+            referencesMatch = false;
+        }
+
+        if (!referencesMatch) {
+            throw new UnprocessableEntityException("Bundle contains resources with inconsistent patient references");
+        }
+
+        return firstReference;
     }
 
     private String handlePatientReference(Exchange exchange, Resource resource, String reference) {
