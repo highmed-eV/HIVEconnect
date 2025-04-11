@@ -16,17 +16,15 @@
 
 package org.ehrbase.fhirbridge.config.openehr;
 
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
-import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.springframework.stereotype.Component;
 import org.ehrbase.fhirbridge.openehr.DefaultTemplateProvider;
+import org.ehrbase.fhirbridge.openfhir.openfhirclient.OpenFHIRAdapter;
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Uploads the operational templates into an openEHR-based CDR.

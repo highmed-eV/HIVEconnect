@@ -1,23 +1,19 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
-import org.apache.camel.Exchange;
-import org.ehrbase.fhirbridge.camel.CamelConstants;
-import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
-import org.springframework.stereotype.Component;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.RestOperationTypeEnum;
 import ca.uhn.fhir.rest.server.servlet.ServletRequestDetails;
-
+import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.Exchange;
+import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.hl7.fhir.r4.model.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 @Component(RequestDetailsLookupProcessor.BEAN_ID)
+@Slf4j
 public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
-    private static final Logger LOG = LoggerFactory.getLogger(RequestDetailsLookupProcessor.class);
-    
+
     public static final String BEAN_ID = "requestDetailsLookupProcessor";
 
     @Override
@@ -37,7 +33,6 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
 
         String httpMethod = requestDetails.getRequestType().name();
         String resourceName = requestDetails.getResourceName();
-        String path = requestDetails.getRequestPath();
         String id = requestDetails.getId() != null ? requestDetails.getId().getIdPart() : null;
         Resource resource = null;
         // Handle resource based on HTTP method
@@ -73,7 +68,7 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
         }
         
         // Store in headers for route decision making
-        exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, operationType != null ? operationType.name() : null);
+        exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, operationType.name());
         exchange.getIn().setHeader(CamelConstants.REQUEST_HTTP_METHOD, httpMethod);
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE_TYPE, resourceName);
         exchange.getIn().setHeader(CamelConstants.REQUEST_RESOURCE, resource);
@@ -84,17 +79,15 @@ public class RequestDetailsLookupProcessor implements FhirRequestProcessor {
         exchange.setProperty("RequestDetails", requestDetails);
        
         // Log all headers for debugging
-        exchange.getIn().getHeaders().forEach((key, value) -> 
-            LOG.info("Header: " + key + " = " + value));
+        exchange.getIn().getHeaders().forEach((key, value) ->
+                log.info("Header: {} = {}", key, value));
     
  
         switch (operationType.name()) {
-            case "CREATE":
-            case "TRANSACTION":
+            case "CREATE", "TRANSACTION":
                 exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, "CREATE");
                 break;
-            case "READ":
-            case "VREAD":
+            case "READ","VREAD":
                 exchange.getIn().setHeader(CamelConstants.REQUESTDETAILS_OPERATION_TYPE, "READ");
                 break;
             case "UPDATE":

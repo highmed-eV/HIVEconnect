@@ -17,6 +17,8 @@
 package org.ehrbase.fhirbridge.core.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -25,6 +27,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "FB_RESOURCE_COMPOSITION", uniqueConstraints = @UniqueConstraint(columnNames = {"INPUT_RESOURCE_ID", "COMPOSITION_ID", "SYSTEM_ID", "EHR_ID"}))
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class ResourceComposition {
 
     @Id
@@ -73,71 +77,14 @@ public class ResourceComposition {
         this.systemId = systemId;
         this.templateId = templateId;
     }
-
-    public String getInputResourceId() {
-        return inputResourceId;
-    }
-
-    public void setInputResourceId(String id) {
-        this.inputResourceId = id;
-    }
-
-    public String getInternalResourceId() {
-        return internalResourceId;
-    }
-
-    public void setInternalResourceId(String internalResourceId) {
+    public ResourceComposition(String inputResourceId, String internalResourceId, String compositionId, String systemId, String templateId, UUID ehrId) {
+        this.inputResourceId = inputResourceId;
         this.internalResourceId = internalResourceId;
-    }
-
-    public String getCompositionId() {
-        return compositionId;
-    }
-
-    public void setCompositionId(String versionUid) {
-        this.compositionId = versionUid;
-    }
-
-    public String getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(String templateId) {
+        this.compositionId = compositionId;
+        this.systemId = systemId;
         this.templateId = templateId;
-    }
-
-    public UUID getEhrId() {
-        return ehrId;
-    }
-
-    public void setEhrId(UUID ehrId) {
         this.ehrId = ehrId;
     }
-
-    public String getSystemId() {
-        return systemId;
-    }
-
-    public void setSystemId(String systemId) {
-        this.systemId = systemId;
-    }
-
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
-    }
-
-    public void setCreatedDateTime(LocalDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
-    }
-
-    public LocalDateTime getUpdatedDateTime() {
-        return updatedDateTime;
-    }
-
-    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
-        this.updatedDateTime = updatedDateTime;
-    }
-
 
     @Override
     public String toString() {
@@ -146,6 +93,8 @@ public class ResourceComposition {
                 ", inputResourceId='" + inputResourceId + '\'' +
                 ", internalResourceId='" + internalResourceId + '\'' +
                 ", compositionId='" + compositionId + '\'' +
+                ", templateId='" + templateId + '\'' +
+                ", ehrId='" + ehrId + '\'' +
                 ", systemId='" + systemId + '\'' +
                 ", createdDateTime='" + createdDateTime + '\'' +
                 ", updatedDateTime='" + updatedDateTime + '\'' +

@@ -2,21 +2,16 @@ package org.ehrbase.fhirbridge.camel.route;
 
 import org.ehrbase.fhirbridge.fhir.camel.RequestDetailsLookupProcessor;
 import org.ehrbase.fhirbridge.openehr.camel.ProvideResourceResponseProcessor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class FhirBridgeRouteBuilder extends AbstractRouteBuilder {
 
-    private String contextPath;
-    private String serverPort;
+    public static final String DIRECT_INPUT_PROCESS = "direct:InputProcess";
 
-    public FhirBridgeRouteBuilder(@Value("${camel.servlet.mapping.contextPath}") String contextPath,
-                        @Value("${server.port}") String serverPort) {
+    public FhirBridgeRouteBuilder() {
         super();
-        this.contextPath = contextPath;
-        this.serverPort = serverPort;
     }
 
     @Override
@@ -28,28 +23,27 @@ public class FhirBridgeRouteBuilder extends AbstractRouteBuilder {
             // .onCompletion()
             //     .process(ProvideResourceAuditHandler.BEAN_ID)
             // .end()
-            .to("direct:InputProcess")
+            .to(DIRECT_INPUT_PROCESS)
             .to("direct:provideResource")
-            // Prepare the final output 
+            // Prepare the final output
             .to("direct:OutputProcess")
             .log("CreateRouteProcessRoute completed");
-            
+
 
         from("direct:SearchRouteProcess")
             .routeId("SearchRouteProcessRoute")
             .log("SearchRouteProcess not supported");
             // .to("direct:InputProcess")
             // .to("direct:ResourcePersistenceProcessor")
-            // .log("SearchRouteProcess completed");
 
         from("direct:ReadRouteProcess")
             .routeId("ReadRouteProcessRoute")
-            .to("direct:InputProcess")
+            .to(DIRECT_INPUT_PROCESS)
             .to("direct:ResourcePersistenceProcessor")
             .log("ReadRouteProcess completed");
 
 
-        from("direct:InputProcess")
+        from(DIRECT_INPUT_PROCESS)
             //Extract all RequestDetails information from the input
             .process(RequestDetailsLookupProcessor.BEAN_ID);
 

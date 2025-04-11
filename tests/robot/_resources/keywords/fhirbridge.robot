@@ -1,7 +1,9 @@
 *** Keywords ***
 load test cases from json
     # Load JSON from the test_case_list.json file using UTF-8 encoding
-    ${json_data}=    Load Json Utf8    ${TEST_CASE_LIST_FILE}
+    ${json_data}=    Load Json Utf8    ${TEST_CASE_LIST_FILE}   ${INPUT_PATIENT_ID}
+    #Log To Console    \Input Data composition: ${json_data}
+
     # get the json dictionary for all the tes cases test cases
     ${TEST_CASES}=    Get From Dictionary    ${json_data}    testcases
     Set Suite Variable    ${TEST_CASES}
@@ -14,6 +16,10 @@ create and validate fhir bundle
             ...             5. *VALIDATE* the content of the AQL response.
     [Arguments]    ${testCaseName}    ${inputBundleFileName}    ${expectedOpenEhrFileName}    ${openEhrTemplateId}
     ehr.create new ehr    000_ehr_status.json
+
+    #Set Suite Variable    ${new_ehr_id}    4129d326-bb05-4c04-9ab5-82f734a9a2b7
+    #Set Suite Variable    ${subject_id}    resp_subject_id
+
     fhirbridge.create fhir bundle    ${testCaseName}    ${inputBundleFileName}
     fhirbridge.validate response - 201
     fhirbridge.create openehr aql    ${openEhrTemplateId}    ${expectedOpenEhrFileName}
@@ -26,7 +32,8 @@ create fhir bundle
 POST /Bundle with ehr reference
     [Arguments]         ${fhir_bundle_name}    ${fhir_bundle_file_name}
     # Set payload for the FHIR bundle
-    ${payload}         Load JSON From File    ${DATA_SET_PATH_KDSFHIRBUNDLE}/${fhir_bundle_file_name}
+    ${payload_from_file}         Load JSON From File    ${DATA_SET_PATH_KDSFHIRBUNDLE}/${fhir_bundle_file_name}
+    ${payload}=    Update Input Json    ${payload_from_file}   ${INPUT_PATIENT_ID}
     Log To Console     \n\nFhir bundle API call for ${fhir_bundle_name}
 
 #    ${patient_id_list}=  Get Value From Json    ${payload}    $..entry[0].resource.subject.reference
@@ -34,7 +41,8 @@ POST /Bundle with ehr reference
 #        ...                ELSE    Run Keyword    Handle Subject Identifier    ${payload}
 
     # POST call to store the FHIR bundle
-    ${resp}=    POST    ${BASE_URL}    body=${payload}
+    ${headers}=    Create Dictionary    Content-Type=application/json   Authorization=${AUTH}
+    ${resp}=    POST    ${BASE_URL}    body=${payload}  headers=${headers} 
     Log To Console    \nResponse of the post call to store the FHIR bundle: ${resp}
 
     # Extract patientId from the bundle.
@@ -149,7 +157,7 @@ validate content response_aql_composition - 201
     [Arguments]         ${expected_openehr_file_name}
     Log To Console    \nIn openEHR AQL validate response for ${expected_openehr_file_name}
     # Load the expected JSON content
-    ${expected_resp_composition}=    Load Json Utf8    ${EHR_COMPOSITION}/${expected_openehr_file_name}
+    ${expected_resp_composition}=    Load Json Utf8    ${EHR_COMPOSITION}/${expected_openehr_file_name}    ${INPUT_PATIENT_ID}
     # Log To Console    \nEXP Response composition: ${expected_resp_composition}
 
     ${expected_template_id}=  Get Value From Json    ${expected_resp_composition}    $..archetype_details.template_id.value
@@ -168,6 +176,8 @@ validate content response_aql_composition - 201
 
     # Compare the normalized JSONs returned by the openEHR and the expected cannonical json
     # checking if both json have same sets of key and value pairs other then the ignored fields of comparison .
+    #Log To Console    normalized_expected_json: ${normalized_expected_json}
+    #Log To Console    normalized_response_json: ${normalized_response_json}
     Should Be Equal    ${normalized_expected_json}    ${normalized_response_json}
 
 Normalize Json

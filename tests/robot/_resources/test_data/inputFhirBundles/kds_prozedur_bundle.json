@@ -52,7 +52,7 @@
           "text": "Appendectomy"
         },
         "subject": {
-          "reference": "Patient/{{patienId}}"
+          "reference": "Patient/{{patientId}}"
         },
         "performedDateTime": "2024-08-20T14:00:00Z",
         "bodySite": [
@@ -72,10 +72,6 @@
         },
         "note": [
           {
-            // "authorReference": {
-            //   "reference": "Practitioner/gen1",
-            //   "display": "Dr. Jane Smith"
-            // },
             "time": "2024-08-21T00:00:00Z",
             "text": "Procedure completed successfully with no complications."
           }
@@ -108,7 +104,7 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/{{patienId}}"
+          "reference": "Patient/{{patientId}}"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",

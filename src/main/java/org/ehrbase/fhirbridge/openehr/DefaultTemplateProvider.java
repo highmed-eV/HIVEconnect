@@ -16,12 +16,9 @@
 
 package org.ehrbase.fhirbridge.openehr;
 
-import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
+import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.ApplicationContext;
@@ -41,7 +38,6 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class DefaultTemplateProvider implements TemplateProvider, ApplicationContextAware {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
     private final CacheManager cacheManager;
     private ApplicationContext applicationContext;
 
@@ -54,16 +50,15 @@ public class DefaultTemplateProvider implements TemplateProvider, ApplicationCon
         var cache = cacheManager.getCache("templateCache");
         if (cache != null) {
             var template = cache.get(templateId, OPERATIONALTEMPLATE.class);
-            return Optional.ofNullable(template);
+            return Optional.of(template);
         }
         return Optional.empty();
     }
 
-    @SuppressWarnings("unchecked")
     public Set<String> getTemplateIds() {
         var templateIds = new HashSet<String>();
         var cache = cacheManager.getCache("templateCache");
-        if (cache != null && cache instanceof ConcurrentMapCache) {
+        if (cache instanceof ConcurrentMapCache) {
             ConcurrentMap<Object, Object> nativeCache = ((ConcurrentMapCache) cache).getNativeCache();
             templateIds.addAll(nativeCache.keySet().stream()
                     .map(Object::toString)

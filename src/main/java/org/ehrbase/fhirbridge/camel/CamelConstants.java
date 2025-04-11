@@ -25,8 +25,6 @@ public final class CamelConstants {
 
     public static final String TEMP_REQUEST_RESOURCE_STRING = "CamelTempRequestResourceString";
 
-    // public static final String TEMP_REQUEST_RESOURCE_OBJECT = "CamelTempRequestResourceObject";
-
      public static final String OPENEHR_COMPOSITION_ID = "CamelOpenEhrCompositionId";
      
      public static final String REQUEST_HTTP_METHOD = "CamelRequestHttpMethod";
@@ -63,8 +61,6 @@ public final class CamelConstants {
 
     public static final String FHIR_REFERENCE_INTERNAL_RESOURCE_IDS = "CamelFhirReferenceInternalResourceIds";
 
-    public static final String FHIR_REFERENCE_INTERNAL_RESOURCE_IDS_TEMP = "CamelFhirReferenceInternalResourceIdsTemp";
-
     public static final String FHIR_SERVER_EXISTING_RESOURCES = "CamelFhirServerExistingResources";
 
     public static final String FHIR_SERVER_OUTCOME = "CamelFhirServerOutcome";
@@ -79,8 +75,6 @@ public final class CamelConstants {
     public static final String OPEN_EHR_SERVER_OUTCOME = "CamelOpenEHRServerOutcome";
 
     public static final String OPEN_EHR_SERVER_OUTCOME_COMPOSITION = "CamelOpenEHRServerOutcomeComposition";
-
-    public static final String OUTCOME = "CamelFhirBridgeOutcome";
 
     public static final String IDENTIFIER_OBJECT = "CamelIdentifierObject";
 
