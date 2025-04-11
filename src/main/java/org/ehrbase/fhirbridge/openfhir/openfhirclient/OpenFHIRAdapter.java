@@ -1,5 +1,6 @@
 package org.ehrbase.fhirbridge.openfhir.openfhirclient;
 
+import org.ehrbase.fhirbridge.exception.ConversionException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -47,7 +48,7 @@ public class OpenFHIRAdapter {
             String inputResource = (String) exchange.getIn().getHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING);
         
             HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity <String> entity = new HttpEntity<>(inputResource, headers);
             
@@ -56,33 +57,29 @@ public class OpenFHIRAdapter {
             
             return openEhrJson;
         } catch (Exception e) {
-            throw new RuntimeException("Error in FHIR to openEHR conversion", e);
+            throw new ConversionException("Error in FHIR to openEHR conversion", e);
         }
     }
 
     public boolean checkProfileSupported(Exchange exchange) {
-        List<String> outputProfiles = null;
+        List<String> outputProfiles;
         List<String> inputProfiles = (List<String>) exchange.getIn().getHeader(CamelConstants.FHIR_INPUT_PROFILE);
         try {
             logger.info("Calling openFHIR to get profiles...");
-                    
-            HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-            headers.setContentType(MediaType.APPLICATION_JSON);
             
             // Fetch the JSON response and convert it directly to List<String>
             ResponseEntity<List<String>> response = restTemplate.exchange(
                                                     openFhirUrl + "/fc/profiles",
                                                     HttpMethod.GET,
                                                     null,
-                                                    new ParameterizedTypeReference<List<String>>() {}
+                                                    new ParameterizedTypeReference<>() {}
                                                 );
             // Extract the list of profiles from the response
             outputProfiles = response.getBody();
             logger.info("Received supported profiles from openEHR JSON.");
 
         } catch (Exception e) {
-            throw new RuntimeException("Error in getting openEHR supported profiles", e);
+            throw new ConversionException("Error in getting openEHR supported profiles", e);
         }
         
         // Check if any inputProfiles are in outputProfiles
@@ -110,7 +107,7 @@ public class OpenFHIRAdapter {
             if (getEntity.getStatusCode().value() == HttpStatus.OK.value()) {
                 try {
                     String responseBody = getEntity.getBody();
-                    if (responseBody != null && !responseBody.trim().isEmpty()) {
+                    if (!responseBody.trim().isEmpty()) {
                         XmlOptions opts = new XmlOptions();
                         opts.setLoadStripWhitespace();
                         opts.setLoadReplaceDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
@@ -147,7 +144,7 @@ public class OpenFHIRAdapter {
             XmlOptions opts = new XmlOptions();
             opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
  
-            String response = null;
+            String response;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/xml;charset=UTF-8"));
             HttpEntity <String> entity = new HttpEntity<>(operationaltemplate.get().xmlText(opts), headers);

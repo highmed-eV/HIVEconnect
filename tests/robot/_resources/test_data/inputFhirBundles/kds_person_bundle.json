@@ -7,7 +7,7 @@
       "fullUrl": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589d",
       "resource": {
         "resourceType": "Patient",
-        "id": "example-patient",
+        "id": "518",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
@@ -20,19 +20,19 @@
               "coding": [
                 {
                   "system": "http://fhir.de/CodeSystem/identifier-type-de-basis",
-                  "code": "KVZ10",
-                  "display": "Krankenversichertennummer"
+                  "code": "GKV",
+                  "display": "Gesetzliche Krankenversicherung"
                 },
                 {
                   "system": "http://fhir.de/CodeSystem/identifier-type-de-basis",
-                  "code": "GKV",
-                  "display": "Gesetzliche Krankenversicherung"
+                  "code": "KVZ10",
+                  "display": "Krankenversichertennummer"
                 }
               ],
               "text": "versichertenId_GKV"
             },
             "system": "http://fhir.de/sid/gkv/kvid-10",
-            "value": "K987654334",
+            "value": "K1234567881",
             "assigner": {
               "identifier": {
                 "type": {
@@ -271,7 +271,7 @@
               }
             ],
             "organization": {
-              "reference": "urn:uuid:f2201de3-7a9b-4ed6-b0b0-e4d840de2f0a",
+              "reference": "Organization/5678",
               "display": "Organization"
             }
           }
@@ -354,7 +354,7 @@
           "text": "Subarachnoid hemorrhage"
         },
         "subject": {
-          "reference": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589d"
+            "reference": "Patient/{{patientId}}"
         },
         "recordedDate": "2024-08-24T00:00:00Z",
         "note": [
@@ -402,7 +402,7 @@
           "text": "Vital signs"
         },
         "subject": {
-          "reference": "urn:uuid:04121321-4af5-424c-a0e1-ed3aab1c589d"
+            "reference": "Patient/{{patientId}}"
         },
         "effectiveDateTime": "2024-08-21T14:30:00+00:00",
         "valueCodeableConcept": {

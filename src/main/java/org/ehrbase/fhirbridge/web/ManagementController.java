@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.qos.logback.classic.Level;
 import jakarta.annotation.Nonnull;
 
+import static org.slf4j.Logger.ROOT_LOGGER_NAME;
+
 /**
  * API endpoint to get or set on the fly LogLevel.
  */
@@ -24,13 +26,13 @@ public class ManagementController {
 
     @GetMapping("/log-level")
     public ResponseEntity<Level> getLogLevel() {
-        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ROOT_LOGGER_NAME);
         return ResponseEntity.ok(rootLogger.getLevel());
     }
 
     @PostMapping("/log-level/{logLevel}")
     public ResponseEntity<Level> setLogLevel(@Nonnull @PathVariable String logLevel) {
-        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ROOT_LOGGER_NAME);
         rootLogger.setLevel(Level.valueOf(logLevel));//Default log level is DEBUG. If {logLevel} == Wrong Status
         return ResponseEntity.ok(rootLogger.getLevel());
     }

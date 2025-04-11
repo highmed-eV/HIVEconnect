@@ -24,7 +24,7 @@ public class ValidationUtils {
 
     public static void addIssue(OperationOutcome outcome, IssueSeverity severity, String diagnostics, String location) {
         Assert.notNull(outcome, "OperationOutcome must not be null");
-        Assert.notNull(outcome, "IssueSeverity must not be null");
+        Assert.notNull(severity, "IssueSeverity must not be null");
 
         var issue = new OperationOutcomeIssueComponent()
                 .setSeverity(severity)

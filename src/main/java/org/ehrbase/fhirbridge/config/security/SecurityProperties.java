@@ -16,6 +16,8 @@
 
 package org.ehrbase.fhirbridge.config.security;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -25,6 +27,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 1.2
  */
 @ConfigurationProperties(prefix = "fhir-bridge.security")
+@Setter
+@Getter
 public class SecurityProperties {
 
     private SecurityType type = SecurityType.NONE;
@@ -33,50 +37,22 @@ public class SecurityProperties {
 
     private final OAuth2 oauth2 = new OAuth2();
 
-    public SecurityType getType() {
-        return type;
-    }
-
-    public void setType(SecurityType type) {
-        this.type = type;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public OAuth2 getOauth2() {
-        return oauth2;
-    }
-
     public enum SecurityType {
 
         NONE, BASIC, OAUTH2
     }
 
+    @Setter
+    @Getter
     public static class User {
 
         private String name;
 
         private String password;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
     }
 
+    @Setter
+    @Getter
     public static class OAuth2 {
 
         /**
@@ -88,21 +64,5 @@ public class SecurityProperties {
          * JSON Web Algorithm used for verifying the digital signatures.
          */
         private String jwsAlgorithm = "RS256";
-
-        public String getJwkSetUri() {
-            return jwkSetUri;
-        }
-
-        public void setJwkSetUri(String jwkSetUri) {
-            this.jwkSetUri = jwkSetUri;
-        }
-
-        public String getJwsAlgorithm() {
-            return jwsAlgorithm;
-        }
-
-        public void setJwsAlgorithm(String jwsAlgorithm) {
-            this.jwsAlgorithm = jwsAlgorithm;
-        }
     }
 }

@@ -17,11 +17,15 @@
 package org.ehrbase.fhirbridge.security.oauth2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Renaud Subiger
  * @since 1.2
  */
+@Getter
+@Setter
 public class AccessTokenResponse {
 
     @JsonProperty("access_token")
@@ -44,60 +48,4 @@ public class AccessTokenResponse {
 
     @JsonProperty("not-before-policy")
     private long notBeforePolicy;
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public long getExpiresIn() {
-        return expiresIn;
-    }
-
-    public void setExpiresIn(long expiresIn) {
-        this.expiresIn = expiresIn;
-    }
-
-    public long getRefreshExpiresIn() {
-        return refreshExpiresIn;
-    }
-
-    public void setRefreshExpiresIn(long refreshExpiresIn) {
-        this.refreshExpiresIn = refreshExpiresIn;
-    }
-
-    public String getTokenType() {
-        return tokenType;
-    }
-
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
-
-    public String getIdToken() {
-        return idToken;
-    }
-
-    public void setIdToken(String idToken) {
-        this.idToken = idToken;
-    }
-
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
-    public long getNotBeforePolicy() {
-        return notBeforePolicy;
-    }
-
-    public void setNotBeforePolicy(long notBeforePolicy) {
-        this.notBeforePolicy = notBeforePolicy;
-    }
 }

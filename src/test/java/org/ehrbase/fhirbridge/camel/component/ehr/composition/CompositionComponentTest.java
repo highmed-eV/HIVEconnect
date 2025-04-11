@@ -4,7 +4,8 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.spi.Registry;
 import org.ehrbase.fhirbridge.config.DebugProperties;
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -16,6 +16,8 @@
 
 package org.ehrbase.fhirbridge.config.openehr;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -25,6 +27,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 1.6
  */
 @ConfigurationProperties(prefix = "fhir-bridge.openehr")
+@Setter
+@Getter
 public class OpenEhrProperties {
 
     private String url;
@@ -32,80 +36,33 @@ public class OpenEhrProperties {
     private final Security security = new Security();
 
     private boolean updateTemplatesOnStartup = false;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Security getSecurity() {
-        return security;
-    }
-
-    public boolean isUpdateTemplatesOnStartup() {
-        return updateTemplatesOnStartup;
-    }
-
-    public void setUpdateTemplatesOnStartup(boolean updateTemplatesOnStartup) {
-        this.updateTemplatesOnStartup = updateTemplatesOnStartup;
-    }
-
+    @Setter
+    @Getter
     public static class Security {
 
         private SecurityType type = SecurityType.NONE;
-
-        public SecurityType getType() {
-            return type;
-        }
-
-        public void setType(SecurityType type) {
-            this.type = type;
-        }
 
         private final User user = new User();
 
         private final OAuth2 oauth2 = new OAuth2();
 
-        public User getUser() {
-            return user;
-        }
-
-        public OAuth2 getOauth2() {
-            return oauth2;
-        }
     }
 
     public enum SecurityType {
 
         NONE, BASIC, OAUTH2
     }
-
+    @Setter
+    @Getter
     public static class User {
 
         private String name;
 
         private String password;
 
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
     }
-
+    @Setter
+    @Getter
     public static class OAuth2 {
 
         private String tokenUrl;
@@ -113,29 +70,5 @@ public class OpenEhrProperties {
         private String clientId;
 
         private String clientSecret;
-
-        public String getTokenUrl() {
-            return tokenUrl;
-        }
-
-        public void setTokenUrl(String tokenUrl) {
-            this.tokenUrl = tokenUrl;
-        }
-
-        public String getClientId() {
-            return clientId;
-        }
-
-        public void setClientId(String clientId) {
-            this.clientId = clientId;
-        }
-
-        public String getClientSecret() {
-            return clientSecret;
-        }
-
-        public void setClientSecret(String clientSecret) {
-            this.clientSecret = clientSecret;
-        }
     }
 }

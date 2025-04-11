@@ -1,19 +1,15 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.*;
-
-import ca.uhn.fhir.util.ReflectionUtil;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("java:S6212")
 public class Resources {
 
-    private static final String COVID_19_QUESTIONNAIRE_URL = "http://fhir.data4life.care/covid-19/r4/Questionnaire/covid19-recommendation";
+    private static final String UNSUPPORTED_RESOURCE_TYPE = "Unsupported resource type: ";
 
     private Resources() {
         throw new IllegalStateException("Utility class");
@@ -31,48 +27,28 @@ public class Resources {
     }
 
     public static Optional<Reference> getSubject(Resource resource) {
-        switch (resource.getResourceType()) {
-            case Condition:
-                return getSubject((Condition) resource);
-            case Consent:
-                return getPatient((Consent) resource);
-            case DiagnosticReport:
-                return getSubject((DiagnosticReport) resource);
-            case DocumentReference:
-                return getSubject((DocumentReference) resource);
-            case Encounter:
-                return getSubject((Encounter) resource);
-            case Immunization:
-                return getPatient((Immunization) resource);
-            case MedicationStatement:
-                return getSubject((MedicationStatement) resource);
-            case  MedicationRequest:
-                return getSubject((MedicationRequest) resource);
-            case Observation:
-                return getSubject((Observation) resource);
-            case Procedure:
-                return getSubject((Procedure) resource);
-            case QuestionnaireResponse:
-                return getSubject((QuestionnaireResponse) resource);
-            case Specimen:
-                return getSubject((Specimen) resource);
-            case Composition:
-                return getSubject((Composition) resource);
-            case ResearchSubject:
-                return getIndividual((ResearchSubject) resource);
-            case ServiceRequest:
-                return getSubject((ServiceRequest) resource);
-            case MedicationAdministration:
-                return getSubject((MedicationAdministration) resource);
-            case Medication:
-                return getSubject((Medication) resource);
-            case Organization:
-                return getSubject((Organization) resource);
-            case List:
-                return getSubject((ListResource) resource);
-            default:
-                throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
-        }
+        return switch (resource.getResourceType()) {
+            case Condition -> getSubject((Condition) resource);
+            case Consent -> getPatient((Consent) resource);
+            case DiagnosticReport -> getSubject((DiagnosticReport) resource);
+            case DocumentReference -> getSubject((DocumentReference) resource);
+            case Encounter -> getSubject((Encounter) resource);
+            case Immunization -> getPatient((Immunization) resource);
+            case MedicationStatement -> getSubject((MedicationStatement) resource);
+            case MedicationRequest -> getSubject((MedicationRequest) resource);
+            case Observation -> getSubject((Observation) resource);
+            case Procedure -> getSubject((Procedure) resource);
+            case QuestionnaireResponse -> getSubject((QuestionnaireResponse) resource);
+            case Specimen -> getSubject((Specimen) resource);
+            case Composition -> getSubject((Composition) resource);
+            case ResearchSubject -> getIndividual((ResearchSubject) resource);
+            case ServiceRequest -> getSubject((ServiceRequest) resource);
+            case MedicationAdministration -> getSubject((MedicationAdministration) resource);
+            case Medication -> getSubject((Medication) resource);
+            case Organization -> getSubject((Organization) resource);
+            case List -> getSubject((ListResource) resource);
+            default -> throw new IllegalArgumentException( UNSUPPORTED_RESOURCE_TYPE+ resource.getResourceType());
+        };
     }
 
     public static void setSubject(Resource resource, Reference subject) {
@@ -130,7 +106,7 @@ public class Resources {
                 ((ListResource) resource).setSubject(subject);
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
+                throw new IllegalArgumentException(UNSUPPORTED_RESOURCE_TYPE + resource.getResourceType());
         }
     }
 
@@ -157,19 +133,17 @@ public class Resources {
                     Object result = getter.invoke(resource);
         
                     // If the result is a Reference, return it
-                    if (result instanceof Reference) {
-                        Reference reference = (Reference) result;
-                        if (reference.hasReference()) {
+                    if (result instanceof Reference reference && reference.hasReference()) {
                             return reference;
                         }
-                    }
+
                 } catch (Exception e) {
                     // Ignore exceptions and continue checking other fields
                 }
             }
         
             // If no patient reference is found, throw an exception
-            throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
+            throw new IllegalArgumentException(UNSUPPORTED_RESOURCE_TYPE + resource.getResourceType());
         }
 
     public static List<String> getProfileUris(Resource resource) {
