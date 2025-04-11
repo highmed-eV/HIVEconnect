@@ -17,9 +17,18 @@
 package org.ehrbase.fhirbridge.core.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "FB_RESOURCE_COMPOSITION", uniqueConstraints = @UniqueConstraint(columnNames = {"INPUT_RESOURCE_ID", "COMPOSITION_ID"}))
+@Table(name = "FB_RESOURCE_COMPOSITION", uniqueConstraints = @UniqueConstraint(columnNames = {"INPUT_RESOURCE_ID", "COMPOSITION_ID", "SYSTEM_ID", "EHR_ID"}))
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class ResourceComposition {
 
     @Id
@@ -34,11 +43,25 @@ public class ResourceComposition {
     @Column(name = "INTERNAL_RESOURCE_ID")
     private String internalResourceId;
 
+    @Column(name = "EHR_ID", nullable = false)
+    private UUID ehrId;
+
     @Column(name = "COMPOSITION_ID", nullable = false)
     private String compositionId;
 
-    @Column(name = "SYSTEM_ID")
+    @Column(name = "TEMPLATE_ID")
+    private String templateId;
+
+    @Column(name = "SYSTEM_ID", nullable = false)
     private String systemId;
+
+    @Column(name = "CREATED_DATE_TIME", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdDateTime;
+    
+    @Column(name = "UPDATED_DATE_TIME", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime updatedDateTime;
 
     public ResourceComposition() {
     }
@@ -47,43 +70,20 @@ public class ResourceComposition {
         this.inputResourceId = inputResourceId;
     }
 
-    public ResourceComposition(String inputResourceId, String internalResourceId, String compositionId, String systemId) {
+    public ResourceComposition(String inputResourceId, String internalResourceId, String compositionId, String systemId, String templateId) {
         this.inputResourceId = inputResourceId;
         this.internalResourceId = internalResourceId;
         this.compositionId = compositionId;
         this.systemId = systemId;
+        this.templateId = templateId;
     }
-
-    public String getInputResourceId() {
-        return inputResourceId;
-    }
-
-    public void setInputResourceId(String id) {
-        this.inputResourceId = id;
-    }
-
-    public String getInternalResourceId() {
-        return internalResourceId;
-    }
-
-    public void setInternalResourceId(String internalResourceId) {
+    public ResourceComposition(String inputResourceId, String internalResourceId, String compositionId, String systemId, String templateId, UUID ehrId) {
+        this.inputResourceId = inputResourceId;
         this.internalResourceId = internalResourceId;
-    }
-
-    public String getCompositionId() {
-        return compositionId;
-    }
-
-    public void setCompositionId(String versionUid) {
-        this.compositionId = versionUid;
-    }
-
-    public String getSystemId() {
-        return systemId;
-    }
-
-    public void setSystemId(String systemId) {
+        this.compositionId = compositionId;
         this.systemId = systemId;
+        this.templateId = templateId;
+        this.ehrId = ehrId;
     }
 
     @Override
@@ -93,7 +93,11 @@ public class ResourceComposition {
                 ", inputResourceId='" + inputResourceId + '\'' +
                 ", internalResourceId='" + internalResourceId + '\'' +
                 ", compositionId='" + compositionId + '\'' +
+                ", templateId='" + templateId + '\'' +
+                ", ehrId='" + ehrId + '\'' +
                 ", systemId='" + systemId + '\'' +
+                ", createdDateTime='" + createdDateTime + '\'' +
+                ", updatedDateTime='" + updatedDateTime + '\'' +
                 '}';
     }
 }

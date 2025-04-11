@@ -16,6 +16,8 @@
 
 package org.ehrbase.fhirbridge.config;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
@@ -25,6 +27,8 @@ import java.util.List;
  *
  * @since 1.0.0
  */
+@Setter
+@Getter
 @ConfigurationProperties(prefix = "fhir-bridge.cors")
 public class CorsProperties {
 
@@ -36,35 +40,4 @@ public class CorsProperties {
 
     private List<String> allowedOrigins;
 
-    public boolean isAllowCredentials() {
-        return allowCredentials;
-    }
-
-    public void setAllowCredentials(boolean allowCredentials) {
-        this.allowCredentials = allowCredentials;
-    }
-
-    public List<String> getAllowedHeaders() {
-        return allowedHeaders;
-    }
-
-    public void setAllowedHeaders(List<String> allowedHeaders) {
-        this.allowedHeaders = allowedHeaders;
-    }
-
-    public List<String> getAllowedMethods() {
-        return allowedMethods;
-    }
-
-    public void setAllowedMethods(List<String> allowedMethods) {
-        this.allowedMethods = allowedMethods;
-    }
-
-    public List<String> getAllowedOrigins() {
-        return allowedOrigins;
-    }
-
-    public void setAllowedOrigins(List<String> allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
-    }
 }

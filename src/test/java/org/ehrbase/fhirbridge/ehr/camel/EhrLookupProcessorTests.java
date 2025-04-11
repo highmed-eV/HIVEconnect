@@ -9,9 +9,13 @@ import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstan
 import org.ehrbase.fhirbridge.core.domain.PatientEhr;
 import org.ehrbase.fhirbridge.core.repository.PatientEhrRepository;
 import org.ehrbase.fhirbridge.openehr.camel.EhrLookupProcessor;
-import org.ehrbase.fhirbridge.openehr.openehrclient.AqlEndpoint;
-import org.ehrbase.fhirbridge.openehr.openehrclient.EhrEndpoint;
-import org.ehrbase.fhirbridge.openehr.openehrclient.OpenEhrClient;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.AqlEndpoint;
+// import org.ehrbase.fhirbridge.openehr.openehrclient.EhrEndpoint;
+
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
+import org.ehrbase.openehr.sdk.client.openehrclient.AqlEndpoint;
+import org.ehrbase.openehr.sdk.client.openehrclient.EhrEndpoint;
+
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,18 +61,18 @@ class EhrLookupProcessorTests {
     void processWithExistingEhrId() throws Exception {
         UUID existingEhrId = UUID.randomUUID();
         PatientEhr mockPatientEhr = new PatientEhr("http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123", "Patient/123", "system123", existingEhrId);
-        when(patientEhrRepository.findByInternalPatientId(anyString())).thenReturn(mockPatientEhr);
+        when(patientEhrRepository.findByInternalPatientIdAndSystemId(anyString(), anyString())).thenReturn(mockPatientEhr);
 
         ehrLookupProcessor.process(exchange);
 
         UUID ehrId = exchange.getMessage().getHeader(CompositionConstants.EHR_ID, UUID.class);
         assertEquals(existingEhrId, ehrId);
-        verify(patientEhrRepository, times(1)).findByInternalPatientId(anyString());
+        verify(patientEhrRepository, times(1)).findByInternalPatientIdAndSystemId(anyString(), anyString());
     }
 
     @Test
     void processWithNewEhrId() throws Exception {
-        when(patientEhrRepository.findByInternalPatientId(anyString())).thenReturn(null);
+        when(patientEhrRepository.findByInternalPatientIdAndSystemId(anyString(), anyString())).thenReturn(null);
 
         when(openEhrClient.aqlEndpoint()).thenReturn(aqlEndpoint);
         when(openEhrClient.aqlEndpoint().execute(any())).thenReturn(List.of());
@@ -88,10 +92,10 @@ class EhrLookupProcessorTests {
         patient.addIdentifier()
                 .setSystem("http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym")
                 .setValue("123");
-        defaultExchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_RESOURCE, patient);
-        defaultExchange.getMessage().setHeader(CamelConstants.INPUT_SYSTEM_ID, "system123");
-        defaultExchange.getMessage().setHeader(CamelConstants.PATIENT_ID, "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123");
-        defaultExchange.getMessage().setHeader(CamelConstants.SERVER_PATIENT_ID, "Patient/123");
+        defaultExchange.getMessage().setHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE, patient);
+        defaultExchange.getMessage().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "system123");
+        defaultExchange.getMessage().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID, "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym|123");
+        defaultExchange.getMessage().setHeader(CamelConstants.FHIR_SERVER_PATIENT_ID, "Patient/123");
         return defaultExchange;
     }
 

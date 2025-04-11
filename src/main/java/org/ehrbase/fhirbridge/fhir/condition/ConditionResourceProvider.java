@@ -16,32 +16,20 @@
 
 package org.ehrbase.fhirbridge.fhir.condition;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.jpa.searchparam.SearchParameterMap;
-import ca.uhn.fhir.rest.annotation.Count;
-import ca.uhn.fhir.rest.annotation.Create;
-import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.Offset;
-import ca.uhn.fhir.rest.annotation.OptionalParam;
-import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.ResourceParam;
-import ca.uhn.fhir.rest.annotation.Search;
-import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.Constants;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
-import ca.uhn.fhir.rest.param.DateRangeParam;
-import ca.uhn.fhir.rest.param.QuantityAndListParam;
-import ca.uhn.fhir.rest.param.ReferenceAndListParam;
-import ca.uhn.fhir.rest.param.StringAndListParam;
-import ca.uhn.fhir.rest.param.TokenAndListParam;
-import ca.uhn.fhir.rest.param.UriAndListParam;
+import ca.uhn.fhir.rest.param.*;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
@@ -51,10 +39,8 @@ import org.hl7.fhir.r4.model.IdType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 @Component
+@Slf4j
 public class ConditionResourceProvider implements IResourceProvider  {
 
     @Autowired
@@ -70,20 +56,16 @@ public class ConditionResourceProvider implements IResourceProvider  {
                                 RequestDetails requestDetails,
                                 HttpServletRequest request,
                                 HttpServletResponse response) {
-        System.out.println("Executing 'Provide Condition' transaction using 'create' operation...");
+        log.info("Executing 'Provide Condition' transaction using 'create' operation...");
     
         // Validate the incoming resource
         if (condition == null || !condition.hasSubject() || !condition.hasCode()) {
             throw new UnprocessableEntityException("Condition resource must have a subject and a code.");
         }
 
-        FhirContext fhirContext = FhirContext.forR4();
-        String inputResource = fhirContext.newJsonParser().encodeResourceToString(condition);
-
         try {
             // Call Camel route with the Condition resource
-            MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", condition, MethodOutcome.class);
-            return outcome;
+            return producerTemplate.requestBody("direct:CreateRouteProcess", condition, MethodOutcome.class);
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
             if (exchange.isFailed()) {
@@ -169,19 +151,15 @@ public class ConditionResourceProvider implements IResourceProvider  {
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Condition resource
-        Condition processedCondition = producerTemplate.requestBody("direct:CamelSearchRouteProcess", requestDetails, Condition.class);
-
-        return processedCondition;
+        return producerTemplate.requestBody("direct:SearchRouteProcess", requestDetails, Condition.class);
     }
 
     @Read(version = true)
     public Condition readCondition(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
         // Call Camel route with the Condition resource
-        Condition processedCondition = producerTemplate.requestBody("direct:CamelCreateRouteProcessRoute", requestDetails, Condition.class);
-
-        return processedCondition;
-    }    
+        return producerTemplate.requestBody("direct:CreateRouteProcessRoute", requestDetails, Condition.class);
+    }
 }
 
 

@@ -1,23 +1,26 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,10 +39,11 @@ class ExistingResourceReferenceProcessorTest {
 
     @BeforeEach
     void setUp() {
-        existingResourceReferenceProcessor = new ExistingResourceReferenceProcessor(resourceCompositionRepository);
+        objectMapper = new ObjectMapper();
+        existingResourceReferenceProcessor = new ExistingResourceReferenceProcessor(objectMapper,resourceCompositionRepository);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
-        objectMapper = new ObjectMapper();
+
     }
 
     @Test
@@ -48,53 +52,54 @@ class ExistingResourceReferenceProcessorTest {
         String existingResource2 = "{\"resourceType\":\"Observation\",\"id\":\"2\",\"status\":\"final\"}";
 
         List<String> existingResources = Arrays.asList(existingResource1, existingResource2);
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
 
         String inputResourceBundle = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"fullUrl\": \"Patient/101\", \"resource\": { \"resourceType\": \"Patient\", \"id\": \"101\",\"name\":[{\"family\":\"Doe\"}] } } ] }";
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResourceBundle);
+        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResourceBundle);
+        exchange.getIn().setHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID, "systemId");
 
-        when(resourceCompositionRepository.findInternalResourceIdByInputResourceId("Patient/1")).thenReturn("Patient/101");
-        when(resourceCompositionRepository.findInternalResourceIdByInputResourceId("Observation/2")).thenReturn("Observation/102");
-
+        when(resourceCompositionRepository.findInternalResourceIdByInputResourceIdAndSystemId("Patient/1", "systemId")).thenReturn("Patient/101");
+        when(resourceCompositionRepository.findInternalResourceIdByInputResourceIdAndSystemId("Observation/2", "systemId")).thenReturn("Observation/102");
         existingResourceReferenceProcessor.process(exchange);
 
         // Verify the updated bundle
-        String updatedBundleJson = exchange.getIn().getBody(String.class);
-        JsonNode rootNode = objectMapper.readTree(updatedBundleJson);
-        ArrayNode entryArray = (ArrayNode) rootNode.get("entry");
-        assertEquals(2, entryArray.size()); // 1 entry already present + 1 new entry for the existing resource
-        assertTrue(updatedBundleJson.contains("Patient/101")); // Check if the existing resource ID was replaced
+        Bundle updatedBundle = exchange.getIn().getBody(Bundle.class);
+        assertEquals(2, updatedBundle.getEntry().size()); // 1 entry already present + 1 new entry for the existing resource
+        boolean hasPatientWithId101 = updatedBundle.getEntry().stream()
+            .map(Bundle.BundleEntryComponent::getResource) 
+            .filter(resource -> resource instanceof Patient) 
+            .map(resource -> (Patient) resource) 
+            .anyMatch(patient -> "101".equals(patient.getIdElement().getIdPart())); 
+
+        assertTrue(hasPatientWithId101); // Check if the existing resource ID was replaced
     }
 
     @Test
     void processWithNoExistingResources() throws Exception {
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, null);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, null);
 
         String inputResourceBundle = "{ \"resourceType\": \"Bundle\", \"entry\": [ { \"resource\": { \"resourceType\": \"Patient\", \"id\": \"101\" } } ] }";
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, inputResourceBundle);
+        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, inputResourceBundle);
 
         existingResourceReferenceProcessor.process(exchange);
 
         // Verify no change in the bundle
-        String updatedBundleJson = exchange.getIn().getBody(String.class);
-        assertNotNull(updatedBundleJson);
+        Bundle updatedBundle = exchange.getIn().getBody(Bundle.class);
+        assertEquals(1, updatedBundle.getEntry().size()); // 1 entry already present + 1 new entry for the existing resource
+        boolean hasPatientWithId101 = updatedBundle.getEntry().stream()
+            .map(Bundle.BundleEntryComponent::getResource) 
+            .filter(resource -> resource instanceof Patient) 
+            .map(resource -> (Patient) resource) 
+            .anyMatch(patient -> "101".equals(patient.getIdElement().getIdPart())); 
 
-        // Normalize both JSON strings for comparison (ignoring formatting differences)
-        JsonNode inputNode = objectMapper.readTree(inputResourceBundle);
-        JsonNode updatedNode = objectMapper.readTree(updatedBundleJson);
-        String inputJsonNormalized = objectMapper.writeValueAsString(inputNode);
-        String updatedJsonNormalized = objectMapper.writeValueAsString(updatedNode);
-
-        // Assert that the normalized JSON strings are equal (no new resources added)
-        assertEquals(inputJsonNormalized, updatedJsonNormalized);
+        assertTrue(hasPatientWithId101); // Check if the existing resource ID was replaced
     }
 
     @Test
     void processWithInvalidBundle() throws Exception {
         // Prepare mock data with invalid input (not a Bundle)
         String invalidInputResourceBundle = "{ \"resourceType\": \"Patient\", \"id\": \"1\" }";
-        exchange.getIn().setHeader(CamelConstants.INPUT_RESOURCE, invalidInputResourceBundle);
-
+        exchange.getIn().setHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING, invalidInputResourceBundle);
         existingResourceReferenceProcessor.process(exchange);
 
         // No change expected

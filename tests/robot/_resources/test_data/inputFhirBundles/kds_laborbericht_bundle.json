@@ -26,27 +26,21 @@
                   "code": "FILL",
                   "display": "Filler Identifier"
                 }
-              ],
-              "text": "Filler Identifier"
+              ]
             },
             "assigner": {
               "reference": "Organization/example-lab",
               "display": "Example Lab Organization"
             }
-          }
+            }
         ],
-        "basedOn": [
-          {
-            "reference": "ServiceRequest/servicerequest-lab-id-1234",
-            "display": "Blood Glucose Test"
-          }
-        ],
+        
         "status": "final",
         "category": [
           {
             "coding": [
               {
-                "system": "http://loinc.org",
+                "system": "LOINC",
                 "code": "26436-6",
                 "display": "Laboratory studies (set)"
               },
@@ -55,8 +49,7 @@
                 "code": "LAB",
                 "display": "Laboratory"
               }
-            ],
-            "text": "Laboratory"
+            ]
           }
         ],
         "code": {
@@ -70,31 +63,20 @@
           "text": "Complete Blood Count"
         },
         "subject": {
-          "reference": "Patient/1"
+          "reference": "Patient/{{patientId}}"
         },
         "encounter": {
-          "reference": "Encounter/encounter-12345"
+          "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee"
         },
         "effectiveDateTime": "2024-08-22T08:30:00Z",
         "issued": "2022-02-03T04:05:06Z",
-        "performer": [
-          {
-            "reference": "Organization/example-lab",
-            "display": "Example Lab Organization"
-          }
-        ],
         "specimen": [
           {
-            "reference": "Specimen/example-blood",
+            "reference": "urn:uuid:00000000-0000-0000-0000-000000000002",
             "display": "Blood sample"
           }
         ],
-        "result": [
-          {
-            "reference": "Observation/mii-pr-labor-laboruntersuchung",
-            "display": "Hemoglobin level"
-          }
-        ],
+
         "conclusion": "Normal blood count"
       },
       "request": {
@@ -103,15 +85,10 @@
       }
     },
     {
-      "fullUrl": "Encounter/encounter-12345",
+      "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee",
       "resource": {
         "resourceType": "Encounter",
         "id": "encounter-12345",
-        "class": {
-          "code": "AMB",
-          "display": "ambulatory",
-          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
-        },
         "identifier": [
           {
             "use": "official",
@@ -119,11 +96,9 @@
               "coding": [
                 {
                   "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                  "code": "VN",
-                  "display": "Visit number"
+                  "code": "VN"
                 }
-              ],
-              "text": "Visit number"
+              ]
             },
             "system": "http://hospital.smarthealthit.org",
             "value": "encounter-id-1245"
@@ -131,46 +106,29 @@
         ],
         "status": "finished",
         "subject": {
-          "reference": "Patient/1"
+          "reference": "Patient/{{patientId}}"
         },
         "period": {
           "start": "2024-08-21T09:00:00+01:00",
           "end": "2024-08-21T09:30:00+01:00"
         }
-      },
+      }
+    ,
       "request": {
         "method": "POST",
         "url": "Encounter"
       }
     },
     {
-      "fullUrl": "Observation/mii-pr-labor-laboruntersuchung",
+      "fullUrl": "urn:uuid:75d2ecd3-0ec5-4a3b-94a0-c7203dde89dc",
       "resource": {
         "resourceType": "Observation",
-        "id": "mii-pr-labor-laboruntersuchung",
+        "id": "987",
         "meta": {
           "profile": [
             "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
           ]
         },
-        "identifier": [
-          {
-            "assigner": {
-              "reference": "Organization/Charité",
-              "display": "example org"
-            },
-            "system": "https://www.charite.de/fhir/CodeSystem/lab-identifiers",
-            "type": {
-              "coding": [
-                {
-                  "code": "OBI",
-                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
-                }
-              ]
-            },
-            "value": "24336-0_laborauftragBldA"
-          }
-        ],
         "status": "final",
         "category": [
           {
@@ -179,20 +137,8 @@
                 "system": "http://terminology.hl7.org/CodeSystem/observation-category",
                 "code": "laboratory",
                 "display": "Laboratory"
-              },
-              {
-                "system": "http://loinc.org",
-                "code": "26436-6",
-                "display": "Laboratory studies (set)"
               }
-            ],
-            "text": "Laboratory"
-          }
-        ],
-        "basedOn": [
-          {
-            "reference": "ServiceRequest/servicerequest-lab-id-1234",
-            "display": "Blood Glucose Test"
+            ]
           }
         ],
         "code": {
@@ -206,7 +152,11 @@
           "text": "Hemoglobin [Mass/volume] in Blood"
         },
         "subject": {
-          "reference": "Patient/1"
+          "reference": "Patient/{{patientId}}",
+          "identifier": {
+            "system": "http://www.netzwerk-universitaetsmedizin.de/sid/crr-pseudonym",
+            "value": "release_test_1_1"
+          }
         },
         "effectiveDateTime": "2024-08-22T12:00:00+00:00",
         "issued": "2022-02-03T04:05:06Z",
@@ -216,18 +166,20 @@
           "system": "http://unitsofmeasure.org",
           "code": "g/dL"
         },
-        "specimen": {
-          "reference": "Specimen/example-blood",
-          "display": "Blood sample"
-        },
+        "specimen": [
+          {
+            "reference": "urn:uuid:00000000-0000-0000-0000-000000000002",
+            "display": "Blood sample"
+          }
+        ],
         "encounter": {
-          "reference": "Encounter/encounter-12345"
+          "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee"
         },
         "interpretation": [
           {
             "coding": [
               {
-                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "system": "http://hl7.org/fhir/ValueSet/observation-interpretation",
                 "code": "H",
                 "display": "High"
               }
@@ -239,17 +191,12 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "424876005",
-              "display": "Surgical approach"
+              "code": "10828004",
+              "display": "Blood test"
             }
           ],
           "text": "Blood test using standard laboratory methods"
         },
-        "performer": [
-          {
-            "reference": "Organization/example-lab"
-          }
-        ],
         "note": [
           {
             "text": "The observation result is within normal range, but further review may be needed."
@@ -262,7 +209,7 @@
       }
     },
     {
-      "fullUrl": "Specimen/example-blood",
+      "fullUrl": "urn:uuid:00000000-0000-0000-0000-000000000002",
       "request": {
         "method": "POST",
         "url": "Specimen"
@@ -272,7 +219,7 @@
         "id": "example-blood",
         "meta": {
           "profile": [
-            "http://hl7.org/fhir/StructureDefinition/Specimen"
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
           ]
         },
         "status": "available",
@@ -287,7 +234,10 @@
           "text": "Venous blood specimen"
         },
         "subject": {
-          "reference": "Patient/1"
+          "reference": "Patient/{{patientId}}"
+        },
+        "encounter": {
+          "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aee"
         },
         "identifier": [
           {
@@ -298,14 +248,6 @@
         "receivedTime": "2022-02-03T04:05:06Z",
         "collection": {
           "collectedDateTime": "2024-08-24T09:00:00Z",
-          "collector": {
-            "type": "Practitioner",
-            "identifier": {
-              "system": "http://hospital.org/practitioners",
-              "value": "1234567"
-            },
-            "display": "Dr. John Doe"
-          },
           "method": {
             "coding": [
               {
@@ -333,7 +275,7 @@
               {
                 "system": "http://snomed.info/sct",
                 "code": "49852007",
-                "display": "Structure of median cubital vein (body structure)"
+                "display": "Arm"
               }
             ],
             "text": "Right arm"

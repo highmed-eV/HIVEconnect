@@ -16,8 +16,11 @@
 
  package org.ehrbase.fhirbridge.fhir.camel;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.JsonParser;
 import com.apicatalog.jsonld.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -26,6 +29,7 @@ import org.apache.camel.Exchange;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
 import org.ehrbase.fhirbridge.camel.processor.FhirRequestProcessor;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
+import org.hl7.fhir.r4.model.Bundle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -50,32 +54,36 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
     public static final String RESOURCE_TYPE = "resourceType";
     public static final String RESOURCE = "resource";
 
+    private final ObjectMapper objectMapper;
     private final ResourceCompositionRepository resourceCompositionRepository;
 
-    public ExistingResourceReferenceProcessor(ResourceCompositionRepository resourceCompositionRepository) {
+    public ExistingResourceReferenceProcessor(ObjectMapper objectMapper, ResourceCompositionRepository resourceCompositionRepository) {
+        this.objectMapper = objectMapper;
         this.resourceCompositionRepository = resourceCompositionRepository;
     }
 
     @Override
     public void process(Exchange exchange) throws Exception {
-
-        ObjectMapper objectMapper = new ObjectMapper();
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
 
         // Fetch required properties from the exchange
-        List<String> existingResources = exchange.getProperty(CamelConstants.SERVER_EXISTING_RESOURCES, List.class);
+        Object property = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
+        List<String> existingResources = objectMapper.convertValue(
+                property, new TypeReference<>() {}
+        );
 
         // replace the ids in the existing fhir server resources
         // with the inputResourceIds corresponding to that in the db
         // according to the mapping table : FB_RESOURCE_COMPOSITION
         if (existingResources != null && !existingResources.isEmpty()) {
-            mapToInputResourceId(existingResources, objectMapper);
+            mapToInputResourceId(existingResources, objectMapper, systemId);
         }
 
         // Update the Exchange property with the modified list
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
 
         // Parse the input JSON
-        String inputResourceBundle = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE);
+        String inputResourceBundle = (String) exchange.getIn().getHeader(CamelConstants.TEMP_REQUEST_RESOURCE_STRING);
         JsonNode rootNode = objectMapper.readTree(inputResourceBundle);
 
         if (!isValidBundle(rootNode)) {
@@ -91,10 +99,13 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
 
         // Update the bundle in the exchange
         String updatedBundleJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
-        exchange.getIn().setBody(updatedBundleJson);
+        FhirContext fhirContext = FhirContext.forR4();
+        JsonParser jsonParser = (JsonParser) fhirContext.newJsonParser();
+        Bundle bundleResource =  jsonParser.parseResource(Bundle.class, updatedBundleJson);
+        exchange.getIn().setBody(bundleResource);
     }
 
-    private List<String> mapToInputResourceId(List<String> existingResources, ObjectMapper objectMapper) throws JsonProcessingException {
+    private void mapToInputResourceId(List<String> existingResources, ObjectMapper objectMapper, String systemId) throws JsonProcessingException {
         for (int i = 0; i < existingResources.size(); i++) {
             String resourceJson = existingResources.get(i);
             JsonNode resourceNode = objectMapper.readTree(resourceJson);
@@ -103,7 +114,7 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
                 String resourceId = resourceNode.get(RESOURCE_TYPE).asText() + "/" + resourceNode.get("id").asText();
 
                 // Fetch replacement IDs from the database
-                String dbInputResourceId = resourceCompositionRepository.findInternalResourceIdByInputResourceId(resourceId);
+                String dbInputResourceId = resourceCompositionRepository.findInternalResourceIdByInputResourceIdAndSystemId(resourceId, systemId);
 
                 if(StringUtils.isNotBlank(dbInputResourceId)){
                     Matcher matcher = Pattern.compile("([^/]+)/([^/]+)").matcher(dbInputResourceId);
@@ -116,7 +127,6 @@ public class ExistingResourceReferenceProcessor implements FhirRequestProcessor 
                 }
             }
         }
-        return existingResources;
     }
 
     private boolean isValidBundle(JsonNode rootNode) {

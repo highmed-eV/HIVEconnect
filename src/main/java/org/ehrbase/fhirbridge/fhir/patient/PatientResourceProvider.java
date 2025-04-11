@@ -16,17 +16,8 @@
 
 package org.ehrbase.fhirbridge.fhir.patient;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.jpa.searchparam.SearchParameterMap;
-import ca.uhn.fhir.rest.annotation.Count;
-import ca.uhn.fhir.rest.annotation.Create;
-import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.Offset;
-import ca.uhn.fhir.rest.annotation.OptionalParam;
-import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.ResourceParam;
-import ca.uhn.fhir.rest.annotation.Search;
-import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.Constants;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
@@ -38,23 +29,26 @@ import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.instance.model.api.IAnyResource;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.IdType;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hl7.fhir.r4.model.Patient;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 @Component
+@Slf4j
 public class PatientResourceProvider implements IResourceProvider  {
 
-    @Autowired
-    private ProducerTemplate producerTemplate;
+    private final ProducerTemplate producerTemplate;
+
+    public PatientResourceProvider(ProducerTemplate producerTemplate) {
+        this.producerTemplate = producerTemplate;
+    }
 
     @Override
     public Class<Patient> getResourceType() {
@@ -66,15 +60,11 @@ public class PatientResourceProvider implements IResourceProvider  {
                                 RequestDetails requestDetails,
                                 HttpServletRequest request,
                                 HttpServletResponse response) {
-        System.out.println("Executing 'Provide Patient' transaction using 'create' operation...");
+        log.info("Executing 'Provide Patient' transaction using 'create' operation...");
     
-        FhirContext fhirContext = FhirContext.forR4();
-        String inputResource = fhirContext.newJsonParser().encodeResourceToString(patient);
-
         try {
             // Call Camel route with the Patient resource
-            MethodOutcome outcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
-            return outcome;
+            return producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
             if (exchange.isFailed()) {
@@ -133,45 +123,31 @@ public class PatientResourceProvider implements IResourceProvider  {
         searchParams.add(Constants.PARAM_TEXT, text);
         searchParams.add(Constants.PARAM_FILTER, filter);
 
-        // searchParams.add(Patient.SP_ABATEMENT_AGE, abatementAge);
-        // searchParams.add(Patient.SP_ABATEMENT_DATE, abatementDate);
-        // searchParams.add(Patient.SP_ABATEMENT_STRING, abatementString);
-        // searchParams.add(Patient.SP_ASSERTER, asserter);
-        // searchParams.add(Patient.SP_BODY_SITE, bodySite);
-        // searchParams.add(Patient.SP_CATEGORY, category);
-        // searchParams.add(Patient.SP_CLINICAL_STATUS, clinicalStatus);
-        // searchParams.add(Patient.SP_CODE, code);
-        // searchParams.add(Patient.SP_ENCOUNTER, encounter);
-        // searchParams.add(Patient.SP_EVIDENCE, evidence);
-        // searchParams.add(Patient.SP_EVIDENCE_DETAIL, evidenceDetail);
         searchParams.add(Patient.SP_IDENTIFIER, identifier);
-        // searchParams.add(Patient.SP_ONSET_AGE, onsetAge);
-        // searchParams.add(Patient.SP_ONSET_DATE, onsetDate);
-        // searchParams.add(Patient.SP_ONSET_INFO, onsetInfo);
-        // searchParams.add(Patient.SP_PATIENT, patient);
-        // searchParams.add(Patient.SP_RECORDED_DATE, recordedDate);
-        // searchParams.add(Patient.SP_SEVERITY, severity);
-        // searchParams.add(Patient.SP_STAGE, stage);
-        // searchParams.add(Patient.SP_SUBJECT, subject);
-        // searchParams.add(Patient.SP_VERIFICATION_STATUS, verificationStatus);
 
         searchParams.setLastUpdated(lastUpdated);
         searchParams.setCount(count);
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBody("direct:CamelSearchRouteProcess", requestDetails, Patient.class);
-
-        return processedPatient;
+        return producerTemplate.requestBodyAndHeader("direct:SearchRouteProcess", requestDetails,  Exchange.HTTP_METHOD, "GET", Patient.class);
     }
 
     @Read(version = true)
     public Patient readPatient(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
-        // Call Camel route with the Patient resource
-        Patient processedPatient = producerTemplate.requestBody("direct:CamelCreateRouteProcessRoute", requestDetails, Patient.class);
-
-        return processedPatient;
+        try {
+            // Call Camel route with the Patient resource
+            return producerTemplate.requestBodyAndHeader("direct:ReadRouteProcess", requestDetails, Exchange.HTTP_METHOD, "GET", Patient.class);
+        } catch (CamelExecutionException exception) {
+            Exchange exchange = exception.getExchange();
+            if (exchange.isFailed()) {
+                BaseServerResponseException baseException = exchange.getException(BaseServerResponseException.class);
+                throw (baseException != null) ? baseException : new InternalErrorException("Unexpected server error", exchange.getException());
+            } else {
+                throw new InternalErrorException("Unexpected internal server error", exchange.getException());
+            }
+        }
     }    
 }
 

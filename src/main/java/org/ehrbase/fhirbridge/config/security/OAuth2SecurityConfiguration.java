@@ -6,10 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -19,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * @since 1.6
  */
 @Configuration(proxyBeanMethods = false)
-@EnableWebSecurity //MedBlocks
+@EnableWebSecurity 
 @ConditionalOnProperty(value = "fhir-bridge.security.type", havingValue = "oauth2")
 public class OAuth2SecurityConfiguration {
 
@@ -38,10 +39,26 @@ public class OAuth2SecurityConfiguration {
     }
 
     @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        return new JwtAuthenticationConverter();
+    }
+
+    @Bean
     public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(requests -> requests.anyRequest().authenticated());
-        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
-        return http.build();
+        return http
+                .authorizeHttpRequests(auth -> 
+                    auth.anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                    .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                )
+                .headers(headers -> headers
+                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                    .xssProtection(HeadersConfigurer.XXssConfig::disable)
+                    .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
+                )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/fhir/**"))
+                .build();
     }
 
     @Bean

@@ -20,12 +20,14 @@ import ca.uhn.fhir.rest.api.server.RequestDetails;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.util.ObjectHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @since 1.2.0
  */
 public interface FhirRequestProcessor extends Processor {
-
+    Logger LOG = LoggerFactory.getLogger(FhirRequestProcessor.class);
     /**
      * Returns the current request details.
      *
@@ -33,6 +35,8 @@ public interface FhirRequestProcessor extends Processor {
      * @return the request details
      */
     default RequestDetails getRequestDetails(Exchange exchange) {
+        exchange.getIn().getHeaders().forEach((key, value) -> LOG.info("Key: {} {}", key, value));
+
         if (ObjectHelper.isEmpty(exchange.getIn().getHeader("FHIR_REQUEST_DETAILS"))) {
             throw new IllegalArgumentException("RequestDetails must not be null");
         }

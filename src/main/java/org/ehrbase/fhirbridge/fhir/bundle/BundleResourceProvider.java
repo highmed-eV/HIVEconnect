@@ -16,17 +16,8 @@
 
 package org.ehrbase.fhirbridge.fhir.bundle;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.jpa.searchparam.SearchParameterMap;
-import ca.uhn.fhir.rest.annotation.Count;
-import ca.uhn.fhir.rest.annotation.Create;
-import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.Offset;
-import ca.uhn.fhir.rest.annotation.OptionalParam;
-import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.ResourceParam;
-import ca.uhn.fhir.rest.annotation.Search;
-import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.Constants;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
@@ -38,24 +29,26 @@ import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.OperationOutcome;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 @Component
+@Slf4j
 public class BundleResourceProvider implements IResourceProvider  {
 
-    @Autowired
-    private ProducerTemplate producerTemplate;
+    private final ProducerTemplate producerTemplate;
+
+    public BundleResourceProvider(ProducerTemplate producerTemplate) {
+        this.producerTemplate = producerTemplate;
+    }
 
     @Override
     public Class<Bundle> getResourceType() {
@@ -67,14 +60,14 @@ public class BundleResourceProvider implements IResourceProvider  {
                                 RequestDetails requestDetails,
                                 HttpServletRequest request,
                                 HttpServletResponse response) {
-        System.out.println("Executing 'Provide Bundle' transaction using 'create' operation...");
+        log.info("Executing 'Provide Bundle' transaction using 'create' operation...");
     
-        FhirContext fhirContext = FhirContext.forR4();
-        String inputResource = fhirContext.newJsonParser().encodeResourceToString(bundle);
-        MethodOutcome methodOutcome = null;
+        MethodOutcome methodOutcome;
+
+        
         try {
             // Call Camel route with the Bundle resource
-            methodOutcome = producerTemplate.requestBody("direct:CamelCreateRouteProcess", inputResource, MethodOutcome.class);
+            methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "POST", MethodOutcome.class);
             return methodOutcome;
         } catch (CamelExecutionException exception) {
             Exchange exchange = exception.getExchange();
@@ -88,15 +81,29 @@ public class BundleResourceProvider implements IResourceProvider  {
     }
 
 
-    private OperationOutcome createOperationOutcome(String message) {
-        OperationOutcome outcome = new OperationOutcome();
-        outcome.addIssue()
-                .setSeverity(OperationOutcome.IssueSeverity.ERROR)
-                .setCode(OperationOutcome.IssueType.EXCEPTION)
-                .setDiagnostics(message)
-                .setDetails(new org.hl7.fhir.r4.model.CodeableConcept()
-                        .setText("Internal Server Error during Condition creation"));
-        return outcome;
+    @Update
+    public MethodOutcome update(@IdParam IdType bundleId,
+                                @ResourceParam Bundle bundle,
+                                RequestDetails requestDetails,
+                                HttpServletRequest request,
+                                HttpServletResponse response) {
+        log.info("Executing 'Update Bundle' transaction using 'create' operation...");
+    
+        MethodOutcome methodOutcome;
+        try {
+            // Call Camel route with the Bundle resource
+            methodOutcome = producerTemplate.requestBodyAndHeader("direct:CreateRouteProcess", requestDetails, Exchange.HTTP_METHOD, "PUT", MethodOutcome.class);
+            return methodOutcome;
+        } catch (CamelExecutionException exception) {
+            Exchange exchange = exception.getExchange();
+            if (exchange.isFailed()) {
+                BaseServerResponseException baseException = exchange.getException(BaseServerResponseException.class);
+                throw (baseException != null) ? baseException : new InternalErrorException("Unexpected server error", exchange.getException());
+            } else {
+                throw new InternalErrorException("Unexpected internal server error", exchange.getException());
+            }
+        }
+        
     }
 
 
@@ -111,27 +118,7 @@ public class BundleResourceProvider implements IResourceProvider  {
                                            @OptionalParam(name = Constants.PARAM_CONTENT) StringAndListParam content,
                                            @OptionalParam(name = Constants.PARAM_TEXT) StringAndListParam text,
                                            @OptionalParam(name = Constants.PARAM_FILTER) StringAndListParam filter,
-                                        //    @OptionalParam(name = Bundle.SP_ABATEMENT_AGE) QuantityAndListParam abatementAge,
-                                        //    @OptionalParam(name = Bundle.SP_ABATEMENT_DATE) DateRangeParam abatementDate,
-                                        //    @OptionalParam(name = Bundle.SP_ABATEMENT_STRING) StringAndListParam abatementString,
-                                        //    @OptionalParam(name = Bundle.SP_ASSERTER) ReferenceAndListParam asserter,
-                                        //    @OptionalParam(name = Bundle.SP_BODY_SITE) TokenAndListParam bodySite,
-                                        //    @OptionalParam(name = Bundle.SP_CATEGORY) TokenAndListParam category,
-                                        //    @OptionalParam(name = Bundle.SP_CLINICAL_STATUS) TokenAndListParam clinicalStatus,
-                                        //    @OptionalParam(name = Bundle.SP_CODE) TokenAndListParam code,
-                                        //    @OptionalParam(name = Bundle.SP_ENCOUNTER) ReferenceAndListParam encounter,
-                                        //    @OptionalParam(name = Bundle.SP_EVIDENCE) TokenAndListParam evidence,
-                                        //    @OptionalParam(name = Bundle.SP_EVIDENCE_DETAIL) ReferenceAndListParam evidenceDetail,
                                            @OptionalParam(name = Bundle.SP_IDENTIFIER) TokenAndListParam identifier,
-                                        //    @OptionalParam(name = Bundle.SP_ONSET_AGE) QuantityAndListParam onsetAge,
-                                        //    @OptionalParam(name = Bundle.SP_ONSET_DATE) DateRangeParam onsetDate,
-                                        //    @OptionalParam(name = Bundle.SP_ONSET_INFO) StringAndListParam onsetInfo,
-                                        //    @OptionalParam(name = Bundle.SP_PATIENT) ReferenceAndListParam patient,
-                                        //    @OptionalParam(name = Bundle.SP_RECORDED_DATE) DateRangeParam recordedDate,
-                                        //    @OptionalParam(name = Bundle.SP_SEVERITY) TokenAndListParam severity,
-                                        //    @OptionalParam(name = Bundle.SP_STAGE) TokenAndListParam stage,
-                                        //    @OptionalParam(name = Bundle.SP_SUBJECT) ReferenceAndListParam subject,
-                                        //    @OptionalParam(name = Bundle.SP_VERIFICATION_STATUS) TokenAndListParam verificationStatus,
                                            @Count Integer count, @Offset Integer offset, @Sort SortSpec sort,
                                            RequestDetails requestDetails, HttpServletRequest request, HttpServletResponse response) {
 
@@ -147,46 +134,23 @@ public class BundleResourceProvider implements IResourceProvider  {
         searchParams.add(Constants.PARAM_TEXT, text);
         searchParams.add(Constants.PARAM_FILTER, filter);
 
-        // searchParams.add(Bundle.SP_ABATEMENT_AGE, abatementAge);
-        // searchParams.add(Bundle.SP_ABATEMENT_DATE, abatementDate);
-        // searchParams.add(Bundle.SP_ABATEMENT_STRING, abatementString);
-        // searchParams.add(Bundle.SP_ASSERTER, asserter);
-        // searchParams.add(Bundle.SP_BODY_SITE, bodySite);
-        // searchParams.add(Bundle.SP_CATEGORY, category);
-        // searchParams.add(Bundle.SP_CLINICAL_STATUS, clinicalStatus);
-        // searchParams.add(Bundle.SP_CODE, code);
-        // searchParams.add(Bundle.SP_ENCOUNTER, encounter);
-        // searchParams.add(Bundle.SP_EVIDENCE, evidence);
-        // searchParams.add(Bundle.SP_EVIDENCE_DETAIL, evidenceDetail);
         searchParams.add(Bundle.SP_IDENTIFIER, identifier);
-        // searchParams.add(Bundle.SP_ONSET_AGE, onsetAge);
-        // searchParams.add(Bundle.SP_ONSET_DATE, onsetDate);
-        // searchParams.add(Bundle.SP_ONSET_INFO, onsetInfo);
-        // searchParams.add(Bundle.SP_PATIENT, patient);
-        // searchParams.add(Bundle.SP_RECORDED_DATE, recordedDate);
-        // searchParams.add(Bundle.SP_SEVERITY, severity);
-        // searchParams.add(Bundle.SP_STAGE, stage);
-        // searchParams.add(Bundle.SP_SUBJECT, subject);
-        // searchParams.add(Bundle.SP_VERIFICATION_STATUS, verificationStatus);
 
         searchParams.setLastUpdated(lastUpdated);
         searchParams.setCount(count);
         searchParams.setOffset(offset);
         searchParams.setSort(sort);
         // Call Camel route with the Bundle resource
-        Bundle processedBundle = producerTemplate.requestBody("direct:CamelSearchRouteProcess", requestDetails, Bundle.class);
-
-        return processedBundle;
+        return producerTemplate.requestBody("direct:SearchRouteProcess", requestDetails, Bundle.class);
     }
 
     @Read(version = true)
     public Bundle readBundle(@IdParam IdType id, RequestDetails requestDetails,
                                    HttpServletRequest request, HttpServletResponse response) {
         // Call Camel route with the Bundle resource
-        Bundle processedBundle = producerTemplate.requestBody("direct:CamelCreateRouteProcessRoute", requestDetails, Bundle.class);
 
-        return processedBundle;
-    }    
+        return producerTemplate.requestBody("direct:CreateRouteProcessRoute", requestDetails, Bundle.class);
+    }
 }
 
 

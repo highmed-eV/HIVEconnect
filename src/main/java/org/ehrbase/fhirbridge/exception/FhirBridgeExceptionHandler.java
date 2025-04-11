@@ -20,8 +20,6 @@ import ca.uhn.fhir.rest.server.exceptions.*;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.RuntimeCamelException;
-import org.ehrbase.fhirbridge.fhir.validation.ValidationUtils;
-import org.hl7.fhir.r4.model.OperationOutcome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -33,7 +31,7 @@ import org.springframework.util.Assert;
  * @since 1.2.0
  */
 public class FhirBridgeExceptionHandler  implements Processor {
-    private static final Logger LOG = LoggerFactory.getLogger(FhirBridgeExceptionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(FhirBridgeExceptionHandler.class);
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -78,8 +76,9 @@ public class FhirBridgeExceptionHandler  implements Processor {
     }
 
     private void handleException(Exception ex) {
-        String errorMessage =  "Internal Error occurred while processing FHIR Bridge: " + ex.getMessage();;
-        throw new InternalErrorException(errorMessage);        
+        String errorMessage =  "Internal Error occurred while processing FHIR Bridge: " + ex.getMessage();
+        log.error(errorMessage);
+        throw new InternalErrorException(errorMessage);
     }
 
     private void handleAuthenticationException(AuthenticationException ex) {
@@ -88,66 +87,79 @@ public class FhirBridgeExceptionHandler  implements Processor {
 
     private void handleBaseServerResponse(BaseServerResponseException ex) {
         String errorMessage = "FHIR Bridge server error: " + ex.getMessage();
+        log.error(errorMessage);
         throw new InternalErrorException(errorMessage);
     }
 
     private void handleResourceNotFound(ResourceNotFoundException ex) {
         String errorMessage = "Resource not found: " + ex.getMessage();
+        log.error(errorMessage);
         throw new ResourceNotFoundException(errorMessage);
     }
 
     private void handleUnprocessableEntityException(UnprocessableEntityException ex) {
         String errorMessage = "Validation failed: " + ex.getMessage();
+        log.error(errorMessage);
         throw new UnprocessableEntityException(errorMessage);
     }
 
     private void handleInvalidRequestException(InvalidRequestException ex) {
         String errorMessage =  "Invalid request: " + ex.getMessage();
+        log.error(errorMessage);
         throw new InvalidRequestException(errorMessage);
     }
 
     private void handleForbiddenOperationException(ForbiddenOperationException ex) {
         String errorMessage = "Forbidden operation: " + ex.getMessage();
+        log.error(errorMessage);
         throw new ForbiddenOperationException(errorMessage);
     }
 
     private void handleMethodNotAllowedException(MethodNotAllowedException ex) {
         String errorMessage =  "Method not allowed: " + ex.getMessage();
+        log.error(errorMessage);
         throw new MethodNotAllowedException(errorMessage);
     }
 
     private void handleNotImplementedOperationException(NotImplementedOperationException ex) {
         String errorMessage =  "Operation not implemented: " + ex.getMessage();
+        log.error(errorMessage);
         throw new NotImplementedOperationException(errorMessage);
     }
 
     private void handleNotModifiedException(NotModifiedException ex) {
         String errorMessage =   "Resource not modified: " + ex.getMessage();
+        log.error(errorMessage);
         throw new NotModifiedException(errorMessage);
     }
 
     private void handlePayloadTooLargeException(PayloadTooLargeException ex) {
         String errorMessage = "Payload too large: " + ex.getMessage();
+        log.error(errorMessage);
         throw new PayloadTooLargeException(errorMessage);
     }
 
     private void handlePreconditionFailedException(PreconditionFailedException ex) {
         String errorMessage = "Precondition failed: " + ex.getMessage();
+        log.error(errorMessage);
         throw new PreconditionFailedException(errorMessage);
     }
 
     private void handleResourceGoneException(ResourceGoneException ex) {
         String errorMessage = "Resource gone: " + ex.getMessage();
+        log.error(errorMessage);
         throw new ResourceGoneException(errorMessage);
     }
 
     private void handleResourceVersionConflictException(ResourceVersionConflictException ex) {
         String errorMessage = "Resource version conflict: " + ex.getMessage();
+        log.error(errorMessage);
         throw new ResourceVersionConflictException(errorMessage);
     }
 
     private void handleUnclassifiedServerFailureException(UnclassifiedServerFailureException ex) {
-        String errorMessage = "Invalid request: " + ex.getMessage();
+        String errorMessage = "Unclassified server failure: " + ex.getMessage();
+        log.error(errorMessage);
         throw new InternalErrorException(errorMessage);
     }
 }

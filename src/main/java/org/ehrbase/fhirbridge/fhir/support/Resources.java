@@ -1,16 +1,15 @@
 package org.ehrbase.fhirbridge.fhir.support;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.*;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("java:S6212")
 public class Resources {
 
-    private static final String COVID_19_QUESTIONNAIRE_URL = "http://fhir.data4life.care/covid-19/r4/Questionnaire/covid19-recommendation";
+    private static final String UNSUPPORTED_RESOURCE_TYPE = "Unsupported resource type: ";
 
     private Resources() {
         throw new IllegalStateException("Utility class");
@@ -18,15 +17,6 @@ public class Resources {
 
     public static boolean isPatient(Resource resource) {
         return resource != null && resource.getResourceType() == ResourceType.Patient;
-    }
-
-    public static boolean isQuestionnaireResponse(Resource resource) {
-        return resource != null && resource.getResourceType() == ResourceType.QuestionnaireResponse;
-    }
-
-    public static boolean isCovid19Questionnaire(Resource resource) {
-        return isQuestionnaireResponse(resource) &&
-                StringUtils.contains(((QuestionnaireResponse) resource).getQuestionnaire(), COVID_19_QUESTIONNAIRE_URL);
     }
 
     public static boolean isReferenceType(Reference reference, ResourceType resourceType) {
@@ -37,45 +27,32 @@ public class Resources {
     }
 
     public static Optional<Reference> getSubject(Resource resource) {
-        switch (resource.getResourceType()) {
-            case Condition:
-                return getSubject((Condition) resource);
-            case Consent:
-                return getPatient((Consent) resource);
-            case DiagnosticReport:
-                return getSubject((DiagnosticReport) resource);
-            case DocumentReference:
-                return getSubject((DocumentReference) resource);
-            case Encounter:
-                return getSubject((Encounter) resource);
-            case Immunization:
-                return getPatient((Immunization) resource);
-            case MedicationStatement:
-                return getSubject((MedicationStatement) resource);
-            case Observation:
-                return getSubject((Observation) resource);
-            case Procedure:
-                return getSubject((Procedure) resource);
-            case QuestionnaireResponse:
-                return getSubject((QuestionnaireResponse) resource);
-            case Specimen:
-                return getSubject((Specimen) resource);
-            case Composition:
-                return getSubject((Composition) resource);
-            case ResearchSubject:
-                return getIndividual((ResearchSubject) resource);
-            case ServiceRequest:
-                return getSubject((ServiceRequest) resource);
-            case MedicationAdministration:
-                return getSubject((MedicationAdministration) resource);
-            case List:
-                return getSubject((ListResource) resource);
-            default:
-                throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
-        }
+        return switch (resource.getResourceType()) {
+            case Condition -> getSubject((Condition) resource);
+            case Consent -> getPatient((Consent) resource);
+            case DiagnosticReport -> getSubject((DiagnosticReport) resource);
+            case DocumentReference -> getSubject((DocumentReference) resource);
+            case Encounter -> getSubject((Encounter) resource);
+            case Immunization -> getPatient((Immunization) resource);
+            case MedicationStatement -> getSubject((MedicationStatement) resource);
+            case MedicationRequest -> getSubject((MedicationRequest) resource);
+            case Observation -> getSubject((Observation) resource);
+            case Procedure -> getSubject((Procedure) resource);
+            case QuestionnaireResponse -> getSubject((QuestionnaireResponse) resource);
+            case Specimen -> getSubject((Specimen) resource);
+            case Composition -> getSubject((Composition) resource);
+            case ResearchSubject -> getIndividual((ResearchSubject) resource);
+            case ServiceRequest -> getSubject((ServiceRequest) resource);
+            case MedicationAdministration -> getSubject((MedicationAdministration) resource);
+            case Medication -> getSubject((Medication) resource);
+            case Organization -> getSubject((Organization) resource);
+            case List -> getSubject((ListResource) resource);
+            default -> throw new IllegalArgumentException( UNSUPPORTED_RESOURCE_TYPE+ resource.getResourceType());
+        };
     }
 
     public static void setSubject(Resource resource, Reference subject) {
+        
         switch (resource.getResourceType()) {
             case Condition:
                 ((Condition) resource).setSubject(subject);
@@ -97,6 +74,9 @@ public class Resources {
                 break;
             case MedicationStatement:
                 ((MedicationStatement) resource).setSubject(subject);
+                break;
+            case MedicationRequest:
+                ((MedicationRequest) resource).setSubject(subject);
                 break;
             case Observation:
                 ((Observation) resource).setSubject(subject);
@@ -126,9 +106,45 @@ public class Resources {
                 ((ListResource) resource).setSubject(subject);
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported resource type: " + resource.getResourceType());
+                throw new IllegalArgumentException(UNSUPPORTED_RESOURCE_TYPE + resource.getResourceType());
         }
     }
+
+    //A more genric approach to get the subject from the resource
+    public static Reference getSubjectGeneric(Resource resource) {
+            // Handle Patient resource explicitly
+            if (resource instanceof Patient) {
+                return new Reference(resource.getIdElement().getValue());
+            }
+        
+            // List of common fields that may contain patient references
+            String[] patientReferenceFields = {"subject", "patient", "individual"};
+        
+            // Use reflection to check for common fields
+            for (String field : patientReferenceFields) {
+                try {
+                    // Capitalize the field name to match the getter method name
+                    String getterName = "get" + field.substring(0, 1).toUpperCase() + field.substring(1);
+        
+                    // Get the getter method for the field
+                    Method getter = resource.getClass().getMethod(getterName);
+        
+                    // Invoke the getter method
+                    Object result = getter.invoke(resource);
+        
+                    // If the result is a Reference, return it
+                    if (result instanceof Reference reference && reference.hasReference()) {
+                            return reference;
+                        }
+
+                } catch (Exception e) {
+                    // Ignore exceptions and continue checking other fields
+                }
+            }
+        
+            // If no patient reference is found, throw an exception
+            throw new IllegalArgumentException(UNSUPPORTED_RESOURCE_TYPE + resource.getResourceType());
+        }
 
     public static List<String> getProfileUris(Resource resource) {
         return resource.getMeta().getProfile()
@@ -165,6 +181,10 @@ public class Resources {
         return medicationStatement.hasSubject() ? Optional.of(medicationStatement.getSubject()) : Optional.empty();
     }
 
+    private static Optional<Reference> getSubject(MedicationRequest medicationRequest) {
+        return medicationRequest.hasSubject() ? Optional.of(medicationRequest.getSubject()) : Optional.empty();
+    }
+
     private static Optional<Reference> getSubject(Observation observation) {
         return observation.hasSubject() ? Optional.of(observation.getSubject()) : Optional.empty();
     }
@@ -197,6 +217,13 @@ public class Resources {
         return medicationAdministration.hasSubject() ? Optional.of(medicationAdministration.getSubject()) : Optional.empty();
     }
 
+    private static Optional<Reference> getSubject(Medication medication) {
+        return  Optional.empty();
+    }
+
+    private static Optional<Reference> getSubject(Organization organization) {
+        return Optional.empty();
+    }    
     private static Optional<Reference> getSubject(ListResource listResource) {
         return listResource.hasSubject() ? Optional.of(listResource.getSubject()) : Optional.empty();
     }

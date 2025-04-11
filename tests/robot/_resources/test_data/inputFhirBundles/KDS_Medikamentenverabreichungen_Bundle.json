@@ -27,30 +27,18 @@
                             "code": "inpatient",
                             "display": "Inpatient"
                         }
-                    ],
-                    "text": "Inpatient"
+                    ]
                 },
                 "medicationReference": {
-                    "reference": "urn:uuid:5926880e-cb73-4afb-9259-e2e45b4677f1"
+                    "reference": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fd76e5c72d"
                 },
                 "subject": {
-                    "reference": "Patient/1",
-                    "identifier": {
-                        "system": "urn:ietf:rfc:4122",
-                        "value": "1"
-                    }
+                    "reference": "Patient/{{patientId}}"
                 },
                 "context": {
-                    "reference": "urn:uuid:2145985c-5036-4500-9a1b-12bd96687072"
+                    "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5284ade"
                 },
-                "effectiveDateTime": "2024-08-20T14:30:00Z",
-                "performer": [
-                    {
-                        "actor": {
-                            "display": "Dr. John Smith"
-                        }
-                    }
-                ],
+                "effectiveDateTime": "2024-08-20T14:30:00+00:00",
                 "reasonCode": [
                     {
                         "coding": [
@@ -65,36 +53,38 @@
                 ],
                 "dosage": {
                     "text": "20 mg orally once daily",
+                    
                     "route": {
                         "coding": [
                             {
-                                "system": "http://snomed.info/sct",
-                                "code": "26643006",
-                                "display": "Oral route"
+                            "system": "http://snomed.info/sct",
+                            "code": "26643006",
+                            "display": "Oral route"
                             }
                         ],
                         "text": "Oral"
                     },
                     "dose": {
                         "value": 250,
-                        "unit": "1",
+                        "unit": "mg",
                         "system": "http://unitsofmeasure.org",
                         "code": "mg"
                     },
                     "rateRatio": {
                         "numerator": {
                             "value": 250,
-                            "unit": "1",
+                            "unit": "mg",
                             "system": "http://unitsofmeasure.org",
                             "code": "mg"
                         },
                         "denominator": {
                             "value": 8,
-                            "unit": "1",
+                            "unit": "h",
                             "system": "http://unitsofmeasure.org",
                             "code": "h"
                         }
                     }
+                    
                 }
             },
             "request": {
@@ -103,7 +93,7 @@
             }
         },
         {
-            "fullUrl": "urn:uuid:5926880e-cb73-4afb-9259-e2e45b4677f1",
+            "fullUrl": "urn:uuid:70ca7d00-0d8b-42bb-9508-a8fd76e5c72d",
             "resource": {
                 "resourceType": "Medication",
                 "id": "example-medication",
@@ -125,35 +115,20 @@
                 "form": {
                     "coding": [
                         {
-                            "system": "http://standardterms.edqm.eu",
-                            "code": "10225000",
-                            "display": "Gastro-resistant tablet"
+                            "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_BMP_DARREICHUNGSFORM",
+                            "code": "UTA",
+                            "display": "Tablet"
                         }
                     ],
-                    "text": "tablet"
+                    "text": "Tablet"
                 },
                 "ingredient": [
                     {
                         "itemCodeableConcept": {
                             "coding": [
                                 {
-                                    "system": "http://fhir.de/CodeSystem/ask",
-                                    "code": "01740242",
-                                    "display": "Paracetamol"
-                                },
-                                {
-                                    "system": "http://fdasis.nlm.nih.gov",
-                                    "code": "O42UQP6Q9F",
-                                    "display": "Paracetamol"
-                                },
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/CAS",
-                                    "code": "387517004",
-                                    "display": "Paracetamol"
-                                },
-                                {
-                                    "system": "http://snomed.info/sct",
-                                    "code": "387517004",
+                                    "system": "http://www.whocc.no/atc",
+                                    "code": "N02BE01",
                                     "display": "Paracetamol"
                                 }
                             ],
@@ -167,10 +142,10 @@
                                 "code": "mg"
                             },
                             "denominator": {
-                                "value": 6,
-                                "unit": "h",
+                                "value": 1,
+                                "unit": "tablet",
                                 "system": "http://unitsofmeasure.org",
-                                "code": "h"
+                                "code": "tablet"
                             }
                         }
                     }
@@ -182,15 +157,10 @@
             }
         },
         {
-            "fullUrl": "urn:uuid:2145985c-5036-4500-9a1b-12bd96687072",
+            "fullUrl": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5284ade",
             "resource": {
                 "resourceType": "Encounter",
                 "id": "encounter-12345",
-                "class": {
-                    "code": "AMB",
-                    "display": "ambulatory",
-                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
-                },
                 "identifier": [
                     {
                         "use": "official",
@@ -198,8 +168,7 @@
                             "coding": [
                                 {
                                     "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                    "code": "VN",
-                                    "display": "Visit number"
+                                    "code": "VN"
                                 }
                             ]
                         },
@@ -209,13 +178,14 @@
                 ],
                 "status": "finished",
                 "subject": {
-                    "reference": "Patient/1"
+                    "reference": "Patient/{{patientId}}"
                 },
                 "period": {
                     "start": "2024-08-21T09:00:00+01:00",
                     "end": "2024-08-21T09:30:00+01:00"
                 }
-            },
+            }
+        ,
             "request": {
                 "method": "POST",
                 "url": "Encounter"
@@ -231,171 +201,22 @@
                         "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement"
                     ]
                 },
-                "identifier": [
-                    {
-                        "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/medication-statement",
-                        "value": "MS123456"
-                    }
-                ],
-                "basedOn": [
-                    {
-                        "reference": "MedicationRequest/medicationrequest-lab-id-1234",
-                        "display": "Medication request for Aspirin 75 mg oral tablet"
-                    }
-                ],
-                "partOf": [
-                    {
-                        "reference": "urn:uuid:8ab73d0a-ae92-40a7-9c0b-73c6e5294aed",
-                        "display": "example-partOf-medication-administration"
-                    }
-                ],
                 "status": "active",
-                "category": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
-                            "code": "inpatient",
-                            "display": "Inpatient"
-                        },
-                        {
-                            "system": "http://ihe-d.de/CodeSystems/FallkontextBeiDokumentenerstellung",
-                            "code": "E200",
-                            "display": "stationärer Aufenthalt"
-                        }
-                    ],
-                    "text": "Inpatient"
-                },
+                
                 "medicationCodeableConcept": {
                     "coding": [
                         {
-                            "system": "http://fhir.de/CodeSystem/ifa/pzn",
-                            "code": "04825604",
-                            "display": "Aspirin 75 mg oral tablet"
-                        },
-                        {
-                            "system": "http://fhir.de/CodeSystem/bfarm/atc",
-                            "code": "B01AC06",
-                            "display": "Acetylsalicylic acid (Aspirin)"
-                        },
-                        {
-                            "system": "http://www.whocc.no/atc",
-                            "code": "N02BE01",
-                            "display": "Paracetamol"
+                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                            "code": "1049630",
+                            "display": "Aspirin 81 MG Oral Tablet"
                         }
                     ],
-                    "text": "Aspirin 75 mg oral tablet"
+                    "text": "Aspirin 81 MG Oral Tablet"
                 },
                 "subject": {
-                    "identifier": {
-                        "system": "urn:ietf:rfc:4122",
-                        "value": "4c7d0173-7378-42b2-a9fa-64cd2664674f"
-                    }
-                },
-                "context": {
-                    "reference": "urn:uuid:2145985c-5036-4500-9a1b-12bd96687072"
-                },
-                "effectiveDateTime": "2024-08-22T08:30:00Z",
-                "dateAsserted": "2024-08-21",
-                "informationSource": {
-                    "display": "practitioner information source"
-                },
-                "reasonCode": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://snomed.info/sct",
-                                "code": "13644009",
-                                "display": "Hypercholesterolemia"
-                            }
-                        ],
-                        "text": "High cholesterol"
-                    }
-                ],
-                "reasonReference": [
-                    {
-                        "reference": "Condition/example-condition"
-                    }
-                ],
-                "note": [
-                    {
-                        "text": "Patient reports high temperature."
-                    }
-                ],
-                "dosage": [
-                    {
-                        "text": "1 tablet daily",
-                        "sequence": 1,
-                        "timing": {
-                            "repeat": {
-                                "frequency": 2,
-                                "period": 1,
-                                "periodUnit": "d",
-                                "when": [
-                                    "AC"
-                                ],
-                                "offset": 120,
-                                "duration": 30,
-                                "durationUnit": "d"
-                            }
-                        },
-                        "route": {
-                            "coding": [
-                                {
-                                    "system": "http://standardterms.edqm.eu",
-                                    "code": "20009000",
-                                    "display": "Epidural use"
-                                },
-                                {
-                                    "system": "http://snomed.info/sct",
-                                    "code": "26643006",
-                                    "display": "Oral route"
-                                }
-                            ],
-                            "text": "Oral"
-                        },
-                        "site": {
-                            "coding": [
-                                {
-                                    "system": "http://snomed.info/sct",
-                                    "code": "368208006",
-                                    "display": "Left upper arm structure"
-                                }
-                            ],
-                            "text": "site left upper arm"
-                        },
-                        "asNeededBoolean": true,
-                        "doseAndRate": [
-                            {
-                                "doseQuantity": {
-                                    "value": 81,
-                                    "unit": "mg",
-                                    "system": "http://unitsofmeasure.org",
-                                    "code": "mg"
-                                }
-                            }
-                        ],
-                        "maxDosePerPeriod": {
-                            "numerator": {
-                                "value": 250,
-                                "unit": "mg",
-                                "system": "http://unitsofmeasure.org",
-                                "code": "mg"
-                            },
-                            "denominator": {
-                                "value": 8,
-                                "unit": "h",
-                                "system": "http://unitsofmeasure.org",
-                                "code": "h"
-                            }
-                        },
-                        "maxDosePerAdministration": {
-                            "value": 250,
-                            "unit": "mg",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mg"
-                        }
-                    }
-                ]
+                    "reference": "Patient/{{patientId}}"
+                }
+                
             },
             "request": {
                 "method": "POST",

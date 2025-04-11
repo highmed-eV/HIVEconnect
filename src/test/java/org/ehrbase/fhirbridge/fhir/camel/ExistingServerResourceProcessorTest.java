@@ -1,6 +1,7 @@
 package org.ehrbase.fhirbridge.fhir.camel;
 
 import ca.uhn.fhir.context.FhirContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
@@ -26,10 +27,12 @@ class ExistingServerResourceProcessorTest {
 
     private ExistingServerResourceProcessor existingServerResourceProcessor;
     private Exchange exchange;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        existingServerResourceProcessor = new ExistingServerResourceProcessor();
+        objectMapper = new ObjectMapper();
+        existingServerResourceProcessor = new ExistingServerResourceProcessor(objectMapper);
         DefaultCamelContext camelContext = new DefaultCamelContext();
         exchange = new DefaultExchange(camelContext);
         fhirContext = FhirContext.forR4();
@@ -42,10 +45,9 @@ class ExistingServerResourceProcessorTest {
         exchange.getIn().setBody(patientResource);
 
         List<String> existingResources = new ArrayList<>();
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
-
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
         existingServerResourceProcessor.process(exchange);
-
+        existingResources = exchange.getProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, List.class);
         assertEquals(1, existingResources.size());
 
         String resourceJson = existingResources.get(0);
@@ -58,7 +60,7 @@ class ExistingServerResourceProcessorTest {
         exchange.getIn().setBody(null);
 
         List<String> existingResources = new ArrayList<>();
-        exchange.setProperty(CamelConstants.SERVER_EXISTING_RESOURCES, existingResources);
+        exchange.setProperty(CamelConstants.FHIR_SERVER_EXISTING_RESOURCES, existingResources);
 
         existingServerResourceProcessor.process(exchange);
 

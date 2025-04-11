@@ -19,26 +19,29 @@ package org.ehrbase.fhirbridge.openehr.camel;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.fhirbridge.camel.CamelConstants;
+import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.config.DebugProperties;
 import org.ehrbase.fhirbridge.core.domain.ResourceComposition;
 import org.ehrbase.fhirbridge.core.repository.ResourceCompositionRepository;
-import org.hl7.fhir.r4.model.Bundle;
+import org.ehrbase.fhirbridge.exception.ConversionException;
+import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * {@link Processor} that stores the link between the FHIR resource and the openEHR composition.
@@ -52,154 +55,192 @@ public class ProvideResourceResponseProcessor implements Processor {
     public static final String BEAN_ID = "provideResourceResponseProcessor";
 
     private static final Logger LOG = LoggerFactory.getLogger(ProvideResourceResponseProcessor.class);
-    public static final String IDENTIFIER = "identifier";
 
     private final ResourceCompositionRepository resourceCompositionRepository;
-
-    DebugProperties debugProperties;
+    private final FhirContext fhirContext;
+    private final DebugProperties debugProperties;
 
     @Autowired
     public ProvideResourceResponseProcessor(ResourceCompositionRepository resourceCompositionRepository, DebugProperties debugProperties) {
         this.resourceCompositionRepository = resourceCompositionRepository;
         this.debugProperties = debugProperties;
+        this.fhirContext = FhirContext.forR4();
     }
 
     @Override
     public void process(@NotNull Exchange exchange) throws Exception {
-        // Logic to update the resource to composition
-
-        Composition composition = exchange.getIn().getBody(Composition.class);
-        String inputResource = exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE, String.class);
-        String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.INPUT_RESOURCE_TYPE);
-        // map to store the corresponding inputResourceId  and internalResourceId
+        Composition composition = (Composition) exchange.getIn().getHeader(CamelConstants.OPEN_EHR_SERVER_OUTCOME_COMPOSITION);
+        Resource inputResource = (Resource) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE);
+        String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE_TYPE);
+        
+        UUID ehrId = (UUID) exchange.getIn().getHeader(CompositionConstants.EHR_ID);
         Map<String, String> resourceIdMap = new LinkedHashMap<>();
 
         if (!"Bundle".equals(inputResourceType)) {
-            processSingleResource(exchange);
-        }
-        else 
-        {
-            JSONObject inputJsonObject = new JSONObject(inputResource);
-            processBundle(exchange, inputJsonObject, resourceIdMap);
+            if ("Patient".equals(inputResourceType)) {
+                processPatientResource(exchange);
+            } else {
+                processSingleResource(exchange, inputResource, resourceIdMap);
+            }
+        } else {
+            processBundle(exchange, (Bundle) inputResource, resourceIdMap);
         }
 
-        // Update database with resourceIdMap of inputResourceId  and internalResourceId
-        // with compositionId
-        updateResourceCompositions(resourceIdMap, composition);
+        updateResourceCompositions(exchange, inputResourceType, resourceIdMap, composition, ehrId);
     }
 
-    private void processSingleResource(Exchange exchange) {
-        //if not bundle take fhir response as MethodOutcome
+    private void processPatientResource(Exchange exchange) {
         MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
-       
-        //Set response in exchange body
         exchange.getIn().setBody(outcome);
     }
 
-    private void processBundle(Exchange exchange, JSONObject inputJsonObject, Map<String, String> resourceIdMap) throws IOException {
-        //get inputresourceIds
-        JSONArray entries = inputJsonObject.optJSONArray("entry");
-        if (entries != null) {
-            extractResourceIds(resourceIdMap, entries);
-        }
+    private void processSingleResource(Exchange exchange, Resource resource, Map<String, String> resourceIdMap) {
+        MethodOutcome outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, MethodOutcome.class);
+        
+        String inputResourceId = resource.getId();
+        String internalId = outcome.getId().getValue();
+        String internalResourceId = internalId.split("/_history")[0];
+                
+        resourceIdMap.put(inputResourceId, internalResourceId);
 
-        //if bundle take fhir server response as String
-        String outcome = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME, String.class);
-        JSONObject jsonObject = new JSONObject(outcome);
-
-        //Get server response resource ids
-        if (!jsonObject.isEmpty()) {
-            JSONArray serverEntries = jsonObject.optJSONArray("entry");
-            if (serverEntries != null) {
-                processServerEntries(resourceIdMap, serverEntries);
-            }
-        }
-
-        // merge and store the responses from FHIR_SERVER_OUTCOME, OPEN_FHIR_SERVER_OUTCOME and OPEN_EHR_SERVER_OUTCOME
-        debugProperties.saveMergedServerResponses(exchange);
-
-        //Set response in exchange body
-        MethodOutcome methodOutcome = new MethodOutcome();
-        String processedBundle = (String) exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
-
-        FhirContext fhirContext = FhirContext.forR4();
-        Bundle processedBundleResource = fhirContext.newJsonParser().parseResource(Bundle.class, processedBundle);
-
-        // Set the MethodOutcome
-        methodOutcome.setCreated(true);
-        methodOutcome.setResource(processedBundleResource);
-        exchange.getMessage().setBody(methodOutcome);
+        exchange.getIn().setBody(outcome);
     }
 
-    private static void extractResourceIds(Map<String, String> resourceIdMap, JSONArray entries) {
-        for (int i = 0; i < entries.length(); i++) {
-            JSONObject resource = entries.getJSONObject(i).optJSONObject("resource");
-            if (resource != null) {
-                String inputResourceId = null;
-                if (resource.optString("resourceType").equals("Patient")) {
-                    if (resource.has(IDENTIFIER) && resource.getJSONArray(IDENTIFIER).length() > 0) {
-                        JSONObject firstIdentifier = resource.getJSONArray(IDENTIFIER).getJSONObject(0);
-                        String system = firstIdentifier.getString("system");
-                        String value = firstIdentifier.getString("value");
-                        inputResourceId = system + "|" + value;
+    private void processBundle(Exchange exchange, Bundle inputBundle, Map<String, String> resourceIdMap) {
+        try {
+            // Extract input resource IDs
+            for (Bundle.BundleEntryComponent entry : inputBundle.getEntry()) {
+                Resource resource = entry.getResource();
+                if (resource != null) {
+                    String inputResourceId = extractResourceId(resource);
+                    if (inputResourceId != null) {
+                        resourceIdMap.put(inputResourceId, null);
                     }
-                } else {
-                    inputResourceId = resource.optString("resourceType") + "/" + resource.optString("id");
                 }
-                // Placeholder for internalResourceId
-                resourceIdMap.put(inputResourceId, null);
+            }
+
+            // Process server response
+            Object serverResponse = exchange.getProperty(CamelConstants.FHIR_SERVER_OUTCOME);
+            Bundle serverBundle;
+            
+            // Convert response to JSON string for consistent handling
+            String jsonString;
+            if (serverResponse instanceof Resource) {
+                fhirContext.newJsonParser().encodeResourceToString((Resource) serverResponse);
+                // Update the exchange property to maintain compatibility with DebugProperties
+                serverBundle = (Bundle) serverResponse;
+            } else if (serverResponse instanceof MethodOutcome) {
+                IBaseResource baseResource = getiBaseResource((MethodOutcome) serverResponse);
+                serverBundle = (Bundle) baseResource;
+            } else if (serverResponse instanceof String) {
+                jsonString = (String) serverResponse;
+                serverBundle = fhirContext.newJsonParser().parseResource(Bundle.class, jsonString);
+            } else {
+                throw new IllegalArgumentException("Unexpected server response type: " + 
+                    (serverResponse != null ? serverResponse.getClass().getName() : "null"));
+            }
+
+            processServerResponse(resourceIdMap, serverBundle);
+
+            // Debug properties
+            debugProperties.saveMergedServerResponses(exchange);
+
+            // Set response in exchange body
+            MethodOutcome methodOutcome = new MethodOutcome();
+            methodOutcome.setCreated(true);
+            methodOutcome.setResource(serverBundle);
+            exchange.getMessage().setBody(methodOutcome);
+        } catch (Exception e) {
+            throw new ConversionException("Error processing bundle: " + e.getMessage(), e);
+        }
+    }
+
+    private static @NotNull IBaseResource getiBaseResource(MethodOutcome serverResponse) {
+        IBaseResource baseResource = serverResponse.getResource();
+        if (baseResource == null) {
+            throw new IllegalArgumentException("MethodOutcome does not contain a resource");
+        }
+        if (!(baseResource instanceof Bundle)) {
+            throw new IllegalArgumentException("MethodOutcome contains invalid resource type: " +
+                baseResource.getClass().getName() + ". Expected Bundle.");
+        }
+        return baseResource;
+    }
+
+    private String extractResourceId(Resource resource) {
+        if (resource instanceof Patient patient) {
+            Optional<Identifier> identifier = patient.getIdentifier().stream().findFirst();
+            return identifier.map(id -> id.getSystem() + "|" + id.getValue()).orElse(null);
+        } else {
+            String resourceType = resource.getResourceType().name();
+            String id = resource.getId();
+            if (!id.startsWith(resourceType + "/")) {
+                return resourceType + "/" + id;
+            }
+            return id;
+        }
+    }
+
+    private void processServerResponse(Map<String, String> resourceIdMap, Bundle responseBundle) {
+        List<String> inputResourceIds = resourceIdMap.keySet().stream().toList();
+        
+        for (int i = 0; i < responseBundle.getEntry().size(); i++) {
+            Bundle.BundleEntryComponent entry = responseBundle.getEntry().get(i);
+            if (entry.hasResponse() && entry.getResponse().hasLocation()) {
+                String location = entry.getResponse().getLocation();
+                String internalResourceId = location.split("/_history")[0];
+                
+                if (i < inputResourceIds.size()) {
+                    String inputResourceId = inputResourceIds.get(i);
+                    validateAndUpdateMap(resourceIdMap, inputResourceId, internalResourceId);
+                }
             }
         }
     }
 
-    private void processServerEntries(Map<String, String> resourceIdMap, JSONArray serverEntries) {
-        for (int i = 0; i < serverEntries.length(); i++) {
-            JSONObject response = serverEntries.getJSONObject(i).optJSONObject("response");
-            if (response != null) {
-                String location = response.optString("location");
-                if (!location.isEmpty()) {
-                    // Extract resource ID (e.g., "Condition/20")
-                    String internalResourceId = location.split("/_history")[0];
-                    String correspondingInputResourceId = findInputResourceIdByIndex(resourceIdMap, i);
-                    // Validate and update map
-                    validateAndUpdateMap(resourceIdMap, correspondingInputResourceId, internalResourceId);
-                }
-            }
-        }
-    }
-
-    private void updateResourceCompositions(Map<String, String> resourceIdMap, Composition composition) {
+    private void updateResourceCompositions(Exchange exchange, String inputResourceType, Map<String, String> resourceIdMap, Composition composition, UUID ehrId) {
+        String systemId = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_REMOTE_SYSTEM_ID);
         for (Map.Entry<String, String> entry : resourceIdMap.entrySet()) {
             String inputResourceId = entry.getKey();
             String internalResourceId = entry.getValue();
+            ResourceComposition resourceComposition;
             String compositionId = getCompositionId(composition);
-
-            ResourceComposition resourceComposition = resourceCompositionRepository.findByInputResourceIdAndCompositionId(inputResourceId, compositionId)
-                    .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, null));
+            String templateId = Optional.ofNullable(composition.getArchetypeDetails()).flatMap(archetypeDetails -> Optional.ofNullable(archetypeDetails.getTemplateId()))
+                                .map(ObjectId::getValue)
+                                .orElse(null);
+            String method =  (String) exchange.getIn().getHeader(CamelConstants.REQUEST_HTTP_METHOD);
+            if ("POST".equals(method)) {
+                // If found throw error
+                resourceComposition = new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId, templateId);
+                LocalDateTime dateTime = LocalDateTime.now();
+                resourceComposition.setCreatedDateTime(dateTime);
+                resourceComposition.setUpdatedDateTime(dateTime);
+            } else {
+                compositionId = (String) exchange.getMessage().getHeader(CamelConstants.OPENEHR_COMPOSITION_ID);
+                resourceComposition = resourceCompositionRepository.findByInternalResourceIdAndCompositionIdAndEhrId(inputResourceId, compositionId, ehrId)
+                        .orElse(new ResourceComposition(inputResourceId, compositionId, internalResourceId, systemId, templateId));
+                LocalDateTime dateTime = LocalDateTime.now();
+                if (resourceComposition.getCreatedDateTime() == null) {
+                    resourceComposition.setCreatedDateTime(dateTime);
+                }
+                resourceComposition.setUpdatedDateTime(dateTime);
+            }
 
             resourceComposition.setCompositionId(getCompositionId(composition));
             resourceComposition.setInternalResourceId(internalResourceId);
-
+            resourceComposition.setEhrId(ehrId);
+            resourceComposition.setTemplateId(templateId);
             resourceCompositionRepository.save(resourceComposition);
 
-            LOG.debug("Saved ResourceComposition: inputResourceId={}, internalResourceId={}, compositionId={}",
-                    resourceComposition.getInputResourceId(), resourceComposition.getInternalResourceId(), resourceComposition.getCompositionId());
+            LOG.debug("Saved ResourceComposition: inputResourceId={}, internalResourceId={}, compositionId={}, templateId={}",
+                    resourceComposition.getInputResourceId(), resourceComposition.getInternalResourceId(), resourceComposition.getCompositionId(), resourceComposition.getTemplateId());
         }
 
-        // Log the response and set it in the exchange
         LOG.info("ProvideResourceResponseProcessor");
     }
 
     private String getCompositionId(Composition composition) {
         return composition.getUid().toString();
-    }
-
-    private String  findInputResourceIdByIndex(Map<String, String> resourceIdMap, int index) {
-        List<String> keys = new ArrayList<>(resourceIdMap.keySet());
-        if (index >= 0 && index < keys.size()) {
-            return keys.get(index);
-        }
-        return null;
     }
 
     private void validateAndUpdateMap(Map<String, String> resourceIdMap, String inputResourceId, String internalResourceId) {

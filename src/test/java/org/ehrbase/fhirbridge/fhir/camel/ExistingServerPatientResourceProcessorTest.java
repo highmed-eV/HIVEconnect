@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,18 +35,19 @@ class ExistingServerPatientResourceProcessorTest {
 
         assertDoesNotThrow(() -> existingServerPatientResourceProcessor.process(exchange));
 
-        assertEquals(patientResource, exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
-        assertEquals("Patient/12345", exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
+        assertEquals(patientResource, exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE));
+        assertEquals("Patient/12345", exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID));
     }
 
     @Test
     void processWithEmptyBodyShouldNotSetHeaders() {
         exchange.getIn().setBody(null);
+        exchange.getIn().setHeader(CamelConstants.FHIR_INPUT_PATIENT_ID_TYPE, "SEARCH_URL");
+        assertThrows(UnprocessableEntityException.class, () -> existingServerPatientResourceProcessor.process(exchange));
 
-        assertDoesNotThrow(() -> existingServerPatientResourceProcessor.process(exchange));
-
-        assertNull(exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_RESOURCE));
-        assertNull(exchange.getIn().getHeader(CamelConstants.SERVER_PATIENT_ID));
+        
+        assertNull(exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_RESOURCE));
+        assertNull(exchange.getIn().getHeader(CamelConstants.FHIR_SERVER_PATIENT_ID));
     }
 
     @Test

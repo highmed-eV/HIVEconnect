@@ -3,6 +3,9 @@
 #   FHIR Bridge Properties                                                     #
 ################################################################################
 fhir-bridge:
+  bootstrap:
+    enabled: true
+    dir: ./src/main/resources/opt
   debug:
     enabled: true
     mapping-output-directory: ${java.io.tmpdir}/mappings
@@ -61,7 +64,7 @@ spring:
     basename: messages/messages
     use-code-as-default-message: true
 
-  #Medblocks
+  
   flyway:
     enabled: false
   autoconfigure:
@@ -83,14 +86,14 @@ logging:
     ca.uhn.fhir: WARN
     com.zaxxer.hikari: WARN
     liquibase: INFO
-    org.apache.camel: DEBUG
+    org.apache.camel: WARN
     # org.ehrbase.client: WARN
     org.ehrbase.fhirbridge: DEBUG
-    org.hibernate: INFO
+    org.hibernate: WARN
     org.openehealth.ipf: ERROR
     org.quartz: WARN
     org.springframework: WARN
-    org.springframework.boot: INFO
+    org.springframework.boot: WARN
 
 management:
   endpoints:
@@ -106,7 +109,7 @@ management:
       elastic:
         auto-create-index:
 
-#Medblocks
+#fhir server
 hapi:
   fhir:
     server:
@@ -136,14 +139,6 @@ camel:
     mapping:
       contextPath: /*
 
-################################################################################
-# Open eHealth Integration Platform Properties                                 #
-################################################################################
-ipf:
-  atna:
-    audit-enabled: false
-  fhir:
-    fhir-version: r4
 
 demographics:
   patient:

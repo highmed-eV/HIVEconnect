@@ -50,9 +50,6 @@ public class FhirServerConfig extends RestfulServer {
         setResourceProviders(this.resourceProviders);
         setServerAddressStrategy(new HardcodedServerAddressStrategy(serverPath));
 
-        // registerInterceptor(new ExceptionHandler());
         registerInterceptor(new HttpInterceptor());
-
-        //registerInterceptor(new OpenApiInterceptor());
     }
 }

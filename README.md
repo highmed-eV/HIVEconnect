@@ -1,7 +1,12 @@
-# FHIR Bridge 2 [![CircleCI Status](https://circleci.com/gh/ehrbase/fhir-bridge.svg?style=shield)](https://circleci.com/gh/ehrbase/fhir-bridge)
+## Development Status Alpha
 
-FHIR Bridge is an official component of [EHRbase](https://ehrbase.org/).
-The purpose of the application is to act as a broker between an HL7 FHIR client and an openEHR server.
+⚠️ ALPHA - Under Active Development and Quality Assurance ⚠️
+
+This project is currently in its alpha stage. It is actively being developed, and we are in the process of conducting thorough quality assurance testing. Therefore, expect potential instability and incomplete features.
+
+# FHIR Bridge 2
+
+The purpose of FHIR Bridge  application is to act as a broker between an HL7 FHIR client and an openEHR server.
 
 The implementation is based on [Apache Camel](https://camel.apache.org/) and [Open eHealth Integration Platform](https://github.com/oehf/ipf).
 
@@ -35,7 +40,7 @@ $ mvn clean install -DskipITs=false
 cd docker
 docker-compose -f docker-compose-light.yml up
 ```
-Note: Ensure that the OPENFHIR application is up and running before starting
+Note: Ensure that the OPENFHIR application is up and running before starting fhir-bridge
 ### Run the application
 
 ```bash

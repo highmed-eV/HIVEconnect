@@ -1,7 +1,7 @@
 package org.ehrbase.fhirbridge.camel.component.ehr.composition;
 
 /**
- * Operations supported by the {@link org.ehrbase.client.openehrclient.CompositionEndpoint}
+ * Operations supported by the {@link org.ehrbase.openehr.sdk.client.openehrclient.CompositionEndpoint}
  */
 @SuppressWarnings("java:S115")
 public enum CompositionOperation {
