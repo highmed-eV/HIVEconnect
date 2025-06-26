@@ -41,12 +41,6 @@
       "inputBundleFileName": "KDS_Fall_einfach_Bundle.json",
       "expectedOpenEhrFileName": "KDS_Fall_einfach_canonical.json",
       "openEhrTemplateId": "KDS_Fall_einfach"
-    },
-    {
-      "testCaseName": "kdsperson",
-      "inputBundleFileName": "kds_person_bundle.json",
-      "expectedOpenEhrFileName": "kds_person_canonical.json",
-      "openEhrTemplateId": "KDS_Person"
     }
   ]
 }

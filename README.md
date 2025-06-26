@@ -1,3 +1,9 @@
+## Development Status Alpha
+
+⚠️ ALPHA - Under Active Development and Quality Assurance ⚠️
+
+This project is currently in its alpha stage. It is actively being developed, and we are in the process of conducting thorough quality assurance testing. Therefore, expect potential instability and incomplete features.
+
 # FHIR Bridge 2
 
 The purpose of FHIR Bridge  application is to act as a broker between an HL7 FHIR client and an openEHR server.

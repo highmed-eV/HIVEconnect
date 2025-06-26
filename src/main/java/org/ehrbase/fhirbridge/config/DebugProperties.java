@@ -60,9 +60,10 @@ public class DebugProperties {
 
         // Merge JsonNode objects into a single ObjectNode
         ObjectNode mergedJson = objectMapper.createObjectNode();
-        mergedJson.setAll((ObjectNode) node1);
-        mergedJson.setAll((ObjectNode) node2);
-        mergedJson.setAll((ObjectNode) node3);
+        mergedJson.set("fhirOutcome", node1);
+        mergedJson.set("openFhirOutcome", node2);
+        mergedJson.set("openEhrOutcome", node3);
+
 
         String inputResourceType = (String) exchange.getIn().getHeader(CamelConstants.REQUEST_RESOURCE_TYPE);
 
