@@ -18,7 +18,7 @@
         "originating_system_item_ids": [
             {
                 "_type": "DV_IDENTIFIER",
-                "id": "Condition/95/_history/1",
+                "id": "Condition/74/_history/1",
                 "type": "fhir_logical_id"
             }
         ],
@@ -62,7 +62,7 @@
         "_type": "EVENT_CONTEXT",
         "start_time": {
             "_type": "DV_DATE_TIME",
-            "value": "2027-05-02T05:30:00"
+            "value": "2027-05-02T00:00:00"
         },
         "setting": {
             "_type": "DV_CODED_TEXT",
@@ -292,7 +292,7 @@
                         },
                         "value": {
                             "_type": "DV_DATE_TIME",
-                            "value": "2025-02-03T09:35:06"
+                            "value": "2025-02-03T04:05:06"
                         },
                         "archetype_node_id": "at0003"
                     },
@@ -376,11 +376,11 @@
                         "_type": "CLUSTER",
                         "name": {
                             "_type": "DV_TEXT",
-                            "value": "Klinischer Status"
+                            "value": "Mehrfachkodierungskennzeichen_ICD-10-GM"
                         },
                         "archetype_details": {
                             "archetype_id": {
-                                "value": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+                                "value": "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
                             },
                             "rm_version": "1.0.4"
                         },
@@ -389,44 +389,24 @@
                                 "_type": "ELEMENT",
                                 "name": {
                                     "_type": "DV_TEXT",
-                                    "value": "Klinischer Status"
+                                    "value": "Mehrfachkodierungkennzeichen"
                                 },
                                 "value": {
                                     "_type": "DV_CODED_TEXT",
-                                    "value": "active",
-                                    "defining_code": {
-                                        "_type": "CODE_PHRASE",
-                                        "terminology_id": {
-                                            "_type": "TERMINOLOGY_ID",
-                                            "value": "http://terminology.hl7.org/CodeSystem/condition-clinical"
-                                        },
-                                        "code_string": "active"
-                                    }
-                                },
-                                "archetype_node_id": "at0003"
-                            },
-                            {
-                                "_type": "ELEMENT",
-                                "name": {
-                                    "_type": "DV_TEXT",
-                                    "value": "Diagnoserolle"
-                                },
-                                "value": {
-                                    "_type": "DV_CODED_TEXT",
-                                    "value": "Nebendiagnose",
+                                    "value": "†",
                                     "defining_code": {
                                         "_type": "CODE_PHRASE",
                                         "terminology_id": {
                                             "_type": "TERMINOLOGY_ID",
                                             "value": "local"
                                         },
-                                        "code_string": "at0066"
+                                        "code_string": "at0002"
                                     }
                                 },
-                                "archetype_node_id": "at0063"
+                                "archetype_node_id": "at0001"
                             }
                         ],
-                        "archetype_node_id": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
+                        "archetype_node_id": "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
                     },
                     {
                         "_type": "ELEMENT",
@@ -641,7 +621,7 @@
                         },
                         "value": {
                             "_type": "DV_DATE_TIME",
-                            "value": "2125-02-03T09:35:06"
+                            "value": "2125-02-03T04:05:06"
                         },
                         "archetype_node_id": "at0003"
                     },
@@ -758,62 +738,6 @@
                         "archetype_node_id": "openEHR-EHR-CLUSTER.multiple_coding_icd10gm.v1"
                     },
                     {
-                        "_type": "CLUSTER",
-                        "name": {
-                            "_type": "DV_TEXT",
-                            "value": "Klinischer Status"
-                        },
-                        "archetype_details": {
-                            "archetype_id": {
-                                "value": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
-                            },
-                            "rm_version": "1.0.4"
-                        },
-                        "items": [
-                            {
-                                "_type": "ELEMENT",
-                                "name": {
-                                    "_type": "DV_TEXT",
-                                    "value": "Klinischer Status"
-                                },
-                                "value": {
-                                    "_type": "DV_CODED_TEXT",
-                                    "value": "ref_active",
-                                    "defining_code": {
-                                        "_type": "CODE_PHRASE",
-                                        "terminology_id": {
-                                            "_type": "TERMINOLOGY_ID",
-                                            "value": "http://terminology.hl7.org/CodeSystem/condition-clinical"
-                                        },
-                                        "code_string": "ref_active"
-                                    }
-                                },
-                                "archetype_node_id": "at0003"
-                            },
-                            {
-                                "_type": "ELEMENT",
-                                "name": {
-                                    "_type": "DV_TEXT",
-                                    "value": "Diagnoserolle"
-                                },
-                                "value": {
-                                    "_type": "DV_CODED_TEXT",
-                                    "value": "Hauptdiagnose",
-                                    "defining_code": {
-                                        "_type": "CODE_PHRASE",
-                                        "terminology_id": {
-                                            "_type": "TERMINOLOGY_ID",
-                                            "value": "local"
-                                        },
-                                        "code_string": "at0064"
-                                    }
-                                },
-                                "archetype_node_id": "at0063"
-                            }
-                        ],
-                        "archetype_node_id": "openEHR-EHR-CLUSTER.problem_qualifier.v2"
-                    },
-                    {
                         "_type": "ELEMENT",
                         "name": {
                             "_type": "DV_TEXT",
@@ -854,6 +778,6 @@
     "archetype_node_id": "openEHR-EHR-COMPOSITION.report.v1",
     "uid": {
         "_type": "OBJECT_VERSION_ID",
-        "value": "536aac24-fc19-4957-bc7c-2273c7f47392::local.ehrbase.org::1"
+        "value": "e6166f7a-98f5-4937-9375-62ab7f4c32b8::local.ehrbase.org::1"
     }
 }

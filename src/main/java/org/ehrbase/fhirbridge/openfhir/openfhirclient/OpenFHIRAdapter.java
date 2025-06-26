@@ -107,7 +107,7 @@ public class OpenFHIRAdapter {
             if (getEntity.getStatusCode().value() == HttpStatus.OK.value()) {
                 try {
                     String responseBody = getEntity.getBody();
-                    if (!responseBody.trim().isEmpty()) {
+                    if (responseBody != null && !responseBody.trim().isEmpty()) {
                         XmlOptions opts = new XmlOptions();
                         opts.setLoadStripWhitespace();
                         opts.setLoadReplaceDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
@@ -150,10 +150,18 @@ public class OpenFHIRAdapter {
             HttpEntity <String> entity = new HttpEntity<>(operationaltemplate.get().xmlText(opts), headers);
             //create
             response = restTemplate.postForObject(openFhirUrl + "/opt", entity, String.class);
-            logger.info("Uploaded template to openFHIR: {}", templateId);
+            if (response.contains("already exists")) {
+                logger.info("Template already exists in openFHIR after post: {}", templateId);
+            } else {
+                logger.info("Uploaded template to openFHIR: {}", templateId);
+            }
             return response;
         } catch (Exception e) {
-            logger.info("Template upload to openFHIR: {}", templateId);
+            if (e.getMessage().contains("already exists")) {
+                logger.info("Template already exists in openFHIR: {}", templateId);
+            } else {
+                logger.info("Uploaded template to openFHIR Failed: {}", e);
+            }
             return "Template upload to openFHIR error";
         }
     }
