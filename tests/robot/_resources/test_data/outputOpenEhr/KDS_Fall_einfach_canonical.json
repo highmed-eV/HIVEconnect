@@ -18,7 +18,7 @@
         "originating_system_item_ids": [
             {
                 "_type": "DV_IDENTIFIER",
-                "id": "Encounter/71/_history/1",
+                "id": "Encounter/77/_history/1",
                 "type": "fhir_logical_id"
             }
         ],
@@ -62,11 +62,11 @@
         "_type": "EVENT_CONTEXT",
         "start_time": {
             "_type": "DV_DATE_TIME",
-            "value": "2022-02-03T09:35:06"
+            "value": "2022-02-03T04:05:06"
         },
         "end_time": {
             "_type": "DV_DATE_TIME",
-            "value": "2022-04-03T09:35:06"
+            "value": "2022-04-03T04:05:06"
         },
         "setting": {
             "_type": "DV_CODED_TEXT",
@@ -225,7 +225,7 @@
                         },
                         "value": {
                             "_type": "DV_DATE_TIME",
-                            "value": "2022-02-03T09:35:06"
+                            "value": "2022-02-03T04:05:06"
                         },
                         "archetype_node_id": "at0004"
                     },
@@ -237,7 +237,7 @@
                         },
                         "value": {
                             "_type": "DV_CODED_TEXT",
-                            "value": "Krankenhausbehandlung, vollstationÃ¤r",
+                            "value": "Krankenhausbehandlung, vollstationär",
                             "defining_code": {
                                 "_type": "CODE_PHRASE",
                                 "terminology_id": {
@@ -357,7 +357,7 @@
                         },
                         "value": {
                             "_type": "DV_DATE_TIME",
-                            "value": "2022-04-03T09:35:06"
+                            "value": "2022-04-03T04:05:06"
                         },
                         "archetype_node_id": "at0002"
                     },
@@ -369,7 +369,7 @@
                         },
                         "value": {
                             "_type": "DV_CODED_TEXT",
-                            "value": "RegulÃ¤re Entlassung",
+                            "value": "Reguläre Entlassung",
                             "defining_code": {
                                 "_type": "CODE_PHRASE",
                                 "terminology_id": {
@@ -472,7 +472,7 @@
                         },
                         "value": {
                             "_type": "DV_CODED_TEXT",
-                            "value": "Einweisungs-/Ãœberweisungsdiagnos",
+                            "value": "Einweisungs-/Überweisungsdiagnos",
                             "defining_code": {
                                 "_type": "CODE_PHRASE",
                                 "terminology_id": {
@@ -493,6 +493,6 @@
     "archetype_node_id": "openEHR-EHR-COMPOSITION.fall.v1",
     "uid": {
         "_type": "OBJECT_VERSION_ID",
-        "value": "c79dab16-157f-48c7-b1d9-cbb095c96152::local.ehrbase.org::1"
+        "value": "1dae5911-ce56-475b-8ec6-e8a885674382::local.ehrbase.org::1"
     }
 }
