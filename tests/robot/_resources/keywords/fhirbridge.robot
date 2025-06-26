@@ -32,8 +32,9 @@ create fhir bundle
 POST /Bundle with ehr reference
     [Arguments]         ${fhir_bundle_name}    ${fhir_bundle_file_name}
     # Set payload for the FHIR bundle
-    ${payload_from_file}         Load JSON From File    ${DATA_SET_PATH_KDSFHIRBUNDLE}/${fhir_bundle_file_name}
+    ${payload_from_file}         Load JSON From File    ${DATA_SET_PATH_KDSFHIRBUNDLE}/${fhir_bundle_file_name}    encoding=UTF-8
     ${payload}=    Update Input Json    ${payload_from_file}   ${INPUT_PATIENT_ID}
+    Log To Console     \n\nFhir bundle ${payload}
     Log To Console     \n\nFhir bundle API call for ${fhir_bundle_name}
 
 #    ${patient_id_list}=  Get Value From Json    ${payload}    $..entry[0].resource.subject.reference
