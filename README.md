@@ -1,12 +1,14 @@
-## Development Status Alpha
+## Development Status Beta
 
-⚠️ ALPHA - Under Active Development and Quality Assurance ⚠️
+⚠️ This project is currently in beta.
+It is under active development and may change frequently. Features may be incomplete or unstable.
+Feedback and contributions are welcome as we work toward a stable release. ⚠️
 
 This project is currently in its alpha stage. It is actively being developed, and we are in the process of conducting thorough quality assurance testing. Therefore, expect potential instability and incomplete features.
 
-# FHIR Bridge 2
+# HIVEconnect
 
-The purpose of FHIR Bridge  application is to act as a broker between an HL7 FHIR client and an openEHR server.
+The purpose of HIVEconnect  application is to act as a broker between an HL7 FHIR client and an openEHR server.
 
 The implementation is based on [Apache Camel](https://camel.apache.org/) and [Open eHealth Integration Platform](https://github.com/oehf/ipf).
 
