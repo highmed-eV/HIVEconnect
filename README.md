@@ -19,7 +19,7 @@ The implementation is based on [Apache Camel](https://camel.apache.org/) and [Op
 * JDK (>= 17)
 * Apache Maven (>= 3.6.0)
 * HAPI FHIR Server (>= v7.4.2) (or similiar FHIR platform)
-* OpenFHIR (>= v0.0.1) 
+* OpenFHIR (>= v0.0.1) (https://github.com/medblocks/openFHIR/tree/main)
 * EHRbase (>= v2.0.0) (or similiar openEHR platform)
 
 
