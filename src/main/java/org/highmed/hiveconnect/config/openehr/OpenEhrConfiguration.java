@@ -28,7 +28,7 @@ import org.highmed.hiveconnect.security.oauth2.AccessTokenService;
 import org.highmed.hiveconnect.security.oauth2.TokenAuthenticationInterceptor;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
-import org.highmed.openehr.sdk.client.openehrclient.defaultrestclient.HIVEconnectDefaultRestClient;
+import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.HIVEconnectDefaultRestClient;
 import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;

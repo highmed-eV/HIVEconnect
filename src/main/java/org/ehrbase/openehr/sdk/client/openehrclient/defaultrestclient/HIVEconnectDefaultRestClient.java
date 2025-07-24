@@ -1,4 +1,4 @@
-package org.highmed.openehr.sdk.client.openehrclient.defaultrestclient;
+package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 
 import org.apache.http.client.HttpClient;

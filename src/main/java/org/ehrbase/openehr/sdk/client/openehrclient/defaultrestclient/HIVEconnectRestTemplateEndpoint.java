@@ -1,4 +1,4 @@
-package org.highmed.openehr.sdk.client.openehrclient.defaultrestclient;
+package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
@@ -11,8 +11,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.xmlbeans.XmlOptions;
 
-import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.DefaultRestClient;
-import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.DefaultRestTemplateEndpoint;
 import org.ehrbase.openehr.sdk.util.exception.ClientException;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.slf4j.Logger;

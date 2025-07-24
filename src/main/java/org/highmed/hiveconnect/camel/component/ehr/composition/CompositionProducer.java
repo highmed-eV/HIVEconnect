@@ -5,7 +5,7 @@ import org.apache.camel.support.DefaultProducer;
 import org.apache.commons.io.FileUtils;
 import com.nedap.archie.rm.composition.Composition;
 
-import org.highmed.openehr.sdk.client.openehrclient.defaultrestclient.HIVEconnectRestCompositionEndpoint;
+import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.HIVEconnectRestCompositionEndpoint;
 import org.highmed.hiveconnect.camel.CamelConstants;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.slf4j.Logger;
