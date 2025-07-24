@@ -34,7 +34,7 @@ Force Tags              bundle_create    create
     [Tags]             	    fhir-bundle    valid   not-ready    not-implemented
     ehr.create new ehr    000_ehr_status.json
     # load all the testcases from the test_case_list.json file
-    [Setup]    fhirbridge.load test cases from json
+    [Setup]    hiveconnect.load test cases from json
     # loop to run the robot test case for each test cases
      FOR   ${testcase}    IN    @{TEST_CASES}
            # set values for each key variable in the each test case
@@ -43,6 +43,6 @@ Force Tags              bundle_create    create
            ${expectedOpenEhrFileName}=    Get From Dictionary    ${testcase}    expectedOpenEhrFileName
            ${openEhrTemplateId}=    Get From Dictionary    ${testcase}    openEhrTemplateId
            # create and validate for each of the test cases
-           fhirbridge.create and validate fhir bundle    ${testCaseName}    ${inputBundleFileName}    ${expectedOpenEhrFileName}    ${openEhrTemplateId}
+           hiveconnect.create and validate fhir bundle    ${testCaseName}    ${inputBundleFileName}    ${expectedOpenEhrFileName}    ${openEhrTemplateId}
      END
      [Teardown]    Log    All FHIR Bundles and OpenEHR AQLs validated.

@@ -30,7 +30,7 @@ Library     ${EXECDIR}/robot/_resources/functions/json_normalizer.py
 Library     ${EXECDIR}/robot/_resources/functions/load_json_utf8.py
 
 Resource    ${EXECDIR}/robot/_resources/keywords/ehr.robot
-Resource    ${EXECDIR}/robot/_resources/keywords/fhirbridge.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/hiveconnect.robot
 
 Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
             ...    ${SUT}
@@ -40,7 +40,7 @@ Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
 *** Variables ***
 
 ${BASE_URL}                             http://localhost:8888/fhir-bridge/fhir/Bundle
-${USERNAME}                             fhirbridge-user
+${USERNAME}                             hiveconnect-user
 ${PASSWORD}                             myPassword1234
 ${AUTH}                                 Basic ZmhpcmJyaWRnZS11c2VyOm15UGFzc3dvcmQxMjM0
 ${INPUT_PATIENT_ID}                     1

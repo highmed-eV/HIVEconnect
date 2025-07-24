@@ -46,7 +46,7 @@ Note: Ensure that the OPENFHIR application is up and running before starting HIV
 ### Run the application
 
 ```bash
-$ java -jar fhir-bridge-1.0.0-SNAPSHOT.jar
+$ java -jar HIVEconnect-1.0.0-SNAPSHOT.jar
 ```
 
 ## Docker and Docker Compose
@@ -54,14 +54,14 @@ $ java -jar fhir-bridge-1.0.0-SNAPSHOT.jar
 ### Build the Docker image
 
 ```
-$ docker build -f docker/Dockerfile -t fhir-bridge:latest . 
+$ docker build -f docker/Dockerfile -t HIVEconnect:latest . 
 ```
 
 ### Start a Docker container
 Note: Ensure all containers are created using same network
 ```bash
 $ docker run --network=docker_ehrbase-network -p 8888:8888 -e \
-                  "FHIR_BRIDGE_OPENEHR_URL=http://{ehrbase-container-name or host}:8080/ehrbase/" \
+                  "HIVE_CONNECT_OPENEHR_URL=http://{ehrbase-container-name or host}:8080/ehrbase/" \
                   -e "SPRING_DATASOURCE_URL=jdbc:postgresql://{database-container-name or host}:5432/fbridge" \
                   -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" \
                   -e "SERVERURL=http://{hapi-fhir-server-container-name or host}:8080/fhir" \

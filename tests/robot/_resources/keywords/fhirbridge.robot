@@ -20,10 +20,10 @@ create and validate fhir bundle
     #Set Suite Variable    ${new_ehr_id}    4129d326-bb05-4c04-9ab5-82f734a9a2b7
     #Set Suite Variable    ${subject_id}    resp_subject_id
 
-    fhirbridge.create fhir bundle    ${testCaseName}    ${inputBundleFileName}
-    fhirbridge.validate response - 201
-    fhirbridge.create openehr aql    ${openEhrTemplateId}    ${expectedOpenEhrFileName}
-    fhirbridge.validate content response_aql_composition - 201    ${expectedOpenEhrFileName}
+    hiveconnect.create fhir bundle    ${testCaseName}    ${inputBundleFileName}
+    hiveconnect.validate response - 201
+    hiveconnect.create openehr aql    ${openEhrTemplateId}    ${expectedOpenEhrFileName}
+    hiveconnect.validate content response_aql_composition - 201    ${expectedOpenEhrFileName}
 
 create fhir bundle
     [Arguments]         ${fhir_bundle_name}    ${fhir_bundle_file_name}

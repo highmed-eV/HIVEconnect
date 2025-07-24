@@ -28,7 +28,7 @@ fhir-bridge:
   security:
     type: BASIC
     user:
-      name: fhirbridge-user
+      name: hiveconnect-user
       password: myPassword1234
 
 
@@ -88,7 +88,7 @@ logging:
     liquibase: INFO
     org.apache.camel: WARN
     # org.ehrbase.client: WARN
-    org.ehrbase.fhirbridge: DEBUG
+    org.ehrbase.hiveconnect: DEBUG
     org.hibernate: WARN
     org.openehealth.ipf: ERROR
     org.quartz: WARN

@@ -22,7 +22,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -64,7 +64,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -106,7 +106,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -148,7 +148,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -190,7 +190,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -232,7 +232,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -274,7 +274,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -316,7 +316,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -358,7 +358,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -460,7 +460,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
@@ -517,7 +517,7 @@
 								},
 								{
 									"key": "username",
-									"value": "fhirbridge-user",
+									"value": "hiveconnect-user",
 									"type": "string"
 								}
 							]
