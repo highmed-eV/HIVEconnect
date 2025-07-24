@@ -26,7 +26,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Renaud Subiger
  * @since 1.2
  */
-@ConfigurationProperties(prefix = "fhir-bridge.security")
+@ConfigurationProperties(prefix = "hive-connect.security")
 @Setter
 @Getter
 public class SecurityProperties {

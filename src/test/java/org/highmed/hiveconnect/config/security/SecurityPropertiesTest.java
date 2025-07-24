@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = SecurityProperties.class)
 @EnableConfigurationProperties(SecurityProperties.class)
 @TestPropertySource(properties = {
-    "fhir-bridge.security.type=BASIC",
-    "fhir-bridge.security.user.name=test-user",
-    "fhir-bridge.security.user.password=test-password",
-    "fhir-bridge.security.oauth2.jwk-set-uri=http://test-jwk-uri",
-    "fhir-bridge.security.oauth2.jws-algorithm=RS256"
+    "hive-connect.security.type=BASIC",
+    "hive-connect.security.user.name=test-user",
+    "hive-connect.security.user.password=test-password",
+    "hive-connect.security.oauth2.jwk-set-uri=http://test-jwk-uri",
+    "hive-connect.security.oauth2.jws-algorithm=RS256"
 })
 class SecurityPropertiesTest {
 

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "fhir-bridge.fhir")
+@ConfigurationProperties(prefix = "hive-connect.fhir")
 @Getter
 @Setter
 public class FhirProperties {

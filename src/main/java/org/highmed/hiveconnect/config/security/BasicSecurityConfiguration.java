@@ -42,7 +42,7 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
-@ConditionalOnProperty(value = "fhir-bridge.security.type", havingValue = "basic")
+@ConditionalOnProperty(value = "hive-connect.security.type", havingValue = "basic")
 public class BasicSecurityConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(BasicSecurityConfiguration.class);

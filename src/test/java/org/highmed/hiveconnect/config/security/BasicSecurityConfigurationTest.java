@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = {BasicSecurityConfiguration.class})
 @EnableConfigurationProperties(SecurityProperties.class)
 @TestPropertySource(properties = {
-    "fhir-bridge.security.type=basic",
-    "fhir-bridge.security.user.name=test-user",
-    "fhir-bridge.security.user.password=test-password"
+    "hive-connect.security.type=basic",
+    "hive-connect.security.user.name=test-user",
+    "hive-connect.security.user.password=test-password"
 })
 class BasicSecurityConfigurationTest {
 

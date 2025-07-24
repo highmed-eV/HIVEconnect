@@ -14,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = CorsProperties.class)
 @EnableConfigurationProperties(CorsProperties.class)
 @TestPropertySource(properties = {
-    "fhir-bridge.cors.allowed-origins=http://localhost:8080,http://localhost:3000",
-    "fhir-bridge.cors.allowed-methods=GET,POST,PUT,DELETE",
-    "fhir-bridge.cors.allowed-headers=Authorization,Content-Type",
-    "fhir-bridge.cors.allow-credentials=true"
+    "hive-connect.cors.allowed-origins=http://localhost:8080,http://localhost:3000",
+    "hive-connect.cors.allowed-methods=GET,POST,PUT,DELETE",
+    "hive-connect.cors.allowed-headers=Authorization,Content-Type",
+    "hive-connect.cors.allow-credentials=true"
 })
 class CorsPropertiesTest {
 

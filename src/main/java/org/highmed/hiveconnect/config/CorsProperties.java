@@ -29,7 +29,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-@ConfigurationProperties(prefix = "fhir-bridge.cors")
+@ConfigurationProperties(prefix = "hive-connect.cors")
 public class CorsProperties {
 
     private boolean allowCredentials = false;

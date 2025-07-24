@@ -26,7 +26,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Renaud Subiger
  * @since 1.6
  */
-@ConfigurationProperties(prefix = "fhir-bridge.openehr")
+@ConfigurationProperties(prefix = "hive-connect.openehr")
 @Setter
 @Getter
 public class OpenEhrProperties {

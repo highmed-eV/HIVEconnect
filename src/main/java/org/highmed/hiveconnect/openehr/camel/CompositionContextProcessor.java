@@ -46,7 +46,7 @@ public class CompositionContextProcessor implements FhirRequestProcessor {
 
     public static final String BEAN_ID = "compositionContextProcessor";
 
-    public static final String DEFAULT_SYSTEM_ID = "FHIR-Bridge";
+    public static final String DEFAULT_SYSTEM_ID = "HIVEconnect";
 
     @Override
     public void process(Exchange exchange) throws Exception {

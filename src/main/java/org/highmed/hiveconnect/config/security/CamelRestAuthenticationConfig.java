@@ -14,13 +14,13 @@ public class CamelRestAuthenticationConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "fhir-bridge.security.type", havingValue = "none")
+    @ConditionalOnProperty(name = "hive-connect.security.type", havingValue = "none")
     public Authenticator noAuthAuthenticator() {
         return (username, password) -> true; // No authentication
     }
 
     @Bean
-    @ConditionalOnProperty(name = "fhir-bridge.security.type", havingValue = "basic")
+    @ConditionalOnProperty(name = "hive-connect.security.type", havingValue = "basic")
     public Authenticator basicAuthAuthenticator() {
         return (username, password) -> 
             properties.getUser().getName().equals(username) && 
@@ -28,7 +28,7 @@ public class CamelRestAuthenticationConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "fhir-bridge.security.type", havingValue = "oauth2")
+    @ConditionalOnProperty(name = "hive-connect.security.type", havingValue = "oauth2")
     public Authenticator oauth2Authenticator() {
         return (token, ignored) -> {
             // Validate the OAuth2 token

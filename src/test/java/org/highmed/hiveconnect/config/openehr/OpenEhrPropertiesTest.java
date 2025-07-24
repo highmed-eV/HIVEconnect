@@ -9,14 +9,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = OpenEhrPropertiesTest.TestConfig.class)
 @TestPropertySource(properties = {
-    "fhir-bridge.openehr.url=https://test-openehr-server.com",
-    "fhir-bridge.openehr.update-templates-on-startup=true",
-    "fhir-bridge.openehr.security.type=BASIC",
-    "fhir-bridge.openehr.security.user.name=admin",
-    "fhir-bridge.openehr.security.user.password=secret",
-    "fhir-bridge.openehr.security.oauth2.token-url=https://auth-server.com/token",
-    "fhir-bridge.openehr.security.oauth2.client-id=client",
-    "fhir-bridge.openehr.security.oauth2.client-secret=secret"
+    "hive-connect.openehr.url=https://test-openehr-server.com",
+    "hive-connect.openehr.update-templates-on-startup=true",
+    "hive-connect.openehr.security.type=BASIC",
+    "hive-connect.openehr.security.user.name=admin",
+    "hive-connect.openehr.security.user.password=secret",
+    "hive-connect.openehr.security.oauth2.token-url=https://auth-server.com/token",
+    "hive-connect.openehr.security.oauth2.client-id=client",
+    "hive-connect.openehr.security.oauth2.client-secret=secret"
 })
 class OpenEhrPropertiesTest {
 

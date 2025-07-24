@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
-@ConfigurationProperties(prefix = "fhir-bridge.debug")
+@ConfigurationProperties(prefix = "hive-connect.debug")
 @Setter
 @Getter
 public class DebugProperties {

@@ -26,7 +26,7 @@ def get_variables(sut="LOCAL", auth_type="BASIC"):
         # the same is also used for continuous integration on CircleCI
         LOCAL_CONFIG = {
             "SUT": "LOCAL",
-            "BASE_URL": "http://localhost:8888/fhir-bridge/fhir",
+            "BASE_URL": "http://localhost:8888/hive-connect/fhir",
             "EHRBASE_URL": "http://localhost:8080/ehrbase/rest/openehr/v1",
             "HEARTBEAT_URL": "http://localhost:8080/ehrbase/",
             "CREDENTIALS": ["myuser", "myPassword432"],

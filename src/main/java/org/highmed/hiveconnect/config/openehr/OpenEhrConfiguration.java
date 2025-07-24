@@ -102,7 +102,7 @@ public class OpenEhrConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "fhir-bridge.openehr.security.type", havingValue = "oauth2")
+    @ConditionalOnProperty(name = "hive-connect.openehr.security.type", havingValue = "oauth2")
     public AccessTokenService accessTokenService(OpenEhrProperties properties) {
         var oauth2 = properties.getSecurity().getOauth2();
         return new AccessTokenService(oauth2.getTokenUrl(), oauth2.getClientId(), oauth2.getClientSecret());

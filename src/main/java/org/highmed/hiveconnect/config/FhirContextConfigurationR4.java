@@ -25,7 +25,6 @@ public class FhirContextConfigurationR4 {
     public FhirPathR4 getFhirPath() {
         final FhirPathR4 fhirPathR4 = new FhirPathR4(FhirContext.forR4());
         fhirPathR4.setEvaluationContext(new IFhirPathEvaluationContext() {
-            // todo!!
             @Override
             public IBase resolveReference(@Nonnull IIdType theReference, @Nullable IBase theContext) {
                 if(theContext == null) {

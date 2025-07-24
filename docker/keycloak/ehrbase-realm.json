@@ -331,7 +331,7 @@
           "attributes": {}
         }
       ],
-      "fhir-bridge": [],
+      "hive-connect": [],
       "account": [
         {
           "id": "39bc947e-7af2-40a2-b109-5ecb0e4d5d4d",
@@ -475,11 +475,11 @@
     {
       "id": "6eb360ef-c488-4f32-923e-c4be05854e04",
       "createdTimestamp": 1624899620674,
-      "username": "service-account-fhir-bridge",
+      "username": "service-account-hive-connect",
       "enabled": true,
       "totp": false,
       "emailVerified": false,
-      "serviceAccountClientId": "fhir-bridge",
+      "serviceAccountClientId": "hive-connect",
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
@@ -678,14 +678,14 @@
     },
     {
       "id": "acb46387-8276-4ae2-98eb-90f5a938fb33",
-      "clientId": "fhir-bridge",
+      "clientId": "hive-connect",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "e694dbaa-9c19-4712-b607-70ef6379ff39",
       "redirectUris": [
-        "http://localhost:8888/fhir-bridge/*"
+        "http://localhost:8888/hive-connect/*"
       ],
       "webOrigins": [],
       "notBefore": 0,

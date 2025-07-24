@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = FhirProperties.class)
 @EnableConfigurationProperties(FhirProperties.class)
 @TestPropertySource(properties = {
-    "fhir-bridge.fhir.convert.auto-populate-display=true",
-    "fhir-bridge.fhir.terminology-server.url=http://test-terminology-server"
+    "hive-connect.fhir.convert.auto-populate-display=true",
+    "hive-connect.fhir.terminology-server.url=http://test-terminology-server"
 })
 class FhirPropertiesTest {
 

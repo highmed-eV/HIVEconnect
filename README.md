@@ -66,7 +66,7 @@ $ docker run --network=docker_ehrbase-network -p 8888:8888 -e \
                   -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" \
                   -e "SERVERURL=http://{hapi-fhir-server-container-name or host}:8080/fhir" \
                   -e "OPENFHIR_SERVER_URL=http://{openfhir-container-name or host}:8090" \
-                  --name=fhir-bridge fhir-bridge:latest
+                  --name=hive-connect hive-connect:latest
 ```
 
 ## License

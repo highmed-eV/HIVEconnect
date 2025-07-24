@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = {CamelRestAuthenticationConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)
-@TestPropertySource(properties = "fhir-bridge.security.type=none")
+@TestPropertySource(properties = "hive-connect.security.type=none")
 class NoAuthCamelRestAuthenticationConfigTest {
 
     @Autowired
@@ -31,9 +31,9 @@ class NoAuthCamelRestAuthenticationConfigTest {
 @SpringBootTest(classes = {CamelRestAuthenticationConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)
 @TestPropertySource(properties = {
-    "fhir-bridge.security.type=basic",
-    "fhir-bridge.security.user.name=test-user",
-    "fhir-bridge.security.user.password=test-password"
+    "hive-connect.security.type=basic",
+    "hive-connect.security.user.name=test-user",
+    "hive-connect.security.user.password=test-password"
 })
 class BasicAuthCamelRestAuthenticationConfigTest {
 
@@ -57,7 +57,7 @@ class BasicAuthCamelRestAuthenticationConfigTest {
 
 @SpringBootTest(classes = {CamelRestAuthenticationConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)
-@TestPropertySource(properties = "fhir-bridge.security.type=oauth2")
+@TestPropertySource(properties = "hive-connect.security.type=oauth2")
 class OAuth2CamelRestAuthenticationConfigTest {
 
     @Autowired

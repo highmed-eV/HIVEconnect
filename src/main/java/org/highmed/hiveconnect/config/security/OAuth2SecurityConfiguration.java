@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity 
-@ConditionalOnProperty(value = "fhir-bridge.security.type", havingValue = "oauth2")
+@ConditionalOnProperty(value = "hive-connect.security.type", havingValue = "oauth2")
 public class OAuth2SecurityConfiguration {
 
     private final SecurityProperties properties;
