@@ -83,7 +83,11 @@ class BootstrapRunnerTest {
         Path optFile1 = tempDir.resolve("test1.opt");
         Path optFile2 = tempDir.resolve("test2.opt");
 
-        String minimalOptContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<archetype>\n<!-- minimal content -->\n</archetype>";
+        String minimalOptContent = "\n"
+            + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "<template xmlns=\"http://schemas.openehr.org/v1\">\n"
+            + "  ...\n"
+            + "</template>\n";
 
         Files.writeString(optFile1, minimalOptContent);
         Files.writeString(optFile2, minimalOptContent);
