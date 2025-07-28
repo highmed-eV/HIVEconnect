@@ -50,10 +50,9 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
 
-  docker:
+  registry:
     needs: test_and_scan
     if: github.event.pull_request.merged == true
-
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -70,10 +69,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+          
       - name: Build and push docker image
         run: |
-          IMAGE_NAME=ghcr.io/highmed-eV/hive-connect:develop
+          IMAGE_NAME=ghcr.io/highmed-ev/hive-connect:develop
           mvn spring-boot:build-image -Dspring-boot.build-image.imageName=$IMAGE_NAME -DskipTests
           docker push $IMAGE_NAME
-      
