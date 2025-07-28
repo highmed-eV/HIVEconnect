@@ -6,10 +6,11 @@ import org.highmed.hiveconnect.core.repository.BootstrapRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -36,13 +37,15 @@ class BootstrapRunnerTest {
     @Mock
     private ApplicationArguments applicationArguments;
 
-
-    @InjectMocks
     private BootstrapRunner bootstrapRunner;
 
     @BeforeEach
     void setUp() {
         bootstrapRunner = new BootstrapRunner(cacheManager, bootstrapRepository, operationalTemplateUploader,"test-bootstrap", false);
+
+        Cache mockCache = mock(Cache.class);
+        when(cacheManager.getCache("templateCache")).thenReturn(mockCache);
+
     }
 
     @Test
@@ -61,21 +64,16 @@ class BootstrapRunnerTest {
         verify(operationalTemplateUploader, never()).uploadTemplates();
     }
 
+
     @Test
-    void testRunWithEmptyDirectory() throws Exception {
-        // Arrange
-        Path tempDir = Files.createTempDirectory("test-bootstrap");
+    void testRunWithEmptyDirectory(@TempDir Path tempDir) throws Exception {
         ReflectionTestUtils.setField(bootstrapRunner, "bootstrapDir", tempDir.toString());
-        
-        // Act
+
         bootstrapRunner.run(applicationArguments);
 
-        // Assert
         verify(operationalTemplateUploader).uploadTemplates();
-
-        // Cleanup
-        Files.delete(tempDir);
     }
+
 
     @Test
     void testRunWithExistingOptFiles() throws Exception {
@@ -120,8 +118,9 @@ class BootstrapRunnerTest {
         Files.createFile(optFile);
 
         BootstrapEntity entity = new BootstrapEntity("test.opt");
-        when(bootstrapRepository.findByFile("subdir/test.opt")).thenReturn(Optional.of(entity));
-        
+        String relativePath = tempDir.relativize(optFile).toString().replace(File.separator, "/");
+        when(bootstrapRepository.findByFile(relativePath)).thenReturn(Optional.of(entity));
+
         // Act
         bootstrapRunner.run(applicationArguments);
 
