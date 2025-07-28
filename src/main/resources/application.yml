@@ -1,13 +1,145 @@
+# @formatter:off
+################################################################################
+#   HIVE Connect Properties                                                     #
+################################################################################
+hive-conncet:
+  bootstrap:
+    enabled: true
+    dir: ./src/main/resources/opt
+  debug:
+    enabled: true
+    mapping-output-directory: ${java.io.tmpdir}/mappings
+  cors:
+    allowed-headers: '*'
+    allowed-methods: '*'
+    allowed-origins: '*'
+  mode: openehr
+  fhir:
+    validation:
+      terminology:
+        mode: none
+  openehr:
+    url: http://localhost:8080/ehrbase/
+    security:
+      type: basic
+      user:
+        name: myuser
+        password: myPassword432
+  security:
+    type: BASIC
+    user:
+      name: fhirbridge-user
+      password: myPassword1234
+
+
+################################################################################
+#   Spring Boot Properties                                                     #
+################################################################################
 spring:
   application:
-    name: hive-connect-server
+    name: HIVE Connect
+  batch:
+    job:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true      # Upgrade HAPI FHIR
+    allow-circular-references: true             # Upgrade HAPI FHIR
+  cache:
+    cache-names: templateCache
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fhir-bridge
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    database-change-log-table: DATABASE_CHANGELOG
+    database-change-log-lock-table: DATABASE_CHANGELOG_LOCK
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  messages:
+    basename: messages/messages
+    use-code-as-default-message: true
 
-  security:
-    oauth2:
-      client:
-        registration:
-          hive-connect-client:
-            client-id: hive-connect-client
-            client-secret: 8c53cfa7-5c6f-4e34-9e29-4c3c95d8c965
-            authorization-grant-type: client_credentials
-            scope: fhir/*.read,fhir/*.write
+
+  flyway:
+    enabled: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration, org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
+
+server:
+  port: 8888
+  servlet:
+    context-path: /fhir-bridge
+
+logging:
+  file:
+    name: ./logs/fhir-bridge.log
+  logback:
+    rollingpolicy:
+      max-history: 30
+      max-file-size: 100MB
+  level:
+    ca.uhn.fhir: WARN
+    com.zaxxer.hikari: WARN
+    liquibase: INFO
+    org.apache.camel: WARN
+    # org.ehrbase.client: WARN
+    org.ehrbase.fhirbridge: DEBUG
+    org.hibernate: WARN
+    org.openehealth.ipf: ERROR
+    org.quartz: WARN
+    org.springframework: WARN
+    org.springframework.boot: WARN
+
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: '*'
+        allowed-methods: '*'
+        allowed-headers: '*'
+      exposure:
+        include: env, health, info, liquibase, logfile, loggers, prometheus
+  metrics:
+    export:
+      elastic:
+        auto-create-index:
+
+#fhir server
+hapi:
+  fhir:
+    server:
+      path: /fhir
+    resource-providers: ConditionResourceProvider
+    rest:
+      server-name: fhir-bridge
+      server-version: 1.0.0
+      implementation-description: fhir-bridge
+      default-response-encoding: json
+      e-tag-support: enabled
+      default-pretty-print: true
+
+#openFhir
+openfhir:
+  server:
+    url: http://localhost:8090
+
+
+#camel fhir
+serverUrl: http://localhost:8088/fhir
+fhirVersion: R4
+connectionTimeout: 20000
+socketTimeout: 20000
+camel:
+  servlet:
+    mapping:
+      contextPath: /*
+
+
+demographics:
+  patient:
+    url: https://demographics-service.ctr.dev.num-codex.de/fhir/Patient/
