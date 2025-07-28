@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.cache.CacheManager;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
@@ -81,16 +82,11 @@ class BootstrapRunnerTest {
 
         // Create test .opt files with minimal valid XML content
         Path optFile1 = tempDir.resolve("test1.opt");
-        Path optFile2 = tempDir.resolve("test2.opt");
 
-        String minimalOptContent = "\n"
-            + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            + "<template xmlns=\"http://schemas.openehr.org/v1\">\n"
-            + "  ...\n"
-            + "</template>\n";
 
-        Files.writeString(optFile1, minimalOptContent);
-        Files.writeString(optFile2, minimalOptContent);
+        Path resourcePath = new ClassPathResource("opt/test1.opt").getFile().toPath();
+        Files.copy(resourcePath, optFile1);
+
 
         BootstrapEntity entity1 = new BootstrapEntity("test1.opt");
         BootstrapEntity entity2 = new BootstrapEntity("test2.opt");
@@ -106,7 +102,6 @@ class BootstrapRunnerTest {
 
         // Cleanup
         Files.delete(optFile1);
-        Files.delete(optFile2);
         Files.delete(tempDir);
     }
 
