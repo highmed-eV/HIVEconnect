@@ -1,6 +1,6 @@
 # @formatter:off
 
-fhir-bridge:
+hive-connect:
   mode: xds
   xds:
     hostname: localhost

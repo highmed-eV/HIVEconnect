@@ -4,7 +4,7 @@
     "type": "transaction",
     "entry": [
         {
-            "fullUrl": "http://localhost:8888/fhir-bridge/fhir/Consent/example-consent-id",
+            "fullUrl": "http://localhost:8888/hive-connect/fhir/Consent/example-consent-id",
             "resource": {
                 "resourceType": "Consent",
                 "id": "example-consent-id",
@@ -57,7 +57,7 @@
 
                 "policy": [
                     {
-                        "uri": "http://localhost:8888/fhir-bridge/fhir/consent-policy"
+                        "uri": "http://localhost:8888/hive-connect/fhir/consent-policy"
                     }
                 ],
                 "policyRule": {

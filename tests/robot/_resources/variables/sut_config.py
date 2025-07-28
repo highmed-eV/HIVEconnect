@@ -13,7 +13,7 @@ def get_variables(sut="LOCAL", auth_type="BASIC"):
 
     # get urls and credentials of remote environments from ENVs
     if sut != "LOCAL":
-        FHIRBRIDGE_URL = os.getenv('FHIRBRIDGE_URL')
+        HIVECONNECT_URL = os.getenv('HIVECONNECT_URL')
         EHRBASE_URL = os.getenv('EHRBASE_URL')
         EHRBASE_USER = os.getenv('EHRBASE_USER')
         EHRBASE_PASS = os.getenv('EHRBASE_PASS')
@@ -26,7 +26,7 @@ def get_variables(sut="LOCAL", auth_type="BASIC"):
         # the same is also used for continuous integration on CircleCI
         LOCAL_CONFIG = {
             "SUT": "LOCAL",
-            "BASE_URL": "http://localhost:8888/fhir-bridge/fhir",
+            "BASE_URL": "http://localhost:8888/hive-connect/fhir",
             "EHRBASE_URL": "http://localhost:8080/ehrbase/rest/openehr/v1",
             "HEARTBEAT_URL": "http://localhost:8080/ehrbase/",
             "CREDENTIALS": ["myuser", "myPassword432"],
@@ -43,9 +43,9 @@ def get_variables(sut="LOCAL", auth_type="BASIC"):
     if sut == "DEV":
         DEV_CONFIG = {
             "SUT": "DEV",
-            "BASE_URL": FHIRBRIDGE_URL + '/fhir',
+            "BASE_URL": HIVECONNECT_URL + '/fhir',
             "EHRBASE_URL": EHRBASE_URL + '/ehrbase/rest/openehr/v1',
-            "HEARTBEAT_FHIRBRIDGE": FHIRBRIDGE_URL,
+            "HEARTBEAT_HIVECONNECT": HIVECONNECT_URL,
             "HEARTBEAT_EHRBASE": EHRBASE_URL,
             "CREDENTIALS": [EHRBASE_USER, EHRBASE_PASS],
             "SECURITY_AUTHTYPE": "BASIC",
@@ -61,9 +61,9 @@ def get_variables(sut="LOCAL", auth_type="BASIC"):
     if sut == "STAGING":
         STAGING_CONFIG = {
             "SUT": "STAGING",
-            "BASE_URL": FHIRBRIDGE_URL + '/fhir',
+            "BASE_URL": HIVECONNECT_URL + '/fhir',
             "EHRBASE_URL": EHRBASE_URL + '/ehrbase/rest/openehr/v1',
-            "HEARTBEAT_FHIRBRIDGE": FHIRBRIDGE_URL,
+            "HEARTBEAT_HIVECONNECT": HIVECONNECT_URL,
             "HEARTBEAT_EHRBASE": EHRBASE_URL,
             "CREDENTIALS": [EHRBASE_USER, EHRBASE_PASS],
             "SECURITY_AUTHTYPE": "BASIC",
@@ -79,9 +79,9 @@ def get_variables(sut="LOCAL", auth_type="BASIC"):
     if sut == "PREPROD":
         PREPROD_CONFIG = {
             "SUT": "PREPROD",
-            "BASE_URL": FHIRBRIDGE_URL + '/fhir',
+            "BASE_URL": HIVECONNECT_URL + '/fhir',
             "EHRBASE_URL": EHRBASE_URL + '/ehrbase/rest/openehr/v1',
-            "HEARTBEAT_FHIRBRIDGE": FHIRBRIDGE_URL,
+            "HEARTBEAT_HIVECONNECT": HIVECONNECT_URL,
             "HEARTBEAT_EHRBASE": EHRBASE_URL,
             "CREDENTIALS": [EHRBASE_USER, EHRBASE_PASS],
             "SECURITY_AUTHTYPE": "BASIC",

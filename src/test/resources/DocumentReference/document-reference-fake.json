@@ -24,7 +24,7 @@
     {
       "attachment": {
         "contentType": "application/pdf",
-        "url": "http://localhost:9000/fhir-bridge-bucket/420d85ce-ee27-40d0-a054-c71917dbb8d9",
+        "url": "http://localhost:9000/hive-connect-bucket/420d85ce-ee27-40d0-a054-c71917dbb8d9",
         "size": 132629
       }
     }
