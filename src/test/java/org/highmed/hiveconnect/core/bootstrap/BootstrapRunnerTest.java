@@ -42,10 +42,6 @@ class BootstrapRunnerTest {
     @BeforeEach
     void setUp() {
         bootstrapRunner = new BootstrapRunner(cacheManager, bootstrapRepository, operationalTemplateUploader,"test-bootstrap", false);
-
-        Cache mockCache = mock(Cache.class);
-        when(cacheManager.getCache("templateCache")).thenReturn(mockCache);
-
     }
 
     @Test

@@ -7,4 +7,10 @@
     </terminology_id>
     <code_string>de</code_string>
   </language>
+   <uid>
+      <value>3cc49da3-e7aa-4f22-9651-b0cc39d99488</value>
+   </uid>
+   <template_id>
+      <value>KDS_Diagnose</value>
+   </template_id>
 </template>
