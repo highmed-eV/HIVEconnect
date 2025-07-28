@@ -69,9 +69,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Build and push docker image
         run: |
           IMAGE_NAME=ghcr.io/highmed-eV/hive-connect:develop
           mvn spring-boot:build-image -Dspring-boot.build-image.imageName=$IMAGE_NAME -DskipTests
           docker push $IMAGE_NAME
-      
