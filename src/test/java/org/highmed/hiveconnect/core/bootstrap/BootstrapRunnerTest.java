@@ -79,11 +79,14 @@ class BootstrapRunnerTest {
         Path tempDir = Files.createTempDirectory("test-bootstrap");
         ReflectionTestUtils.setField(bootstrapRunner, "bootstrapDir", tempDir.toString());
 
-        // Create test .opt files
+        // Create test .opt files with minimal valid XML content
         Path optFile1 = tempDir.resolve("test1.opt");
         Path optFile2 = tempDir.resolve("test2.opt");
-        Files.createFile(optFile1);
-        Files.createFile(optFile2);
+
+        String minimalOptContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<archetype>\n<!-- minimal content -->\n</archetype>";
+
+        Files.writeString(optFile1, minimalOptContent);
+        Files.writeString(optFile2, minimalOptContent);
 
         BootstrapEntity entity1 = new BootstrapEntity("test1.opt");
         BootstrapEntity entity2 = new BootstrapEntity("test2.opt");
@@ -102,6 +105,7 @@ class BootstrapRunnerTest {
         Files.delete(optFile2);
         Files.delete(tempDir);
     }
+
 
     @Test
     void testRunWithRecursiveDirectory() throws Exception {
