@@ -61,9 +61,12 @@ class CompositionComponentTest {
     @Test
     void testCreateEndpointSuccess() throws Exception {
         when(registry.lookupByNameAndType("debugProperties", DebugProperties.class)).thenReturn(debugProperties);
+
         Endpoint endpoint = compositionComponent.createEndpoint("composition://test", "test", Map.of());
         assertNotNull(endpoint);
         assertTrue(endpoint instanceof CompositionEndpoint);
     }
+
+
 }
 
