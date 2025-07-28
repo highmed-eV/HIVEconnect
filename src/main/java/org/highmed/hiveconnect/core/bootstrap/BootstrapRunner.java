@@ -65,7 +65,7 @@ public class BootstrapRunner implements ApplicationRunner {
 
     }
 
-    private void processOptFile(Path path) {
+    void processOptFile(Path path) {
         File file = path.toFile();
         String relativePath = new File(bootstrapDir).toURI().relativize(file.toURI()).getPath();
 

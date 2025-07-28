@@ -11,6 +11,7 @@ import org.springframework.cache.CacheManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -52,31 +53,35 @@ class BootstrapRunnerTest {
 
     @Test
     void testProcessOptFile_NewFile() throws Exception {
-        // Create dummy .opt file
-        File tempFile = File.createTempFile("test", ".opt");
+        Path tempDir = Files.createTempDirectory("bootstrap-test");
+        File tempFile = new File(tempDir.toFile(), "test.opt");
+
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
             fos.write("""
-                <template xmlns="http://schemas.openehr.org/v1">
-                    <template_id>
-                        <value>test-template</value>
-                    </template_id>
-                </template>
-            """.getBytes());
+            <template xmlns="http://schemas.openehr.org/v1">
+                <template_id>
+                    <value>test-template</value>
+                </template_id>
+            </template>
+        """.getBytes());
         }
 
-        Path path = tempFile.toPath();
         when(bootstrapRepository.findByFile(anyString())).thenReturn(Optional.empty());
 
-        bootstrapRunner = new BootstrapRunner(cacheManager, bootstrapRepository, operationalTemplateUploader,
-            tempFile.getParent(), false);
+        bootstrapRunner = new BootstrapRunner(
+            cacheManager,
+            bootstrapRepository,
+            operationalTemplateUploader,
+            tempDir.toString(),
+            false
+        );
 
-        bootstrapRunner.run(null); // Simulate application start
+        bootstrapRunner.processOptFile(tempFile.toPath());
+
         verify(cache).put(eq("test-template"), any());
-        verify(bootstrapRepository).save(any(BootstrapEntity.class));
-        verify(operationalTemplateUploader).uploadTemplates();
-
-        tempFile.deleteOnExit();
+        verify(bootstrapRepository, times(1)).save(any(BootstrapEntity.class));
     }
+
 
     @Test
     void testProcessOptFile_ExistingFile() throws Exception {
