@@ -6,6 +6,7 @@ import org.highmed.hiveconnect.core.repository.BootstrapRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.ApplicationArguments;
@@ -35,6 +36,8 @@ class BootstrapRunnerTest {
     @Mock
     private ApplicationArguments applicationArguments;
 
+
+    @InjectMocks
     private BootstrapRunner bootstrapRunner;
 
     @BeforeEach
@@ -89,10 +92,7 @@ class BootstrapRunnerTest {
 
 
         BootstrapEntity entity1 = new BootstrapEntity("test1.opt");
-        BootstrapEntity entity2 = new BootstrapEntity("test2.opt");
         when(bootstrapRepository.findByFile("test1.opt")).thenReturn(Optional.of(entity1));
-        when(bootstrapRepository.findByFile("test2.opt")).thenReturn(Optional.of(entity2));
-
         // Act
         bootstrapRunner.run(applicationArguments);
 
