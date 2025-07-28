@@ -2,7 +2,7 @@
 ################################################################################
 #   HIVE Connect Properties                                                     #
 ################################################################################
-hive-conncet:
+hive-connect:
   bootstrap:
     enabled: true
     dir: ./src/main/resources/opt
