@@ -73,13 +73,15 @@ class DebugPropertiesTest {
         // Verify output file exists and contains correct content
         Path outputDir = Path.of(debugProperties.getMappingOutputDirectory());
         assertTrue(Files.list(outputDir).findFirst().isPresent());
-        
+
         Path outputFile = Files.list(outputDir).findFirst().get();
         String content = Files.readString(outputFile);
         JsonNode rootNode = objectMapper.readTree(content);
-        
-        assertTrue(rootNode.has("id"));
-        assertEquals("test-id", rootNode.get("id").asText());
+
+        JsonNode fhirOutcome = rootNode.get("fhirOutcome");
+        assertNotNull(fhirOutcome);
+        assertTrue(fhirOutcome.has("id"));
+        assertEquals("test-id", fhirOutcome.get("id").asText());
     }
 
     @Test
@@ -87,7 +89,7 @@ class DebugPropertiesTest {
         // Create a test MethodOutcome with Resource
         Bundle bundle = new Bundle();
         bundle.setId("test-bundle-id");
-        
+
         MethodOutcome methodOutcome = new MethodOutcome();
         methodOutcome.setResource(bundle);
         exchange.setProperty(CamelConstants.FHIR_SERVER_OUTCOME, methodOutcome);
@@ -97,13 +99,15 @@ class DebugPropertiesTest {
         // Verify output file exists and contains correct content
         Path outputDir = Path.of(debugProperties.getMappingOutputDirectory());
         assertTrue(Files.list(outputDir).findFirst().isPresent());
-        
+
         Path outputFile = Files.list(outputDir).findFirst().get();
         String content = Files.readString(outputFile);
         JsonNode rootNode = objectMapper.readTree(content);
-        
-        assertTrue(rootNode.has("id"));
-        assertEquals("test-bundle-id", rootNode.get("id").asText());
+
+        JsonNode fhirOutcome = rootNode.get("fhirOutcome");
+        assertNotNull(fhirOutcome);
+        assertTrue(fhirOutcome.has("id"));
+        assertEquals("test-bundle-id", fhirOutcome.get("id").asText());
     }
 
     @Test
@@ -117,13 +121,15 @@ class DebugPropertiesTest {
         // Verify output file exists and contains correct content
         Path outputDir = Path.of(debugProperties.getMappingOutputDirectory());
         assertTrue(Files.list(outputDir).findFirst().isPresent());
-        
+
         Path outputFile = Files.list(outputDir).findFirst().get();
         String content = Files.readString(outputFile);
         JsonNode rootNode = objectMapper.readTree(content);
-        
-        assertTrue(rootNode.has("id"));
-        assertEquals("test-string-id", rootNode.get("id").asText());
+
+        JsonNode fhirOutcome = rootNode.get("fhirOutcome");
+        assertNotNull(fhirOutcome);
+        assertTrue(fhirOutcome.has("id"));
+        assertEquals("test-string-id", fhirOutcome.get("id").asText());
     }
 
     @Test
