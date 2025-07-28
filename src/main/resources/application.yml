@@ -47,7 +47,7 @@ spring:
   cache:
     cache-names: templateCache
   datasource:
-    url: jdbc:postgresql://localhost:5432/fhir-bridge
+    url: jdbc:postgresql://localhost:5432/hive-connect
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
@@ -73,11 +73,11 @@ spring:
 server:
   port: 8888
   servlet:
-    context-path: /fhir-bridge
+    context-path: /hive-connect
 
 logging:
   file:
-    name: ./logs/fhir-bridge.log
+    name: ./logs/hive-connect.log
   logback:
     rollingpolicy:
       max-history: 30
@@ -112,9 +112,9 @@ hapi:
       path: /fhir
     resource-providers: ConditionResourceProvider
     rest:
-      server-name: fhir-bridge
+      server-name: hive-connect
       server-version: 1.0.0
-      implementation-description: fhir-bridge
+      implementation-description: hive-connect
       default-response-encoding: json
       e-tag-support: enabled
       default-pretty-print: true
