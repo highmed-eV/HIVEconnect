@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openfhir
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openfhir
+  template:
+    metadata:
+      labels:
+        app: openfhir
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: openfhir
+          image: "{{ .Values.container.image }}:{{ .Values.container.tag }}"
+          imagePullPolicy: {{ .Values.container.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: jdbc-uri
+                  name: {{ .Release.Name }}-{{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key:  username
+                  name: {{ .Release.Name }}-{{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key:  username
+                  name: {{ .Release.Name }}-{{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: DB_TYPE
+              value: "{{ .Values.appConfig.env.DB_TYPE }}"
+            - name: BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES 
+              value: "{{ .Values.appConfig.env.BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES }}"
+            - name: BOOTSTRAP_DIR 
+              value: "{{ .Values.appConfig.env.BOOTSTRAP_DIR }}"

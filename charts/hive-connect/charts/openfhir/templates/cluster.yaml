@@ -1,0 +1,35 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Release.Namespace }}-{{ .Values.appConfig.postgresqlDatabase }}-postgres
+spec:
+  instances: 1
+  bootstrap:
+    initdb:
+      database: {{ .Values.appConfig.postgresqlDatabase }}
+      postInitApplicationSQL:
+      - "ALTER USER {{ .Values.appConfig.postgresqlDatabase }} CREATEROLE;"
+  postgresql:
+    parameters:
+      archive_timeout: 10min
+  monitoring:
+    enablePodMonitor: true
+  storage:
+    storageClass: {{ .Values.storage.storageClass }}
+    size: 1Gi
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore:
+      # wal:
+      #   compression: gzip
+      #   maxParallel: 8
+      #   encryption: AES256
+      destinationPath: s3://codex-postgres-backup-dev/cloudnative-pg/{{ .Release.Namespace }}/{{ .Values.appConfig.postgresqlDatabase }}
+      endpointURL: https://s3.fs.gwdg.de
+      s3Credentials:
+        accessKeyId:
+          name: s3-credentials-dev
+          key: accessKeyId
+        secretAccessKey:
+          name: s3-credentials-dev
+          key: secretAccessKey

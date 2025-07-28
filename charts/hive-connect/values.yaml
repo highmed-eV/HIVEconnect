@@ -1,0 +1,106 @@
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+
+
+openfhir:
+  global:
+    env: env
+
+  name: openfhir
+  replicaCount: 1
+
+  storage:
+    storageClass: ssd
+
+  container:
+    image: ghcr.io/num-forschungsdatenplattform/openfhir
+    tag: latest
+    pullPolicy: Always
+    resources: {}
+
+  appConfig:
+    version: 1.3.0
+    ingressUrl: openfhir
+    postgresqlDatabase: openfhir
+    postgresqlDatabaseSecretName: openfhir-postgres-app
+    env:
+      DB_TYPE: postgres
+      BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
+
+  ingress: 
+    enabled: false
+    host: openfhir.crr.dev.num-codex.de
+
+  imagePullSecrets:
+    - name: imagepullsecret-github-packages
+
+  service:
+    enabled: true
+    port: 8090
+    type: ClusterIP
+

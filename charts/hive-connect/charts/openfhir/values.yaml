@@ -1,0 +1,35 @@
+global:
+  env: env
+
+name: openfhir
+replicaCount: 1
+
+storage:
+  storageClass: ssd
+
+container:
+  image: ghcr.io/num-forschungsdatenplattform/openfhir
+  tag: latest
+  pullPolicy: Always
+  resources: {}
+
+appConfig:
+  version: 1.3.0
+  ingressUrl: openfhir
+  postgresqlDatabase: openfhir
+  postgresqlDatabaseSecretName: openfhir-postgres-app
+  env:
+    DB_TYPE: postgres
+    BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
+
+ingress: 
+  enabled: false
+  host: openfhir.crr.dev.num-codex.de
+
+imagePullSecrets:
+  - name: imagepullsecret-github-packages
+
+service:
+  enabled: true
+  port: 8090
+  type: ClusterIP
