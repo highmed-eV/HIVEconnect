@@ -104,10 +104,6 @@ management:
         allowed-headers: '*'
       exposure:
         include: env, health, info, liquibase, logfile, loggers, prometheus
-  metrics:
-    export:
-      elastic:
-        auto-create-index:
 
 #fhir server
 hapi:
