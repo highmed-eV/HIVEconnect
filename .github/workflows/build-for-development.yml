@@ -73,5 +73,6 @@ jobs:
       - name: Build and push docker image
         run: |
           IMAGE_NAME=ghcr.io/highmed-ev/hive-connect:develop
-          mvn spring-boot:build-image -Dspring-boot.build-image.imageName=$IMAGE_NAME -DskipTests
+          #mvn spring-boot:build-image -Dspring-boot.build-image.imageName=$IMAGE_NAME -DskipTests
+          docker build -f docker/Dockerfile -t $IMAGE_NAME .
           docker push $IMAGE_NAME
