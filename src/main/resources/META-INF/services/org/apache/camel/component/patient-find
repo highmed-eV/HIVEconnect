@@ -1,1 +1,1 @@
-class=org.ehrbase.hiveconnect.camel.component.fhir.patient.FindPatientComponent
+class=org.highmed.hiveconnect.camel.component.fhir.patient.FindPatientComponent

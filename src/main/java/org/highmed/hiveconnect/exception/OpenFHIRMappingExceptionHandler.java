@@ -6,7 +6,7 @@ import org.springframework.util.Assert;
 
 /**
  * {@link org.apache.camel.Processor Processor} that transforms an exception
- * thrown by the {@link org.ehrbase.hiveconnect.openfhir.openfhirclient OpenFHIRAdapter} into the corresponding OpenFHIR exception.
+ * thrown by the {@link org.highmed.hiveconnect.openfhir.openfhirclient OpenFHIRAdapter} into the corresponding OpenFHIR exception.
  *
  * @since 1.2.0
  */

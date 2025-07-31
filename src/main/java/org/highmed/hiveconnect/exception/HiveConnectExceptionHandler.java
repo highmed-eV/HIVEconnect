@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
 
 /**
  * {@link org.apache.camel.Processor Processor} that transforms an exception
- * thrown by the {@link org.ehrbase.hiveconnect.camel.route HiveConnectRouteBuilder, FhirRouteBuilder} into the corresponding FHIR exception.
+ * thrown by the {@link org.highmed.hiveconnect.camel.route HiveConnectRouteBuilder, FhirRouteBuilder} into the corresponding FHIR exception.
  *
  * @since 1.2.0
  */

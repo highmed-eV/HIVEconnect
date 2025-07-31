@@ -1,1 +1,1 @@
-class=org.ehrbase.hiveconnect.camel.component.ehr.composition.CompositionComponent
+class=org.highmed.hiveconnect.camel.component.ehr.composition.CompositionComponent

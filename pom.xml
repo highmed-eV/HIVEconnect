@@ -12,7 +12,7 @@
 		<version>3.4.3</version>
 		<relativePath/> 
 	</parent>
-	<groupId>org.ehrbase.hiveconnect</groupId>
+	<groupId>org.highmed.hiveconnect</groupId>
 	<artifactId>hive-connect</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>HIVEconnect</name>
