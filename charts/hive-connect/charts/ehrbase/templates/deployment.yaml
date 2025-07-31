@@ -16,7 +16,7 @@ spec:
         app: ehrbase
     spec:
       imagePullSecrets:
-        - name: ghcr-login-secret
+        - name: imagepullsecret-github-packages
       volumes:
         - name: ehrbase-logging-plugin-volume
           emptyDir: {}
