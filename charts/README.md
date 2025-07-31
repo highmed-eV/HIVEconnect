@@ -1,7 +1,7 @@
 # Hive-Connect Helm Chart
 
 Dieses Helm-Chart deployt den Hive-Connect-Service in einem Kubernetes-Cluster. Es unterstützt Konfigurationen für Datenbankzugriffe, Authentifizierung, SSL-Kommunikation und externe Services wie EHRbase und OpenFHIR.
-
+Es benötigt für erfolgreiches Deployment die EHRbase, openFHIR und einen HAPIServer.
 ---
 
 ## 📦 Installation
