@@ -8,6 +8,8 @@ global:
     servicePort: 5432
   ehrBase:
     hostName: ehrbase
+    port: 8080
+    contextPath: /ehrbase/
   openFHIR:
     enabled: true
     hostName: openfhir
