@@ -27,8 +27,8 @@ appConfig:
   postgresqlDatabase: hiveconnect
   postgresqlUsername: hiveconnect
   postgresqlPassword: password
-  postgresqlDatabaseSecretName: develop-hiveconnect-postgres-app
-  databaseServiceName: hiveconnect-postgres
+  postgresqlDatabaseSecretName: postgres-hiveconnect-secret
+  databaseServiceName: develop-hive-connect-postgres-hiveconnect
   version: develop
   enabled: true
   ingressUrl: hive-connect.develop.de
@@ -78,7 +78,7 @@ openfhir:
     version: 1.3.0
     ingressUrl: openfhir
     postgresqlDatabase: openfhir
-    postgresqlDatabaseSecretName: openfhir-postgres-app
+    postgresqlDatabaseSecretName: postgres-openfhir-secret
     env:
       DB_TYPE: postgres
       BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
@@ -95,8 +95,8 @@ openfhir:
 
 postgres-openfhir:
   auth:
-    postgresPassword: openfhir
-    username: postgres
+    postgresPassword: postgres
+    username: openfhir
     password: postgres
     database: openfhir
 
