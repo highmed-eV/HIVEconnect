@@ -43,8 +43,11 @@ ${BASE_URL}                             http://localhost:8888/hive-connect/fhir/
 ${USERNAME}                             hiveconnect-user
 ${PASSWORD}                             myPassword1234
 ${AUTH}                                 Basic aGl2ZWNvbm5lY3QtdXNlcjpteVBhc3N3b3JkMTIzNA==
-${INPUT_PATIENT_ID}                     1
+${INPUT_PATIENT_ID}                     481
 ${EHRBASE_URL}                          http://localhost:8080/ehrbase/rest/openehr/v1
+${EHRBASE_USER}                         ehrbase
+${EHRBASE_PASS}                         ehrbase
+${EHRBASE_AUTH}                         Basic ZWhyYmFzZTplaHJiYXNl
 ${TEST_CASE_LIST_FILE}                  ${EXECDIR}/robot/BUNDLE/test_case_list.json
 ${EHR_COMPOSITION}                      ${EXECDIR}/robot/_resources/test_data/outputOpenEhr
 ${DATA_SET_PATH_KDSFHIRBUNDLE}          ${EXECDIR}/robot/_resources/test_data/inputFhirBundles
@@ -60,10 +63,10 @@ ${REDUMP_REQUIRED}                      ${FALSE}
 ${ALLOW-TEMPLATE-OVERWRITE}             ${TRUE}
 ${CACHE-ENABLED}                        ${TRUE}
 
-${DB_HOST}    localhost
-${DB_PORT}    5432
-${DB_NAME}    hive-connect
-${DB_USER}    postgres
+${DB_HOST}        localhost
+${DB_PORT}        5432
+${DB_NAME}        hive-connect
+${DB_USER}        postgres
 ${DB_PASSWORD}    postgres
-${DB_DRIVER}    org.postgresql.Driver
-${DB_URL}    jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+${DB_DRIVER}      org.postgresql.Driver
+${DB_URL}         jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}

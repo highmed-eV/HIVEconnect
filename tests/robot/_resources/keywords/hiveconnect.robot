@@ -139,7 +139,7 @@ POST /BundleAQL with ehr reference
     Log To Console    \nUpdated aql body: ${payload}
 
     # POST CALL TO GET AQL RESPONSE
-    ${HEADERS}    Create Dictionary   Content-Type=application/json   Authorization=Basic bXl1c2VyOm15UGFzc3dvcmQ0MzI=   Prefer=return=representation
+    ${HEADERS}    Create Dictionary   Content-Type=application/json   Authorization=Basic ZWhyYmFzZTplaHJiYXNl   Prefer=return=representation
     &{resp_aql}             POST    ${EHRBASE_URL}/query/aql    body=${payload}    headers=${HEADERS}
     # Log To Console    \nAQL Response: &{resp_aql}
     Set Suite Variable    ${response_aql}    ${resp_aql}
