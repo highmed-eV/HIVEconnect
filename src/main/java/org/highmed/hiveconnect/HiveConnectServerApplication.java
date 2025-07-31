@@ -12,7 +12,7 @@ import java.util.Locale;
     // ManagementWebSecurityAutoConfiguration.class,
     SecurityAutoConfiguration.class
 })
-@EnableJpaRepositories("org.ehrbase.hiveconnect.core.repository")
+@EnableJpaRepositories("org.highmed.hiveconnect.core.repository")
 public class HiveConnectServerApplication {
 
     public static void main(String[] args) {
