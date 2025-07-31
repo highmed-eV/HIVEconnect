@@ -64,7 +64,7 @@ spec:
           - -c
           - |
             echo 'Running /init/ehrbase-cloud-db-setup.sql'
-            psql -h {{ .Values.appConfig.databaseServiceName }} -p {{ .Values.appConfig.dbPort }} -U ehrbase -d {{ .Chart.Name }} -f /init/ehrbase-cloud-db-setup.sql;
+            psql -h {{ .Values.appConfig.databaseServiceName }} -p {{ .Values.appConfig.dbPort }} -U postgres -d {{ .Chart.Name }} -f /init/ehrbase-cloud-db-setup.sql;
         volumeMounts:
           - name: ehrbase-cloud-db-setup
             mountPath: /init/
