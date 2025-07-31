@@ -15,7 +15,7 @@
                 },
                 "identifier": [
                     {
-                        "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/medication-administration",
+                        "system": "http://localhost:8888/hive-connect/fhir/identifiers/medication-administration",
                         "value": "MA123456"
                     }
                 ],

@@ -1,12 +1,14 @@
-## Development Status Alpha
+## Development Status Beta
 
-⚠️ ALPHA - Under Active Development and Quality Assurance ⚠️
+⚠️ This project is currently in beta.
+It is under active development and may change frequently. Features may be incomplete or unstable.
+Feedback and contributions are welcome as we work toward a stable release. ⚠️
 
 This project is currently in its alpha stage. It is actively being developed, and we are in the process of conducting thorough quality assurance testing. Therefore, expect potential instability and incomplete features.
 
-# FHIR Bridge 2
+# HIVEconnect
 
-The purpose of FHIR Bridge  application is to act as a broker between an HL7 FHIR client and an openEHR server.
+The purpose of HIVEconnect  application is to act as a broker between an HL7 FHIR client and an openEHR server.
 
 The implementation is based on [Apache Camel](https://camel.apache.org/) and [Open eHealth Integration Platform](https://github.com/oehf/ipf).
 
@@ -17,7 +19,7 @@ The implementation is based on [Apache Camel](https://camel.apache.org/) and [Op
 * JDK (>= 17)
 * Apache Maven (>= 3.6.0)
 * HAPI FHIR Server (>= v7.4.2) (or similiar FHIR platform)
-* OpenFHIR (>= v0.0.1) 
+* OpenFHIR (>= v0.0.1) (https://github.com/medblocks/openFHIR/tree/main)
 * EHRbase (>= v2.0.0) (or similiar openEHR platform)
 
 
@@ -40,11 +42,11 @@ $ mvn clean install -DskipITs=false
 cd docker
 docker-compose -f docker-compose-light.yml up
 ```
-Note: Ensure that the OPENFHIR application is up and running before starting fhir-bridge
+Note: Ensure that the OPENFHIR application is up and running before starting HIVEconnect
 ### Run the application
 
 ```bash
-$ java -jar fhir-bridge-1.0.0-SNAPSHOT.jar
+$ java -jar HIVEconnect-1.0.0-SNAPSHOT.jar
 ```
 
 ## Docker and Docker Compose
@@ -52,24 +54,24 @@ $ java -jar fhir-bridge-1.0.0-SNAPSHOT.jar
 ### Build the Docker image
 
 ```
-$ docker build -f docker/Dockerfile -t fhir-bridge:latest . 
+$ docker build -f docker/Dockerfile -t HIVEconnect:latest . 
 ```
 
 ### Start a Docker container
 Note: Ensure all containers are created using same network
 ```bash
 $ docker run --network=docker_ehrbase-network -p 8888:8888 -e \
-                  "FHIR_BRIDGE_OPENEHR_URL=http://{ehrbase-container-name or host}:8080/ehrbase/" \
+                  "HIVE_CONNECT_OPENEHR_URL=http://{ehrbase-container-name or host}:8080/ehrbase/" \
                   -e "SPRING_DATASOURCE_URL=jdbc:postgresql://{database-container-name or host}:5432/fbridge" \
                   -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" \
                   -e "SERVERURL=http://{hapi-fhir-server-container-name or host}:8080/fhir" \
                   -e "OPENFHIR_SERVER_URL=http://{openfhir-container-name or host}:8090" \
-                  --name=fhir-bridge fhir-bridge:latest
+                  --name=hive-connect hive-connect:latest
 ```
 
 ## License
 
-Copyright 2024 HiGHmed e.V.
+Copyright 2025 HiGHmed
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

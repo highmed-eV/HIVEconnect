@@ -1,1 +1,1 @@
-class=org.ehrbase.fhirbridge.fhir.bundle.BundleResourceProvider
+class=org.highmed.hiveconnect.fhir.bundle.BundleResourceProvider

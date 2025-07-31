@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/fbridge
-    username: fbridge
-    password: fbridge
+    url: jdbc:postgresql://localhost:5432/hiveconnect
+    username: hiveconnect
+    password: hiveconnect
     hikari:
       driver-class-name: org.postgresql.Driver
       maximum-pool-size: 5
