@@ -104,12 +104,10 @@ postgres-openfhir:
     username: openfhir
     password: postgres
     database: openfhir
-
   primary:
     persistence:
       enabled: true
       size: 1Gi
-
   service:
     type: ClusterIP
 
@@ -120,12 +118,10 @@ postgres-hiveconnect:
     username: hiveconnect
     password: postgres
     database: hiveconnect
-
   primary:
     persistence:
       enabled: true
       size: 1Gi
-
   service:
     type: ClusterIP
 
@@ -135,12 +131,46 @@ postgres-ehrbase:
     username: ehrbase
     password: postgres
     database: ehrbase
-
   primary:
     persistence:
       enabled: true
       size: 1Gi
-
   service:
     type: ClusterIP
+
+postgres-hapi-fhir:
+  auth:
+    postgresPassword: postgres
+    username: hapi
+    password: postgres
+    database: hapi
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+  service:
+    type: ClusterIP
+
+
+hapi-fhir:
+  imagePullSecrets:
+    - name: imagepullsecret-github-packages
+  image:
+    registry: ghcr.io
+    repository: num-forschungsdatenplattform/num-hapi
+    tag: v6.8.3
+    pullPolicy: Always
+  postgresql:
+    enabled: false
+    auth:
+      database: hapi
+  externalDatabase:
+    host: develop-hive-connect-postgres-hapi
+    database: hapi
+    user: hapi
+    existingSecret: hive-connect-postgres-hiveconnect-secret
+    existingSecretKey: password
+  extraEnv:
+    - name: HAPI.FHIR.ALLOWED_BUNDLE_TYPES
+      value: "COLLECTION,DOCUMENT,MESSAGE,TRANSACTION"
 
