@@ -28,7 +28,7 @@ container:
 
 appConfig:
   bootstrapdir: /app/templates
-  serverUrl: http://develop-hapi-fhir:8080/fhir
+  serverUrl: http://develop-hive-connect-hapi-fhir:8080/fhir
   postgresqlDatabase: hiveconnect
   postgresqlUsername: hiveconnect
   postgresqlPassword: password
@@ -138,7 +138,7 @@ postgres-ehrbase:
   service:
     type: ClusterIP
 
-postgres-hapi-fhir:
+postgres-hapi:
   auth:
     postgresPassword: postgres
     username: hapi
@@ -167,7 +167,7 @@ hapi-fhir:
   externalDatabase:
     host: develop-hive-connect-postgres-hapi
     database: hapi
-    user: hapi
+    user: postgres
     existingSecret: hive-connect-postgres-hiveconnect-secret
     existingSecretKey: password
   extraEnv:
