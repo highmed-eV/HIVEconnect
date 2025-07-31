@@ -2,11 +2,20 @@ dependencies:
 - name: openfhir
   repository: ""
   version: 0.0.1
+- name: ehrbase
+  repository: ""
+  version: 1.0.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 16.7.21
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 16.7.21
-digest: sha256:5f1ebbb2c1088b67c6035568d6bbd407c71f6e7486ab1a4d04b5cea352240373
-generated: "2025-07-31T15:52:04.318517+02:00"
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 16.7.21
+- name: hapi-fhir-jpaserver
+  repository: https://hapifhir.github.io/hapi-fhir-jpaserver-starter
+  version: 0.14.0
+digest: sha256:98cc6bb187e54e763890dbbc134413dccd8f758805ae05dd80c94f1c366032f5
+generated: "2025-07-31T17:31:24.052546+02:00"

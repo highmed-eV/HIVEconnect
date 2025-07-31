@@ -8,7 +8,7 @@ dependencies:
   - name: openfhir
     version: 0.0.1
   - name: ehrbase
-    version: 0.0.1
+    version: 1.0.0
   - name: postgresql
     alias: postgres-openfhir
     version: 16.7.21
@@ -21,3 +21,8 @@ dependencies:
     alias: postgres-ehrbase
     version: 16.7.21
     repository: https://charts.bitnami.com/bitnami
+  - name: hapi-fhir-jpaserver
+    version: 0.14.0
+    repository: https://hapifhir.github.io/hapi-fhir-jpaserver-starter
+    alias: hapi-fhir
+
