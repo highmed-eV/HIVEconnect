@@ -33,7 +33,7 @@ public class OpenFHIRAdapterConfiguration {
         this.templateProvider = templateProvider;
     }
 
-    @Bean(name = "hiveconnectOpenFHIRAdapter")
+    @Bean(name = "hiveConnectOpenFHIRAdapter")
     public OpenFHIRAdapter openFHIRAdapter() {
         return new OpenFHIRAdapter(restTemplate, templateProvider);
     }
