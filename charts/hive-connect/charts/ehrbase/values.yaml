@@ -1,0 +1,7 @@
+appConfig:
+  postgresqlDatabase: ehrbase
+  postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret
+  databaseServiceName: hive-connect-postgres-ehrbase
+  dbPort: 5432
+  loggingPluginVersion: develop
+

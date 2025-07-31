@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ehrbase
+  name: ehrbase
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: ehrbase
+  template:
+    metadata:
+      labels:
+        app: ehrbase
+    spec:
+      imagePullSecrets:
+        - name: ghcr-login-secret
+      volumes:
+        - name: ehrbase-logging-plugin-volume
+          emptyDir: {}
+        - name: ehrbase-cloud-db-setup
+          configMap:
+            name: ehrbase-cloud-db-setup
+      initContainers:
+      - name: ehrbase-logging-plugin
+        image: "ghcr.io/num-forschungsdatenplattform/ehrbase-logging-plugin:{{ .Values.appConfig.loggingPluginVersion }}"
+        imagePullPolicy: Always
+        command:
+          - sh
+          - -c
+          - |
+            echo 'Copying ehrbase logging plugin...'
+            cp -R /plugin/* /plugin_dir/
+            echo 'Showing ehrbase logging plugin: '
+            ls -l /plugin_dir
+            echo 'Copying ehrbase logging plugin done.'
+        volumeMounts:
+          - name: ehrbase-logging-plugin-volume
+            mountPath: /plugin_dir
+      - name: wait-for-db
+        image: docker.io/busybox:stable
+        imagePullPolicy: Always
+        command:
+          - sh
+          - -c
+          - |
+            until nc -z -w 2 {{ .Values.appConfig.databaseServiceName }} {{ .Values.appConfig.dbPort }}; do
+                echo "Waiting for PostgreSQL at {{ .Values.appConfig.databaseServiceName }}:{{ .Values.appConfig.dbPort }} to become ready..."
+                sleep 10;
+            done;
+            echo 'PostgreSQL is ready.'
+      - name: init-db
+        image: postgres:alpine
+        env:
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+                key: password
+        command:
+          - sh
+          - -c
+          - |
+            echo 'Running /init/ehrbase-cloud-db-setup.sql'
+            psql -h {{ .Values.appConfig.databaseServiceName }} -p {{ .Values.appConfig.dbPort }} -U ehrbase -d {{ .Chart.Name }} -f /init/ehrbase-cloud-db-setup.sql;
+        volumeMounts:
+          - name: ehrbase-cloud-db-setup
+            mountPath: /init/
+      containers:
+      - image: ehrbase/ehrbase:2.15.0
+        name: ehrbase
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: SYSTEM_NAME
+          value: local.ehrbase.org
+        - name: ADMIN_API_ACTIVE
+          value: 'true'
+        - name: SERVER_DISABLESTRICTVALIDATION
+          value: 'true'
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              key: jdbc-uri
+              name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
