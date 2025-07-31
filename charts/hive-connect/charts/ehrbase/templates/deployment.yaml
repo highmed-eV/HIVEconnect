@@ -25,7 +25,7 @@ spec:
             name: ehrbase-cloud-db-setup
       initContainers:
       - name: ehrbase-logging-plugin
-        image: "ghcr.io/num-forschungsdatenplattform/ehrbase-logging-plugin:{{ .Values.appConfig.loggingPluginVersion }}"
+        image: "ghcr.io/highmed-ev/ehrbase-logging-plugin:{{ .Values.appConfig.loggingPluginVersion }}"
         imagePullPolicy: Always
         command:
           - sh
