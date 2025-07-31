@@ -13,6 +13,9 @@ global:
     hostName: openfhir
     port: 8090
 
+imagePullSecrets:
+  - name: imagepullsecret-github-packages
+
 container:
   image: ghcr.io/highmed-ev/hive-connect
   pullPolicy: Always
@@ -27,7 +30,7 @@ appConfig:
   postgresqlDatabase: hiveconnect
   postgresqlUsername: hiveconnect
   postgresqlPassword: password
-  postgresqlDatabaseSecretName: postgres-hiveconnect-secret
+  postgresqlDatabaseSecretName: develop-hive-connect-postgres-hiveconnect-secret
   databaseServiceName: develop-hive-connect-postgres-hiveconnect
   version: develop
   enabled: true
