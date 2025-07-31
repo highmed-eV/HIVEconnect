@@ -42,7 +42,7 @@ Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
 ${BASE_URL}                             http://localhost:8888/hive-connect/fhir/Bundle
 ${USERNAME}                             hiveconnect-user
 ${PASSWORD}                             myPassword1234
-${AUTH}                                 Basic ZmhpcmJyaWRnZS11c2VyOm15UGFzc3dvcmQxMjM0
+${AUTH}                                 Basic aGl2ZWNvbm5lY3QtdXNlcjpteVBhc3N3b3JkMTIzNA==
 ${INPUT_PATIENT_ID}                     1
 ${EHRBASE_URL}                          http://localhost:8080/ehrbase/rest/openehr/v1
 ${TEST_CASE_LIST_FILE}                  ${EXECDIR}/robot/BUNDLE/test_case_list.json
