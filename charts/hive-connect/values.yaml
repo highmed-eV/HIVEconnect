@@ -30,7 +30,7 @@ appConfig:
   postgresqlDatabase: hiveconnect
   postgresqlUsername: hiveconnect
   postgresqlPassword: password
-  postgresqlDatabaseSecretName: develop-hive-connect-postgres-hiveconnect-secret
+  postgresqlDatabaseSecretName: hive-connect-postgres-hiveconnect-secret
   databaseServiceName: develop-hive-connect-postgres-hiveconnect
   version: develop
   enabled: true
