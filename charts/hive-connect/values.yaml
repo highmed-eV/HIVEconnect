@@ -1,88 +1,79 @@
-
+name: hive-connect
 replicaCount: 1
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  tag: "latest"
+global:
+  certManager:
+    enabled: false
+  postgresql:
+    servicePort: 5432
+  ehrBase:
+    hostName: ehrbase
+  openFHIR:
+    enabled: true
+    hostName: openfhir
+    port: 8090
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+container:
+  image: ghcr.io/highmed-ev/hive-connect
+  pullPolicy: Always
+  resources: { }
+  environment:
+    profile: deploy
+    sqlDialect: org.hibernate.dialect.PostgreSQLDialect
 
-serviceAccount:
-  create: true
-  automount: true
-  annotations: {}
-  name: ""
-
-podAnnotations: {}
-podLabels: {}
-
-podSecurityContext: {}
-
-securityContext: {}
-
+appConfig:
+  bootstrapdir: /app/templates
+  serverUrl: http://develop-hapi-fhir:8080/fhir
+  postgresqlDatabase: hiveconnect
+  postgresqlUsername: hiveconnect
+  postgresqlPassword: password
+  postgresqlDatabaseSecretName: develop-hiveconnect-postgres-app
+  databaseServiceName: hiveconnect-postgres
+  version: develop
+  enabled: true
+  ingressUrl: hive-connect.develop.de
+  environment:
+    ehrbaseUsername: ehrbase
+    ehrbasePassword: ehrbase
+    ehrbaseAuthAdminUser: ehrbaseAdmin
+    ehrbaseAuthAdminPassword: ehrbaseAdmin
+  keycloakUrl: http://keycloak-http
+  keycloakRealm: realmName
+  authenticationType: "basic"
+  basicUsername: username
+  basicPassword: password
+  demographicsPatientUrl: https://demographics-service
+  terminologyServerUrl: https://terminology-server
+  fhirValidationOptionalIdentifier: true
+  forceUpdate: true
+  certificateName: hiveconnect-certificate
+  clientssl:
+    keystorepass: keystorepass
+    truststorepass: truststorepass
+    enabled: "true"
+    keypassword: keypassword
+    keystore: /etc/hiveconnect/keystore.p12
+    keystoretype: pkcs12
+    truststore: /etc/hiveconnect/truststore.p12
+    truststoretype: pkcs12
 service:
+  enabled: true
+  port: 8888
   type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-
-resources: {}
-
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-
-volumes: []
-
-volumeMounts: []
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
 
 
 openfhir:
   global:
     env: env
-
   name: openfhir
   replicaCount: 1
-
   storage:
     storageClass: ssd
-
   container:
-    image: ghcr.io/num-forschungsdatenplattform/openfhir
-    tag: latest
+    image: ghcr.io/medblocks/openfhir
+    tag: main
     pullPolicy: Always
     resources: {}
-
   appConfig:
     version: 1.3.0
     ingressUrl: openfhir
@@ -91,16 +82,44 @@ openfhir:
     env:
       DB_TYPE: postgres
       BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
-
   ingress: 
     enabled: false
-    host: openfhir.crr.dev.num-codex.de
-
+    host: 
   imagePullSecrets:
     - name: imagepullsecret-github-packages
-
   service:
     enabled: true
     port: 8090
     type: ClusterIP
 
+
+postgres-openfhir:
+  auth:
+    postgresPassword: openfhir
+    username: postgres
+    password: postgres
+    database: openfhir
+
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+
+  service:
+    type: ClusterIP
+
+
+postgres-hiveconnect:
+  auth:
+    postgresPassword: postgres
+    username: hiveconnect
+    password: postgres
+    database: hiveconnect
+
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+
+  service:
+    type: ClusterIP

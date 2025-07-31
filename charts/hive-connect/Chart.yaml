@@ -1,11 +1,17 @@
 apiVersion: v2
 name: hive-connect
 description: A Helm chart for Kubernetes
-
 type: application
-
 version: 0.1.0
 
 dependencies:
   - name: openfhir
     version: 0.0.1
+  - name: postgresql
+    alias: postgres-openfhir
+    version: 16.7.21
+    repository: https://charts.bitnami.com/bitnami
+  - name: postgresql
+    alias: postgres-hiveconnect
+    version: 16.7.21
+    repository: https://charts.bitnami.com/bitnami
