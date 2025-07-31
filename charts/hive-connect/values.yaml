@@ -126,3 +126,19 @@ postgres-hiveconnect:
 
   service:
     type: ClusterIP
+
+postgres-ehrbase:
+  auth:
+    postgresPassword: postgres
+    username: ehrbase
+    password: postgres
+    database: ehrbase
+
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+
+  service:
+    type: ClusterIP
+
