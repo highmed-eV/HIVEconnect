@@ -57,7 +57,7 @@ public class OpenEhrConfiguration {
 
     @PostConstruct
     public void initialize() {
-        log.info("Running FHIR Bridge using openEHR");
+        log.info("Running HIVE Connect using openEHR");
     }
 
     @Bean

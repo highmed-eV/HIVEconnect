@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push docker image
         run: |
-          IMAGE_NAME=highmed-ev/hive-connect:${{ github.ref_name }}
+          IMAGE_NAME=numforschungsdatenplattform/hive-connect:${{ github.ref_name }}
           docker build -f docker/Dockerfile -t $IMAGE_NAME .
           docker push $IMAGE_NAME
           

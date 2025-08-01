@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "c4deb0b5-16e5-4acf-b551-c9b48acfe8ae",
-		"name": "FHIR Bridge",
+		"name": "HIVE CONNECT",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
