@@ -23,9 +23,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push docker image
-        run: |
-          IMAGE_NAME=highmed-ev/hive-connect:${{ github.ref_name }}
-          docker build -f docker/Dockerfile -t $IMAGE_NAME .
-          docker push $IMAGE_NAME
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: numforschungsdatenplattform/hive-connect:${{ github.ref_name }}
           
           echo "### :rocket: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
