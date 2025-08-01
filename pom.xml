@@ -24,7 +24,7 @@
     <camel.version>4.10.2</camel.version>
     <hapi-fhir.version>8.0.0</hapi-fhir.version>
     <ehrbase-sdk.version>2.21.0</ehrbase-sdk.version>
-    <jacoco.version>0.8.12</jacoco.version>
+    <jacoco.version>0.8.13</jacoco.version>
   </properties>
   <dependencyManagement>
     <dependencies>
