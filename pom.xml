@@ -14,7 +14,7 @@
   </parent>
   <groupId>org.highmed.hiveconnect</groupId>
   <artifactId>hive-connect</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <name>HIVEconnect</name>
   <description>HIVEconnect</description>
   <properties>
@@ -26,7 +26,6 @@
     <ehrbase-sdk.version>2.21.0</ehrbase-sdk.version>
     <jacoco.version>0.8.12</jacoco.version>
   </properties>
-
   <dependencyManagement>
     <dependencies>
       <!--Import as a pom to let spring-boot to manage spring-boot dependencies version -->
