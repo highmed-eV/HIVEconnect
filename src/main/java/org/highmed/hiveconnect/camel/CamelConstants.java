@@ -17,7 +17,7 @@
 package org.highmed.hiveconnect.camel;
 
 /**
- * Constants used by the FHIR Bridge.
+ * Constants used by the HIVE CONNECT.
  *
  * @since 1.0.0
  */

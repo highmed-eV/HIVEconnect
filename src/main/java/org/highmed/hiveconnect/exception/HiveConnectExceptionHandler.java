@@ -76,17 +76,17 @@ public class HiveConnectExceptionHandler implements Processor {
     }
 
     private void handleException(Exception ex) {
-        String errorMessage =  "Internal Error occurred while processing FHIR Bridge: " + ex.getMessage();
+        String errorMessage =  "Internal Error occurred while processing HIVE Connect: " + ex.getMessage();
         log.error(errorMessage);
         throw new InternalErrorException(errorMessage);
     }
 
     private void handleAuthenticationException(AuthenticationException ex) {
-        throw new AuthenticationException("FHIR Bridge Server Exception: Authentication failed:", ex);
+        throw new AuthenticationException("HIVE Connect Server Exception: Authentication failed:", ex);
     }
 
     private void handleBaseServerResponse(BaseServerResponseException ex) {
-        String errorMessage = "FHIR Bridge server error: " + ex.getMessage();
+        String errorMessage = "HIVE Connect server error: " + ex.getMessage();
         log.error(errorMessage);
         throw new InternalErrorException(errorMessage);
     }
