@@ -80,7 +80,9 @@ CMD ["java", "-jar", "app.jar"]
 
 #### BUILD
 
-`docker build -t openfhir`
+```bash
+docker build -t openfhir
+```
 
 #### RUN
 
