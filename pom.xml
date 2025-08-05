@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.4.3</version>
+    <version>3.5.4</version>
     <relativePath />
   </parent>
   <groupId>org.highmed.hiveconnect</groupId>
@@ -19,10 +19,10 @@
   <description>HIVEconnect</description>
   <properties>
     <java.version>17</java.version>
-    <spring-boot-version>3.4.4</spring-boot-version>
-    <javers.version>7.3.7</javers.version>
-    <camel.version>4.10.2</camel.version>
-    <hapi-fhir.version>8.0.0</hapi-fhir.version>
+    <spring-boot-version>3.5.4</spring-boot-version>
+    <javers.version>7.8.0</javers.version>
+    <camel.version>4.13.0</camel.version>
+    <hapi-fhir.version>8.2.1</hapi-fhir.version>
     <ehrbase-sdk.version>2.23.0</ehrbase-sdk.version>
     <jacoco.version>0.8.13</jacoco.version>
   </properties>
