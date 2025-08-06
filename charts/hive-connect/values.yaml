@@ -76,7 +76,7 @@ openfhir:
     storageClass: ssd
   container:
     image: ghcr.io/medblocks/openfhir
-    tag: main
+    tag: pr-143
     pullPolicy: Always
     resources: {}
   appConfig:
