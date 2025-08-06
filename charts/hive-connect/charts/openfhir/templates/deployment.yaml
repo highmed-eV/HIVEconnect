@@ -27,17 +27,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: jdbc-uri
-                  name: {{ .Release.Name }}-{{ .Values.appConfig.postgresqlDatabaseSecretName }}
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
                   key:  username
-                  name: {{ .Release.Name }}-{{ .Values.appConfig.postgresqlDatabaseSecretName }}
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key:  username
-                  name: {{ .Release.Name }}-{{ .Values.appConfig.postgresqlDatabaseSecretName }}
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
             - name: DB_TYPE
               value: "{{ .Values.appConfig.env.DB_TYPE }}"
             - name: BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES 
