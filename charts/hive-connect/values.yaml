@@ -94,7 +94,7 @@ openfhir:
     - name: imagepullsecret-github-packages
   service:
     enabled: true
-    port: 8090
+    port: 8080
     type: ClusterIP
 
 
