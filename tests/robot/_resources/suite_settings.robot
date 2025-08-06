@@ -39,12 +39,14 @@ Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
 
 *** Variables ***
 
-${BASE_URL}                             http://localhost:8888/fhir-bridge/fhir/Bundle
-${USERNAME}                             fhirbridge-user
+${BASE_URL}                             http://localhost:8888/hive-connect/fhir/Bundle
+${USERNAME}                             hiveconnect-user
 ${PASSWORD}                             myPassword1234
-${AUTH}                                 Basic ZmhpcmJyaWRnZS11c2VyOm15UGFzc3dvcmQxMjM0
+${AUTH}                                 Basic aGl2ZWNvbm5lY3QtdXNlcjpteVBhc3N3b3JkMTIzNA==
 ${INPUT_PATIENT_ID}                     1
 ${EHRBASE_URL}                          http://localhost:8080/ehrbase/rest/openehr/v1
+${EHRBASE_USER}                         ehrbase
+${EHRBASE_PASS}                         ehrbase
 ${TEST_CASE_LIST_FILE}                  ${EXECDIR}/robot/BUNDLE/test_case_list.json
 ${EHR_COMPOSITION}                      ${EXECDIR}/robot/_resources/test_data/outputOpenEhr
 ${DATA_SET_PATH_KDSFHIRBUNDLE}          ${EXECDIR}/robot/_resources/test_data/inputFhirBundles
@@ -65,5 +67,5 @@ ${DB_PORT}    5432
 ${DB_NAME}    fhir-bridge
 ${DB_USER}    postgres
 ${DB_PASSWORD}    postgres
-${DB_DRIVER}    org.postgresql.Driver
-${DB_URL}    jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+${DB_DRIVER}      org.postgresql.Driver
+${DB_URL}         jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
