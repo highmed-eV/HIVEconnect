@@ -7,7 +7,7 @@ global:
   postgresql:
     servicePort: 5432
   ehrBase:
-    hostName: ehrbase
+    hostName: http://ehrbase
     port: 8080
     contextPath: /ehrbase/rest/openehr/v1/
   openFHIR:
