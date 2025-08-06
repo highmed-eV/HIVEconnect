@@ -59,6 +59,8 @@ spec:
           image: "{{ .Values.container.image }}:{{ .Values.appConfig.version }}"
           imagePullPolicy: {{ .Values.container.pullPolicy }}
           env:
+            - name: "FHIR_BRIDGE_OPENEHR_URL"
+              value: "{{ .Values.global.ehrBase.hostName}}:{{ .Values.global.ehrBase.port }}{{ .Values.global.ehrBase.contextPath }}"
             - name: "SPRING_DATASOURCE_URL"
               value: "jdbc:postgresql://{{ .Values.appConfig.databaseServiceName}}:{{ .Values.global.postgresql.servicePort }}/{{ .Values.appConfig.postgresqlDatabase }}"
             - name: "HIVE_CONNECT_OPENEHR_SECURITY_TYPE"
