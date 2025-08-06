@@ -13,7 +13,7 @@ global:
   openFHIR:
     enabled: true
     hostName: http://openfhir
-    port: 8090
+    port: 8080
 
 imagePullSecrets:
   - name: imagepullsecret-github-packages
