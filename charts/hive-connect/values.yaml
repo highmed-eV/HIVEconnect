@@ -9,7 +9,7 @@ global:
   ehrBase:
     hostName: http://ehrbase
     port: 8080
-    contextPath: /ehrbase/
+    contextPath: /
   openFHIR:
     enabled: true
     hostName: openfhir
