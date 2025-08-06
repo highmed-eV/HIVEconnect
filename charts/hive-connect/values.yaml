@@ -83,7 +83,7 @@ openfhir:
     version: 1.3.0
     ingressUrl: openfhir
     postgresqlDatabase: openfhir
-    postgresqlDatabaseSecretName: postgres-openfhir-secret
+    postgresqlDatabaseSecretName: develop-hive-connect-postgres-openfhir
     env:
       DB_TYPE: postgres
       BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
