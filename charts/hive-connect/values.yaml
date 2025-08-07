@@ -76,7 +76,7 @@ openfhir:
     storageClass: ssd
   container:
     image: ghcr.io/medblocks/openfhir
-    tag: pr-143
+    tag: main
     pullPolicy: Always
     resources: {}
   appConfig:
@@ -87,6 +87,7 @@ openfhir:
     env:
       DB_TYPE: postgres
       BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
+      BOOTSTRAP_DIR: /app/bootstrap
   ingress: 
     enabled: false
     host: 
