@@ -9,6 +9,8 @@ global:
     storageClass: default
 
 externalSecrets: false  # Control whether to use external secrets or internal values
+imagePullSecrets:
+  - name: imagepullsecret-github-packages
 
 appConfig:
   postgresqlDatabase: ehrbase
