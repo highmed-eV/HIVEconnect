@@ -88,17 +88,17 @@ spec:
                 secretKeyRef:
                   key: adminPassword
                   name: "{{ .Chart.Name }}-ehrbase-secret"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: key.password
                   name: "{{ .Chart.Name }}-secret"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: keystore.password
                   name: "{{ .Chart.Name }}-secret"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: truststore.password
@@ -126,18 +126,18 @@ spec:
               value: {{ .Values.appConfig.environment.ehrbaseAuthAdminUser }}
             - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINPASSWORD"
               value: {{ .Values.appConfig.environment.ehrbaseAuthAdminPassword }}
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
               value: {{ .Values.appConfig.clientssl.keypassword }}
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
               value: {{ .Values.appConfig.clientssl.keystorepass }}
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
               value: {{ .Values.appConfig.clientssl.truststorepass }}
             - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
               value: {{ .Values.appConfig.basicUsername }}
             - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
               value: {{ .Values.appConfig.basicPassword }}
             {{- end }}
-            - name: "HIVECONNECT_OPENEHR_URL"
+            - name: "HIVE_CONNECT_OPENEHR_URL"
               value: "{{ .Values.global.ehrBase.hostName}}:{{ .Values.global.ehrBase.port }}{{ .Values.global.ehrBase.contextPath }}"
             - name: "OPENFHIR_SERVER_URL"
               value: "{{ .Values.global.openFHIR.hostName}}:{{ .Values.global.openFHIR.port }}"
@@ -157,18 +157,18 @@ spec:
               value: "{{ .Values.appConfig.forceUpdate }}"
             - name: HIVE_CONNECT_BOOTSTRAP_DIR
               value: "{{ .Values.appConfig.bootstrapdir }}"
-            - name: "HIVECONNECT_FHIR_TERMINOLOGYSERVER_URL"
+            - name: "HIVE_CONNECT_FHIR_TERMINOLOGYSERVER_URL"
               value: "{{ .Values.appConfig.terminologyServerUrl }}"
             {{ if eq .Values.appConfig.clientssl.enabled "true" }}
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_ENABLED"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_ENABLED"
               value: "{{ .Values.appConfig.clientssl.enabled }}"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTORE"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTORE"
               value: "{{ .Values.appConfig.clientssl.keystore }}"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTORETYPE"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTORETYPE"
               value: "{{ .Values.appConfig.clientssl.keystoretype }}"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTORE"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTORE"
               value: "{{ .Values.appConfig.clientssl.truststore }}"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTORETYPE"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTORETYPE"
               value: "{{ .Values.appConfig.clientssl.truststoretype }}"
             {{ end }}
           {{ if eq .Values.appConfig.authenticationType "basic" }}
