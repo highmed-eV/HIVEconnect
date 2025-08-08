@@ -6,13 +6,6 @@ metadata:
   labels:
     app: "{{ .Chart.Name }}-deployment"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-  annotations:
-    {{- $allSecrets := "" -}}
-    {{- range $path, $_ :=  .Files.Glob  (printf "secrets/%s/*.yaml" .Values.global.env) }}
-    {{- $secret := $.Files.Get $path -}}
-    {{- $allSecrets = printf "%s%s" $allSecrets $secret -}}
-    {{- end }}
-    checksum/secrets: {{ $allSecrets | sha256sum }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 1

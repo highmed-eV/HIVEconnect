@@ -248,8 +248,9 @@ hapi-fhir:
     host: postgres-hapi
     database: hapi
     user: postgres
-    existingSecret: hive-connect-postgres-hiveconnect-secret
-    existingSecretKey: password
+    password: postgres
+    existingSecret: ""
+    existingSecretKey: ""
   extraEnv:
     - name: HAPI.FHIR.ALLOWED_BUNDLE_TYPES
       value: "COLLECTION,DOCUMENT,MESSAGE,TRANSACTION"
