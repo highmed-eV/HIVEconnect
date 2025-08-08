@@ -171,21 +171,28 @@ spec:
             - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTORETYPE"
               value: "{{ .Values.appConfig.clientssl.truststoretype }}"
             {{ end }}
-            {{ if eq .Values.appConfig.authenticationType "basic" }}
+          {{ if eq .Values.appConfig.authenticationType "basic" }}
+            {{- if .Values.externalSecrets }}
             - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
               valueFrom:
                 secretKeyRef:
-                  key:  basic_username
+                  key: basic_username
                   name: "{{ .Chart.Name }}-secret"
             - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
               valueFrom:
                 secretKeyRef:
-                  key:  basic_password
+                  key: basic_password
                   name: "{{ .Chart.Name }}-secret"
-            {{ else }}
+            {{- else }}
+            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+              value: "{{ .Values.appConfig.basicUsername }}"
+            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+              value: "{{ .Values.appConfig.basicPassword }}"
+            {{- end }}
+          {{ else }}
             - name: "HIVE_CONNECT_SECURITY_OAUTH2_JWK_SET_URI"
               value: "{{ .Values.appConfig.keycloakUrl}}/auth/realms/{{ .Values.appConfig.keycloakRealm}}/protocol/openid-connect/certs"
-            {{ end }}
+          {{ end }}
           volumeMounts:
             - name: secret-volume
               mountPath: "/etc/fhirbridge/keystore.p12"
