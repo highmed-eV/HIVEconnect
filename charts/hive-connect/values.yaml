@@ -16,6 +16,8 @@ hiveconnect:
       hostName: http://openfhir
       port: 8080
 
+  externalSecrets: false  # Add this line to control external secrets
+
   imagePullSecrets:
     - name: imagepullsecret-github-packages
 
