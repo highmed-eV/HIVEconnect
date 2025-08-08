@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "chart.fullname" . }}
+  name: {{ .Chart.Name }}
   labels:
     app: "{{ .Values.name }}-deployment"
-    chart: "{{ include "chart.fullname" . }}-{{ .Chart.Version }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
     {{- $allSecrets := "" -}}
     {{- range $path, $_ :=  .Files.Glob  (printf "secrets/%s/*.yaml" .Values.global.env) }}
@@ -23,11 +23,11 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: "{{ include "chart.fullname" . }}-selector"
+      app: "{{ .Chart.Name }}-selector"
   template:
     metadata:
       labels:
-        app: "{{ include "chart.fullname" . }}-selector"
+        app: "{{ .Chart.Name }}-selector"
         version: "{{ .Values.appConfig.version }}"
     spec:
       initContainers:

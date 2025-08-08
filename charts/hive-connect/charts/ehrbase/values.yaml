@@ -1,18 +1,53 @@
+global:
+  certManager:
+    enabled: false
+  ehrBase:
+    enabled: true
+    pullPushIntervalInS: "60"
+  postgresql:
+    storageClass: default
+
 appConfig:
   postgresqlDatabase: ehrbase
   postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret
-  databaseServiceName: develop-hive-connect-postgres-ehrbase
-  dbPort: 5432
-  dbName: ehrbase
   loggingPluginVersion: develop
+  dbName: ehrbase
+  dbPassword: "12345Z!"
+  dbPort: 5432
+  dbUser: ehrbase_restricted
+  systemName: local.ehrbase.org
+  dbAdminUser: ehrbase
+  dbAdminPassword: "12345Z!"
   ehrbaseUser: ehrbase
+  ehrbasePassword: ehrbase
   ehrbaseAuthUser: ehrbaseAuth
+  ehrbaseAuthPassword: ehrbase
   ehrbaseAuthAdminUser: admin
+  ehrbaseAuthAdminPassword: admin
   ehrbaseAuthType: BASIC
+  cacheEnabled: true
   version: 2.13.0
   ingressUrl: ehrbase.develop.dev.num-rdp.de
   certificateName: ehrbase-certificate
   disableStrictValidation: true
+  aqlConfigUseJsQuery: false
+  adminApiActive: true
+  adminApiAllowDeleteAll: true
+  databaseServiceName: develop-hive-connect-postgres-ehrbase
+  HealthEnabled: true
+  KubeHealthEnabled: true
+  managementEndpointEnvEnabled: true
+  managementEndpointInfoEnabled: true
+  managementEndpointMetricsEnabled: true
+  managementEndpointPrometheusEnabled: true
 
 container:
   image: ehrbase/ehrbase
+  pullPolicy: Always
+  resources: {}
+name: ehrbase
+replicaCount: 1
+service:
+  port: 8080
+  type: ClusterIP
+
