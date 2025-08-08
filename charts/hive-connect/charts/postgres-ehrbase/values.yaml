@@ -1,0 +1,30 @@
+# Enable external secrets (default: false)
+useExternalSecrets: false
+
+# Database Credentials
+auth:
+  postgresPassword: postgres
+  username: ehrbase
+  password: postgres
+  database: ehrbase
+
+# Persistent Volume Settings
+primary:
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: ssd
+
+# Service Configuration
+service:
+  type: ClusterIP  # Change to LoadBalancer or NodePort for external access
+  port: 5432
+  targetPort: 5432
+
+# External Secrets Configuration (only used when useExternalSecrets is true)
+externalSecrets:
+  secretName: postgres-ehrbase-secrets
+  usernameKey: username
+  passwordKey: password
+  databaseKey: database
+  postgresPasswordKey: postgresPassword

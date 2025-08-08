@@ -5,26 +5,20 @@ type: application
 version: 0.1.0
 
 dependencies:
+  - name: hiveconnect
+    version: 0.1.0
   - name: openfhir
-    version: 0.0.1
+    version: 0.1.0
   - name: ehrbase
-    version: 1.0.0
-  - name: postgresql
-    alias: postgres-openfhir
-    version: 16.7.21
-    repository: https://charts.bitnami.com/bitnami
-  - name: postgresql
-    alias: postgres-hiveconnect
-    version: 16.7.21
-    repository: https://charts.bitnami.com/bitnami
-  - name: postgresql
-    alias: postgres-ehrbase
-    version: 16.7.21
-    repository: https://charts.bitnami.com/bitnami
-  - name: postgresql
-    alias: postgres-hapi
-    version: 16.7.21
-    repository: https://charts.bitnami.com/bitnami
+    version: 0.1.0
+  - name: postgres-ehrbase
+    version: 0.1.0
+  - name: postgres-hiveconnect
+    version: 0.1.0
+  - name: postgres-openfhir
+    version: 0.1.0
+  - name: postgres-hapi
+    version: 0.1.0
   - name: hapi-fhir-jpaserver
     version: 0.14.0
     repository: https://hapifhir.github.io/hapi-fhir-jpaserver-starter

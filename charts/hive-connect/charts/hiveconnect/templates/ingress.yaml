@@ -12,7 +12,7 @@
 # apiVersion: {{ $apiVersion }}
 # kind: Ingress
 # metadata:
-#   name: "{{ .Values.name }}-ingress"
+#   name: "{{ .Chart.Name }}-ingress"
 #   annotations:
 #     {{ if .Values.global.certManager.enabled }}
 #     cert-manager.io/cluster-issuer: {{.Values.global.certManager.name}}

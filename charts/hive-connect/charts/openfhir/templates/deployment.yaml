@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: openfhir
+  name: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: openfhir
+      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
-        app: openfhir
+        app: {{ .Chart.Name }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: openfhir
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.container.image }}:{{ .Values.container.tag }}"
           imagePullPolicy: {{ .Values.container.pullPolicy }}
           ports:

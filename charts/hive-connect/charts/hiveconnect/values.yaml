@@ -1,0 +1,65 @@
+global:
+  certManager:
+    enabled: false
+  postgresql:
+    servicePort: 5432
+  ehrBase:
+    hostName: http://ehrbase
+    port: 8080
+    contextPath: /ehrbase/
+  openFHIR:
+    enabled: true
+    hostName: http://openfhir
+    port: 8080
+
+imagePullSecrets:
+  - name: imagepullsecret-github-packages
+
+container:
+  image: ghcr.io/highmed-ev/hive-connect
+  pullPolicy: Always
+  resources: { }
+  environment:
+    profile: deploy
+    sqlDialect: org.hibernate.dialect.PostgreSQLDialect
+
+appConfig:
+  bootstrapdir: /app/templates
+  serverUrl: http://develop-hive-connect-hapi-fhir:8080/fhir
+  postgresqlDatabase: hiveconnect
+  postgresqlUsername: postgres
+  postgresqlPassword: postgres
+  postgresqlDatabaseSecretName: hive-connect-postgres-hiveconnect-secret
+  databaseServiceName: develop-hive-connect-postgres-hiveconnect
+  version: develop
+  enabled: true
+  ingressUrl: hive-connect.develop.de
+  environment:
+    ehrbaseUsername: ehrbase
+    ehrbasePassword: ehrbase
+    ehrbaseAuthAdminUser: ehrbaseAdmin
+    ehrbaseAuthAdminPassword: ehrbaseAdmin
+  keycloakUrl: http://keycloak-http
+  keycloakRealm: realmName
+  authenticationType: "basic"
+  basicUsername: username
+  basicPassword: password
+  demographicsPatientUrl: https://demographics-service
+  terminologyServerUrl: https://terminology-server
+  fhirValidationOptionalIdentifier: true
+  forceUpdate: true
+  certificateName: hiveconnect-certificate
+  clientssl:
+    keystorepass: keystorepass
+    truststorepass: truststorepass
+    enabled: "true"
+    keypassword: keypassword
+    keystore: /etc/hiveconnect/keystore.p12
+    keystoretype: pkcs12
+    truststore: /etc/hiveconnect/truststore.p12
+    truststoretype: pkcs12
+service:
+  enabled: true
+  port: 8888
+  type: ClusterIP
+
