@@ -7,12 +7,6 @@ metadata:
     app: "{{ .Chart.Name }}-deployment"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
-    {{- $allSecrets := "" -}}
-    {{- range $path, $_ :=  .Files.Glob  (printf "secrets/%s/*.yaml" .Values.global.env) }}
-    {{- $secret := $.Files.Get $path -}}
-    {{- $allSecrets = printf "%s%s" $allSecrets $secret -}}
-    {{- end }}
-    checksum/secrets: {{ $allSecrets | sha256sum }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 1
@@ -65,15 +59,16 @@ spec:
               value: "jdbc:postgresql://{{ .Values.appConfig.databaseServiceName}}:{{ .Values.global.postgresql.servicePort }}/{{ .Values.appConfig.postgresqlDatabase }}"
             - name: "HIVE_CONNECT_OPENEHR_SECURITY_TYPE"
               value: "BASIC"
+            {{- if .Values.externalSecrets }}
             - name: "SPRING_DATASOURCE_USERNAME"
               valueFrom:
                 secretKeyRef:
-                  key:  username
+                  key: username
                   name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
             - name: "SPRING_DATASOURCE_PASSWORD"
               valueFrom:
                 secretKeyRef:
-                  key:  password
+                  key: password
                   name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
             - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_NAME"
               valueFrom:
@@ -95,14 +90,63 @@ spec:
                 secretKeyRef:
                   key: adminPassword
                   name: "{{ .Chart.Name }}-ehrbase-secret"
+            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: key.password
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: keystore.password
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: truststore.password
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  key: basic_username
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: basic_password
+                  name: "{{ .Chart.Name }}-secret"
+            {{- else }}
+            - name: "SPRING_DATASOURCE_USERNAME"
+              value: {{ .Values.appConfig.postgresqlUsername }}
+            - name: "SPRING_DATASOURCE_PASSWORD"
+              value: {{ .Values.appConfig.postgresqlPassword }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_NAME"
+              value: {{ .Values.appConfig.environment.ehrbaseUsername }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_PASSWORD"
+              value: {{ .Values.appConfig.environment.ehrbasePassword }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINNAME"
+              value: {{ .Values.appConfig.environment.ehrbaseAuthAdminUser }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINPASSWORD"
+              value: {{ .Values.appConfig.environment.ehrbaseAuthAdminPassword }}
+            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
+              value: {{ .Values.appConfig.clientssl.keypassword }}
+            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
+              value: {{ .Values.appConfig.clientssl.keystorepass }}
+            - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
+              value: {{ .Values.appConfig.clientssl.truststorepass }}
+            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+              value: {{ .Values.appConfig.basicUsername }}
+            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+              value: {{ .Values.appConfig.basicPassword }}
+            {{- end }}
             - name: "HIVE_CONNECT_OPENEHR_URL"
               value: "{{ .Values.global.ehrBase.hostName}}:{{ .Values.global.ehrBase.port }}{{ .Values.global.ehrBase.contextPath }}"
             - name: "OPENFHIR_SERVER_URL"
               value: "{{ .Values.global.openFHIR.hostName}}:{{ .Values.global.openFHIR.port }}"
-              {{- if .Values.appConfig.serverUrl }}
+            {{- if .Values.appConfig.serverUrl }}
             - name: "SERVER_URL"
               value: "{{ .Values.appConfig.serverUrl }}"
-              {{- end }}
+            {{- end }}
             - name: "DEMOGRAPHICS_PATIENT_URL"
               value: "{{ .Values.appConfig.demographicsPatientUrl}}"
             - name: "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT"
@@ -120,30 +164,15 @@ spec:
             {{ if eq .Values.appConfig.clientssl.enabled "true" }}
             - name: "HIVECONNECT_HTTPCLIENT_SSL_ENABLED"
               value: "{{ .Values.appConfig.clientssl.enabled }}"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  key: key.password
-                  name: "{{ .Chart.Name }}-secret"
             - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTORE"
               value: "{{ .Values.appConfig.clientssl.keystore }}"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  key: keystore.password
-                  name: "{{ .Chart.Name }}-secret"
             - name: "HIVECONNECT_HTTPCLIENT_SSL_KEYSTORETYPE"
               value: "{{ .Values.appConfig.clientssl.keystoretype }}"
             - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTORE"
               value: "{{ .Values.appConfig.clientssl.truststore }}"
-            - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  key: truststore.password
-                  name: "{{ .Chart.Name }}-secret"
             - name: "HIVECONNECT_HTTPCLIENT_SSL_TRUSTSTORETYPE"
               value: "{{ .Values.appConfig.clientssl.truststoretype }}"
-            {{ end}}
+            {{ end }}
             {{ if eq .Values.appConfig.authenticationType "basic" }}
             - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
               valueFrom:
