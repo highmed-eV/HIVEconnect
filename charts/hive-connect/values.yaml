@@ -36,7 +36,7 @@ hiveconnect:
     postgresqlUsername: postgres
     postgresqlPassword: postgres
     postgresqlDatabaseSecretName: hive-connect-postgres-hiveconnect-secret
-    databaseServiceName: develop-hive-connect-postgres-hiveconnect
+    databaseServiceName: postgres-hiveconnect
     version: develop
     enabled: true
     ingressUrl: hive-connect.develop.de
@@ -245,7 +245,7 @@ hapi-fhir:
     auth:
       database: hapi
   externalDatabase:
-    host: develop-hive-connect-postgres-hapi
+    host: postgres-hapi
     database: hapi
     user: postgres
     existingSecret: hive-connect-postgres-hiveconnect-secret
@@ -293,7 +293,7 @@ ehrbase:
     aqlConfigUseJsQuery: false
     adminApiActive: true
     adminApiAllowDeleteAll: true
-    databaseServiceName: develop-hive-connect-postgres-ehrbase
+    databaseServiceName: postgres-ehrbase
     HealthEnabled: true
     KubeHealthEnabled: true
     managementEndpointEnvEnabled: true

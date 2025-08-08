@@ -35,7 +35,7 @@ appConfig:
   aqlConfigUseJsQuery: false
   adminApiActive: true
   adminApiAllowDeleteAll: true
-  databaseServiceName: develop-hive-connect-postgres-ehrbase
+  databaseServiceName: postgres-ehrbase
   HealthEnabled: true
   KubeHealthEnabled: true
   managementEndpointEnvEnabled: true
