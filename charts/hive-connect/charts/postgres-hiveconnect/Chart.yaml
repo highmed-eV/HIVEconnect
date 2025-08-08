@@ -1,0 +1,4 @@
+apiVersion: v2
+name: postgres-hiveconnect
+description: A Helm chart for PostgreSQL with hiveconnect configuration
+version: 0.1.0

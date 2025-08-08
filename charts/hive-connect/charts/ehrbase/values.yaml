@@ -1,0 +1,62 @@
+global:
+  certManager:
+    enabled: false
+  ehrBase:
+    enabled: true
+    pullPushIntervalInS: "60"
+    loggingPluginVersion: develop
+  postgresql:
+    storageClass: default
+
+externalSecrets: false  # Control whether to use external secrets or internal values
+imagePullSecrets:
+  - name: imagepullsecret-github-packages
+
+appConfig:
+  postgresqlDatabase: ehrbase
+  postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret # Secret name when using external secrets
+  loggingPluginVersion: develop
+  dbName: ehrbase
+  dbPassword: postgres  # Used when externalSecrets is false
+  dbPort: 5432
+  dbUser: ehrbase  # Used when externalSecrets is false
+  systemName: local.ehrbase.org
+  dbAdminUser: ehrbase
+  dbAdminPassword: postgres  # Used when externalSecrets is false
+  ehrbaseUser: ehrbase  # Used when externalSecrets is false
+  ehrbasePassword: ehrbase  # Used when externalSecrets is false
+  ehrbaseAuthUser: ehrbaseAuth  # Used when externalSecrets is false
+  ehrbaseAuthPassword: ehrbase  # Used when externalSecrets is false
+  ehrbaseAuthAdminUser: admin  # Used when externalSecrets is false
+  ehrbaseAuthAdminPassword: admin  # Used when externalSecrets is false
+  ehrbaseAuthType: BASIC
+  cacheEnabled: true
+  version: 2.13.0
+  ingressUrl: ehrbase.develop.dev.num-rdp.de
+  certificateName: ehrbase-certificate
+  disableStrictValidation: true
+  aqlConfigUseJsQuery: false
+  adminApiActive: true
+  adminApiAllowDeleteAll: true
+  databaseServiceName: postgres-ehrbase
+  HealthEnabled: true
+  KubeHealthEnabled: true
+  managementEndpointEnvEnabled: true
+  managementEndpointInfoEnabled: true
+  managementEndpointMetricsEnabled: true
+  managementEndpointPrometheusEnabled: true
+
+container:
+  image: ehrbase/ehrbase
+  pullPolicy: Always
+  resources: {}
+  ehrbaseLoggingPlugin:
+    image: ghcr.io/highmed-ev/ehrbase-logging-plugin
+    tag: develop
+
+name: ehrbase
+replicaCount: 1
+
+service:
+  port: 8080
+  type: ClusterIP

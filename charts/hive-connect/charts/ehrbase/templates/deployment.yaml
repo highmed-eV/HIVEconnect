@@ -1,0 +1,228 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: "{{ .Chart.Name }}-deployment"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Chart.Name }}"
+        version: "{{ .Values.appConfig.version }}"
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: ehrbase-logging-plugin
+          image: "{{ .Values.container.ehrbaseLoggingPlugin.image }}:{{ .Values.container.ehrbaseLoggingPlugin.tag }}"
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              echo 'Copying ehrbase logging plugin...'
+              cp -R /plugin/* /plugin_dir/
+              echo 'Copying ehrbase logging plugin: '
+              ls -l /plugin_dir
+          volumeMounts:
+            - name: ehrbase-logging-plugin-volume
+              mountPath: /plugin_dir
+        - name: "wait-for-db"
+          image: "docker.io/busybox:stable"
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z -w 2 {{ .Values.appConfig.databaseServiceName }} {{ .Values.appConfig.dbPort }}; do
+                  echo "Waiting for PostgreSQL at {{ .Values.appConfig.databaseServiceName }}:{{ .Values.appConfig.dbPort }} to become ready..."
+                  sleep 10;
+              done;
+              echo 'PostgreSQL ready.'
+        - name: "init-db"
+          image: "postgres:alpine"
+          env:
+            {{- if .Values.externalSecrets }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+                  key: password
+            {{- else }}
+            - name: PGPASSWORD
+              value: {{ .Values.appConfig.dbPassword }}
+            {{- end }}
+          command:
+            - sh
+            - -c
+            - |
+              echo 'Running /init/ehrbase-cloud-db-setup.sql'
+              psql -h {{ .Values.appConfig.databaseServiceName }} -p {{ .Values.appConfig.dbPort }} -U ehrbase -d {{ .Chart.Name }} -f /init/ehrbase-cloud-db-setup.sql;
+          volumeMounts:
+            - name: ehrbase-cloud-db-setup
+              mountPath: /init/
+      volumes:
+        - name: ehrbase-logging-plugin-volume
+          emptyDir: {}
+        - name: ehrbase-cloud-db-setup
+          configMap:
+            name: ehrbase-cloud-db-setup
+
+      containers:
+        - env:
+            - name: JDK_JAVA_OPTIONS
+              value: -XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=70.0 -XX:InitialRAMPercentage=70.0
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: DB_URL
+              value: jdbc:postgresql://{{ .Values.appConfig.databaseServiceName}}:{{ .Values.appConfig.dbPort }}/{{ .Values.appConfig.dbName }}
+            {{- if .Values.externalSecrets }}
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: DB_USER_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: DB_PASS_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: EHRBASE_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: "{{ .Chart.Name }}-ehrbase-user-secret"
+            - name: EHRBASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: "{{ .Chart.Name }}-ehrbase-user-secret"
+            - name: SECURITY_AUTHUSER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: "{{ .Chart.Name }}-ehrbase-security-auth-user-secret"
+            - name: SECURITY_AUTHPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: "{{ .Chart.Name }}-ehrbase-security-auth-user-secret"
+            - name: SECURITY_AUTHADMINUSER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: "{{ .Chart.Name }}-ehrbase-security-admin-user-secret"
+            - name: SECURITY_AUTHADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: "{{ .Chart.Name }}-ehrbase-security-admin-user-secret"
+            - name: SECURITY_AUTHADMINBASE64
+              valueFrom:
+                secretKeyRef:
+                  key: base64
+                  name: "{{ .Chart.Name }}-ehrbase-security-admin-user-secret"
+            - name: SECURITY_AUTHTYPE
+              value: {{ .Values.appConfig.ehrbaseAuthType }}
+            - name: CACHE_ENABLED
+              value: "{{ .Values.appConfig.cacheEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLE
+              value: "{{ .Values.appConfig.KubeHealthEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_HEALTH_ENABLED
+              value: "{{ .Values.appConfig.HealthEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_ENV_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointEnvEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_INFO_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointInfoEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_METRICS_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointMetricsEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointPrometheusEnabled }}"
+            - name: SERVER_DISABLESTRICTVALIDATION
+              value: "{{ .Values.appConfig.disableStrictValidation }}"
+            {{- else }}
+            - name: DB_USER
+              value: {{ .Values.appConfig.dbUser }}
+            - name: DB_PASS
+              value: {{ .Values.appConfig.dbPassword }}
+            - name: DB_USER_ADMIN
+              value: {{ .Values.appConfig.dbAdminUser }}
+            - name: DB_PASS_ADMIN
+              value: {{ .Values.appConfig.dbAdminPassword }}
+            - name: EHRBASE_USER
+              value: {{ .Values.appConfig.ehrbaseUser }}
+            - name: EHRBASE_PASSWORD
+              value: {{ .Values.appConfig.ehrbasePassword }}
+            - name: SECURITY_AUTHUSER
+              value: {{ .Values.appConfig.ehrbaseAuthUser }}
+            - name: SECURITY_AUTHPASSWORD
+              value: {{ .Values.appConfig.ehrbaseAuthPassword }}
+            - name: SECURITY_AUTHADMINUSER
+              value: {{ .Values.appConfig.ehrbaseAuthAdminUser }}
+            - name: SECURITY_AUTHADMINPASSWORD
+              value: {{ .Values.appConfig.ehrbaseAuthAdminPassword }}
+            - name: SECURITY_AUTHADMINBASE64
+              value: {{ .Values.appConfig.ehrbaseAuthAdminPassword | b64enc }}
+            - name: SECURITY_AUTHTYPE
+              value: {{ .Values.appConfig.ehrbaseAuthType }}
+            - name: CACHE_ENABLED
+              value: "{{ .Values.appConfig.cacheEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLE
+              value: "{{ .Values.appConfig.KubeHealthEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_HEALTH_ENABLED
+              value: "{{ .Values.appConfig.HealthEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_ENV_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointEnvEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_INFO_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointInfoEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_METRICS_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointMetricsEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointPrometheusEnabled }}"
+            - name: SERVER_DISABLESTRICTVALIDATION
+              value: "{{ .Values.appConfig.disableStrictValidation }}"
+            {{- end }}
+          image: "{{ .Values.container.image }}:{{ .Values.appConfig.version }}"
+          imagePullPolicy: {{ .Values.container.pullPolicy }}
+          name: "{{ .Chart.Name }}"
+          volumeMounts:
+            - name: ehrbase-logging-plugin-volume
+              mountPath: /plugin_dir
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          resources: {{- toYaml .Values.container.resources | nindent 12 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 90

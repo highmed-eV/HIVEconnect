@@ -1,0 +1,329 @@
+name: hive-connect
+replicaCount: 1
+
+hiveconnect:
+  global:
+    certManager:
+      enabled: false
+    postgresql:
+      servicePort: 5432
+    ehrBase:
+      hostName: http://ehrbase
+      port: 8080
+      contextPath: /ehrbase/
+    openFHIR:
+      enabled: true
+      hostName: http://openfhir
+      port: 8080
+
+  externalSecrets: false  # Add this line to control external secrets
+
+  imagePullSecrets:
+    - name: imagepullsecret-github-packages
+
+  container:
+    image: ghcr.io/highmed-ev/hive-connect
+    pullPolicy: Always
+    resources: { }
+    environment:
+      profile: deploy
+      sqlDialect: org.hibernate.dialect.PostgreSQLDialect
+
+  appConfig:
+    bootstrapdir: /app/templates
+    serverUrl: http://develop-hive-connect-hapi-fhir:8080/fhir
+    postgresqlDatabase: hiveconnect
+    postgresqlUsername: hiveconnect
+    postgresqlPassword: postgres
+    postgresqlDatabaseSecretName: hive-connect-postgres-hiveconnect-secret
+    databaseServiceName: postgres-hiveconnect
+    version: develop
+    enabled: true
+    ingressUrl: hive-connect.develop.de
+    environment:
+      ehrbaseUsername: ehrbase
+      ehrbasePassword: ehrbase
+      ehrbaseAuthAdminUser: ehrbaseAdmin
+      ehrbaseAuthAdminPassword: ehrbaseAdmin
+    keycloakUrl: http://keycloak-http
+    keycloakRealm: realmName
+    authenticationType: "basic"
+    basicUsername: username
+    basicPassword: password
+    demographicsPatientUrl: https://demographics-service
+    terminologyServerUrl: https://terminology-server
+    fhirValidationOptionalIdentifier: true
+    forceUpdate: true
+    certificateName: hiveconnect-certificate
+    clientssl:
+      keystorepass: keystorepass
+      truststorepass: truststorepass
+      enabled: "true"
+      keypassword: keypassword
+      keystore: /etc/hiveconnect/keystore.p12
+      keystoretype: pkcs12
+      truststore: /etc/hiveconnect/truststore.p12
+      truststoretype: pkcs12
+  service:
+    enabled: true
+    port: 8888
+    type: ClusterIP
+
+
+openfhir:
+  global:
+    env: env
+  name: openfhir
+  replicaCount: 1
+  storage:
+    storageClass: ssd
+  container:
+    image: ghcr.io/highmed-ev/openfhir
+    tag: bootstrap
+    pullPolicy: Always
+    resources: {}
+  appConfig:
+    version: 1.3.0
+    ingressUrl: openfhir
+    databaseHost: postgres-openfhir
+    databasePort: 5432
+    postgresqlDatabaseUser: openfhir
+    postgresqlDatabasePassword: postgres
+    postgresqlDatabase: openfhir
+    postgresqlDatabaseSecretName: openfhir-postgres-app # Secret name when externalSecrets is enabled
+    env:
+      DB_TYPE: postgres
+      BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
+      BOOTSTRAP_DIR: /app/bootstrap
+  ingress: 
+    enabled: false
+    host: openfhir.crr.dev.num-codex.de
+  imagePullSecrets:
+    - name: imagepullsecret-github-packages
+  service:
+    enabled: true
+    port: 8080
+    type: ClusterIP
+
+  # Add this flag to control whether secrets should be external or from values.yaml
+  externalSecrets: false
+
+
+postgres-openfhir:
+  # Enable external secrets (default: false)
+  useExternalSecrets: false
+
+  # Database Credentials
+  auth:
+    postgresPassword: postgres
+    username: openfhir
+    password: postgres
+    database: openfhir
+
+  # Persistent Volume Settings
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+      storageClass: ssd
+
+  # Service Configuration
+  service:
+    type: ClusterIP  # Change to LoadBalancer or NodePort for external access
+    port: 5432
+    targetPort: 5432
+
+  # External Secrets Configuration (only used when useExternalSecrets is true)
+  externalSecrets:
+    secretName: postgres-openfhir-secrets
+    usernameKey: username
+    passwordKey: password
+    databaseKey: database
+    postgresPasswordKey: postgresPassword
+
+
+postgres-hiveconnect:
+  # Enable external secrets (default: false)
+  useExternalSecrets: false
+
+  # Database Credentials
+  auth:
+    postgresPassword: postgres
+    username: hiveconnect
+    password: postgres
+    database: hiveconnect
+
+  # Persistent Volume Settings
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+      storageClass: ssd
+
+  # Service Configuration
+  service:
+    type: ClusterIP  # Change to LoadBalancer or NodePort for external access
+    port: 5432
+    targetPort: 5432
+
+  # External Secrets Configuration (only used when useExternalSecrets is true)
+  externalSecrets:
+    secretName: postgres-hiveconnect-secrets
+    usernameKey: username
+    passwordKey: password
+    databaseKey: database
+    postgresPasswordKey: postgresPassword
+
+postgres-ehrbase:
+  # Enable external secrets (default: false)
+  useExternalSecrets: false
+
+  # Database Credentials
+  auth:
+    postgresPassword: postgres
+    username: ehrbase
+    password: postgres
+    database: ehrbase
+
+  # Persistent Volume Settings
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+      storageClass: ssd
+
+  # Service Configuration
+  service:
+    type: ClusterIP  # Change to LoadBalancer or NodePort for external access
+    port: 5432
+    targetPort: 5432
+
+# External Secrets Configuration (only used when useExternalSecrets is true)
+externalSecrets:
+  secretName: postgres-ehrbase-secrets
+  usernameKey: username
+  passwordKey: password
+  databaseKey: database
+  postgresPasswordKey: postgresPassword
+
+postgres-hapi:
+  # Enable external secrets (default: false)
+  useExternalSecrets: false
+
+  # Database Credentials
+  auth:
+    postgresPassword: postgres
+    username: hapi
+    password: postgres
+    database: hapi
+
+  # Persistent Volume Settings
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+      storageClass: ssd
+
+  # Service Configuration
+  service:
+    type: ClusterIP  # Change to LoadBalancer or NodePort for external access
+    port: 5432
+    targetPort: 5432
+
+  # External Secrets Configuration (only used when useExternalSecrets is true)
+  externalSecrets:
+    secretName: postgres-hapi-secrets
+    usernameKey: username
+    passwordKey: password
+    databaseKey: database
+    postgresPasswordKey: postgresPassword
+
+
+hapi-fhir:
+  imagePullSecrets:
+    - name: imagepullsecret-github-packages
+  image:
+    registry: ghcr.io
+    repository: num-forschungsdatenplattform/num-hapi
+    tag: v6.8.3
+    pullPolicy: Always
+  postgresql:
+    enabled: false
+    auth:
+      database: hapi
+  externalDatabase:
+    host: postgres-hapi
+    database: hapi
+    user: hapi
+    password: postgres
+    existingSecret: ""
+    existingSecretKey: ""
+  extraEnv:
+    - name: HAPI.FHIR.ALLOWED_BUNDLE_TYPES
+      value: "COLLECTION,DOCUMENT,MESSAGE,TRANSACTION"
+
+
+ehrbase:
+  global:
+    certManager:
+      enabled: false
+    ehrBase:
+      enabled: true
+      pullPushIntervalInS: "60"
+      loggingPluginVersion: develop
+    postgresql:
+      storageClass: default
+
+  externalSecrets: false  # Control whether to use external secrets or internal values
+  imagePullSecrets:
+    - name: imagepullsecret-github-packages
+
+  appConfig:
+    postgresqlDatabase: ehrbase
+    postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret # Secret name when using external secrets
+    loggingPluginVersion: develop
+    dbName: ehrbase
+    dbPassword: postgres  # Used when externalSecrets is false
+    dbPort: 5432
+    dbUser: ehrbase  # Used when externalSecrets is false
+    systemName: local.ehrbase.org
+    dbAdminUser: ehrbase
+    dbAdminPassword: postgres  # Used when externalSecrets is false
+    ehrbaseUser: ehrbase  # Used when externalSecrets is false
+    ehrbasePassword: ehrbase  # Used when externalSecrets is false
+    ehrbaseAuthUser: ehrbaseAuth  # Used when externalSecrets is false
+    ehrbaseAuthPassword: ehrbase  # Used when externalSecrets is false
+    ehrbaseAuthAdminUser: ehrbase  # Used when externalSecrets is false
+    ehrbaseAuthAdminPassword: ehrbase  # Used when externalSecrets is false
+    ehrbaseAuthType: BASIC
+    cacheEnabled: true
+    version: 2.13.0
+    ingressUrl: ehrbase.develop.dev.num-rdp.de
+    certificateName: ehrbase-certificate
+    disableStrictValidation: true
+    aqlConfigUseJsQuery: false
+    adminApiActive: true
+    adminApiAllowDeleteAll: true
+    databaseServiceName: postgres-ehrbase
+    HealthEnabled: true
+    KubeHealthEnabled: true
+    managementEndpointEnvEnabled: true
+    managementEndpointInfoEnabled: true
+    managementEndpointMetricsEnabled: true
+    managementEndpointPrometheusEnabled: true
+
+  container:
+    image: ehrbase/ehrbase
+    pullPolicy: Always
+    resources: {}
+    ehrbaseLoggingPlugin:
+      image: ghcr.io/highmed-ev/ehrbase-logging-plugin
+      tag: develop
+
+  name: ehrbase
+  replicaCount: 1
+
+  service:
+    port: 8080
+    type: ClusterIP
+

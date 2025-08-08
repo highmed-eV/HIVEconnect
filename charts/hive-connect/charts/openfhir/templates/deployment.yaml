@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.container.image }}:{{ .Values.container.tag }}"
+          imagePullPolicy: {{ .Values.container.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              {{- if .Values.externalSecrets }}
+              valueFrom:
+                secretKeyRef:
+                  key: jdbc-uri
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+              {{- else }}
+              value: "jdbc:postgresql://{{ .Values.appConfig.databaseHost }}:{{ .Values.appConfig.databasePort }}/{{ .Values.appConfig.postgresqlDatabase }}"
+              {{- end }}
+            - name: SPRING_DATASOURCE_USERNAME
+              {{- if .Values.externalSecrets }}
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+              {{- else }}
+              value: {{ .Values.appConfig.postgresqlDatabaseUser }}
+              {{- end }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              {{- if .Values.externalSecrets }}
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+              {{- else }}
+              value: {{ .Values.appConfig.postgresqlDatabasePassword }}
+              {{- end }}
+            - name: DB_TYPE
+              value: "{{ .Values.appConfig.env.DB_TYPE }}"
+            - name: BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES 
+              value: "{{ .Values.appConfig.env.BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES }}"
+            - name: BOOTSTRAP_DIR 
+              value: "{{ .Values.appConfig.env.BOOTSTRAP_DIR }}"

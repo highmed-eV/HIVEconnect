@@ -1,0 +1,212 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ required "Missing .Chart.Name" .Chart.Name }}
+  labels:
+    app: "{{ .Chart.Name }}-deployment"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}-selector"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Chart.Name }}-selector"
+        version: "{{ .Values.appConfig.version }}"
+    spec:
+      initContainers:
+      - name: "db-wait"
+        image: "docker.io/busybox:stable"
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+        command:
+          - sh
+          - -c
+          - |
+            echo 'Waiting for PostgreSQL to become ready...'
+            echo 'Testing host {{ .Values.appConfig.databaseServiceName }} port {{ .Values.global.postgresql.servicePort }} ...'
+            until nc -z -w 2 {{ .Values.appConfig.databaseServiceName }} {{ .Values.global.postgresql.servicePort }}; do
+                sleep 10;
+            done;
+            echo 'PostgreSQL ready.'
+      terminationGracePeriodSeconds: 90
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ .Chart.Name }}"
+          image: "{{ .Values.container.image }}:{{ .Values.appConfig.version }}"
+          imagePullPolicy: {{ .Values.container.pullPolicy }}
+          env:
+            - name: "SPRING_DATASOURCE_URL"
+              value: "jdbc:postgresql://{{ .Values.appConfig.databaseServiceName}}:{{ .Values.global.postgresql.servicePort }}/{{ .Values.appConfig.postgresqlDatabase }}"
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_TYPE"
+              value: "BASIC"
+            {{- if .Values.externalSecrets }}
+            - name: "SPRING_DATASOURCE_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: "SPRING_DATASOURCE_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_NAME"
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: "{{ .Chart.Name }}-ehrbase-secret"
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: "{{ .Chart.Name }}-ehrbase-secret"
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINNAME"
+              valueFrom:
+                secretKeyRef:
+                  key: adminUsername
+                  name: "{{ .Chart.Name }}-ehrbase-secret"
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: adminPassword
+                  name: "{{ .Chart.Name }}-ehrbase-secret"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: key.password
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: keystore.password
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: truststore.password
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  key: basic_username
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: basic_password
+                  name: "{{ .Chart.Name }}-secret"
+            {{- else }}
+            - name: "SPRING_DATASOURCE_USERNAME"
+              value: {{ .Values.appConfig.postgresqlUsername }}
+            - name: "SPRING_DATASOURCE_PASSWORD"
+              value: {{ .Values.appConfig.postgresqlPassword }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_NAME"
+              value: {{ .Values.appConfig.environment.ehrbaseUsername }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_PASSWORD"
+              value: {{ .Values.appConfig.environment.ehrbasePassword }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINNAME"
+              value: {{ .Values.appConfig.environment.ehrbaseAuthAdminUser }}
+            - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINPASSWORD"
+              value: {{ .Values.appConfig.environment.ehrbaseAuthAdminPassword }}
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
+              value: {{ .Values.appConfig.clientssl.keypassword }}
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
+              value: {{ .Values.appConfig.clientssl.keystorepass }}
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
+              value: {{ .Values.appConfig.clientssl.truststorepass }}
+            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+              value: {{ .Values.appConfig.basicUsername }}
+            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+              value: {{ .Values.appConfig.basicPassword }}
+            {{- end }}
+            - name: "HIVE_CONNECT_OPENEHR_URL"
+              value: "{{ .Values.global.ehrBase.hostName}}:{{ .Values.global.ehrBase.port }}{{ .Values.global.ehrBase.contextPath }}"
+            - name: "OPENFHIR_SERVER_URL"
+              value: "{{ .Values.global.openFHIR.hostName}}:{{ .Values.global.openFHIR.port }}"
+            {{- if .Values.appConfig.serverUrl }}
+            - name: "SERVER_URL"
+              value: "{{ .Values.appConfig.serverUrl }}"
+            {{- end }}
+            - name: "DEMOGRAPHICS_PATIENT_URL"
+              value: "{{ .Values.appConfig.demographicsPatientUrl}}"
+            - name: "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT"
+              value: "{{ .Values.container.environment.sqlDialect}}"
+            - name: "HIVE_CONNECT_SECURITY_AUTHENTICATION_TYPE"
+              value: "{{ .Values.appConfig.authenticationType}}"
+            - name: "HIVE_CONNECT_FHIR_VALIDATION_OPTIONAL_IDENTIFIER"
+              value: "{{ .Values.appConfig.fhirValidationOptionalIdentifier}}"
+            - name: HIVE_CONNECT_EHRBASE_TEMPLATE_FORCE_UPDATE
+              value: "{{ .Values.appConfig.forceUpdate }}"
+            - name: HIVE_CONNECT_BOOTSTRAP_DIR
+              value: "{{ .Values.appConfig.bootstrapdir }}"
+            - name: "HIVE_CONNECT_FHIR_TERMINOLOGYSERVER_URL"
+              value: "{{ .Values.appConfig.terminologyServerUrl }}"
+            {{ if eq .Values.appConfig.clientssl.enabled "true" }}
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_ENABLED"
+              value: "{{ .Values.appConfig.clientssl.enabled }}"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTORE"
+              value: "{{ .Values.appConfig.clientssl.keystore }}"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTORETYPE"
+              value: "{{ .Values.appConfig.clientssl.keystoretype }}"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTORE"
+              value: "{{ .Values.appConfig.clientssl.truststore }}"
+            - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTORETYPE"
+              value: "{{ .Values.appConfig.clientssl.truststoretype }}"
+            {{ end }}
+          {{ if eq .Values.appConfig.authenticationType "basic" }}
+            {{- if .Values.externalSecrets }}
+            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  key: basic_username
+                  name: "{{ .Chart.Name }}-secret"
+            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: basic_password
+                  name: "{{ .Chart.Name }}-secret"
+            {{- else }}
+            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+              value: "{{ .Values.appConfig.basicUsername }}"
+            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+              value: "{{ .Values.appConfig.basicPassword }}"
+            {{- end }}
+          {{ else }}
+            - name: "HIVE_CONNECT_SECURITY_OAUTH2_JWK_SET_URI"
+              value: "{{ .Values.appConfig.keycloakUrl}}/auth/realms/{{ .Values.appConfig.keycloakRealm}}/protocol/openid-connect/certs"
+          {{ end }}
+          volumeMounts:
+            - name: secret-volume
+              mountPath: "/etc/fhirbridge/keystore.p12"
+              subPath: "keystore.p12"
+            - name: secret-volume
+              mountPath: "/etc/fhirbridge/truststore.p12"
+              subPath: "truststore.p12"
+            - name: secret-volume
+              mountPath: "/etc/fhirbridge/keystore.p12.password"
+              subPath: "keystore.p12.password"
+            - name: secret-volume
+              mountPath: "/etc/fhirbridge/truststore.p12.password"
+              subPath: "truststore.p12.password"
+      volumes:
+        - name: secret-volume
+          configMap:
+            name: "{{ .Chart.Name }}-keystore-volume"
