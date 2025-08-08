@@ -87,6 +87,8 @@ openfhir:
     ingressUrl: openfhir
     databaseHost: postgres-openfhir
     databasePort: 5432
+    postgresqlDatabaseUser: openfhir
+    postgresqlDatabasePassword: password
     postgresqlDatabase: openfhir
     postgresqlDatabaseSecretName: openfhir-postgres-app # Secret name when externalSecrets is enabled
     env:
