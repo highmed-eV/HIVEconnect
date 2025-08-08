@@ -78,28 +78,31 @@ openfhir:
   storage:
     storageClass: ssd
   container:
-    image: ghcr.io/highmed-ev/openfhir
-    tag: bootstrap
+    image: ghcr.io/medblocks/openfhir
+    tag: latest
     pullPolicy: Always
     resources: {}
   appConfig:
     version: 1.3.0
     ingressUrl: openfhir
     postgresqlDatabase: openfhir
-    postgresqlDatabaseSecretName: openfhir-postgres-openfhir-secret
+    postgresqlDatabaseSecretName: openfhir-postgres-app # Secret name when externalSecrets is enabled
     env:
       DB_TYPE: postgres
       BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
       BOOTSTRAP_DIR: /app/bootstrap
   ingress: 
     enabled: false
-    host: 
+    host: openfhir.crr.dev.num-codex.de
   imagePullSecrets:
     - name: imagepullsecret-github-packages
   service:
     enabled: true
     port: 8080
     type: ClusterIP
+
+  # Add this flag to control whether secrets should be external or from values.yaml
+  externalSecrets: false
 
 
 postgres-openfhir:

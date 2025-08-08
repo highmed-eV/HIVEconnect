@@ -13,7 +13,7 @@ appConfig:
   version: 1.3.0
   ingressUrl: openfhir
   postgresqlDatabase: openfhir
-  postgresqlDatabaseSecretName: openfhir-postgres-app
+  postgresqlDatabaseSecretName: openfhir-postgres-app # Secret name when externalSecrets is enabled
   env:
     DB_TYPE: postgres
     BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
@@ -27,3 +27,6 @@ service:
   enabled: true
   port: 8080
   type: ClusterIP
+
+# Add this flag to control whether secrets should be external or from values.yaml
+externalSecrets: false

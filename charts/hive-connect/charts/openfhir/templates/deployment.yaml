@@ -24,20 +24,32 @@ spec:
             - containerPort: {{ .Values.service.port }}
           env:
             - name: SPRING_DATASOURCE_URL
+              {{- if .Values.externalSecrets }}
               valueFrom:
                 secretKeyRef:
                   key: jdbc-uri
                   name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+              {{- else }}
+              value: "jdbc:postgresql://{{ .Values.appConfig.databaseHost }}:{{ .Values.appConfig.databasePort }}/{{ .Values.appConfig.postgresqlDatabase }}"
+              {{- end }}
             - name: SPRING_DATASOURCE_USERNAME
+              {{- if .Values.externalSecrets }}
               valueFrom:
                 secretKeyRef:
-                  key:  username
+                  key: username
                   name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+              {{- else }}
+              value: {{ .Values.appConfig.postgresqlDatabaseUser }}
+              {{- end }}
             - name: SPRING_DATASOURCE_PASSWORD
+              {{- if .Values.externalSecrets }}
               valueFrom:
                 secretKeyRef:
-                  key:  username
+                  key: password
                   name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+              {{- else }}
+              value: {{ .Values.appConfig.postgresqlDatabasePassword }}
+              {{- end }}
             - name: DB_TYPE
               value: "{{ .Values.appConfig.env.DB_TYPE }}"
             - name: BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES 
