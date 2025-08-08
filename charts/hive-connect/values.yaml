@@ -33,7 +33,7 @@ hiveconnect:
     bootstrapdir: /app/templates
     serverUrl: http://develop-hive-connect-hapi-fhir:8080/fhir
     postgresqlDatabase: hiveconnect
-    postgresqlUsername: postgres
+    postgresqlUsername: hiveconnect
     postgresqlPassword: postgres
     postgresqlDatabaseSecretName: hive-connect-postgres-hiveconnect-secret
     databaseServiceName: postgres-hiveconnect
@@ -250,7 +250,7 @@ hapi-fhir:
   externalDatabase:
     host: postgres-hapi
     database: hapi
-    user: postgres
+    user: hapi
     password: postgres
     existingSecret: ""
     existingSecretKey: ""
