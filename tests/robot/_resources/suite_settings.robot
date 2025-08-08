@@ -65,7 +65,7 @@ ${CACHE-ENABLED}                        ${TRUE}
 ${DB_HOST}    localhost
 ${DB_PORT}    5432
 ${DB_NAME}    hiveconnect
-${DB_USER}    postgres
+${DB_USER}    hiveconnect
 ${DB_PASSWORD}    postgres
 ${DB_DRIVER}      org.postgresql.Driver
 ${DB_URL}         jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
