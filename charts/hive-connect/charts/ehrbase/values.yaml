@@ -21,7 +21,7 @@ appConfig:
   dbPort: 5432
   dbUser: ehrbase  # Used when externalSecrets is false
   systemName: local.ehrbase.org
-  dbAdminUser: postgres
+  dbAdminUser: ehrbase
   dbAdminPassword: postgres  # Used when externalSecrets is false
   ehrbaseUser: ehrbase  # Used when externalSecrets is false
   ehrbasePassword: ehrbase  # Used when externalSecrets is false
