@@ -17,6 +17,7 @@ appConfig:
   env:
     DB_TYPE: postgres
     BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES: true
+    BOOTSTRAP_DIR: /app/bootstrap
 ingress: 
   enabled: false
   host: openfhir.crr.dev.num-codex.de

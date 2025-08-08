@@ -1,31 +1,38 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: {{ include "chart.fullname" . }}
   labels:
-    app: ehrbase
-  name: ehrbase
+    app: "{{ .Values.name }}-deployment"
+    chart: "{{ include "chart.fullname" . }}-{{ .Chart.Version }}"
+  annotations:
+    {{- $allSecrets := "" -}}
+    {{- range $path, $_ :=  .Files.Glob  (printf "secrets/%s/*.yaml" .Values.global.env) }}
+    {{- $secret := $.Files.Get $path -}}
+    {{- $allSecrets = printf "%s%s" $allSecrets $secret -}}
+    {{- end }}
+    checksum/secrets: {{ $allSecrets | sha256sum }}
 spec:
-  replicas: 1
-  revisionHistoryLimit: 2
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   selector:
     matchLabels:
-      app: ehrbase
+      app: "{{ include "chart.fullname" . }}-selector"
   template:
     metadata:
       labels:
-        app: ehrbase
+        app: "{{ include "chart.fullname" . }}-selector"
+        version: "{{ .Values.appConfig.version }}"
     spec:
-      imagePullSecrets:
-        - name: imagepullsecret-github-packages
-      volumes:
-        - name: ehrbase-logging-plugin-volume
-          emptyDir: {}
-        - name: ehrbase-cloud-db-setup
-          configMap:
-            name: ehrbase-cloud-db-setup
       initContainers:
       - name: ehrbase-logging-plugin
-        image: "ghcr.io/highmed-ev/ehrbase-logging-plugin:{{ .Values.appConfig.loggingPluginVersion }}"
+        image: "ghcr.io/highmed-ev/ehrbase-logging-plugin:{{ .Values.global.ehrBase.loggingPluginVersion }}"
         imagePullPolicy: Always
         command:
           - sh
@@ -33,15 +40,19 @@ spec:
           - |
             echo 'Copying ehrbase logging plugin...'
             cp -R /plugin/* /plugin_dir/
-            echo 'Showing ehrbase logging plugin: '
+            echo 'Copying ehrbase logging plugin: '
             ls -l /plugin_dir
-            echo 'Copying ehrbase logging plugin done.'
         volumeMounts:
           - name: ehrbase-logging-plugin-volume
             mountPath: /plugin_dir
-      - name: wait-for-db
-        image: docker.io/busybox:stable
+      - name: "wait-for-db"
+        image: "docker.io/busybox:stable"
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
         command:
           - sh
           - -c
@@ -50,9 +61,9 @@ spec:
                 echo "Waiting for PostgreSQL at {{ .Values.appConfig.databaseServiceName }}:{{ .Values.appConfig.dbPort }} to become ready..."
                 sleep 10;
             done;
-            echo 'PostgreSQL is ready.'
-      - name: init-db
-        image: postgres:alpine
+            echo 'PostgreSQL ready.'
+      - name: "init-db"
+        image: "postgres:alpine"
         env:
           - name: PGPASSWORD
             valueFrom:
@@ -64,35 +75,141 @@ spec:
           - -c
           - |
             echo 'Running /init/ehrbase-cloud-db-setup.sql'
-            psql -h {{ .Values.appConfig.databaseServiceName }} -p {{ .Values.appConfig.dbPort }} -U postgres -d {{ .Chart.Name }} -f /init/ehrbase-cloud-db-setup.sql;
+            psql -h {{ .Values.appConfig.databaseServiceName }} -p {{ .Values.appConfig.dbPort }} -U ehrbase -d {{ .Chart.Name }} -f /init/ehrbase-cloud-db-setup.sql;
         volumeMounts:
           - name: ehrbase-cloud-db-setup
             mountPath: /init/
+      volumes:
+        - name: ehrbase-logging-plugin-volume
+          emptyDir: {}
+        - name: ehrbase-cloud-db-setup
+          configMap:
+            name: ehrbase-cloud-db-setup
+
       containers:
-      - image: ehrbase/ehrbase:2.15.0
-        name: ehrbase
-        ports:
-        - name: http
-          containerPort: 8080
-        env:
-        - name: SYSTEM_NAME
-          value: local.ehrbase.org
-        - name: ADMIN_API_ACTIVE
-          value: 'true'
-        - name: SERVER_DISABLESTRICTVALIDATION
-          value: 'true'
-        - name: DB_URL
-          valueFrom:
-            secretKeyRef:
-              key: jdbc-uri
-              name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              key: username
-              name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
-        - name: DB_PASS
-          valueFrom:
-            secretKeyRef:
-              key: password
-              name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+        - env:
+            - name: JDK_JAVA_OPTIONS
+              value: -XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=70.0 -XX:InitialRAMPercentage=70.0
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: DB_URL
+              value: jdbc:postgresql://{{ .Values.appConfig.databaseServiceName}}:{{ .Values.appConfig.dbPort }}/{{ .Values.appConfig.dbName }}
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key:  username
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  key:  password
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: DB_USER_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  key:  username
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: DB_PASS_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  key:  password
+                  name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
+            - name: SERVER_AQLCONFIG_USEJSQUERY
+              value: "{{ .Values.appConfig.aqlConfigUseJsQuery }}"
+            - name: ADMINAPI_ACTIVE
+              value: "{{ .Values.appConfig.adminApiActive }}"
+            - name: ADMINAPI_ALLOWDELETEALL
+              value: "{{ .Values.appConfig.adminApiAllowDeleteAll }}"
+            - name: SYSTEM_NAME
+              value: {{ .Values.appConfig.systemName }}
+            - name: EHRBASE_USER
+              valueFrom:
+                secretKeyRef:
+                  key:  username
+                  name: "{{ .Values.name }}-ehrbase-user-secret"
+            - name: EHRBASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key:  password
+                  name: "{{ .Values.name }}-ehrbase-user-secret"
+            - name: SECURITY_AUTHUSER
+              valueFrom:
+                secretKeyRef:
+                  key:  username
+                  name: "{{ .Values.name }}-ehrbase-security-auth-user-secret"
+            - name: SECURITY_AUTHPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key:  password
+                  name: "{{ .Values.name }}-ehrbase-security-auth-user-secret"
+            - name: SECURITY_AUTHADMINUSER
+              valueFrom:
+                secretKeyRef:
+                  key:  username
+                  name: "{{ .Values.name }}-ehrbase-security-admin-user-secret"
+            - name: SECURITY_AUTHADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key:  password
+                  name: "{{ .Values.name }}-ehrbase-security-admin-user-secret"
+            - name: SECURITY_AUTHADMINBASE64
+              valueFrom:
+                secretKeyRef:
+                  key: base64
+                  name: "{{ .Values.name }}-ehrbase-security-admin-user-secret"
+            - name: SECURITY_AUTHTYPE
+              value: {{ .Values.appConfig.ehrbaseAuthType }}
+            - name: CACHE_ENABLED
+              value: "{{ .Values.appConfig.cacheEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLE
+              value: "{{ .Values.appConfig.KubeHealthEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_HEALTH_ENABLED
+              value: "{{ .Values.appConfig.HealthEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_ENV_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointEnvEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_INFO_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointInfoEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_METRICS_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointMetricsEnabled }}"
+            - name: MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED
+              value: "{{ .Values.appConfig.managementEndpointPrometheusEnabled }}"
+            - name: SERVER_DISABLESTRICTVALIDATION
+              value: "{{ .Values.appConfig.disableStrictValidation }}"
+          image: "{{ .Values.container.image }}:{{ .Values.appConfig.version }}"
+          imagePullPolicy: {{ .Values.container.pullPolicy }}
+          name: "{{ .Values.name }}"
+          volumeMounts:
+            - name: ehrbase-logging-plugin-volume
+              mountPath: /plugin_dir
+          # livenessProbe:
+          #   failureThreshold: 3
+          #   httpGet:
+          #     path: /ehrbase/management/health/liveness
+          #     port: 8080
+          #     httpHeaders:
+          #       - name: Authorization
+          #         value: Basic $SECURITY_AUTHADMINBASE64
+          #   initialDelaySeconds: 20
+          #   periodSeconds: 15
+          #   successThreshold: 1
+          #   timeoutSeconds: 2
+          # readinessProbe:
+          #   failureThreshold: 3
+          #   httpGet:
+          #     path: /ehrbase/management/health/readiness
+          #     port: 8080
+          #     httpHeaders:
+          #       - name: Authorization
+          #         value: Basic $SECURITY_AUTHADMINBASE64
+          #   initialDelaySeconds: 20
+          #   periodSeconds: 15
+          #   successThreshold: 2
+          #   timeoutSeconds: 2
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          resources: {{- toYaml .Values.container.resources | nindent 12 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 90

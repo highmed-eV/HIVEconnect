@@ -3,5 +3,16 @@ appConfig:
   postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret
   databaseServiceName: develop-hive-connect-postgres-ehrbase
   dbPort: 5432
+  dbName: ehrbase
   loggingPluginVersion: develop
+  ehrbaseUser: ehrbase
+  ehrbaseAuthUser: ehrbaseAuth
+  ehrbaseAuthAdminUser: admin
+  ehrbaseAuthType: BASIC
+  version: 2.13.0
+  ingressUrl: ehrbase.develop.dev.num-rdp.de
+  certificateName: ehrbase-certificate
+  disableStrictValidation: true
 
+container:
+  image: ehrbase/ehrbase
