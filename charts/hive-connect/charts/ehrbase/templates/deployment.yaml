@@ -62,11 +62,16 @@ spec:
         - name: "init-db"
           image: "postgres:alpine"
           env:
+            {{- if .Values.externalSecrets }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.appConfig.postgresqlDatabaseSecretName }}
                   key: password
+            {{- else }}
+            - name: PGPASSWORD
+              value: {{ .Values.appConfig.dbPassword }}
+            {{- end }}
           command:
             - sh
             - -c
