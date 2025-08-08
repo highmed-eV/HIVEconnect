@@ -48,7 +48,7 @@
         ],
         "identifier": [
           {
-            "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/conditions",
+            "system": "http://localhost:8888/hive-connect/fhir/identifiers/conditions",
             "value": "1234567890",
             "use": "official",
             "type": {
@@ -289,7 +289,7 @@
         "id": "reference-condition",
         "identifier": [
           {
-            "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/conditions",
+            "system": "http://localhost:8888/hive-connect/fhir/identifiers/conditions",
             "value": "COND-123456",
             "use": "official",
             "type": {

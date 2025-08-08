@@ -30,7 +30,7 @@ Library     ${EXECDIR}/robot/_resources/functions/json_normalizer.py
 Library     ${EXECDIR}/robot/_resources/functions/load_json_utf8.py
 
 Resource    ${EXECDIR}/robot/_resources/keywords/ehr.robot
-Resource    ${EXECDIR}/robot/_resources/keywords/fhirbridge.robot
+Resource    ${EXECDIR}/robot/_resources/keywords/hiveconnect.robot
 
 Variables   ${EXECDIR}/robot/_resources/variables/sut_config.py
             ...    ${SUT}
@@ -62,10 +62,10 @@ ${REDUMP_REQUIRED}                      ${FALSE}
 ${ALLOW-TEMPLATE-OVERWRITE}             ${TRUE}
 ${CACHE-ENABLED}                        ${TRUE}
 
-${DB_HOST}    localhost
-${DB_PORT}    5432
-${DB_NAME}    fhir-bridge
-${DB_USER}    postgres
+${DB_HOST}        localhost
+${DB_PORT}        5432
+${DB_NAME}        hive-connect
+${DB_USER}        postgres
 ${DB_PASSWORD}    postgres
 ${DB_DRIVER}      org.postgresql.Driver
 ${DB_URL}         jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}

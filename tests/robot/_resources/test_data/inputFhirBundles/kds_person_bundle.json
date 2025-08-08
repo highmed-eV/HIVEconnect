@@ -92,7 +92,7 @@
                 }
               ]
             },
-            "system": "http://localhost:8888/fhir-bridge/fhir/identifiers/patient",
+            "system": "http://localhost:8888/hive-connect/fhir/identifiers/patient",
             "value": "PKV543210987",
             "assigner": {
               "display": "German Private Health Insurance"

@@ -1,8 +1,8 @@
 # @formatter:off
 ################################################################################
-#   FHIR Bridge Properties                                                     #
+#   HIVE Connect Properties                                                     #
 ################################################################################
-fhir-bridge:
+hive-connect:
   bootstrap:
     enabled: true
     dir: ./src/main/resources/opt
@@ -28,7 +28,7 @@ fhir-bridge:
   security:
     type: BASIC
     user:
-      name: fhirbridge-user
+      name: hiveconnect-user
       password: myPassword1234
 
 
@@ -37,7 +37,7 @@ fhir-bridge:
 ################################################################################
 spring:
   application:
-    name: FHIR Bridge
+    name: HIVE Connect
   batch:
     job:
       enabled: false
@@ -47,7 +47,7 @@ spring:
   cache:
     cache-names: templateCache
   datasource:
-    url: jdbc:postgresql://localhost:5432/fhir-bridge
+    url: jdbc:postgresql://localhost:5432/hive-connect
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
@@ -64,7 +64,7 @@ spring:
     basename: messages/messages
     use-code-as-default-message: true
 
-  
+
   flyway:
     enabled: false
   autoconfigure:
@@ -73,11 +73,11 @@ spring:
 server:
   port: 8888
   servlet:
-    context-path: /fhir-bridge
+    context-path: /hive-connect
 
 logging:
   file:
-    name: ./logs/fhir-bridge.log
+    name: ./logs/hive-connect.log
   logback:
     rollingpolicy:
       max-history: 30
@@ -88,7 +88,7 @@ logging:
     liquibase: INFO
     org.apache.camel: WARN
     # org.ehrbase.client: WARN
-    org.ehrbase.fhirbridge: DEBUG
+    org.highmed.hiveconnect: DEBUG
     org.hibernate: WARN
     org.openehealth.ipf: ERROR
     org.quartz: WARN
@@ -104,10 +104,6 @@ management:
         allowed-headers: '*'
       exposure:
         include: env, health, info, liquibase, logfile, loggers, prometheus
-  metrics:
-    export:
-      elastic:
-        auto-create-index:
 
 #fhir server
 hapi:
@@ -116,9 +112,9 @@ hapi:
       path: /fhir
     resource-providers: ConditionResourceProvider
     rest:
-      server-name: fhir-bridge
+      server-name: hive-connect
       server-version: 1.0.0
-      implementation-description: fhir-bridge
+      implementation-description: hive-connect
       default-response-encoding: json
       e-tag-support: enabled
       default-pretty-print: true

@@ -23,51 +23,9 @@ The implementation is based on [Apache Camel](https://camel.apache.org/) and [Op
 * EHRbase (>= v2.0.0) (or similiar openEHR platform)
 
 
-### Build the application
+### Deployment documentation
 
-```shell script
-$ mvn clean install
-```
-
-### Build the application and execute integration tests
-
-```shell
-$ mvn clean install -DskipITs=false
-```
-
-:warning: When using `-DskipITs=false` option, please make sure you have an EHRbase instance up and running. The easiest way to achieve that is to use one of the provided docker-compose files in the **docker** folder:
-
-```shell script
-# Start up an EHRbase instance
-cd docker
-docker-compose -f docker-compose-light.yml up
-```
-Note: Ensure that the OPENFHIR application is up and running before starting HIVEconnect
-### Run the application
-
-```bash
-$ java -jar fhir-bridge-1.0.0-SNAPSHOT.jar
-```
-
-## Docker and Docker Compose
-
-### Build the Docker image
-
-```
-$ docker build -f docker/Dockerfile -t fhir-bridge:latest . 
-```
-
-### Start a Docker container
-Note: Ensure all containers are created using same network
-```bash
-$ docker run --network=docker_ehrbase-network -p 8888:8888 -e \
-                  "FHIR_BRIDGE_OPENEHR_URL=http://{ehrbase-container-name or host}:8080/ehrbase/" \
-                  -e "SPRING_DATASOURCE_URL=jdbc:postgresql://{database-container-name or host}:5432/fbridge" \
-                  -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" \
-                  -e "SERVERURL=http://{hapi-fhir-server-container-name or host}:8080/fhir" \
-                  -e "OPENFHIR_SERVER_URL=http://{openfhir-container-name or host}:8090" \
-                  --name=fhir-bridge fhir-bridge:latest
-```
+[Find the documenation here](docker/README.md)
 
 ## License
 

@@ -27,10 +27,10 @@ build/
 .project
 .settings/
 .vscode/
-fhir-bridge-server/tests/robot/_resources/variables/__pycache__/sut_config.cpython-311.pyc
-fhir-bridge-server/tests/report.html
-fhir-bridge-server/tests/output.xml
-fhir-bridge-server/tests/log.html
+hive-connect-server/tests/robot/_resources/variables/__pycache__/sut_config.cpython-311.pyc
+hive-connect-server/tests/report.html
+hive-connect-server/tests/output.xml
+hive-connect-server/tests/log.html
 log/output.xml
 log/report.html
 log/log.html

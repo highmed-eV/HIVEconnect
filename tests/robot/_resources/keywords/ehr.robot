@@ -30,7 +30,7 @@ create new ehr
                         ${ehr_status_json}=  Update Value To Json    ${ehr_status_json}    $.subject.external_ref.namespace    namespace_${{''.join(random.choices(string.digits, k=7))}}
                         Log To Console  ehr status json ${ehr_status_json}
 
-                        ${HEADERS}    Create Dictionary   Content-Type=application/json   Authorization=Basic bXl1c2VyOm15UGFzc3dvcmQ0MzI=   Prefer=return=representation
+                        ${HEADERS}    Create Dictionary   Content-Type=application/json   Authorization=Basic ZWhyYmFzZTplaHJiYXNl   Prefer=return=representation
     &{resp}=            POST    ${EHRBASE_URL}/ehr    ${ehr_status_json}    headers=${HEADERS}
                         Log To Console    Debug Info: ${resp}
                         Integer      response status    201
