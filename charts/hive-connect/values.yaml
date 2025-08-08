@@ -78,8 +78,8 @@ openfhir:
   storage:
     storageClass: ssd
   container:
-    image: ghcr.io/medblocks/openfhir
-    tag: latest
+    image: ghcr.io/highmed-ev/openfhir
+    tag: bootstrap
     pullPolicy: Always
     resources: {}
   appConfig:
