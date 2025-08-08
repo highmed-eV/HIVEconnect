@@ -88,7 +88,7 @@ openfhir:
     databaseHost: postgres-openfhir
     databasePort: 5432
     postgresqlDatabaseUser: openfhir
-    postgresqlDatabasePassword: password
+    postgresqlDatabasePassword: postgres
     postgresqlDatabase: openfhir
     postgresqlDatabaseSecretName: openfhir-postgres-app # Secret name when externalSecrets is enabled
     env:
@@ -275,18 +275,20 @@ ehrbase:
       storageClass: default
 
   externalSecrets: false  # Control whether to use external secrets or internal values
+  imagePullSecrets:
+    - name: imagepullsecret-github-packages
 
   appConfig:
     postgresqlDatabase: ehrbase
     postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret # Secret name when using external secrets
     loggingPluginVersion: develop
     dbName: ehrbase
-    dbPassword: "12345Z!"  # Used when externalSecrets is false
+    dbPassword: postgres  # Used when externalSecrets is false
     dbPort: 5432
-    dbUser: ehrbase_restricted  # Used when externalSecrets is false
+    dbUser: ehrbase  # Used when externalSecrets is false
     systemName: local.ehrbase.org
-    dbAdminUser: ehrbase
-    dbAdminPassword: "12345Z!"  # Used when externalSecrets is false
+    dbAdminUser: postgres
+    dbAdminPassword: postgres  # Used when externalSecrets is false
     ehrbaseUser: ehrbase  # Used when externalSecrets is false
     ehrbasePassword: ehrbase  # Used when externalSecrets is false
     ehrbaseAuthUser: ehrbaseAuth  # Used when externalSecrets is false

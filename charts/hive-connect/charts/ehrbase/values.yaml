@@ -17,12 +17,12 @@ appConfig:
   postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret # Secret name when using external secrets
   loggingPluginVersion: develop
   dbName: ehrbase
-  dbPassword: "12345Z!"  # Used when externalSecrets is false
+  dbPassword: postgres  # Used when externalSecrets is false
   dbPort: 5432
-  dbUser: ehrbase_restricted  # Used when externalSecrets is false
+  dbUser: ehrbase  # Used when externalSecrets is false
   systemName: local.ehrbase.org
-  dbAdminUser: ehrbase
-  dbAdminPassword: "12345Z!"  # Used when externalSecrets is false
+  dbAdminUser: postgres
+  dbAdminPassword: postgres  # Used when externalSecrets is false
   ehrbaseUser: ehrbase  # Used when externalSecrets is false
   ehrbasePassword: ehrbase  # Used when externalSecrets is false
   ehrbaseAuthUser: ehrbaseAuth  # Used when externalSecrets is false
