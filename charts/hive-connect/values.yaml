@@ -252,3 +252,62 @@ hapi-fhir:
     - name: HAPI.FHIR.ALLOWED_BUNDLE_TYPES
       value: "COLLECTION,DOCUMENT,MESSAGE,TRANSACTION"
 
+
+ehrbase:
+  global:
+    certManager:
+      enabled: false
+    ehrBase:
+      enabled: true
+      pullPushIntervalInS: "60"
+    postgresql:
+      storageClass: default
+
+  externalSecrets: false  # Control whether to use external secrets or internal values
+
+  appConfig:
+    postgresqlDatabase: ehrbase
+    postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret # Secret name when using external secrets
+    loggingPluginVersion: develop
+    dbName: ehrbase
+    dbPassword: "12345Z!"  # Used when externalSecrets is false
+    dbPort: 5432
+    dbUser: ehrbase_restricted  # Used when externalSecrets is false
+    systemName: local.ehrbase.org
+    dbAdminUser: ehrbase
+    dbAdminPassword: "12345Z!"  # Used when externalSecrets is false
+    ehrbaseUser: ehrbase  # Used when externalSecrets is false
+    ehrbasePassword: ehrbase  # Used when externalSecrets is false
+    ehrbaseAuthUser: ehrbaseAuth  # Used when externalSecrets is false
+    ehrbaseAuthPassword: ehrbase  # Used when externalSecrets is false
+    ehrbaseAuthAdminUser: admin  # Used when externalSecrets is false
+    ehrbaseAuthAdminPassword: admin  # Used when externalSecrets is false
+    ehrbaseAuthType: BASIC
+    cacheEnabled: true
+    version: 2.13.0
+    ingressUrl: ehrbase.develop.dev.num-rdp.de
+    certificateName: ehrbase-certificate
+    disableStrictValidation: true
+    aqlConfigUseJsQuery: false
+    adminApiActive: true
+    adminApiAllowDeleteAll: true
+    databaseServiceName: develop-hive-connect-postgres-ehrbase
+    HealthEnabled: true
+    KubeHealthEnabled: true
+    managementEndpointEnvEnabled: true
+    managementEndpointInfoEnabled: true
+    managementEndpointMetricsEnabled: true
+    managementEndpointPrometheusEnabled: true
+
+  container:
+    image: ehrbase/ehrbase
+    pullPolicy: Always
+    resources: {}
+
+  name: ehrbase
+  replicaCount: 1
+
+  service:
+    port: 8080
+    type: ClusterIP
+

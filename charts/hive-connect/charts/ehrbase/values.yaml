@@ -7,23 +7,25 @@ global:
   postgresql:
     storageClass: default
 
+externalSecrets: false  # Control whether to use external secrets or internal values
+
 appConfig:
   postgresqlDatabase: ehrbase
-  postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret
+  postgresqlDatabaseSecretName: hive-connect-postgres-ehrbase-secret # Secret name when using external secrets
   loggingPluginVersion: develop
   dbName: ehrbase
-  dbPassword: "12345Z!"
+  dbPassword: "12345Z!"  # Used when externalSecrets is false
   dbPort: 5432
-  dbUser: ehrbase_restricted
+  dbUser: ehrbase_restricted  # Used when externalSecrets is false
   systemName: local.ehrbase.org
   dbAdminUser: ehrbase
-  dbAdminPassword: "12345Z!"
-  ehrbaseUser: ehrbase
-  ehrbasePassword: ehrbase
-  ehrbaseAuthUser: ehrbaseAuth
-  ehrbaseAuthPassword: ehrbase
-  ehrbaseAuthAdminUser: admin
-  ehrbaseAuthAdminPassword: admin
+  dbAdminPassword: "12345Z!"  # Used when externalSecrets is false
+  ehrbaseUser: ehrbase  # Used when externalSecrets is false
+  ehrbasePassword: ehrbase  # Used when externalSecrets is false
+  ehrbaseAuthUser: ehrbaseAuth  # Used when externalSecrets is false
+  ehrbaseAuthPassword: ehrbase  # Used when externalSecrets is false
+  ehrbaseAuthAdminUser: admin  # Used when externalSecrets is false
+  ehrbaseAuthAdminPassword: admin  # Used when externalSecrets is false
   ehrbaseAuthType: BASIC
   cacheEnabled: true
   version: 2.13.0
@@ -45,9 +47,10 @@ container:
   image: ehrbase/ehrbase
   pullPolicy: Always
   resources: {}
+
 name: ehrbase
 replicaCount: 1
+
 service:
   port: 8080
   type: ClusterIP
-
