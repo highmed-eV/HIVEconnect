@@ -41,8 +41,8 @@ hiveconnect:
     enabled: true
     ingressUrl: hive-connect.develop.de
     environment:
-      ehrbaseUsername: admin
-      ehrbasePassword: admin
+      ehrbaseUsername: ehrbase
+      ehrbasePassword: ehrbase
       ehrbaseAuthAdminUser: ehrbaseAdmin
       ehrbaseAuthAdminPassword: ehrbaseAdmin
     keycloakUrl: http://keycloak-http
@@ -289,12 +289,12 @@ ehrbase:
     systemName: local.ehrbase.org
     dbAdminUser: ehrbase
     dbAdminPassword: postgres  # Used when externalSecrets is false
-    ehrbaseUser: ehrbase    # Used when externalSecrets is false
+    ehrbaseUser: ehrbase  # Used when externalSecrets is false
     ehrbasePassword: ehrbase  # Used when externalSecrets is false
     ehrbaseAuthUser: ehrbaseAuth  # Used when externalSecrets is false
     ehrbaseAuthPassword: ehrbase  # Used when externalSecrets is false
-    ehrbaseAuthAdminUser: admin  # Used when externalSecrets is false
-    ehrbaseAuthAdminPassword: admin  # Used when externalSecrets is false
+    ehrbaseAuthAdminUser: ehrbase  # Used when externalSecrets is false
+    ehrbaseAuthAdminPassword: ehrbase  # Used when externalSecrets is false
     ehrbaseAuthType: BASIC
     cacheEnabled: true
     version: 2.13.0
