@@ -16,11 +16,11 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: "{{ .Chart.Name }}-selector"
+      app: "{{ .Chart.Name }}"
   template:
     metadata:
       labels:
-        app: "{{ .Chart.Name }}-selector"
+        app: "{{ .Chart.Name }}"
         version: "{{ .Values.appConfig.version }}"
     spec:
       {{- with .Values.imagePullSecrets }}
