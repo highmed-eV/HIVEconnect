@@ -263,6 +263,7 @@ ehrbase:
     ehrBase:
       enabled: true
       pullPushIntervalInS: "60"
+      loggingPluginVersion: develop
     postgresql:
       storageClass: default
 
