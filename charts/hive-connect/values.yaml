@@ -316,6 +316,9 @@ ehrbase:
     image: ehrbase/ehrbase
     pullPolicy: Always
     resources: {}
+    ehrbaseLoggingPlugin:
+      image: ghcr.io/highmed-ev/ehrbase-logging-plugin
+      tag: develop
 
   name: ehrbase
   replicaCount: 1

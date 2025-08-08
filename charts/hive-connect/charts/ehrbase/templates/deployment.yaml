@@ -29,7 +29,7 @@ spec:
       {{- end }}
       initContainers:
         - name: ehrbase-logging-plugin
-          image: "ghcr.io/highmed-ev/ehrbase-logging-plugin:{{ .Values.global.ehrBase.loggingPluginVersion }}"
+          image: "{{ .Values.container.ehrbaseLoggingPlugin.image }}:{{ .Values.container.ehrbaseLoggingPlugin.tag }}"
           imagePullPolicy: Always
           command:
             - sh
