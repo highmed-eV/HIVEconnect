@@ -37,8 +37,8 @@ appConfig:
   enabled: true
   ingressUrl: hive-connect.develop.de
   environment:
-    ehrbaseUsername: ehrbase
-    ehrbasePassword: ehrbase
+    ehrbaseUsername: admin
+    ehrbasePassword: admin
     ehrbaseAuthAdminUser: ehrbaseAdmin
     ehrbaseAuthAdminPassword: ehrbaseAdmin
   keycloakUrl: http://keycloak-http
