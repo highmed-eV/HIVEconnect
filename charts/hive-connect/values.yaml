@@ -52,7 +52,7 @@ hiveconnect:
     postgresqlPassword: postgres
     postgresqlDatabaseSecretName: hive-connect-postgres-hiveconnect-secret
     databaseServiceName: postgres-hiveconnect
-    version: develop
+    version: 0.1.0
     enabled: true
     ingressUrl: hive-connect.develop.de
     environment:
