@@ -28,20 +28,20 @@ spec:
       {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
-        - name: ehrbase-logging-plugin
-          image: "{{ .Values.container.ehrbaseLoggingPlugin.image }}:{{ .Values.container.ehrbaseLoggingPlugin.tag }}"
-          imagePullPolicy: Always
-          command:
-            - sh
-            - -c
-            - |
-              echo 'Copying ehrbase logging plugin...'
-              cp -R /plugin/* /plugin_dir/
-              echo 'Copying ehrbase logging plugin: '
-              ls -l /plugin_dir
-          volumeMounts:
-            - name: ehrbase-logging-plugin-volume
-              mountPath: /plugin_dir
+        #- name: ehrbase-logging-plugin
+        #  image: "{{ .Values.container.ehrbaseLoggingPlugin.image }}:{{ .Values.container.ehrbaseLoggingPlugin.tag }}"
+        #  imagePullPolicy: Always
+        #  command:
+        #    - sh
+        #    - -c
+        #    - |
+        #      echo 'Copying ehrbase logging plugin...'
+        #      cp -R /plugin/* /plugin_dir/
+        #      echo 'Copying ehrbase logging plugin: '
+        #      ls -l /plugin_dir
+        #  volumeMounts:
+        #    - name: ehrbase-logging-plugin-volume
+        #      mountPath: /plugin_dir
         - name: "wait-for-db"
           image: "docker.io/busybox:stable"
           imagePullPolicy: Always
