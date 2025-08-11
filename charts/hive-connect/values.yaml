@@ -22,7 +22,7 @@ hiveconnect:
     - name: imagepullsecret-github-packages
 
   container:
-    image: ghcr.io/highmed-ev/hive-connect
+    image: numforschungsdatenplattform/hive-connect
     pullPolicy: Always
     resources: { }
     environment:
