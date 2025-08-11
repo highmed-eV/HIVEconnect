@@ -1,6 +1,21 @@
 name: hive-connect
 replicaCount: 1
 
+global:
+  ehrBase:
+    enabled: true
+  postgresEhrbase:
+    enabled: true
+  postgresHiveConnect:
+    enabled: true
+  postgresOpenfhir:
+    enabled: true
+  postgresHapi:
+    enabled: true
+  hapi:
+    enabled: true
+
+
 hiveconnect:
   global:
     certManager:
