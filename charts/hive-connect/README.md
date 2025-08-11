@@ -1,10 +1,10 @@
-# 📘 Hive-Connect Helm-Chart Dokumentation
+# Hive-Connect Helm-Chart Dokumentation
 
 Dieses Helm-Chart installiert den **Hive-Connect-Service** in einem Kubernetes-Cluster. Es ermöglicht die Integration von medizinischen Systemen wie EHRbase, openFHIR und HAPI FHIR. Die Konfiguration unterstützt u. a. Datenbankanbindung, Authentifizierung, SSL-Verschlüsselung und die Verwendung externer Secrets.
 
 ---
 
-## ⚙️ Voraussetzungen
+## Voraussetzungen
 
 * Helm v3+
 * Zugriff auf ein Kubernetes-Cluster
@@ -16,7 +16,7 @@ Dieses Helm-Chart installiert den **Hive-Connect-Service** in einem Kubernetes-C
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ```bash
 helm install hive-connect ./hive-connect \
@@ -34,7 +34,7 @@ helm upgrade --install hive-connect ./hive-connect \
 
 ---
 
-## 🔧 Konfiguration (`values.yaml`)
+## Konfiguration (`values.yaml`)
 
 Die Konfigurationswerte sind umfangreich. Die wichtigsten Blöcke:
 
@@ -84,7 +84,7 @@ Diese können durch `externalSecrets` abgesichert werden, um sensible Werte nich
 
 ---
 
-## 🔐 Externe Secrets
+## Externe Secrets
 
 Mit aktivierter Option `externalSecrets` können Passwörter, Datenbanknamen und Benutzernamen aus einem externen Secret Management System (z. B. Vault, AWS Secrets Manager) bezogen werden:
 
@@ -102,7 +102,7 @@ postgres-hiveconnect:
     databaseKey: database
 ```
 
-### 🔑 Beispiel-Secret (Kubernetes YAML)
+### Beispiel-Secret (Kubernetes YAML)
 
 ```yaml
 apiVersion: v1
@@ -117,7 +117,7 @@ stringData:
   database: hiveconnect
 ```
 
-### 🔍 Secret direkt mit `kubectl` erstellen
+### Secret direkt mit `kubectl` erstellen
 
 ```bash
 kubectl create secret generic postgres-hiveconnect-secrets \
@@ -132,7 +132,7 @@ kubectl create secret generic postgres-hiveconnect-secrets \
 
 ---
 
-## 🌐 Ingress & Services
+## Ingress & Services
 
 * Standardmäßig wird **ClusterIP** verwendet
 * Ingress kann pro Komponente aktiviert werden (`ingress.enabled`)
@@ -140,7 +140,7 @@ kubectl create secret generic postgres-hiveconnect-secrets \
 
 ---
 
-## 📚 Komponentenübersicht
+## Komponentenübersicht
 
 | Komponente           | Beschreibung                               |
 | -------------------- | ------------------------------------------ |
@@ -153,7 +153,7 @@ kubectl create secret generic postgres-hiveconnect-secrets \
 
 ---
 
-## 🧪 Beispiel für eigene Werte (`my-values.yaml`)
+## Beispiel für eigene Werte (`my-values.yaml`)
 
 ```yaml
 hiveconnect:
@@ -174,7 +174,7 @@ postgres-hiveconnect:
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 1. **Dienste nicht erreichbar?** &#x20;
    → Es empfiehlt sich, die Netzwerkverbindungen zwischen den Pods und Services zu überprüfen, z. B. mit `kubectl port-forward`.
@@ -187,7 +187,7 @@ postgres-hiveconnect:
 
 ---
 
-## 📞 Support & Kontakt
+## Support & Kontakt
 
 Bei Fragen oder Problemen:
 
