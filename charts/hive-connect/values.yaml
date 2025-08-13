@@ -1,6 +1,21 @@
 name: hive-connect
 replicaCount: 1
 
+global:
+  ehrBase:
+    enabled: true
+  postgresEhrbase:
+    enabled: true
+  postgresHiveConnect:
+    enabled: true
+  postgresOpenfhir:
+    enabled: true
+  postgresHapi:
+    enabled: true
+  hapi:
+    enabled: true
+
+
 hiveconnect:
   global:
     certManager:
@@ -22,7 +37,7 @@ hiveconnect:
     - name: imagepullsecret-github-packages
 
   container:
-    image: ghcr.io/highmed-ev/hive-connect
+    image: numforschungsdatenplattform/hive-connect
     pullPolicy: Always
     resources: { }
     environment:
@@ -37,7 +52,7 @@ hiveconnect:
     postgresqlPassword: postgres
     postgresqlDatabaseSecretName: hive-connect-postgres-hiveconnect-secret
     databaseServiceName: postgres-hiveconnect
-    version: develop
+    version: 0.1.0
     enabled: true
     ingressUrl: hive-connect.develop.de
     environment:

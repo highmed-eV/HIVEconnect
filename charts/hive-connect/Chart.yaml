@@ -9,18 +9,25 @@ dependencies:
     version: 0.1.0
   - name: openfhir
     version: 0.1.0
+    condition: global.openFhir.enabled
   - name: ehrbase
     version: 0.1.0
+    condition: global.ehrBase.enabled
   - name: postgres-ehrbase
     version: 0.1.0
+    condition: global.postgresEhrbase.enabled
   - name: postgres-hiveconnect
     version: 0.1.0
+    condition: global.postgresHiveConnect.enabled
   - name: postgres-openfhir
     version: 0.1.0
+    condition: global.postgresOpenfhir.enabled
   - name: postgres-hapi
     version: 0.1.0
+    condition: global.postgresHapi.enabled
   - name: hapi-fhir-jpaserver
     version: 0.14.0
     repository: https://hapifhir.github.io/hapi-fhir-jpaserver-starter
     alias: hapi-fhir
+    condition: global.hapi.enabled
 
