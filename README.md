@@ -25,7 +25,7 @@ The implementation is based on [Apache Camel](https://camel.apache.org/) and [Op
 
 ### Deployment documentation
 
-[Find the documenation here](docker/deployment.md)
+[Find the documenation here](docker/README.md)
 
 ## License
 

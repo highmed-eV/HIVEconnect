@@ -1,0 +1,4 @@
+apiVersion: v2
+name: postgres-ehrbase
+description: A Helm chart for PostgreSQL with EHRBase configuration
+version: 0.1.0

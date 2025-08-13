@@ -1,0 +1,4 @@
+apiVersion: v2
+name: postgres-hapi
+description: A Helm chart for PostgreSQL with hapi configuration
+version: 0.1.0
