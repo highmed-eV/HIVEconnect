@@ -93,7 +93,7 @@ openfhir:
   storage:
     storageClass: ssd
   container:
-    image: ghcr.io/medblocks/openfhirn
+    image: ghcr.io/medblocks/openfhir
     tag: main
     pullPolicy: Always
     resources: {}
