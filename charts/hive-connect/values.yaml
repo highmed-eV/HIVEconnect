@@ -93,8 +93,8 @@ openfhir:
   storage:
     storageClass: ssd
   container:
-    image: ghcr.io/highmed-ev/openfhir
-    tag: 0.1.0
+    image: ghcr.io/medblocks/openfhirn
+    tag: main
     pullPolicy: Always
     resources: {}
   appConfig:
