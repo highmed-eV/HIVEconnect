@@ -53,7 +53,7 @@ spec:
               {{- end }}
             - name: DB_TYPE
               value: "{{ .Values.appConfig.env.DB_TYPE }}"
-#            - name: BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES 
-#              value: "{{ .Values.appConfig.env.BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES }}"
-#            - name: BOOTSTRAP_DIR 
-#              value: "{{ .Values.appConfig.env.BOOTSTRAP_DIR }}"
+            - name: BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES 
+              value: "{{ .Values.appConfig.env.BOOTSTRAP_RECURSIVELY_OPEN_DIRECTORIES }}"
+            - name: BOOTSTRAP_DIR 
+              value: "{{ .Values.appConfig.env.BOOTSTRAP_DIR }}"
