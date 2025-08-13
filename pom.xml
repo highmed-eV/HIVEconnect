@@ -14,7 +14,7 @@
   </parent>
   <groupId>org.highmed.hiveconnect</groupId>
   <artifactId>hive-connect</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.2.1</version>
   <name>HIVEconnect</name>
   <description>HIVEconnect</description>
   <properties>
