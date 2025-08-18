@@ -258,8 +258,8 @@ hapi-fhir:
   imagePullSecrets:
     - name: imagepullsecret-github-packages
   image:
-    registry: ghcr.io
-    repository: num-forschungsdatenplattform/num-hapi
+    registry: docker.io
+    repository: hapiproject/hapi
     tag: v6.8.3
     pullPolicy: Always
   postgresql:

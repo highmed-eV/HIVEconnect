@@ -61,4 +61,8 @@ report.html
 # files for local usage only!
 local*.http
 
+# helm
+Chart.lock
+*.tgz
+
 mapping-output.json
