@@ -46,7 +46,7 @@ hiveconnect:
 
   appConfig:
     bootstrapdir: /app/templates
-    serverUrl: http://develop-hive-connect-hapi-fhir:8080/fhir
+    serverUrl: http://hive-connect-hapi-fhir:8080/fhir
     postgresqlDatabase: hiveconnect
     postgresqlUsername: hiveconnect
     postgresqlPassword: postgres

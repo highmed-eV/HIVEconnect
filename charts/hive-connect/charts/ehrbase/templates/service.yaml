@@ -3,7 +3,6 @@ kind: Service
 metadata:
   labels:
     app: ehrbase
-    argocd.argoproj.io/instance: ehrbase
   name: ehrbase
 spec:
   ports:

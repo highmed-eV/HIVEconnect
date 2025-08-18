@@ -103,16 +103,6 @@ spec:
                 secretKeyRef:
                   key: truststore.password
                   name: "{{ .Chart.Name }}-secret"
-            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
-              valueFrom:
-                secretKeyRef:
-                  key: basic_username
-                  name: "{{ .Chart.Name }}-secret"
-            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  key: basic_password
-                  name: "{{ .Chart.Name }}-secret"
             {{- else }}
             - name: "SPRING_DATASOURCE_USERNAME"
               value: {{ .Values.appConfig.postgresqlUsername }}
@@ -132,10 +122,6 @@ spec:
               value: {{ .Values.appConfig.clientssl.keystorepass }}
             - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
               value: {{ .Values.appConfig.clientssl.truststorepass }}
-            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
-              value: {{ .Values.appConfig.basicUsername }}
-            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
-              value: {{ .Values.appConfig.basicPassword }}
             {{- end }}
             - name: "HIVE_CONNECT_OPENEHR_URL"
               value: "{{ .Values.global.ehrBase.hostName}}:{{ .Values.global.ehrBase.port }}{{ .Values.global.ehrBase.contextPath }}"
