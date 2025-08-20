@@ -19,8 +19,7 @@ Dieses Helm-Chart installiert den **Hive-Connect-Service** in einem Kubernetes-C
 ## Installation
 
 ```bash
-helm install hive-connect ./hive-connect \
-  --values values.yaml \
+helm install hive-connect . \
   --namespace hive-connect
 ```
 
