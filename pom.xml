@@ -21,7 +21,7 @@
     <java.version>17</java.version>
     <spring-boot-version>3.5.5</spring-boot-version>
     <javers.version>7.8.4</javers.version>
-    <camel.version>4.13.0</camel.version>
+    <camel.version>4.14.0</camel.version>
     <hapi-fhir.version>8.2.1</hapi-fhir.version>
     <ehrbase-sdk.version>2.23.0</ehrbase-sdk.version>
     <jacoco.version>0.8.13</jacoco.version>
