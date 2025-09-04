@@ -20,7 +20,7 @@
   <properties>
     <java.version>17</java.version>
     <spring-boot-version>3.5.4</spring-boot-version>
-    <javers.version>7.8.0</javers.version>
+    <javers.version>7.8.4</javers.version>
     <camel.version>4.13.0</camel.version>
     <hapi-fhir.version>8.2.1</hapi-fhir.version>
     <ehrbase-sdk.version>2.23.0</ehrbase-sdk.version>
