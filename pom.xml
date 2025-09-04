@@ -19,7 +19,7 @@
   <description>HIVEconnect</description>
   <properties>
     <java.version>17</java.version>
-    <spring-boot-version>3.5.4</spring-boot-version>
+    <spring-boot-version>3.5.5</spring-boot-version>
     <javers.version>7.8.4</javers.version>
     <camel.version>4.13.0</camel.version>
     <hapi-fhir.version>8.2.1</hapi-fhir.version>
