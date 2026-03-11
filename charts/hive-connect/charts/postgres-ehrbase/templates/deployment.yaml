@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: "postgres:latest"  # You can specify a specific version
+          image: "postgres:16"  # You can specify a specific version
           env:
             {{- if .Values.useExternalSecrets }}
             - name: POSTGRES_USER
