@@ -54,7 +54,7 @@ hiveconnect:
     databaseServiceName: postgres-hiveconnect
     version: 0.1.0
     enabled: true
-    ingressUrl: hive-connect.develop.de
+    ingressUrl: hive-connect.hive.runs.onstackit.cloud
     environment:
       ehrbaseUsername: ehrbase
       ehrbasePassword: ehrbase
@@ -91,7 +91,7 @@ openfhir:
   name: openfhir
   replicaCount: 1
   storage:
-    storageClass: ssd
+    storageClass: premium-perf1-stackit
   container:
     image: ghcr.io/highmed-ev/openfhir
     tag: 0.1.0
@@ -112,7 +112,7 @@ openfhir:
       BOOTSTRAP_DIR: /app/bootstrap
   ingress: 
     enabled: false
-    host: openfhir.crr.dev.num-codex.de
+    host: openfhir.hive.runs.onstackit.cloud
   imagePullSecrets:
     - name: imagepullsecret-github-packages
   service:
@@ -140,7 +140,7 @@ postgres-openfhir:
     persistence:
       enabled: true
       size: 1Gi
-      storageClass: ssd
+      storageClass: premium-perf1-stackit
 
   # Service Configuration
   service:
@@ -173,7 +173,7 @@ postgres-hiveconnect:
     persistence:
       enabled: true
       size: 1Gi
-      storageClass: ssd
+      storageClass: premium-perf1-stackit
 
   # Service Configuration
   service:
@@ -205,7 +205,7 @@ postgres-ehrbase:
     persistence:
       enabled: true
       size: 1Gi
-      storageClass: ssd
+      storageClass: premium-perf1-stackit
 
   # Service Configuration
   service:
@@ -237,7 +237,7 @@ postgres-hapi:
     persistence:
       enabled: true
       size: 1Gi
-      storageClass: ssd
+      storageClass: premium-perf1-stackit
 
   # Service Configuration
   service:
@@ -313,7 +313,7 @@ ehrbase:
     ehrbaseAuthType: BASIC
     cacheEnabled: true
     version: 2.13.0
-    ingressUrl: ehrbase.develop.dev.num-rdp.de
+    ingressUrl: ehrbase.hive.runs.onstackit.cloud
     certificateName: ehrbase-certificate
     disableStrictValidation: true
     aqlConfigUseJsQuery: false
