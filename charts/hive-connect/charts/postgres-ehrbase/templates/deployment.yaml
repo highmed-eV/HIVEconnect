@@ -14,8 +14,10 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: "postgres:latest"  # You can specify a specific version
+          image: "postgres:16"  # You can specify a specific version
           env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
             {{- if .Values.useExternalSecrets }}
             - name: POSTGRES_USER
               valueFrom:
@@ -49,3 +51,6 @@ spec:
         - name: postgres-data
           persistentVolumeClaim:
             claimName: {{ .Chart.Name }}-pvc
+env:
+
+volumeMounts:
