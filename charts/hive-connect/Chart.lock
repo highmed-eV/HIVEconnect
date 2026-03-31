@@ -1,27 +1,21 @@
 dependencies:
-- name: hiveconnect
-  repository: ""
-  version: 0.1.0
 - name: openfhir
   repository: ""
-  version: 0.1.0
+  version: 0.0.1
 - name: ehrbase
   repository: ""
-  version: 0.1.0
-- name: postgres-ehrbase
-  repository: ""
-  version: 0.1.0
-- name: postgres-hiveconnect
-  repository: ""
-  version: 0.1.0
-- name: postgres-openfhir
-  repository: ""
-  version: 0.1.0
-- name: postgres-hapi
-  repository: ""
-  version: 0.1.0
+  version: 1.0.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 16.7.21
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 16.7.21
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 16.7.21
 - name: hapi-fhir-jpaserver
   repository: https://hapifhir.github.io/hapi-fhir-jpaserver-starter
   version: 0.14.0
-digest: sha256:38234eeba7340387a7e07910999a0e4b166e1b13cb0e59e95f42148b237bdd5a
-generated: "2026-03-11T15:11:05.846211+01:00"
+digest: sha256:98cc6bb187e54e763890dbbc134413dccd8f758805ae05dd80c94f1c366032f5
+generated: "2025-07-31T17:31:24.052546+02:00"
