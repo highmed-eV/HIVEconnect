@@ -20,6 +20,7 @@ hiveconnect:
   global:
     certManager:
       enabled: false
+      name: letsencrypt-prod
     postgresql:
       servicePort: 5432
     ehrBase:
@@ -32,6 +33,8 @@ hiveconnect:
       port: 8080
 
   externalSecrets: false  # Add this line to control external secrets
+
+  externalSecretsBasicAuth: false
 
   imagePullSecrets:
     - name: imagepullsecret-github-packages
@@ -54,7 +57,9 @@ hiveconnect:
     databaseServiceName: postgres-hiveconnect
     version: 0.1.0
     enabled: true
-    ingressUrl: hive-connect.hive.runs.onstackit.cloud
+    ingressUrl: hive-connect.develop.de
+    ingress:
+      enabled: false
     environment:
       ehrbaseUsername: ehrbase
       ehrbasePassword: ehrbase

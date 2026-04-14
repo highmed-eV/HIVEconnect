@@ -1,6 +1,7 @@
 global:
   certManager:
     enabled: false
+    name: letsencrypt-prod
   postgresql:
     servicePort: 5432
   ehrBase:
@@ -38,6 +39,8 @@ appConfig:
   version: develop
   enabled: true
   ingressUrl: hive-connect.develop.de
+  ingress:
+    enabled: false
   environment:
     ehrbaseUsername: ehrbase
     ehrbasePassword: ehrbase
