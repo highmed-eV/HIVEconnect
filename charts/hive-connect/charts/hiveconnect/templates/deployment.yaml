@@ -172,7 +172,7 @@ spec:
               value: "{{ .Values.appConfig.clientssl.truststoretype }}"
             {{ end }}
           {{ if eq .Values.appConfig.authenticationType "basic" }}
-            {{- if .Values.externalSecrets }}
+            {{- if .Values.externalSecretsBasicAuth }}
             - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
               valueFrom:
                 secretKeyRef:

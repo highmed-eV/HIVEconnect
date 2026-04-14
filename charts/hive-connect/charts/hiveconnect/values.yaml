@@ -14,6 +14,8 @@ global:
 
 externalSecrets: false  # Add this line to control external secrets
 
+externalSecretsBasicAuth: false
+
 imagePullSecrets:
   - name: imagepullsecret-github-packages
 
