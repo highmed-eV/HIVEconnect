@@ -103,12 +103,12 @@ spec:
                 secretKeyRef:
                   key: truststore.password
                   name: "{{ .Chart.Name }}-secret"
-            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+            - name: "HIVE_CONNECT_SECURITY_USERNAME"
               valueFrom:
                 secretKeyRef:
                   key: basic_username
                   name: "{{ .Chart.Name }}-secret"
-            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+            - name: "HIVE_CONNECT_SECURITY_PASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: basic_password
@@ -132,9 +132,9 @@ spec:
               value: {{ .Values.appConfig.clientssl.keystorepass }}
             - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
               value: {{ .Values.appConfig.clientssl.truststorepass }}
-#            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+#            - name: "HIVE_CONNECT_SECURITY_USERNAME"
 #              value: {{ .Values.appConfig.basicUsername }}
-#            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+#            - name: "HIVE_CONNECT_SECURITY_PASSWORD"
 #              value: {{ .Values.appConfig.basicPassword }}
             {{- end }}
             - name: "HIVE_CONNECT_OPENEHR_URL"
@@ -173,20 +173,20 @@ spec:
             {{ end }}
           {{ if eq .Values.appConfig.authenticationType "basic" }}
             {{- if .Values.externalSecretsBasicAuth }}
-            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+            - name: "HIVE_CONNECT_SECURITY_USERNAME"
               valueFrom:
                 secretKeyRef:
                   key: basic_username
                   name: "{{ .Chart.Name }}-secret"
-            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+            - name: "HIVE_CONNECT_SECURITY_PASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: basic_password
                   name: "{{ .Chart.Name }}-secret"
             {{- else }}
-            - name: "HIVE_CONNECT_SECURITY_BASIC_USERNAME"
+            - name: "HIVE_CONNECT_SECURITY_USERNAME"
               value: "{{ .Values.appConfig.basicUsername }}"
-            - name: "HIVE_CONNECT_SECURITY_BASIC_PASSWORD"
+            - name: "HIVE_CONNECT_SECURITY_PASSWORD"
               value: "{{ .Values.appConfig.basicPassword }}"
             {{- end }}
           {{ else }}
