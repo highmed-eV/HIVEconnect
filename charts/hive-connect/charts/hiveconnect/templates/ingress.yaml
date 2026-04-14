@@ -13,7 +13,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: {{ .Values.ingress.host }}
+    - host: {{ .Values.appConfig.ingressUrl }}
       http:
         paths:
           - backend:
@@ -25,6 +25,6 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - {{ .Values.ingress.host }}
+        - {{ .Values.appConfig.ingressUrl }}
       secretName: {{ .Release.Name }}-{{ .Chart.Name }}-tls
 {{ end }}
