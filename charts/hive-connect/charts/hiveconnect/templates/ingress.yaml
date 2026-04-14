@@ -9,7 +9,7 @@ metadata:
     {{ end }}
     kubernetes.io/ingress.class: traefik
 #    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-basic-auth@kubernetescrd
-  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  name: {{ .Release.Name }}
 spec:
   ingressClassName: traefik
   rules:
@@ -26,5 +26,5 @@ spec:
   tls:
     - hosts:
         - {{ .Values.appConfig.ingressUrl }}
-      secretName: {{ .Release.Name }}-{{ .Chart.Name }}-tls
+      secretName: {{ .Release.Name }}-tls
 {{ end }}
