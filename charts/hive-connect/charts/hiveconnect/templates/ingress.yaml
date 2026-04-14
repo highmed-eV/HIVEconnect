@@ -18,7 +18,7 @@ spec:
         paths:
           - backend:
               service:
-                name: {{ .Release.Name }}-service
+                name: {{ .Chart.Name }}-service
                 port:
                   number: 8888
             path: /
