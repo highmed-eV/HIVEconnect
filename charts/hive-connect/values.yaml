@@ -155,7 +155,7 @@ postgres-openfhir:
 
   # External Secrets Configuration (only used when useExternalSecrets is true)
   externalSecrets:
-    secretName: postgres-openfhir-secrets
+    secretName: postgres-openfhir-secret
     usernameKey: username
     passwordKey: password
     databaseKey: database
@@ -188,7 +188,7 @@ postgres-hiveconnect:
 
   # External Secrets Configuration (only used when useExternalSecrets is true)
   externalSecrets:
-    secretName: postgres-hiveconnect-secrets
+    secretName: postgres-hiveconnect-secret
     usernameKey: username
     passwordKey: password
     databaseKey: database
@@ -220,7 +220,7 @@ postgres-ehrbase:
 
 # External Secrets Configuration (only used when useExternalSecrets is true)
 externalSecrets:
-  secretName: postgres-ehrbase-secrets
+  secretName: postgres-ehrbase-secret
   usernameKey: username
   passwordKey: password
   databaseKey: database
@@ -252,7 +252,7 @@ postgres-hapi:
 
   # External Secrets Configuration (only used when useExternalSecrets is true)
   externalSecrets:
-    secretName: postgres-hapi-secrets
+    secretName: postgres-hapi-secret
     usernameKey: username
     passwordKey: password
     databaseKey: database
