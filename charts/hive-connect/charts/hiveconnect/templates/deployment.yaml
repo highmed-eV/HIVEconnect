@@ -72,47 +72,37 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: "{{ .Chart.Name }}-ehrbase-secret"
+                  name: "{{ .Release.Name }}-ehrbase-secret"
             - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_PASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: "{{ .Chart.Name }}-ehrbase-secret"
+                  name: "{{ .Release.Name }}-ehrbase-secret"
             - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINNAME"
               valueFrom:
                 secretKeyRef:
                   key: adminUsername
-                  name: "{{ .Chart.Name }}-ehrbase-secret"
+                  name: "{{ .Release.Name }}-ehrbase-secret"
             - name: "HIVE_CONNECT_OPENEHR_SECURITY_USER_ADMINPASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: adminPassword
-                  name: "{{ .Chart.Name }}-ehrbase-secret"
+                  name: "{{ .Release.Name }}-ehrbase-secret"
             - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYPASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: key.password
-                  name: "{{ .Chart.Name }}-secret"
+                  name: "{{ .Release.Name }}-secret"
             - name: "HIVE_CONNECT_HTTPCLIENT_SSL_KEYSTOREPASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: keystore.password
-                  name: "{{ .Chart.Name }}-secret"
+                  name: "{{ .Release.Name }}-secret"
             - name: "HIVE_CONNECT_HTTPCLIENT_SSL_TRUSTSTOREPASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: truststore.password
-                  name: "{{ .Chart.Name }}-secret"
-            - name: "HIVE_CONNECT_SECURITY_USER_NAME"
-              valueFrom:
-                secretKeyRef:
-                  key: basic_username
-                  name: "{{ .Chart.Name }}-secret"
-            - name: "HIVE_CONNECT_SECURITY_USER_PASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  key: basic_password
-                  name: "{{ .Chart.Name }}-secret"
+                  name: "{{ .Release.Name }}-secret"
             {{- else }}
             - name: "SPRING_DATASOURCE_USERNAME"
               value: {{ .Values.appConfig.postgresqlUsername }}
