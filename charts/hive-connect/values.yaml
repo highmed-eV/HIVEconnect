@@ -53,7 +53,7 @@ hiveconnect:
     postgresqlDatabase: hiveconnect
     postgresqlUsername: hiveconnect
     postgresqlPassword: postgres
-    postgresqlDatabaseSecretName: hive-connect-postgres-hiveconnect-secret
+    postgresqlDatabaseSecretName: hive-connect-postgres-secret
     databaseServiceName: postgres-hiveconnect
     version: 0.1.0
     enabled: true
