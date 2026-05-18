@@ -24,7 +24,7 @@ hiveconnect:
     postgresql:
       servicePort: 5432
     ehrBase:
-      hostName: http://ehrbase.hive-base
+      hostName: http://hive-base-ehrbase-service.hive-base
       port: 8080
       contextPath: /ehrbase/
     openFHIR:
