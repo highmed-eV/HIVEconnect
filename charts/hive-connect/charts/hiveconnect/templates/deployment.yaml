@@ -167,12 +167,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: basic_username
-                  name: "{{ .Chart.Name }}-secret"
+                  name: "{{ .Release.Name }}-basic-auth-secret"
             - name: "HIVE_CONNECT_SECURITY_USER_PASSWORD"
               valueFrom:
                 secretKeyRef:
                   key: basic_password
-                  name: "{{ .Chart.Name }}-secret"
+                  name: "{{ .Release.Name }}-basic-auth-secret"
             {{- else }}
             - name: "HIVE_CONNECT_SECURITY_USER_NAME"
               value: "{{ .Values.appConfig.basicUsername }}"
